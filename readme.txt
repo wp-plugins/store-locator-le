@@ -5,7 +5,7 @@ Donate link: http://www.cybersprocket.com/products/store-locator-le/
 Tags: store locator, store locater, google, google maps, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator le, store locater le
 Requires at least: 3.0
 Tested up to: 3.1.1
-Stable tag: 1.9
+Stable tag: 1.9.1
 
 This plugin puts a search form and an interactive Google map on your site so you can show visitors your store locations.    
 
@@ -87,6 +87,10 @@ custom styling.
 8. Admin Manage Locations
 
 == Changelog ==
+
+= 1.9.1 (June 2011) =
+
+* Added missing data-xml.php, went missing after splitting SL Plus into LE version
 
 = 1.9 (May 2011) =
 

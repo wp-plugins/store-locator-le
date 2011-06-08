@@ -3,7 +3,7 @@
 Plugin Name: Store Locator LE
 Plugin URI: http://www.cybersprocket.com/products/store-locator-le/
 Description: Store Locator LE provides a simple store management interface and provides a simple search form with a Google Maps and table-based output that can go on any post or page.
-Version: 1.9
+Version: 1.9.1
 Author: Cyber Sprocket Labs
 Author URI: http://www.cybersprocket.com
 License: GPL3
