@@ -1,0 +1,179 @@
+/***************************
+ * Manage Locations Form
+ */
+
+#icon-edit-locations, #icon-locations {
+    background: url("/wp-content/plugins/closes-store/icon_location.png") no-repeat scroll -312px -5px transparent;
+}
+
+.add_location_form label {
+    width: 120px;
+    float: left;
+    text-align: right;
+    margin-right: 0.5em;
+    display: block;
+}
+
+.add_location_form INPUT {
+    width: 40em;
+}
+
+.add_location_form TEXTAREA {
+    width: 40em;
+}
+
+
+/***************************
+ * Map Settings Forms
+ */
+
+.form_entry {
+    clear:both;
+}
+
+.map_settings H3 {
+	margin: 0px;
+}
+
+.map_settings H4 {
+	margin: 0px 0px 3px 6px;
+}
+
+.map_settings label {
+    width: 180px;
+    float: left;
+    text-align: right;
+    margin: 0px 3px 0px 6px;
+    display: block;
+    clear: left;
+}
+
+.map_settings INPUT {
+    width: 20em;
+}
+
+.map_settings INPUT[type="checkbox"] {
+    width: 2em;
+    text-align:left;
+}
+
+.map_settings .input_note {
+	clear: both;
+	text-align: left;
+	margin: 0px 0px 6px 190px;
+	display: block;
+	color: #888;
+	width: 260px;
+}
+
+.map_settings .small {
+	width: 3em;
+}
+
+/***************************
+ * General Settings
+ **/
+    .tableRowHeader,.tableRowHeader td,.tableRowHeader th {
+        background-color: black;
+        color: white;
+        font-weight: bold;
+    }
+
+    .tableRowHeader  td a,.tableRowHeader  th a,.widefat thead td a,.widefat thead th a
+        {
+        color: #00aa00;
+        font-weight: bold;
+        text-decoration: underline;
+}
+
+.widefat,.widefat thead td a,.widefat thead th a,.widefat td,.widefat th
+	{
+	font-size: 12px;
+}
+
+.widefat td td, .widefat td, .widefat th {
+	border-bottom: none;
+}
+
+.widefat thead,.widefat thead tr {
+	background-color: #464646;
+	background-image: none;
+	color: white;
+}
+
+.highlight {
+	background-color: lightYellow;
+	border: solid gold 1px;
+	padding: 7px;
+	color: #000;
+}
+
+.sl_footer td a,.sl_footer td a:link,.sl_footer td a:hover,.sl_footer td a:active,.sl_footer td a:visited
+	{
+	font-weight: normal;
+	font-size: 8px;
+}
+
+div.feedburnerFeedBlock ul  , .sl_product_rss {
+	margin-left: 0;
+	padding-left: 0;
+	list-style-type: none
+}
+
+div.feedburnerFeedBlock ul li span.headline {
+	font-weight: bold;
+	display: block;
+	margin: 12px 0 0 0;
+}
+
+div.feedburnerFeedBlock ul li span.headline {
+	font-weight: bold;
+}
+.map_designer_section td {
+	border-bottom:none;
+}
+.manual_add_table td, .manual_add_table td td, .manual_update_table td, .manual_update_table td td, .manual_update_table{
+	border-bottom:none;
+}
+.manual_add_table td td td, .manual_update_table td td{
+	padding-left:0px; padding-right:0px;
+}
+.left_side {
+	border-right:solid #ddd 1px;
+}
+
+/*** Generic Formatting ***/
+.floatright {
+    float: right;
+}
+.floatleft {
+    float: left;
+}
+
+
+/**** Manage Locations Page ****/
+.addloclink {
+    float: left;
+    text-align: left;
+    vertical-align: bottom;
+    padding-top: 9px;
+    width: 100px;
+}
+.perpage {
+    float: left;
+    text-align: left;
+    padding-top: 7px;
+    width: 200px;
+}
+.searchlocations {
+    float: right;
+    text-align:right;
+    width: 400px;
+}
+.viewtype {
+    float: left;
+    text-align: left;
+    vertical-align: bottom;
+    padding-top: 9px;
+    width: 110px;
+}
