@@ -41,7 +41,7 @@ function doc_counter(the_loc) {
 	parts=the_loc.href.split('u=');
   	u_part=parts[1].split('&')[0];
   } 
-  else { //if (loc.charAt(loc.length-1)!="/") {
+  else {
 	dirs=the_loc.href.split('/');
 	u_part=dirs[dirs.length-1];
 	u_part=u_part.split('?')[0].split('.')[0];
@@ -55,8 +55,6 @@ function doc_counter(the_loc) {
 	} 
 	var url="/scripts/doc_counter.php";
 	url=url+"?u="+u_part;
-	//url=url+"&sid="+Math.random();
-	//xmlHttp.onreadystatechange=stateChanged;
 	xmlHttp.open("GET",url,true);
 	xmlHttp.send(null);
 } 

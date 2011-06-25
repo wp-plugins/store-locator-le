@@ -26,9 +26,9 @@ global $wpdb, $sl_upload_path, $sl_path;
 print "<div class='wrap'>
             <div id='icon-add-locations' class='icon32'><br/></div>
             <h2>".
-            __('Add Locations', $text_domain).
-            "<a href='/wp-admin/admin.php?page=".SLPLUS_PLUGINDIR."core/view-locations.php' class='button add-new-h2'>".
-            __('Manage Locations',$text_domain). 
+            __('Add Locations', SLPLUS_PREFIX).
+            "<a href='/wp-admin/admin.php?page=".SLPLUS_COREDIR."view-locations.php' class='button add-new-h2'>".
+            __('Manage Locations',SLPLUS_PREFIX). 
             "</a></h2>";
 
 
@@ -55,7 +55,7 @@ if ( isset($_POST['sl_store']) && $_POST['sl_store'] && $notpca ) {
 	add_this_addy($fieldList,$valueList,$this_addy);
 	print "<div class='updated fade'>".
             $_POST['sl_store'] ." " .
-            __("Added Succesfully",$text_domain) . '.</div>';
+            __("Added Succesfully",SLPLUS_PREFIX) . '.</div>';
             
 /** Bulk Upload
  **/
@@ -126,13 +126,13 @@ if ( isset($_POST['sl_store']) && $_POST['sl_store'] && $notpca ) {
                         if ($reccount > 0) {
                             print "<div class='updated fade'>".
                                     sprintf("%d",$reccount) ." " .
-                                    __("locations added succesfully.",$text_domain) . '</div>';
+                                    __("locations added succesfully.",SLPLUS_PREFIX) . '</div>';
                         }                                
 
                 // Could not save
                 } else {
                         print "<div class='updated fade'>".
-                        __("File could not be saved, check the plugin directory permissions:",$text_domain) .
+                        __("File could not be saved, check the plugin directory permissions:",SLPLUS_PREFIX) .
                             "<br/>" . $updir.
 
 			    '.</div>';	
@@ -141,7 +141,7 @@ if ( isset($_POST['sl_store']) && $_POST['sl_store'] && $notpca ) {
         // Not CSV Format Warning		    
 	} else {
 		print "<div class='updated fade'>".
-		    __("Uploaded file needs to be in CSV format.",$text_domain) . 
+		    __("Uploaded file needs to be in CSV format.",SLPLUS_PREFIX) . 
 		    " Type was " . $arr_file_type['type'] . 
 		    '.</div>';	
 	}

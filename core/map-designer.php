@@ -5,6 +5,69 @@
  * provide the map designer admin interface
  ******************************************************************************/
  
+//===========================================================================
+// Supporting Functions
+//===========================================================================
+
+/**************************************
+ ** function: choose_units
+ **
+ ** Display the map size units pulldown (%,px,em,pt)
+ **
+ **/
+function choose_units($unit, $input_name) {   
+	$unit_arr     = array('%','px','em','pt');
+	$select_field = "<select name='$input_name'>";	
+	foreach ($unit_arr as $value) {
+		$selected=($value=="$unit")? " selected='selected' " : "" ;
+        $select_field.="\n<option value='$value' $selected>$value</option>";
+	}
+	$select_field.="</select>";
+	return $select_field;
+}
+
+/**************************************
+ ** function: SaveCheckboxToDB
+ **
+ ** Update the checkbox setting in the database.
+ **
+ ** Parameters:
+ **  $boxname (string, required) - the name of the checkbox (db option name)
+ **  $prefix (string, optional) - defaults to SLPLUS_PREFIX, can be '' 
+ **/
+function SaveCheckboxToDB($boxname,$prefix = SLPLUS_PREFIX) {
+    $whichbox = $prefix.$boxname; 
+    $_POST[$whichbox] = isset($_POST[$whichbox])?1:0;  
+    update_option($whichbox,$_POST[$whichbox]); 
+}
+
+/**************************************
+** function: CreateCheckboxDiv
+ **
+ ** Update the checkbox setting in the database.
+ **
+ ** Parameters:
+ **  $boxname (string, required) - the name of the checkbox (db option name)
+ **  $label (string, optional) - default '', the label to go in front of the checkbox
+ **  $message (string, optional) - default '', the help message 
+ **  $prefix (string, optional) - defaults to SLPLUS_PREFIX, can be ''  
+ **/
+function CreateCheckboxDiv($boxname,$label='',$msg='',$prefix=SLPLUS_PREFIX) {
+    $whichbox = $prefix.$boxname; 
+    return 
+        "<div class='form_entry'>".
+            "<label  for='$whichbox'>$label:</label>".
+            "<input name='$whichbox' value='1' type='checkbox' ".((get_option($whichbox) ==1)?' checked':'').">".
+            slp_createhelpdiv($boxname,$msg).
+        "</div>"
+        ;
+}
+
+
+
+//===========================================================================
+// Main Processing
+//===========================================================================
 $update_msg ='';
 
 if (!$_POST) {
@@ -62,16 +125,23 @@ if (!$_POST) {
 
     $_POST['sl_map_overview_control'] = isset($_POST['sl_map_overview_control'])?1:0;  
     update_option('sl_map_overview_control',$_POST['sl_map_overview_control']);
-
-    $_POST[SLPLUS_PREFIX.'_show_tag_search'] = isset($_POST[SLPLUS_PREFIX.'_show_tag_search'])?1:0;  
-    update_option(SLPLUS_PREFIX.'_show_tag_search',$_POST[SLPLUS_PREFIX.'_show_tag_search']);
-
-    $_POST[SLPLUS_PREFIX.'_show_tag_any'] = isset($_POST[SLPLUS_PREFIX.'_show_tag_any'])?1:0;  
-    update_option(SLPLUS_PREFIX.'_show_tag_any',$_POST[SLPLUS_PREFIX.'_show_tag_any']);
     
-    $_POST[SLPLUS_PREFIX.'_email_form'] = isset($_POST[SLPLUS_PREFIX.'_email_form'])?1:0;  
-    update_option(SLPLUS_PREFIX.'_email_form',$_POST[SLPLUS_PREFIX.'_email_form']);
-    
+    $BoxesToHit = array(
+        '_show_tag_search',
+        '_show_tag_any',
+        '_email_form',
+        '_disable_scrollwheel',
+        '_disable_initialdirectory',
+        '_disable_largemapcontrol3d',
+        '_disable_scalecontrol',
+        '_disable_maptypecontrol',
+        '_hide_radius_selections',
+        '_hide_address_entry',
+        '_disable_search'
+        );
+    foreach ($BoxesToHit as $JustAnotherBox) {        
+        SaveCheckBoxToDB($JustAnotherBox);
+    }
        
     $update_msg = "<div class='highlight'>".__("Successful Update", SLPLUS_PREFIX).'</div>';
 }
@@ -97,6 +167,7 @@ $the_domain = array(
     "Germany"=>"maps.google.de",
     "Hong Kong"=>"maps.google.com.hk",
     "India"=>"maps.google.co.in", 
+    "Republic of Ireland"=>"maps.google.ie",
     "Italy"=>"maps.google.it",
     "Japan"=>"maps.google.co.jp", 
     "Liechtenstein"=>"maps.google.li", 
@@ -141,13 +212,7 @@ $char_enc["Korea (EUS-KR)"]="eus-kr";
 //
 $checked2   	    = (isset($checked2)  ?$checked2  :'');
 $city_checked	    = (get_option('sl_use_city_search')             ==1)?' checked ':'';
-$country_checked    = (get_option('sl_use_country_search')          ==1)?' checked ':'';
 $checked3	        = (get_option('sl_remove_credits')              ==1)?' checked ':'';
-$checked4	        = (get_option('sl_load_locations_default')      ==1)?' checked ':'';
-$checked5	        = (get_option('sl_map_overview_control')        ==1)?' checked ':'';
-$show_tag_checked   = (get_option(SLPLUS_PREFIX.'_show_tag_search') ==1)?' checked ':'';
-$show_any_checked   = (get_option(SLPLUS_PREFIX.'_show_tag_any')    ==1)?' checked ':'';
-$email_form_checked = (get_option(SLPLUS_PREFIX.'_email_form')      ==1)?' checked ':'';
 
 $map_type_options=(isset($map_type_options)?$map_type_options:'');
 $map_type["".__("Normal", SLPLUS_PREFIX).""]="G_NORMAL_MAP";
@@ -155,43 +220,7 @@ $map_type["".__("Satellite", SLPLUS_PREFIX).""]="G_SATELLITE_MAP";
 $map_type["".__("Hybrid", SLPLUS_PREFIX).""]="G_HYBRID_MAP";
 $map_type["".__("Physical", SLPLUS_PREFIX).""]="G_PHYSICAL_MAP";
 
-$icon_str   =(isset($icon_str)  ?$icon_str  :'');
-$icon2_str  =(isset($icon2_str) ?$icon2_str :'');
-
-
-$icon_dir=opendir(SLPLUS_PLUGINDIR."core/images/"); 
-while (false !== ($an_icon=readdir($icon_dir))) {
-	if (!ereg("^\.{1,2}$", $an_icon) && !ereg("shadow", $an_icon) && !ereg("\.db", $an_icon)) {
-
-		$icon_str.="<img style='height:25px; cursor:hand; cursor:pointer; border:solid white 2px; padding:2px' src='$sl_base/core/icons/$an_icon' onclick='document.forms[\"mapDesigner\"].icon.value=this.src;document.getElementById(\"prev\").src=this.src;' onmouseover='style.borderColor=\"red\";' onmouseout='style.borderColor=\"white\";'>";
-	}
-}
-if (is_dir($sl_upload_path."/custom-icons/")) {
-	$icon_upload_dir=opendir($sl_upload_path."/custom-icons/");
-	while (false !== ($an_icon=readdir($icon_upload_dir))) {
-		if (!ereg("^\.{1,2}$", $an_icon) && !ereg("shadow", $an_icon) && !ereg("\.db", $an_icon)) {
-
-			$icon_str.="<img style='height:25px; cursor:hand; cursor:pointer; border:solid white 2px; padding:2px' src='$sl_upload_base/custom-icons/$an_icon' onclick='document.forms[\"mapDesigner\"].icon.value=this.src;document.getElementById(\"prev\").src=this.src;' onmouseover='style.borderColor=\"red\";' onmouseout='style.borderColor=\"white\";'>";
-		}
-	}
-}
-
-$icon_dir=opendir(SLPLUS_PLUGINDIR."core/images/");
-while (false !== ($an_icon=readdir($icon_dir))) {
-	if (!ereg("^\.{1,2}$", $an_icon) && !ereg("shadow", $an_icon) && !ereg("\.db", $an_icon)) {
-
-		$icon2_str.="<img style='height:25px; cursor:hand; cursor:pointer; border:solid white 2px; padding:2px' src='${sl_base}core/icons/$an_icon' onclick='document.forms[\"mapDesigner\"].icon2.value=this.src;document.getElementById(\"prev2\").src=this.src;' onmouseover='style.borderColor=\"red\";' onmouseout='style.borderColor=\"white\";'>";
-	}
-}
-if (is_dir($sl_upload_path."/custom-icons/")) {
-	$icon_upload_dir=opendir($sl_upload_path."/custom-icons/");
-	while (false !== ($an_icon=readdir($icon_upload_dir))) {
-		if (!ereg("^\.{1,2}$", $an_icon) && !ereg("shadow", $an_icon) && !ereg("\.db", $an_icon)) {
-
-			$icon2_str.="<img style='height:25px; cursor:hand; cursor:pointer; border:solid white 2px; padding:2px' src='$sl_upload_base/custom-icons/$an_icon' onclick='document.forms[\"mapDesigner\"].icon2.value=this.src;document.getElementById(\"prev2\").src=this.src;' onmouseover='style.borderColor=\"red\";' onmouseout='style.borderColor=\"white\";'>";
-		}
-	}
-}
+// Custom Themes
 if (is_dir($sl_upload_path."/themes/")) {
 	$theme_dir=opendir($sl_upload_path."/themes/"); 
 
@@ -220,150 +249,108 @@ foreach($map_type as $key=>$value) {
 	$selected2=(get_option('sl_map_type')==$value)? " selected " : "";
 	$map_type_options.="<option value='$value' $selected2>$key</option>\n";
 }
-$icon_notification_msg=((ereg("wordpress-store-locator-location-finder", get_option('sl_map_home_icon')) && ereg("^store-locator", $sl_dir)) || (ereg("wordpress-store-locator-location-finder", get_option('sl_map_end_icon')) && ereg("^store-locator", $sl_dir)))? "<div class='highlight' style='background-color:LightYellow;color:red'><span style='color:red'>".__("You have switched from <strong>'wordpress-store-locator-location-finder'</strong> to <strong>'store-locator'</strong> --- great!<br>Now, please re-select your <b>'Home Icon'</b> and <b>'Destination Icon'</b> below, so that they show up properly on your store locator map.", SLPLUS_PREFIX)."</span></div>" : "" ;
-$sl_starting_image=get_option('sl_starting_image');
+
+//---- ICONS ----
+
+$icon_str   =(isset($icon_str)  ?$icon_str  :'');
+$icon2_str  =(isset($icon2_str) ?$icon2_str :'');
+$icon_dir=opendir(SLPLUS_ICONDIR);
+
+// List icons
+while (false !== ($an_icon=readdir($icon_dir))) {
+	if (!ereg("^\.{1,2}$", $an_icon) && !ereg("shadow", $an_icon) && !ereg("\.db", $an_icon)) {
+		$icon_str.=
+		"<img style='height:25px; cursor:hand; cursor:pointer; border:solid white 2px; padding:2px' 
+		     src='".SLPLUS_ICONURL.$an_icon."'
+		     onclick='document.forms[0].icon.value=this.src;document.getElementById(\"prev\").src=this.src;'
+		     onmouseover='style.borderColor=\"red\";' 
+		     onmouseout='style.borderColor=\"white\";'
+		     >";
+	}
+}
+// Custom icon directory?
+if (is_dir($sl_upload_path."/custom-icons/")) {
+	$icon_upload_dir=opendir($sl_upload_path."/custom-icons/");
+	while (false !== ($an_icon=readdir($icon_upload_dir))) {
+		if (!ereg("^\.{1,2}$", $an_icon) && !ereg("shadow", $an_icon) && !ereg("\.db", $an_icon)) {
+			$icon_str.=
+			"<img style='height:25px; cursor:hand; cursor:pointer; border:solid white 2px; padding:2px' 
+			src='$sl_upload_base/custom-icons/$an_icon' 
+			onclick='document.forms[\"mapDesigner\"].icon.value=this.src;document.getElementById(\"prev\").src=this.src;' 
+			onmouseover='style.borderColor=\"red\";' 
+			onmouseout='style.borderColor=\"white\";'
+			>";
+		}
+	}
+}
+
+$icon2_str = preg_replace('/\.icon\.value/','.icon2.value',$icon_str);
+$icon2_str = preg_replace('/getElementById\("prev"\)/','getElementById("prev2")',$icon2_str);
+
+// Icon is the old path, notify them to re-select
+//
+$icon_notification_msg=
+(
+    ( !ereg("/core/images/icons/", get_option('sl_map_home_icon')) 
+        && 
+      !ereg("/custom-icons/", get_option('sl_map_home_icon'))
+    )
+        || 
+    ( !ereg("/core/images/icons/", get_option('sl_map_end_icon')) 
+        && 
+      !ereg("/custom-icons/", get_option('sl_map_end_icon'))
+    )
+)
+    ? 
+"<div class='highlight' style='background-color:LightYellow;color:red'><span style='color:red'>".
+__("Please re-select your <b>Home Icon</b> and <b>Destination Icon</b> below, so that they show up properly on your map.", SLPLUS_PREFIX).
+"</span></div>" : 
+"" ;
 
 
-# Output Form 
-# Top Section (Search & Labels)
-#
-execute_and_output_template('map_settings.php');
+// Instantiate the form rendering object
+//
+global $slpMapSettings;
+$slpMapSettings = new wpCSL_settings__slplus(
+    array(
+            'no_license'        => true,
+            'prefix'            => $slplus_plugin->prefix,
+            'url'               => $slplus_plugin->url,
+            'name'              => $slplus_plugin->name . ' Display Settings',
+            'plugin_url'        => $slplus_plugin->plugin_url,
+            'render_csl_blocks' => false,
+            'form_action'       => '/wp-admin/admin.php?page='.SLPLUS_COREDIR.'map-designer.php',
+            'save_text'         => 'Save Settings'
+        )
+ ); 
 
+//------------------------------------
+// Create The Search Form Settings Panel
+//  
+$slpDescription = get_string_from_phpexec(SLPLUS_COREDIR.'/templates/settings_searchform.php');
+$slpMapSettings->add_section(
+    array(
+            'name'          => __('Search Form',SLPLUS_PREFIX),
+            'description'   => $slpDescription,
+            'auto'          => true
+        )
+ );
    
-# Map Designer : Left Side
-#
-print "<tr><td width='40%' class='left_side'>
-        <div class='map_designer_settings'>
-            <h3>".__("Defaults", SLPLUS_PREFIX)."</h3>    
-            <div class='form_entry'><label for='sl_map_type'>".__("Default Map Type", SLPLUS_PREFIX).":</label>
-            <select name='sl_map_type'>\n".$map_type_options."</select>
-            </div>
-            
-            <div class='form_entry'><label for='sl_map_overview_control'>".__("Show Map Inset Box", SLPLUS_PREFIX).":</label>    
-            <input name='sl_map_overview_control' value='1' type='checkbox' $checked5>
-            </div>
-            
-            <div class='form_entry'><label for='sl_load_locations_default'>".__("Immediately Show Locations", SLPLUS_PREFIX).":</label>
-            <input name='sl_load_locations_default' value='1' type='checkbox' $checked4>
-            </div>
-            
-            <div class='form_entry'><label for='sl_num_initial_displayed'>".__("Default Locations Shown", SLPLUS_PREFIX).":</label>
-            <input name='sl_num_initial_displayed' value='$sl_num_initial_displayed' class='small'><br/>
-            <span class='input_note'>".__("Recommended Max: 50", SLPLUS_PREFIX)."</span>
-            </div>
-            ";
-            
-            if (function_exists('execute_and_output_plustemplate')) {
-                execute_and_output_plustemplate('mapsettings_designerdefaults.php');
-            }              
-
-print "            
-        </div>            
-    </td>";
-
-# Map Designer : Right Side
-#    
-print "<td class='right_side'>".
-    "<h3>".__("Google Map Interface", SLPLUS_PREFIX)."</h3>".
-    "<div class='form_entry'>".
-        "<label for='google_map_domain'>".
-        __("Select Your Location", SLPLUS_PREFIX).
-        "</label>".
-        "<select name='google_map_domain'>";
-
-foreach ($the_domain as $key=>$value) {
-	$selected=(get_option('sl_google_map_domain')==$value)?" selected " : "";
-	print "<option value='$key:$value' $selected>$key ($value)</option>\n";
-}
-
-print "</select></div>".
-    "<div class='form_entry'>".
-        "<label for='sl_map_character_encoding'>".    
-        __("Select Character Encoding", SLPLUS_PREFIX).
-        "</label>".
-        "<select name='sl_map_character_encoding'>";
-
-foreach ($char_enc as $key=>$value) {
-	$selected=(get_option('sl_map_character_encoding')==$value)?" selected " : "";
-	print "<option value='$value' $selected>$key</option>\n";
-}
-print "</select></div></td></tr>";
+//------------------------------------
+// Create The Map Settings Panel
+//  
+$slpDescription = get_string_from_phpexec(SLPLUS_COREDIR.'/templates/settings_mapform.php');
+$slpMapSettings->add_section(
+    array(
+            'name'          => __('Map',SLPLUS_PREFIX),
+            'description'   => $slpDescription,
+            'auto'          => true
+        )
+ );
     
-
-# Map Designer : Left Side Row 2
-#        
-print "<tr><td class='left_side'>    
-        <div class='map_designer_settings'>
-            <h3>".__("Dimensions", SLPLUS_PREFIX)."</h3>
     
-            <div><label for='zoom_level'>".__("Zoom Level", SLPLUS_PREFIX).":</label>
-            $zoom
-            <span class='input_note'>".__("19=street level, 0=world view. Show locations overrides this setting.",SLPLUS_PREFIX)."</span>
-            </div>
-            
-            <div><label for='height'>".__("Map Height", SLPLUS_PREFIX).":</label>
-            <input name='height' value='$height' class='small'>&nbsp;".choose_units($height_units, "height_units")."
-            </div>
-            
-            <div><label for='height'>".__("Map Width", SLPLUS_PREFIX).":</label>
-            <input name='width' value='$width'  class='small'>&nbsp;".choose_units($width_units, "width_units")."
-            </div>
-
-            <div><label for='radii'>".__("Radii Options", SLPLUS_PREFIX).":</label>
-            <input  name='radii' value='$radii' size='25'>
-            <span class='input_note'>".
-            __("Separate each number with a comma ','. Put parenthesis '( )' around the default.</span>", SLPLUS_PREFIX).
-            "</span>
-            </div>  
-            
-            <div><label for='height'>".__("Distance Unit", SLPLUS_PREFIX).":</label>
-            <select name='sl_distance_unit'>".
-
-$the_distance_unit["".__("Kilometers", SLPLUS_PREFIX).""]="km";
-$the_distance_unit["".__("Miles", SLPLUS_PREFIX).""]="miles";
-
-foreach ($the_distance_unit as $key=>$value) {
-	$selected=(get_option('sl_distance_unit')==$value)?" selected " : "";
-	print "<option value='$value' $selected>$key</option>\n";
-}            
-    
-print "</select>
-            </div>            
-        </div>
-    </td>    
-    </td>
-    <td class='rightside'>
-    <h3>".__("Design", SLPLUS_PREFIX)."</h3>".
-    
-    $icon_notification_msg.
-    
-    "<div class='form_entry'>".
-        "<label for='sl_remove_credits'>".
-        __("Remove Credits", SLPLUS_PREFIX).
-        "</label>".
-        "<input name='sl_remove_credits' value='1' type='checkbox' $checked3>".
-    "</div>".
-    
-    "<div class='form_entry'>".
-        "<label for='icon'>".
-        __("Home Icon", SLPLUS_PREFIX).
-        "</label>".
-        "<input name='icon' size='45' value='$icon' onchange=\"document.getElementById('prev').src=this.value\">".
-        "&nbsp;&nbsp;<img id='prev' src='$icon' align='top'><br/>".
-        "<div style='margin-left: 150px;'>$icon_str</div>".        
-    "</div>".
-    
-    "<div class='form_entry'>".
-        "<label for='icon'>".
-        __("Destination Icon", SLPLUS_PREFIX).
-        "</label>".
-        "<input name='icon2' size='45' value='$icon2' onchange=\"document.getElementById('prev2').src=this.value\">".
-        "&nbsp;&nbsp;<img id='prev2' src='$icon2'align='top'><br/>".
-        "<div style='margin-left: 150px;'>$icon2_str</div>".
-    "</div>".
-    "</td></tr>".
-    "<tr><td colspan='2'>".
-    "<input type='submit' value='".__("Update", SLPLUS_PREFIX)."' class='button-primary'>".
-    "</td></tr>".
-    "</tbody></table></form>".
-    "</div></div>";
+//------------------------------------
+// Render It 
+//
+print $update_msg;
+$slpMapSettings->render_settings_page();    

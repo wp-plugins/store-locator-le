@@ -10,25 +10,29 @@ var map;
 var geocoder;
 
 var theIcon = new GIcon(G_DEFAULT_ICON);
-theIcon.image = sl_map_end_icon;
+    theIcon.image = sl_map_end_icon;
 if (sl_map_end_icon.indexOf('flag')!='-1') {
-    theIcon.shadow = add_base + "/core/icons/flag_shadow.png";
+    theIcon.shadow = add_base + "/images/flag_shadow.png";
 } else if (sl_map_end_icon.indexOf('arrow')!='-1') {
-    theIcon.shadow = add_base + "/core/icons/arrow_shadow.png";
+    theIcon.shadow = add_base + "/images/arrow_shadow.png";
 } else if (sl_map_end_icon.indexOf('bubble')!='-1') {
-    theIcon.shadow = add_base + "/core/icons/bubble_shadow.png";
+    theIcon.shadow = add_base + "/images/bubble_shadow.png";
 } else if (sl_map_end_icon.indexOf('marker')!='-1') {
-    theIcon.shadow = add_base + "/core/icons/marker_shadow.png";
+    theIcon.shadow = add_base + "/images/marker_shadow.png";
 } else if (sl_map_end_icon.indexOf('sign')!='-1') {
-    theIcon.shadow = add_base + "/core/icons/sign_shadow.png";
+    theIcon.shadow = add_base + "/images/sign_shadow.png";
 } else {
-    theIcon.shadow = add_base + "/core/icons/blank.png";
+    theIcon.shadow = add_base + "/images/blank.png";
 }
 theIcon.iconSize = new GSize(sl_map_end_icon_width, sl_map_end_icon_height);
 
 
 /**************************************
-*/
+ * function: sl_load()
+ *
+ * Initial map loading, before search is performed.
+ *
+ */
 function sl_load() {
     if (GBrowserIsCompatible()) {
         geocoder = new GClientGeocoder();
@@ -37,50 +41,104 @@ function sl_load() {
             map.addControl(new GOverviewMapControl());
         }
         map.addMapType(G_PHYSICAL_MAP);
+        
+        // This is asynchronous, as such we have no idea when it will return
+        //
         geocoder.getLatLng(sl_google_map_country, 
             function(latlng) {
                 map.setCenter(latlng, sl_zoom_level, sl_map_type);
-                map.setUIToDefault();
+                
+                var customUI = map.getDefaultUI();
+                customUI.controls.largemapcontrol3d = slp_largemapcontrol3d;   
+                customUI.controls.scalecontrol = slp_scalecontrol;
+                customUI.controls.hierarchicalmaptypecontrol = slp_maptypecontrol;                
+                map.setUI(customUI);
+                
+                if (slp_disablescrollwheel) { map.disableScrollWheelZoom(); }
+                
+                if (sl_load_locations_default) {                    
+                    sl_load_locations(map,latlng.lat(),latlng.lng());
+                }
             }
         );
     }
-  
-    if (sl_load_locations_default=="1") {
-        var bounds = new GLatLngBounds();
-        markerOpts = { icon:theIcon };
-        GDownloadUrl(add_base + "/data-xml.php",
-            function(data, responseCode) {
-                var xml = GXml.parse(data);
-                var markers = xml.documentElement.getElementsByTagName("marker");
-                for (var i = 0; i < markers.length; i++) {
-                    var name = markers[i].getAttribute('name');
-                    var address = markers[i].getAttribute('address');
-                    var distance = parseFloat(markers[i].getAttribute('distance'));
-                    var description = markers[i].getAttribute('description');
-                    var url = markers[i].getAttribute('url');
-                    var email = markers[i].getAttribute('email');
-                    var hours = markers[i].getAttribute('hours');
-                    var phone = markers[i].getAttribute('phone');
-                    var image = markers[i].getAttribute('image');
-                    var maplat = markers[i].getAttribute('lat');
-                    var maplong = markers[i].getAttribute('lng');
-                    var point = new GLatLng(
-                        parseFloat(maplat),
-                        parseFloat(maplong)
-                        );
-                    var marker = createMarker(point, name, address, "", description, url, email, hours, phone, image);
-                    map.addOverlay(marker);
-                    bounds.extend(point);
-                }
-                map.setCenter(bounds.getCenter(), (map.getBoundsZoomLevel(bounds)-1));
-                map.setUIToDefault();
-            }
-        );
-     }
 }
 
+/**************************************
+ * function: sl_load_locations()
+ *
+ * Show the locations on the map when it is first loaded.
+ * Run in the asynchronous map display above if the load locations
+ * at startup is set.
+ *
+ */
+function sl_load_locations(map,lat,lng) {
+    var bounds = new GLatLngBounds();
+    markerOpts = { icon:theIcon };
+
+    // Check if tag searching is enabled/shown
+    //
+    if (document.getElementById('tag_to_search_for') != null) { 
+        taglist = document.getElementById('tag_to_search_for').value; 
+    } else {
+        taglist = null;
+    }
+
+    if (!slp_disableinitialdirectory) {
+        var sidebar = document.getElementById('map_sidebar');
+        sidebar.innerHTML = '';           
+    }
+    
+    GDownloadUrl(add_base + "/data-xml.php?lat="+lat+"&lng="+lng+"&tags="+taglist,
+        function(data, responseCode) {
+            var xml = GXml.parse(data);
+            var markers = xml.documentElement.getElementsByTagName("marker");
+            for (var i = 0; i < markers.length; i++) {
+                var name = markers[i].getAttribute('name');
+                var address = markers[i].getAttribute('address');
+                var distance = parseFloat(markers[i].getAttribute('distance'));
+                var description = markers[i].getAttribute('description');
+                var url = markers[i].getAttribute('url');
+                var email = markers[i].getAttribute('email');
+                var hours = markers[i].getAttribute('hours');
+                var phone = markers[i].getAttribute('phone');
+                var image = markers[i].getAttribute('image');
+                var maplat = markers[i].getAttribute('lat');
+                var maplong = markers[i].getAttribute('lng');
+                var point = new GLatLng(
+                    parseFloat(maplat),
+                    parseFloat(maplong)
+                    );
+                var marker = createMarker(point, name, address, "", description, url, email, hours, phone, image);
+                                    
+                map.addOverlay(marker);
+    
+                if (!slp_disableinitialdirectory) {
+                    var sidebarEntry = createSidebarEntry(marker, name, address, distance, '', url, email, phone);
+                    sidebar.appendChild(sidebarEntry);
+                }
+                                    
+                bounds.extend(point);
+            }
+            map.setCenter(bounds.getCenter(), (map.getBoundsZoomLevel(bounds)-1));
+            
+            var customUI = map.getDefaultUI();
+            customUI.controls.largemapcontrol3d = slp_largemapcontrol3d;   
+            customUI.controls.scalecontrol = slp_scalecontrol;
+            customUI.controls.hierarchicalmaptypecontrol = slp_maptypecontrol;                
+            map.setUI(customUI);
+            
+            if (slp_disablescrollwheel) { map.disableScrollWheelZoom(); }
+        }
+    );
+ }
 
 /**************************************
+ * function: searchLocations()
+ *
+ * Run this when we do a search, first get the lat/long of the address entered
+ * then call find locations near that address.
+ *
  */
 function searchLocations() {
     var address = document.getElementById('addressInput').value;
@@ -102,6 +160,12 @@ function searchLocations() {
 
 
 /**************************************
+ * function: searchLocations()
+ *
+ * Run this when we do a search, first get the lat/long of the address entered
+ * then call find locations near that address.
+ *
+
  */
 function searchLocationsNear(center, homeAddress) {
     var radius  = document.getElementById('radiusSelect').value;
@@ -114,7 +178,8 @@ function searchLocationsNear(center, homeAddress) {
         'lat='     + center.lat() + 
         '&lng='    + center.lng() + 
         '&radius=' + radius +
-        '&tags='   + taglist
+        '&tags='   + taglist +
+        '&address=' + homeAddress
         ;
         
     GDownloadUrl(searchUrl, 
@@ -123,25 +188,25 @@ function searchLocationsNear(center, homeAddress) {
             var markers = xml.documentElement.getElementsByTagName('marker');
             map.clearOverlays();
    
-            var theIcon = new GIcon(G_DEFAULT_ICON);
-            theIcon.image = sl_map_home_icon;
+            var homeIcon = new GIcon(G_DEFAULT_ICON);
+            homeIcon.image = sl_map_home_icon;
             if (sl_map_home_icon.indexOf('flag')!='-1') {
-                theIcon.shadow = add_base + "/core/icons/flag_shadow.png";
+                homeIcon.shadow = add_base + "/images/icons/flag_shadow.png";
             } else if (sl_map_home_icon.indexOf('arrow')!='-1') {
-                theIcon.shadow = add_base + "/core/icons/arrow_shadow.png";
+                homeIcon.shadow = add_base + "/images/icons/arrow_shadow.png";
             } else if (sl_map_home_icon.indexOf('bubble')!='-1') {
-                theIcon.shadow = add_base + "/core/icons/bubble_shadow.png";
+                homeIcon.shadow = add_base + "/images/icons/bubble_shadow.png";
             } else if (sl_map_home_icon.indexOf('marker')!='-1') {
-                theIcon.shadow = add_base + "/core/icons/marker_shadow.png";
+                homeIcon.shadow = add_base + "/images/icons/marker_shadow.png";
             } else if (sl_map_home_icon.indexOf('sign')!='-1') {
-                theIcon.shadow = add_base + "/core/icons/sign_shadow.png";
+                homeIcon.shadow = add_base + "/images/icons/sign_shadow.png";
             } else {
-                theIcon.shadow = add_base + "/core/icons/blank.png";
+                homeIcon.shadow = add_base + "/images/icons/blank.png";
             }
-            theIcon.iconSize = new GSize(sl_map_home_icon_width, sl_map_home_icon_height);
+            homeIcon.iconSize = new GSize(sl_map_home_icon_width, sl_map_home_icon_height);
 
             var bounds = new GLatLngBounds(); 
-            markerOpts = { icon:theIcon };
+            markerOpts = { icon:homeIcon };
             point = new GLatLng (center.lat(), center.lng());
             bounds.extend(point); 
             var homeMarker = new GMarker(point, markerOpts);

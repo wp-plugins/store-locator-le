@@ -16,6 +16,7 @@ $view_link="| <a href='".get_option('siteurl').
     
 
 $web_domain=$_SERVER['HTTP_HOST'];
+$slp_enc_key=md5(get_option(SLPLUS_PREFIX.'-license_key'));
 $map_character_encoding=(get_option('sl_map_character_encoding')!="")? 
     "&amp;oe=".get_option('sl_map_character_encoding') : 
     "";

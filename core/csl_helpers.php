@@ -6,6 +6,110 @@
  ***************************************************************************/
 
 /**************************************
+ ** function: csl_slplus_setup_admin_interface
+ **
+ ** Builds the interface elements used by WPCSL-generic for the admin interface.
+ **/
+function csl_slplus_setup_admin_interface() {
+    global $slplus_plugin;
+    
+    // Don't have what we need? Leave.
+    if (!isset($slplus_plugin)) { return; }
+    
+    
+    // No SimpleXML Support
+    if (!function_exists('parsetoxml')) {
+        $slplus_plugin->notifications->add_notice(1, __('SimpleXML is required but not enabled.',SLPLUS_PREFIX));
+    }
+
+    // Already been here?  Get out.
+    if (isset($slplus_plugin->settings->sections['How to Use'])) { return; }
+    
+    
+    //-------------------------
+    // How to Use Section
+    //-------------------------    
+    $slplus_plugin->settings->add_section(
+        array(
+            'name' => 'How to Use',
+            'description' => get_string_from_phpexec(SLPLUS_PLUGINDIR.'/how_to_use.txt')
+        )
+    );
+
+    //-------------------------
+    // Google Communiations
+    //-------------------------    
+    $slplus_plugin->settings->add_section(
+        array(
+            'name'        => 'Google Communication',
+            'description' => 'These settings affect how the plugin communicates with Google to create your map.'.
+                                '<br/><br/>'
+        )
+    );
+    
+    $slplus_plugin->settings->add_item(
+        'Google Communication', 
+        'Google API Key', 
+        'api_key', 
+        'text', 
+        false,
+        'Your Google API Key.  You will need to ' .
+        '<a href="http://code.google.com/apis/maps/signup.html" target="newinfo">'.
+        'go to Google</a> to get your Google Maps API Key.'
+    );
+
+
+    $slplus_plugin->settings->add_item(
+        'Google Communication', 
+        'Geocode Retries', 
+        'goecode_retries', 
+        'list', 
+        false,
+        'How many times should we try to set the latitude/longitude for a new address. ' .
+        'Higher numbers mean slower bulk uploads ('.
+        '<a href="http://www.cybersprocket.com/products/store-locator-plus/">plus version</a>'.
+        '), lower numbers makes it more likely the location will not be set during bulk uploads.',
+        array (
+              'None' => 0,
+              '1' => '1',
+              '2' => '2',
+              '3' => '3',
+              '4' => '4',
+              '5' => '5',
+              '6' => '6',
+              '7' => '7',
+              '8' => '8',
+              '9' => '9',
+              '10' => '10',
+            )
+    );
+    
+    //-------------------------
+    // Reporting
+    //-------------------------   
+    $slp_rep_desc = __('These settings affect how the reporting system behaves. ', SLPLUS_PREFIX);
+    if (!function_exists('slplus_add_report_settings')) {
+        $slp_rep_desc .= '<br/><br/>'.
+            __('This is a <a href="http://www.cybersprocket.com/products/store-locator-plus/">plus version</a>'.
+            ' feature.  It provides a way to generate reports on what locations' .
+            ' people have searched for and what results they received back. ', SLPLUS_PREFIX);
+    }
+    $slp_rep_desc .= '<br/><br/>'; 
+        
+    $slplus_plugin->settings->add_section(
+        array(
+            'name'        => 'Reporting',
+            'description' => $slp_rep_desc
+        )
+    );
+    
+    if (function_exists('slplus_add_report_settings')) {
+        slplus_add_report_settings();
+    }    
+}
+ 
+ 
+/**************************************
  ** function: get_string_from_phpexec()
  ** 
  ** Executes the included php (or html) file and returns the output as a string.
@@ -37,29 +141,28 @@ function get_string_from_phpexec($file) {
  **  $file (string, required) - name of the file in the plugin/templates dir
  **/
 function execute_and_output_template($file) {
-    $file = SLPLUS_PLUGINDIR.'/core/templates/'.$file;
+    $file = SLPLUS_COREDIR.'/templates/'.$file;
     print get_string_from_phpexec($file);
 }
 
 /**************************************
- ** function: convert_text_to_html
+ ** function: slp_createhelpdiv()
  ** 
- ** Convert text in the WP readme file format (wiki markup) to basic HTML
+ ** Generate the string that displays the help icon and the expandable div
+ ** that mimics the WPCSL-Generic forms more info buttons.
  **
  ** Parameters:
- **  $file (string, required) - name of the file in the plugin dir
+ **  $divname (string, required) - the name of the div to toggle
+ **  $msg (string, required) - the message to display
  **/
-function convert_text_to_html($file='readme.txt') {
-    ob_start();
-    include(SLPLUS_PLUGINDIR.$file);
-    $content=ob_get_contents();
-    ob_end_clean();
-    $content=ereg_replace("\=\=\= ", "<h2>", $content);
-    $content=ereg_replace(" \=\=\=", "</h2>", $content);
-    $content=ereg_replace("\=\= ", "<div id='wphead' style='color:white'><h1 id='site-heading'><span id='site-title'>", $content);
-    $content=ereg_replace(" \=\=", "</h1></span></div>", $content);
-    $content=ereg_replace("\= ", "<b><u>", $content);
-    $content=ereg_replace(" \=", "</u></b>", $content);
-    $content=do_hyperlink($content);
-    return nl2br($content);
+function slp_createhelpdiv($divname,$msg) {
+    return "<a onclick=\"swapVisibility('".SLPLUS_PREFIX."-help$divname');\" href=\"javascript:;\">".
+        "<img class='helpicon' border='0' title='More info' alt='More info' src='".SLPLUS_COREURL."images/help-icon-18x20.png'>".
+        "</a>".
+        "<div id='".SLPLUS_PREFIX."-help$divname' class='input_note' style='display: none;'>".
+            $msg. 
+        "</div>"
+        ;
 }
+
+

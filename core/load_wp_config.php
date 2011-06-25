@@ -36,5 +36,4 @@ if (isset($_SERVER['DOCUMENT_ROOT']) && file_exists($_SERVER['DOCUMENT_ROOT'].'/
     include('../../../../wp-config.php');    
 }
 
-// Turn on short open tags
-ini_set( "short_open_tag", 1 );
+

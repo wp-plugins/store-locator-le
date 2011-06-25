@@ -19,7 +19,7 @@ print "<div class='wrap'>
             <div id='icon-edit-locations' class='icon32'><br/></div>
             <h2>".
             __('Manage Locations', $text_domain).
-            "<a href='/wp-admin/admin.php?page=".SLPLUS_PLUGINDIR."core/add-locations.php' class='button add-new-h2'>".
+            "<a href='/wp-admin/admin.php?page=".SLPLUS_COREDIR."add-locations.php' class='button add-new-h2'>".
             __('Add Locations',$text_domain). 
             "</a></h2>";
 
@@ -96,13 +96,12 @@ if (!$slak) {
 
         // Delete Action	    
         if ($_POST['act']=="delete") {
-            include("deleteLocations.php");
+            include_once(SLPLUS_COREDIR   . 'deleteLocations.php'       );            
         }        
         
         // Tagging Action
         if (eregi("tag", $_POST['act'])) {
-            //if bulk tagging is used
-            include("tagLocations.php");
+            include_once(SLPLUS_COREDIR   . 'tagLocations.php'       );            
         }
         
         // Locations Per Page Action
@@ -201,7 +200,7 @@ if (!$slak) {
     $start=(isset($_GET['start'])&&(trim($_GET['start'])!=''))?$_GET['start']:0;
     //edit this to determine how many locations to view per page of 'Manage Locations' page
     $num_per_page=$sl_admin_locations_per_page; 
-    if ($numMembers2!=0) {include(SLPLUS_PLUGINDIR.'/core/search-links.php');}
+    if ($numMembers2!=0) {include(SLPLUS_COREDIR.'search-links.php');}
 
 $opt = isset($_GET['o']) ? $_GET['o'] : '';
 $dir = isset($_GET['d']) ? $_GET['d'] : '';
@@ -341,7 +340,7 @@ if ($locales=$wpdb->get_results("SELECT * FROM " . $wpdb->prefix .
 	}
 	print "</table>
 	<input name='act' type='hidden'><br>";
-if ($numMembers2!=0) {include(SLPLUS_PLUGINDIR.'/core/search-links.php');}
+if ($numMembers2!=0) {include(SLPLUS_COREDIR.'/search-links.php');}
 
 print "</form>";
 	

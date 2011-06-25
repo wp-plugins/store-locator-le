@@ -5,7 +5,7 @@ Donate link: http://www.cybersprocket.com/products/store-locator-le/
 Tags: store locator, store locater, google, google maps, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator le, store locater le
 Requires at least: 3.0
 Tested up to: 3.1.1
-Stable tag: 1.9.1
+Stable tag: 1.9.2
 
 This plugin puts a search form and an interactive Google map on your site so you can show visitors your store locations.    
 
@@ -28,6 +28,22 @@ a few thousand.
 * Starting zoom level
 * You can use miles or kilometers
 
+= Want More? =
+
+[Store Locator Plus](http://www.cyberpsrocket.com/products/store-locator-plus/)
+adds a number of features not included in our light edition (LE) product.  Some
+of the features that come with [Store Locator Plus](http://www.cyberpsrocket.com/products/store-locator-plus/)
+include:
+
+* Advanced Tag Support : enter multiple tags on each location, options to search by tags, option to display tag pull down, option to show only results that match a specific tag allowing pages to be keyed to stores only tagged with a specific value.
+* Email Contact Support : enter email addresses on a per-location basis, allows for a popup form or direct email link.  Popup forms help reduce spam.
+* Country Management : records country data, allows for search by country, option to display a country pull down on the search form.
+* WordPress Roles: A custom role labelled "manage_slp" exists to make it easy to restrict access to your location management when using third party plugins to extend custom roles and capabilities for your users.
+* Starting Image: set a default starting image to show in place of the map before a search is performed.
+* Bulk Upload: Upload thousands of locations at one time using the CSV bulk importer.
+* Reporting: Find out what people are searching for and what results they are getting back.
+* Bug Fixes: Latest bug fixes come out on the plus edition first, LE is 2-4 weeks behind.
+
 = Looking For Customized WordPress Plugins? =
 
 If you are looking for custom WordPress development for your own plugins, give 
@@ -40,6 +56,7 @@ Learn more at: http://www.cybersprocket.com/services/wordpress-developers/
 = Related Links =
 
 * [Other Cyber Sprocket Plugins](http://wordpress.org/extend/plugins/profile/cybersprocket/) 
+* [Store Locator Plus](http://www.cyberpsrocket.com/products/store-locator-plus/) 
 * [Custom WordPress Development](http://www.cybersprocket.com/services/wordpress-developers/)
 * [Our Facebook Page](http://www.facebook.com/cyber.sprocket.labs)
 
@@ -85,8 +102,20 @@ custom styling.
 6. Admin Map Settings
 7. Admin Add Locations
 8. Admin Manage Locations
+9. UI Map Result With Bubble
 
 == Changelog ==
+
+= 1.9.2 (June 24th 2011) =
+
+* Feature: Multiple retries available for better geocoding() on bulk or single-item uploads.
+* Feature: Improved failed goecode reporting.
+* Update: Icon paths have changed - make sure you reset your icons via the map designer.
+* Update: Added Republic of Ireland to the countries list.
+* Update: Revised map settings interface.
+* Fix: conflict with copyr() with other plugins.
+* Fix: language file loading.
+* Fix: Custom icons are back for Internet Explorer.
 
 = 1.9.1 (June 2011) =
 

@@ -1,7 +1,18 @@
 <?php
+/******************************************************************************
+ * File: generate-xml.php 
+ * 
+ * Create the XML document that the Google Maps interface needs to show points
+ * on the map.  This is what we run when a user does a search.  The JavaScript
+ * function eventually calls this on the backend via an AJAX style interface.
+ *
+ ******************************************************************************/
+
+
 error_reporting(0);
 header("Content-type: text/xml");
 include("database-info.php");
+$dbPrefix = $wpdb->prefix;
 
 // Get parameters from URL
 $center_lat = $_GET["lat"];
@@ -30,7 +41,7 @@ if (!$db_selected) {
 //
 $tag_filter = ''; 
 if (
-	(get_option($prefix.'_show_tag_search') ==1) &&
+	(get_option(SLPLUS_PREFIX.'_show_tag_search') ==1) &&
 	isset($_GET['tags']) && ($_GET['tags'] != '')
    ){
     $posted_tag = preg_replace('/\s+(.*?)/','$1',$_GET['tags']);
@@ -40,11 +51,9 @@ if (
 
 // Select all the rows in the markers table
 $query = sprintf(
-	"SELECT sl_address, sl_address2, sl_store, sl_city, sl_state, sl_zip, ".
-	"sl_country, sl_latitude, sl_longitude, sl_description, sl_url, sl_email, sl_hours, ".
-	"sl_phone, sl_tags, sl_image,".
+	"SELECT *,".
 	"( $multiplier * acos( cos( radians('%s') ) * cos( radians( sl_latitude ) ) * cos( radians( sl_longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( sl_latitude ) ) ) ) AS sl_distance ".
-	"FROM ".$wpdb->prefix."store_locator HAVING (sl_distance < '%s') ".
+	"FROM ${dbPrefix}store_locator HAVING (sl_distance < '%s') ".
 	$tag_filter .
 	'ORDER BY sl_distance',
 	mysql_real_escape_string($center_lat),
@@ -60,11 +69,30 @@ if (!$result) {
 }
 
 
+// Reporting
+// Insert the query into the query DB
+// 
+if (get_option(SLPLUS_PREFIX.'-reporting_enabled') === 'on') {
+    $qry = sprintf(                                              
+            "INSERT INTO ${dbPrefix}slp_rep_query ". 
+                       "(slp_repq_query,slp_repq_tags,slp_repq_address,slp_repq_radius) ". 
+                "values ('%s','%s','%s','%s')",
+                mysql_real_escape_string($_SERVER['QUERY_STRING']),
+                mysql_real_escape_string($_GET['tags']),
+                mysql_real_escape_string($_GET['address']),
+                mysql_real_escape_string($_GET['radius'])
+            );
+    $wpdb->query($qry);
+    $slp_QueryID = mysql_insert_id();
+}
+
+
 
 // Start XML file, echo parent node
 echo "<markers>\n";
 // Iterate through the rows, printing XML nodes for each
 while ($row = @mysql_fetch_assoc($result)){
+    
   // ADD TO XML DOCUMENT NODE
   echo '<marker ';
   echo 'name="' . parseToXML($row['sl_store']) . '" ';
@@ -86,11 +114,24 @@ while ($row = @mysql_fetch_assoc($result)){
   	  echo 'tags="'  . parseToXML($row['sl_tags']) . '" ';
   }  	  
   echo "/>\n";
+  
+    // Reporting
+    // Insert the results into the reporting table
+    //
+    if (get_option(SLPLUS_PREFIX.'-reporting_enabled') === "on") {
+        $wpdb->query(
+            sprintf(
+                "INSERT INTO ${dbPrefix}slp_rep_query_results 
+                    (slp_repq_id,sl_id) values (%d,%d)",
+                    $slp_QueryID,
+                    $row['sl_id']  
+                )
+            );           
+    }  
 }
 
 // End XML file
 echo "</markers>\n";
 
-//print $query;
-//print "\nPosted Tag: *$posted_tag*\n";
+    
 

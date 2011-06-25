@@ -118,8 +118,6 @@ border: none;
 	background-color:transparent;
 	background-image:none;
 	max-width:none; 
-	visibility: visible !important;
-	display: block !important;
 }
 #sl_div table, #sl_div tr, #sl_div td {
 	border:none;
@@ -127,6 +125,10 @@ border: none;
 #sl_div #map { 
 	color:black; 
 	font-weight:normal;
+}
+
+#sl_div #map img {
+    visibility: visible;    
 }
 
 /***** Popup Info Window for Specific Location *****/

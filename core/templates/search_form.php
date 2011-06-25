@@ -45,7 +45,7 @@
             //------------------------------------------------
             // Show Tag Search Is Enabled
             //
-            if (get_option($prefix.'_show_tag_search') ==1) {                
+            if (get_option(SLPLUS_PREFIX.'_show_tag_search') ==1) {                
             ?>
             <div id='search_by_tag' class='search_item' <?php if (isset($fnvars['only_with_tag'])) { print "style='display:none;'"; }?>>   
                 <label for='tag_to_search_for'><?php 
@@ -101,19 +101,51 @@
             </div>	   
 	   <?php } ?>
 	   
+            <?php
+            //------------------------------------------------
+            // We are not hiding the address input
+            //
+            if (get_option(SLPLUS_PREFIX.'_hide_address_entry') == 0) {                
+            ?>    	   
             <div id='addy_in_address' class='search_item'>
                 <label for="addressInput"><?php echo $search_label?></label>
                 <input type='text' id='addressInput' size='50' />
            </div>
+           <?php
+            } else {           
+                print "<input type='hidden' id='addressInput' value='' />";
+            }
+            ?>
+
+            <?php
+            //------------------------------------------------
+            // We are not hiding the radius selection
+            //
+            if (get_option(SLPLUS_PREFIX.'_hide_radius_selections') == 0) {                
+            ?>           
+                <div id='addy_in_radius'>
+                    <label for='radiusSelect'><?php _e($sl_radius_label, $text_domain);?></label>
+                    <select id='radiusSelect'><?php echo $r_options;?></select>
+                </div>
+                
+            <?php
+            } else {
+                echo $r_options;
+            }
             
-	        <div id='addy_in_radius'>
-	            <label for='radiusSelect'><?php _e($sl_radius_label, $text_domain);?></label>
-	            <select id='radiusSelect'><?php echo $r_options?></select>
-            </div>
-            
+            //------------------------------------------------
+            // We are not hiding the submit button
+            //
+            if (get_option(SLPLUS_PREFIX.'_disable_search') == 0) {                
+            ?>               
             <div id='radius_in_submit'>
                 <input <?php echo $button_style?> value='Search Locations' id='addressSubmit'/>
             </div>
+            <?php
+            }
+            ?>
+            
+            
         </div>
 	  </td>
 	</tr></table>

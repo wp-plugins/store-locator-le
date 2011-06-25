@@ -1,5 +1,14 @@
 <?php
-define('WPCSL__slplus__VERSION', '1.4.6');
+/************************************************************************
+*
+* file: CSL-plugin.php
+*
+* The main Cyber Sprocket library for communicating effectively with 
+* WordPress.   This class manages the related helper classes so we can 
+* share a code libary and reduce code redundancy.
+* 
+************************************************************************/
+define('WPCSL__slplus__VERSION', '1.4.8');
 
 // (LC) 
 // These helper files should only be loaded if needed by the plugin
@@ -7,53 +16,58 @@ define('WPCSL__slplus__VERSION', '1.4.6');
 //
 // Wrap inside the init and check the class properties first?
 // 
-require_once('CSL-settings_class.php');
-
-require_once('CSL-notifications_class.php');
-require_once('CSL-license_class.php');
 require_once('CSL-cache_class.php');
 require_once('CSL-helper_class.php');
+require_once('CSL-license_class.php');
+require_once('CSL-notifications_class.php');
+require_once('CSL-products_class.php');
+require_once('CSL-settings_class.php');
 
-/**
- * This class does most of the heavy lifting for creating a plugin.
- * It takes a hash as its one constructor argument, which can have the
- * following keys and values:
- *
- *     * 'name' :: The name of the plugin.
- *
- *     * 'prefix' :: A string used to prefix all of the Wordpress
- *       settings for the plugin.
- *
- *     * 'url' :: The URL for the product page at Cyber Sprocket Labs.
- *
- *     * 'support_url' :; The URL for the support page at Cyber Sprocket Labs
- *
- *     * 'purchase_url' :: The URL for purchasing the plugin
- *
- *     * 'basefile' :: Path and filename of main plugin file. Needed so wordpress
- *       can tell which plugin is calling some of it's generic hooks.
- *
- *     * 'driver_defaults' :: A hash where the keys are the names of
- *       support options for a Panhandler driver, and the values are
- *       the names of Wordpress settings which will provide the
- *       default values for those driver options.  See the method
- *       'get_supported_options()' in the Panhandler code for a
- *       description of driver options.  The names of the settings
- *       should not include the prefix, i.e. write:
- *
- *           'driver_defaults' => array(
- *               'keywords' => 'keywords'
- *           )
- *
- *       instead of
- *
- *           'driver_defaults' => array(
- *               'keywords' => 'csl-mp-ebay-keywords'
- *           )
- *
- */
+
+/*****************************************************************************
+* Class: WPCSL_plugin
+*
+* This class does most of the heavy lifting for creating a plugin.
+* It takes a hash as its one constructor argument, which can have the
+* following keys and values:
+*
+*     * 'name' :: The name of the plugin.
+*
+*     * 'prefix' :: A string used to prefix all of the Wordpress
+*       settings for the plugin.
+*
+*     * 'url' :: The URL for the product page at Cyber Sprocket Labs.
+*
+*     * 'support_url' :; The URL for the support page at Cyber Sprocket Labs
+*
+*     * 'purchase_url' :: The URL for purchasing the plugin
+*
+*     * 'basefile' :: Path and filename of main plugin file. Needed so wordpress
+*       can tell which plugin is calling some of it's generic hooks.
+*
+*     * 'driver_defaults' :: A hash where the keys are the names of
+*       support options for a Panhandler driver, and the values are
+*       the names of Wordpress settings which will provide the
+*       default values for those driver options.  See the method
+*       'get_supported_options()' in the Panhandler code for a
+*       description of driver options.  The names of the settings
+*       should not include the prefix, i.e. write:
+*
+*           'driver_defaults' => array(
+*               'keywords' => 'keywords'
+*           )
+*
+*       instead of
+*
+*           'driver_defaults' => array(
+*               'keywords' => 'csl-mp-ebay-keywords'
+*           )
+*
+*/
 class wpCSL_plugin__slplus {
 
+    /**-------------------------------------
+     **/
     function __construct($params) {
 
         // These settings can be overridden
@@ -66,6 +80,9 @@ class wpCSL_plugin__slplus {
         foreach ($params as $name => $value) {
             $this->$name = $value;
         }
+        
+        // Debugging Flag
+        $this->debugging = (get_option($this->prefix.'-debugging') == 'on');
 
         // Store the license option here to prevent
         // multiple DB lookups
@@ -86,16 +103,22 @@ class wpCSL_plugin__slplus {
         }
         if ( class_exists( 'WP_Http' ) ) {
             $this->http_handler = new WP_Http;
+        } else if ($this->debugging) {
+            print "WordPress HTTP Handler is not available.<br/>\n";
         }
 
         // Debugging Flag
-        $this->debugging = get_option($this->prefix.'-debugging');
+        $this->debugging = (get_option($this->prefix.'-debugging') == 'on');
 
         $this->notifications_config = array(
             'prefix' => $this->prefix,
             'name' => $this->name,
             'url' => 'options-general.php?page='.$this->prefix.'-options',
         );
+        
+        $this->products_config = array(
+            'prefix'            => $this->prefix
+         );
 
         $this->settings_config = array(
             'prefix'            => $this->prefix,
@@ -119,7 +142,7 @@ class wpCSL_plugin__slplus {
         $this->initialize();
     }
 
-    /***********************************************
+    /**-------------------------------------
      ** method: ok_to_show
      **
      ** returns true if... 
@@ -135,37 +158,45 @@ class wpCSL_plugin__slplus {
         // this instantiation already knows we're licensed
         if ($this->purchased) { 
             return true; // Short circuit, no need to set this again below
-            
-        // Licensing is not enabled
-        //
-        } else if ($this->no_license) {
-            $ok = true;      
-            
+
         // purchase already recorded
         } else if (get_option($this->prefix.'-purchased') == 'true')  { 
             $ok = true; 
 
         // user is an admin
-        } else if (isset($current_user) && ($current_user->ID > 0) &&
-            isset($current_user->wp_capabilities) &&
-            $current_user->wp_capabilities['administrator']) {
+        } else if (current_user_can('administrator')) {
             $ok = true;
 
         // purchase not recorded - recheck it on the server
         } else if ($this->license->check_license_key())      { 
             $ok = true; 
         }
-
+        
+        if (!$ok && ($this->debugging)) {
+            print "Purchased flag: " . get_option($this->prefix.'-purchased') . "<br/>\n";
+            if (!isset($current_user)) {
+                print "Current user is not set.<br/>\n";
+            } else {
+                print "Current User ID: " . $current_user->ID . "<br/>\n";
+                if ($current_user->ID > 0) {
+                    print "Capabilities:<pre>\n";
+                    print_r($current_user->wp_capabilities);
+                    print "</pre>\n";
+                } else {
+                    print "You are not logged in.<br/>\n";
+                }                    
+            }
+        }
 
         $this->purchased = $ok;     // Set our memory of this
-        return $ok;                 // And tell our "callers"
+        return $ok;                 // And tell our "callers"    
     }
 
-    /***********************************************
-     * Method: CSL_ARRAY_FILL_KEYS
-     * Our own version of the php5.2 array_fill_keys
-     * So we can hopefully stay with php5.1 compatability
-     */
+    /**-------------------------------------
+     ** Method: CSL_ARRAY_FILL_KEYS
+     ** Our own version of the php5.2 array_fill_keys
+     ** So we can hopefully stay with php5.1 compatability
+     **/
     function csl_array_fill_keys($target,$value='') {
         if(is_array($target)) {
             foreach($target as $key => $val) {
@@ -176,7 +207,7 @@ class wpCSL_plugin__slplus {
     }
     
 
-    /***********************************************
+    /**-------------------------------------
      ** method: create_helper
      **
      ** Instantiates the helper class and attaches it to an instantiation
@@ -188,7 +219,7 @@ class wpCSL_plugin__slplus {
             case 'none':
                 break;
 
-            case 'wpCSL_settings__slplus':
+            case 'wpCSL_helper__slplus':
             case 'default':
             default:
                 $this->helper = new wpCSL_helper__slplus($this->helper_config);
@@ -196,7 +227,7 @@ class wpCSL_plugin__slplus {
         }
     }    
 
-    /***********************************************
+    /**-------------------------------------
      ** method: create_notifications
      **/
     function create_notifications($class = 'none') {
@@ -211,6 +242,25 @@ class wpCSL_plugin__slplus {
                     new wpCSL_notifications__slplus($this->notifications_config);
         }
     }
+    
+   
+    /**-------------------------------------
+     ** method: create_products
+     **/
+    function create_products($class = 'none') {
+        switch ($class) {
+            case 'none':
+                break;
+
+            case 'wpCSL_products__slplus':
+            case 'default':
+            default:
+                $this->products = new wpCSL_products__slplus($this->products_config);
+
+        }
+    }
+    
+
 
     /***********************************************
      ** method: create_settings
@@ -228,7 +278,8 @@ class wpCSL_plugin__slplus {
         }
     }
 
-    /***********************************************
+
+    /**-------------------------------------
      ** method: create_license
      **/
     function create_license($class = 'none') {
@@ -246,7 +297,7 @@ class wpCSL_plugin__slplus {
         }
     }
 
-    /***********************************************
+    /**-------------------------------------
      ** method: create_cache
      **/
     function create_cache($class = 'none') {
@@ -262,7 +313,7 @@ class wpCSL_plugin__slplus {
         }
     }
 
-    /***********************************************
+    /**-------------------------------------
      ** method: create_options_page
      **/
     function create_options_page() {
@@ -278,18 +329,24 @@ class wpCSL_plugin__slplus {
         );
     }
 
-    /***********************************************
+    /**-------------------------------------
      ** method: create_objects
      **/
     function create_objects() {
         if (isset($this->use_obj_defaults) && $this->use_obj_defaults) {
+            $this->create_helper('default');
             $this->create_notifications('default');
+            $this->create_products('default');
             $this->create_settings('default');
             $this->create_license('default');
             $this->create_cache('default');
         } else {
+            if (isset($this->helper_obj_name))
+                $this->create_helper($this->helper_obj_name);
             if (isset($this->notifications_obj_name))
                 $this->create_notifications($this->notifications_obj_name);
+            if (isset($this->products_obj_name))
+                $this->create_products($this->products_obj_name);
             if (isset($this->settings_obj_name))
                 $this->create_settings($this->settings_obj_name);
             if (isset($this->license_obj_name))
@@ -324,15 +381,26 @@ class wpCSL_plugin__slplus {
                 $this->cache->notifications = &$this->notifications;
         }
 
+        // Helper
+        if (isset($this->helper)) {
+            if (isset($this->helper) && !isset($this->helper->notifications))
+                $this->helper->notifications = &$this->notifications;
+        }
+        
         // License
         if (isset($this->license)) {
             if (isset($this->notifications) && !isset($this->license->notifications))
                 $this->license->notifications = &$this->notifications;
         }
 
+        // Products
+        if (isset($this->products)) {
+            if (isset($this->products) && !isset($this->products->notifications))
+                $this->products->notifications = &$this->notifications;
+        }
     }
 
-    /***********************************************
+    /**-------------------------------------
      ** method: initialize
      **/
     function initialize() {
@@ -343,7 +411,7 @@ class wpCSL_plugin__slplus {
         $this->add_wp_actions();
     }
 
-    /***********************************************
+    /**-------------------------------------
      ** method: add_wp_actions
      **
      ** What we do when WordPress is initializing actions
@@ -385,7 +453,7 @@ class wpCSL_plugin__slplus {
         }
     }
 
-    /***********************************************
+    /**-------------------------------------
      ** method: add_meta_links
      **/
     function add_meta_links($links, $file) {
@@ -405,7 +473,7 @@ class wpCSL_plugin__slplus {
         return $links;
     }
 
-    /***********************************************
+    /**-------------------------------------
      ** method: admin_init
      **
      ** What we do whenever an admin page is initialized.
@@ -418,7 +486,7 @@ class wpCSL_plugin__slplus {
         $this->checks();
     }
 
-    /***********************************************
+    /**-------------------------------------
      ** method: checks
      **/
     function checks() {
@@ -432,7 +500,7 @@ class wpCSL_plugin__slplus {
     }
 
 
-    /***********************************************
+    /**-------------------------------------
      ** method: load_driver
      **
      **
@@ -510,8 +578,8 @@ class wpCSL_plugin__slplus {
         }
     }
 
-    /**
-     * Function: add_display_settings
+    /**-------------------------------------
+     * method: add_display_settings
      *
      *
      **/
@@ -552,57 +620,8 @@ class wpCSL_plugin__slplus {
         }
     }
 
-    /**
-     * method: display_products
-     *
-     * Legacy Panhandler stuff that will eventually come out.
-     * This method generates the HTML that will be used to display
-     * the product list in WordPress when it renders the page.
-     *
-     **/
-    function display_products($products) {
-        $product_output[] = '';
-        foreach ($products as $product) {
-            $product_output[] = "<div class=\"{$this->prefix}-product\">";
-            $product_output[] = "<h3>{$product->name}</h3>";
-            // --- DISABLED ---
-            // This check takes entirely too long and I have yet to find
-            // any method that works properly *and* quickly.
-            //
-            // Clicking on the zoom link for a url of an image that's not
-            // there causes thickbox to hang indefinitely, therefore we only
-            // show the link (and the image) if the file exists.
-            //        if (wpCJ_url_exists($product->image_urls[0])) {
-            $product_output[] = "<div class=\"{$this->prefix}-left\">";
-            $product_output[] = "<a href=\"{$product->web_urls[0]}\" target=\"newinfo\">";
-            $product_output[] = "<img src=\"{$product->image_urls[0]}\" alt=\"{$product->name}\" title=\"{$product->name}\" />";
-            $product_output[] = '</a><br/>';
-            $product_output[] = '<a class="thickbox" href="'.$product->image_urls[0].'">+zoom</a>';
-            $product_output[] = '</div>';
-            //        }
-            $product_output[] = '<div class="'.$this->prefix . '-right">';
-            $product_output[] = '<p class="' . $this->prefix . '-desc" >'.$product->description.'</p>';
-            $product_output[] = '<p class="' . $this->prefix . '-price">'.$product->currency;
-            $product_output[] = "$<a href=\"{$product->web_urls[0]}\" target=\"newinfo\">";
-            if (function_exists('money_format') && 
-                    get_option($this->prefix.'-money_format') && 
-                    (get_option($this->prefix.'-money_format') != '')) {
-                $product_output[] = money_format(get_option($this->prefix.'-money_format'), 
-                    (float)$product->price);
-            } else {
-                $product_output[] = number_format((float)$product->price, 2);
-            }
-            $product_output[] = '</a>';
-            $product_output[] = '</p>';
-            $product_output[] = '</div>';
-            $product_output[] = '<div class="'.$this->prefix.'-cleanup"></div>';            
-            $product_output[] = '</div>';            
-        }
 
-        return implode("\n", $product_output);
-    }
-
-    /**
+    /**-------------------------------------
      * method: display_objects
      *
      * This method generates the HTML that will be used to display
@@ -626,7 +645,8 @@ class wpCSL_plugin__slplus {
     }
 
 
-    /* Method: SHORTCODE_SHOW_ITEMS
+    /**-------------------------------------
+     * Method: SHORTCODE_SHOW_ITEMS
      *
      * Shows the products in a formatted output on the page wherever the shortcode appears.
      * This is the default output, custom shortcodes and functions can be put in the main
@@ -636,6 +656,15 @@ class wpCSL_plugin__slplus {
     function shortcode_show_items($atts, $content = NULL) {
         if (   $this->ok_to_show() ) {
 
+            // Debugging
+            //
+            if ($this->debugging && is_array($atts)) {
+                print "Shortcode called with attributes:<br/>\n";
+                foreach ($atts as $name=>$value) {
+                    print $name.':'.$value."<br/>\n";
+                }
+            }            
+            
             // Filter out erroneous attributes
             if (is_array($atts)) {
                 $atts = array_intersect_key( $atts, 
@@ -663,6 +692,8 @@ class wpCSL_plugin__slplus {
                 $this->driver->set_default_option_values($defaults);
             }
 
+
+            
             // Fetch the products
             // Check the cache first, then go direct to the source
             //
@@ -700,7 +731,7 @@ class wpCSL_plugin__slplus {
                 // Legacy Panhandler Stuff
                 //
                 if (is_a($products[0], 'PanhandlerProduct')) {
-                    $content = $this->display_products($products);
+                    $content = $this->products->display_products($products);
 
                     // Object Display, yes Panhandler appendages
                     // still abound leaving us with a $products var name
@@ -718,7 +749,7 @@ class wpCSL_plugin__slplus {
         }
     }
 
-    /***********************************************
+    /**-------------------------------------
      ** method: user_header_js
      **/
     function user_header_js() {
@@ -726,7 +757,7 @@ class wpCSL_plugin__slplus {
         wp_enqueue_script('thickbox');
     }
 
-    /***********************************************
+    /**-------------------------------------
      ** method: user_header_css
      **/
     function user_header_css() {
@@ -740,7 +771,7 @@ class wpCSL_plugin__slplus {
         wp_enqueue_style('thickbox');
     }
 
-    /***********************************************
+    /**-------------------------------------
      ** method: apply_driver_defaults
      **
      ** Populate an array with values from wordpress if they exist, will
@@ -763,4 +794,3 @@ class wpCSL_plugin__slplus {
     }
 }
 
-?>
