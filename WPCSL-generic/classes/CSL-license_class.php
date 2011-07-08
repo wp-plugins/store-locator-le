@@ -15,7 +15,7 @@ class wpCSL_license__slplus {
      ** transaction ID).
      **/
     function check_license_key() {
-
+        
         // HTTP Handler is not set fail the license check
         //
         if (!isset($this->http_handler)) { return false; }
@@ -24,7 +24,8 @@ class wpCSL_license__slplus {
         //  
         $query_string = http_build_query(
             array(
-                'id' => get_option($this->prefix . '-license_key')
+                'id' => get_option($this->prefix . '-license_key'),
+                'siteurl' => get_option('siteurl')
             )
         );
 
@@ -37,7 +38,8 @@ class wpCSL_license__slplus {
 
         // Check each server until all fail or ONE passes
         //  
-        foreach ($csl_urls as $csl_url) {
+        foreach ($csl_urls as $csl_url) {            
+            $response = false;
             $result = $this->http_handler->request( 
                             $csl_url . $query_string, 
                             array('timeout' => 60) 
@@ -49,29 +51,21 @@ class wpCSL_license__slplus {
             // If we get a true response record it in the DB and exit
             //
             if ($response) { 
-                update_option($this->prefix.'-purchased','true');
+                update_option($this->prefix.'-purchased',true);
                 return true; 
             }
         }
-        update_option($this->prefix.'-purchased','false');
+        update_option($this->prefix.'-purchased',false);
         return false;
     }
 
     function check_product_key() {
-        // Attempt to find old versions of the license
-        if (!get_option($this->prefix.'-purchased') && (get_option('purchased') != '') ) {
-            update_option($this->prefix.'-purchased', get_option('purchased'));
-        }
-        if (!get_option($this->prefix.'-license_key') && (get_option('license_key') != '') ) {
-            update_option($this->prefix.'-license_key', get_option('license_key'));
-        }
-
-        if (!get_option($this->prefix.'-purchased')) {
+        if (get_option($this->prefix.'-purchased') != '1') {
             if (get_option($this->prefix.'-license_key') != '') {
                 update_option($this->prefix.'-purchased', $this->check_license_key());
             }
 
-            if (!get_option($this->prefix.'-purchased')) {
+            if (get_option($this->prefix.'-purchased') != '1') {
                 if (isset($this->notifications)) {
                     $this->notifications->add_notice(
                         2,

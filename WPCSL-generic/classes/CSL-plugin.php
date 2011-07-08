@@ -31,19 +31,11 @@ require_once('CSL-settings_class.php');
 * It takes a hash as its one constructor argument, which can have the
 * following keys and values:
 *
-*     * 'name' :: The name of the plugin.
-*
-*     * 'prefix' :: A string used to prefix all of the Wordpress
-*       settings for the plugin.
-*
-*     * 'url' :: The URL for the product page at Cyber Sprocket Labs.
-*
-*     * 'support_url' :; The URL for the support page at Cyber Sprocket Labs
-*
-*     * 'purchase_url' :: The URL for purchasing the plugin
-*
 *     * 'basefile' :: Path and filename of main plugin file. Needed so wordpress
-*       can tell which plugin is calling some of it's generic hooks.
+*               can tell which plugin is calling some of it's generic hooks.
+*
+*     * 'css_prefix' :: The prefix to add to CSS classes, use 'csl_theme' to
+*               enable generic themes.
 *
 *     * 'driver_defaults' :: A hash where the keys are the names of
 *       support options for a Panhandler driver, and the values are
@@ -63,6 +55,17 @@ require_once('CSL-settings_class.php');
 *               'keywords' => 'csl-mp-ebay-keywords'
 *           )
 *
+*     * 'name' :: The name of the plugin.
+*
+*     * 'prefix' :: A string used to prefix all of the Wordpress
+*       settings for the plugin.
+*
+*     * 'support_url' :; The URL for the support page at Cyber Sprocket Labs
+*
+*     * 'purchase_url' :: The URL for purchasing the plugin
+*
+*     * 'url' :: The URL for the product page at Cyber Sprocket Labs.
+*
 */
 class wpCSL_plugin__slplus {
 
@@ -74,6 +77,7 @@ class wpCSL_plugin__slplus {
         //
         $this->no_license  = false;
         $this->driver_type = 'Panhandler';
+        $this->css_prefix  = '';
 
         // Do the setting override or initial settings.
         //
@@ -83,6 +87,11 @@ class wpCSL_plugin__slplus {
         
         // Debugging Flag
         $this->debugging = (get_option($this->prefix.'-debugging') == 'on');
+        
+        // What prefix do we add to the CSS elements?
+        if ($this->css_prefix == '') {
+            $this->css_prefix = $this->prefix;
+        }
 
         // Store the license option here to prevent
         // multiple DB lookups
@@ -117,7 +126,8 @@ class wpCSL_plugin__slplus {
         );
         
         $this->products_config = array(
-            'prefix'            => $this->prefix
+            'prefix'            => $this->prefix,
+            'css_prefix'        => $this->css_prefix,
          );
 
         $this->settings_config = array(
@@ -153,26 +163,30 @@ class wpCSL_plugin__slplus {
      **/
     function ok_to_show() {
         global $current_user;
-        $ok = false;
 
         // this instantiation already knows we're licensed
         if ($this->purchased) { 
             return true; // Short circuit, no need to set this again below
 
         // purchase already recorded
-        } else if (get_option($this->prefix.'-purchased') == 'true')  { 
-            $ok = true; 
+        } else if (get_option($this->prefix.'-purchased') == '1')  { 
+            $this->purchased = true;
+            return true;
 
         // user is an admin
         } else if (current_user_can('administrator')) {
-            $ok = true;
+            $this->purchased = true;
+            return true;
 
         // purchase not recorded - recheck it on the server
         } else if ($this->license->check_license_key())      { 
-            $ok = true; 
+            $this->purchased = true;
+            return true;
         }
-        
-        if (!$ok && ($this->debugging)) {
+
+        // We are not running a licensed copy
+        // show the reason via debugging        
+        if ($this->debugging) {
             print "Purchased flag: " . get_option($this->prefix.'-purchased') . "<br/>\n";
             if (!isset($current_user)) {
                 print "Current user is not set.<br/>\n";
@@ -188,8 +202,7 @@ class wpCSL_plugin__slplus {
             }
         }
 
-        $this->purchased = $ok;     // Set our memory of this
-        return $ok;                 // And tell our "callers"    
+        return false;                 // And tell our "callers"    
     }
 
     /**-------------------------------------

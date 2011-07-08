@@ -11,7 +11,7 @@ class wpCSL_settings__slplus {
 
     /**------------------------------------
      ** method: __construct
-     **
+     **l
      ** Overload of the default class instantiation.
      **
      **/
@@ -59,15 +59,18 @@ class wpCSL_settings__slplus {
                                <div style="width:150px; float:left; text-align: right;
                                    padding-right: 6px;">Active WPCSL:</div>
                                <div style="float: left;">' . plugin_dir_path(__FILE__) . '</div>
-                             </div>
-                             
+                             </div>                                
                              <div style="clear:left;">
                                <div style="width:150px; float:left; text-align: right;
-                                   padding-right: 6px;">License Key:</div>
-                               <div style="float: left;">' .get_option($this->prefix.'-license_key'). '</div>
+                                   padding-right: 6px;">Site URL:</div>
+                               <div style="float: left;">' . get_option('siteurl') . '</div>
                              </div>
-    
-                  <div style="clear:left;">
+                             <div style="clear:left;">
+                               <div style="width:150px; float:left; text-align: right;
+                                   padding-right: 6px;">Encryption Key:</div>
+                               <div style="float: left;">' . md5(get_option($this->prefix.'-license_key')) . '</div>
+                             </div>
+                             <div style="clear:left;">
                                <div style="width:150px; float:left; text-align: right;
                                    padding-right: 6px;">License Key:</div>
                                <div style="float: left;">' . (get_option($this->prefix.'-purchased')?'licensed':'unlicensed') . '</div>
@@ -269,7 +272,7 @@ class wpCSL_settings__slplus {
      ** should probably be moved over to the licensing submodule
      **/
     function show_plugin_settings() {
-       $license_ok =(  get_option($this->prefix.'-purchased')           &&
+       $license_ok =(  (get_option($this->prefix.'-purchased') == '1')   &&
             	      (get_option($this->prefix.'-license_key') != '')            	    	    
             	      );     
     	    
