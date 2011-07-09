@@ -8,7 +8,7 @@
 * share a code libary and reduce code redundancy.
 * 
 ************************************************************************/
-define('WPCSL__slplus__VERSION', '1.4.8');
+define('WPCSL__slplus__VERSION', '1.4.81');
 
 // (LC) 
 // These helper files should only be loaded if needed by the plugin
@@ -139,10 +139,12 @@ class wpCSL_plugin__slplus {
             'no_license'        => $this->no_license
         );
 
-        $this->license_config = array(
-            'prefix'        => $this->prefix,
-            'http_handler'  => $this->http_handler
-        );
+        if (!$this->no_license) {        
+            $this->license_config = array(
+                'prefix'        => $this->prefix,
+                'http_handler'  => $this->http_handler
+            );
+        }
 
         $this->cache_config = array(
             'prefix' => $this->prefix,
@@ -165,7 +167,7 @@ class wpCSL_plugin__slplus {
         global $current_user;
 
         // this instantiation already knows we're licensed
-        if ($this->purchased) { 
+        if ($this->purchased || $this->no_license) { 
             return true; // Short circuit, no need to set this again below
 
         // purchase already recorded
@@ -351,7 +353,7 @@ class wpCSL_plugin__slplus {
             $this->create_notifications('default');
             $this->create_products('default');
             $this->create_settings('default');
-            $this->create_license('default');
+            if (!$this->no_license) { $this->create_license('default'); }
             $this->create_cache('default');
         } else {
             if (isset($this->helper_obj_name))
@@ -362,7 +364,7 @@ class wpCSL_plugin__slplus {
                 $this->create_products($this->products_obj_name);
             if (isset($this->settings_obj_name))
                 $this->create_settings($this->settings_obj_name);
-            if (isset($this->license_obj_name))
+            if (!$this->no_license && isset($this->license_obj_name))
                 $this->create_license($this->license_obj_name);
             if (isset($this->cache_obj_name))
                 $this->create_cache($this->cache_obj_name);
@@ -380,7 +382,7 @@ class wpCSL_plugin__slplus {
         if (isset($this->settings)) {
             if (isset($this->notifications) && !isset($this->settings->notifications))
                 $this->settings->notifications = &$this->notifications;
-            if (isset($this->license) && !isset($this->settings->license))
+            if (!$this->no_license && isset($this->license) && !isset($this->settings->license))
                 $this->settings->license = &$this->license;
             if (isset($this->cache) && !isset($this->settings->cache))
                 $this->settings->cache = &$this->cache;
@@ -401,11 +403,13 @@ class wpCSL_plugin__slplus {
         }
         
         // License
-        if (isset($this->license)) {
-            if (isset($this->notifications) && !isset($this->license->notifications))
-                $this->license->notifications = &$this->notifications;
+        if (!$this->no_license) {        
+            if (isset($this->license)) {
+                if (isset($this->notifications) && !isset($this->license->notifications))
+                    $this->license->notifications = &$this->notifications;
+            }
         }
-
+            
         // Products
         if (isset($this->products)) {
             if (isset($this->products) && !isset($this->products->notifications))
@@ -507,7 +511,7 @@ class wpCSL_plugin__slplus {
             $this->cache->check_cache();
         }
 
-        if (isset($this->license)) {
+        if (!$this->no_license && isset($this->license)) {
             $this->license->check_product_key();
         }
     }

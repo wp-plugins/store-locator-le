@@ -15,6 +15,18 @@
     line-height: 1.5em;
 }
 
+#rb_details.reportblock .form_entry {
+    width: 120px;
+    text-align: center;
+}
+
+#rb_details.reportblock label {
+    width: 90px;
+    text-align: right;
+}
+
+
+
 #rb_details .rb_column, .section_column {
     float: left;
     border: solid 1px #F0F0FF;

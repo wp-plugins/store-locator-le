@@ -15,7 +15,15 @@ function csl_slplus_setup_admin_interface() {
     
     // Don't have what we need? Leave.
     if (!isset($slplus_plugin)) { return; }
-    
+
+    // Show message if not licensed
+    //
+    if (get_option(SLPLUS_PREFIX.'-purchased') == 'false') {
+        $slplus_plugin->notifications->add_notice(
+            2,
+            "Your license " . get_option(SLPLUS_PREFIX . '-license_key') . " could not be validated."
+        );            
+    }    
     
     // No SimpleXML Support
     if (!function_exists('parsetoxml')) {
