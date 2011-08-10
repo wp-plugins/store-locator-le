@@ -8,7 +8,7 @@
 * share a code libary and reduce code redundancy.
 * 
 ************************************************************************/
-define('WPCSL__slplus__VERSION', '1.4.81');
+define('WPCSL__slplus__VERSION', '1.4.12');
 
 // (LC) 
 // These helper files should only be loaded if needed by the plugin
@@ -22,6 +22,7 @@ require_once('CSL-license_class.php');
 require_once('CSL-notifications_class.php');
 require_once('CSL-products_class.php');
 require_once('CSL-settings_class.php');
+require_once('CSL-themes_class.php');
 
 
 /*****************************************************************************
@@ -75,9 +76,12 @@ class wpCSL_plugin__slplus {
 
         // These settings can be overridden
         //
-        $this->no_license  = false;
-        $this->driver_type = 'Panhandler';
-        $this->css_prefix  = '';
+        $this->no_license       = false;
+        $this->themes_enabled   = false;
+        $this->columns          = 1;
+        $this->driver_type      = 'Panhandler';
+        $this->css_prefix       = '';
+        $this->uses_money       = true;
 
         // Do the setting override or initial settings.
         //
@@ -128,10 +132,12 @@ class wpCSL_plugin__slplus {
         $this->products_config = array(
             'prefix'            => $this->prefix,
             'css_prefix'        => $this->css_prefix,
+            'columns'           => $this->columns,
          );
 
         $this->settings_config = array(
             'prefix'            => $this->prefix,
+            'css_prefix'        => $this->css_prefix,
             'plugin_url'        => $this->plugin_url,
             'name'              => $this->name,
             'url'               => $this->url,
@@ -139,16 +145,22 @@ class wpCSL_plugin__slplus {
             'no_license'        => $this->no_license
         );
 
-        if (!$this->no_license) {        
+        $this->cache_config = array(
+            'prefix' => $this->prefix,
+            'path' => $this->cache_path
+        );
+        
+        if (!$this->no_license) {
             $this->license_config = array(
                 'prefix'        => $this->prefix,
                 'http_handler'  => $this->http_handler
             );
-        }
+        }            
 
-        $this->cache_config = array(
-            'prefix' => $this->prefix,
-            'path' => $this->cache_path
+        $this->themes_config = array(
+            'prefix'        => $this->prefix,
+            'plugin_path'   => $this->plugin_path,
+            'plugin_url'        => $this->plugin_url,                
         );
 
         $this->initialize();
@@ -167,7 +179,7 @@ class wpCSL_plugin__slplus {
         global $current_user;
 
         // this instantiation already knows we're licensed
-        if ($this->purchased || $this->no_license) { 
+        if ($this->purchased) { 
             return true; // Short circuit, no need to set this again below
 
         // purchase already recorded
@@ -181,7 +193,7 @@ class wpCSL_plugin__slplus {
             return true;
 
         // purchase not recorded - recheck it on the server
-        } else if ($this->license->check_license_key())      { 
+        } else if ($this->no_license || $this->license->check_license_key())      { 
             $this->purchased = true;
             return true;
         }
@@ -293,6 +305,23 @@ class wpCSL_plugin__slplus {
         }
     }
 
+   
+    /**-------------------------------------
+     ** method: create_themes
+     **/
+    function create_themes($class = 'none') {
+        switch ($class) {
+            case 'none':
+                break;
+
+            case 'wpCSL_products__slplus':
+            case 'default':
+            default:
+                $this->themes = new wpCSL_themes__slplus($this->themes_config);
+
+        }
+    }    
+    
 
     /**-------------------------------------
      ** method: create_license
@@ -355,6 +384,7 @@ class wpCSL_plugin__slplus {
             $this->create_settings('default');
             if (!$this->no_license) { $this->create_license('default'); }
             $this->create_cache('default');
+            $this->create_themes('default'); 
         } else {
             if (isset($this->helper_obj_name))
                 $this->create_helper($this->helper_obj_name);
@@ -368,12 +398,27 @@ class wpCSL_plugin__slplus {
                 $this->create_license($this->license_obj_name);
             if (isset($this->cache_obj_name))
                 $this->create_cache($this->cache_obj_name);
+            if (isset($this->themes_obj_name))
+                $this->create_themes($this->themes_obj_name);
         }
     }
 
     /***********************************************
      ** method: add_refs
      ** What did you say? Refactoring what now? I don't know what that is
+     **
+     ** This connects the instantiated objects of other classes that are
+     ** properties of the main CSL-plugin class to each other.  For example
+     ** it ensures each of the other classes can access the notification
+     ** object for the main plugin.
+     **
+     ** settings    <= notifications, license, cache, themes
+     ** themes      <= settings, notifications, products
+     ** cache       <= settings, notifications
+     ** helper      <= notifications
+     ** license     <= notifications
+     ** products    <= notifications
+     **
      **/
     function add_refs() {
         // Notifications doesn't require any other objects yet
@@ -382,10 +427,12 @@ class wpCSL_plugin__slplus {
         if (isset($this->settings)) {
             if (isset($this->notifications) && !isset($this->settings->notifications))
                 $this->settings->notifications = &$this->notifications;
-            if (!$this->no_license && isset($this->license) && !isset($this->settings->license))
+            if (isset($this->license) && !isset($this->settings->license))
                 $this->settings->license = &$this->license;
             if (isset($this->cache) && !isset($this->settings->cache))
                 $this->settings->cache = &$this->cache;
+            if (isset($this->themes) && !isset($this->settings->themes))
+                $this->settings->themes = &$this->themes;
         }
 
         // Cache
@@ -403,17 +450,27 @@ class wpCSL_plugin__slplus {
         }
         
         // License
-        if (!$this->no_license) {        
+        if (!$this->no_license) { 
             if (isset($this->license)) {
                 if (isset($this->notifications) && !isset($this->license->notifications))
                     $this->license->notifications = &$this->notifications;
             }
         }
-            
+
         // Products
         if (isset($this->products)) {
             if (isset($this->products) && !isset($this->products->notifications))
                 $this->products->notifications = &$this->notifications;
+        }
+        
+        // Themes
+        if (isset($this->themes)) {
+            if (isset($this->themes) && !isset($this->themes->notifications))
+                $this->themes->notifications = &$this->notifications;
+            if (isset($this->settings) && !isset($this->themes->settings))            
+                $this->themes->settings = &$this->settings;
+            if (isset($this->products) && !isset($this->themes->products))            
+                $this->themes->products = &$this->products;
         }
     }
 
@@ -456,10 +513,20 @@ class wpCSL_plugin__slplus {
             if (isset($this->shortcodes)) {
                 if (is_array($this->shortcodes)) {
                     foreach ($this->shortcodes as $shortcode) {
+                        $shortcode_lc = strtolower($shortcode);
+                        $shortcode_uc = strtoupper($shortcode);
                         add_shortcode($shortcode, array($this, 'shortcode_show_items'));
+                        add_shortcode($shortcode_lc, array($this, 'shortcode_show_items'));
+                        add_shortcode($shortcode_uc, array($this, 'shortcode_show_items'));
                     }
-                } else add_shortcode($this->shortcodes, array($this, 'shortcode_show_items'));
-            }
+                } else {
+                        $shortcode_lc = strtolower($shortcode);
+                        $shortcode_uc = strtoupper($shortcode);
+                        add_shortcode($shortcode, array($this, 'shortcode_show_items'));
+                        add_shortcode($shortcode_lc, array($this, 'shortcode_show_items'));
+                        add_shortcode($shortcode_uc, array($this, 'shortcode_show_items'));
+                }
+            } 
 
             // Automatic shortcodes
             // This should cover any basic typos involving dashes or underscores
@@ -467,6 +534,13 @@ class wpCSL_plugin__slplus {
             add_shortcode($this->prefix.'_show_items', array($this, 'shortcode_show_items'));
             add_shortcode($this->prefix.'-show-items', array($this, 'shortcode_show_items'));
             add_shortcode($this->prefix.'-show_items', array($this, 'shortcode_show_items'));
+            
+        // No Driver
+        //
+        } else {
+            if ($this->debugging) {
+                print __('DEBUG: No driver found.', $this->prefix);
+            }
         }
     }
 
@@ -476,16 +550,16 @@ class wpCSL_plugin__slplus {
     function add_meta_links($links, $file) {
 
         if ($file == $this->basefile) {
-            $links[] = '<a href="options-general.php?page='.$this->prefix.'-options" title="'.
-                            __('Settings') . '">'.__('Settings') . '</a>';
             if (isset($this->support_url)) {
                 $links[] = '<a href="'.$this->support_url.'" title="'.__('Support') . '">'.
                             __('Support') . '</a>';
             }
             if (isset($this->purchase_url)) {
                 $links[] = '<a href="'.$this->purchase_url.'" title="'.__('Purchase') . '">'.
-                            __('Purchase') . '</a>';
+                            __('Buy Now') . '</a>';
             }
+            $links[] = '<a href="options-general.php?page='.$this->prefix.'-options" title="'.
+                            __('Settings') . '">'.__('Settings') . '</a>';
         }
         return $links;
     }
@@ -511,7 +585,7 @@ class wpCSL_plugin__slplus {
             $this->cache->check_cache();
         }
 
-        if (!$this->no_license && isset($this->license)) {
+        if (isset($this->license)) {
             $this->license->check_product_key();
         }
     }
@@ -598,42 +672,79 @@ class wpCSL_plugin__slplus {
     /**-------------------------------------
      * method: add_display_settings
      *
+     * Add the display settings section to the admin panel.
      *
      **/
-    function add_display_settings() {
+    function add_display_settings() {         
+        $this->settings->add_section(array(
+                'name' => __('Display Settings',$this->prefix),
+                'description' => ''
+            )
+        );
+        
+        if ($this->themes_enabled) {
+            $this->themes->add_admin_settings();
+        }
+        
+        
         if (get_option($this->prefix.'-locale')) {
             setlocale(LC_MONETARY, get_option($this->prefix.'-locale'));
         }
 
-        $this->settings->add_section(array(
-                'name' => 'Display Settings',
-                'description' => ''
-            )
-        );
-        if (exec('locale -a', $locales)) {
-            $locale_custom = '';
-
-            foreach ($locales as $locale) {
-                $locale_custom .= "<option".((get_option($this->prefix.'-locale') == $locale) ? ' selected' : '').">$locale</option>\n";
+        // If we have an exec function and get locales, show the pulldown.
+        //        
+        if (function_exists('exec')) {
+            if (exec('locale -a', $locales)) {
+                $locale_custom = array();
+    
+                foreach ($locales as $locale) {
+                    $locale_custom[$locale] = $locale;
+                }
+    
+                $this->settings->add_item(
+                    'Display Settings', 
+                    'Locale', 
+                    'locale', 
+                    'list', 
+                    false, 
+                    __('Sets the locale for PHP program processing, affects time and currency processing. '.
+                        'If you change this, save settings and then select money format.',$this->prefix),
+                    $locale_custom
+                );
             }
-
-            $this->settings->add_item('Display Settings', 'Locale', 'locale', 'custom', false, null,
-                "<select name=\"{$this->prefix}-locale\">
-                                 $locale_custom
-                                 </select>"
-            );
+        } else {
+                $this->settings->add_item(
+                    'Display Settings', 
+                    'Locale', 
+                    'locale', 
+                    null, 
+                    false, 
+                    __('Your PHP settings have disabled exec(), your locale list cannot be determined.',$this->prefix),
+                    '&nbsp;'
+                );
         }
 
-        if (function_exists('money_format')) {
-            $this->settings->add_item('Display Settings', 'Money Format', 'money_format', 'custom', false, null,
-                "<select name=\"{$this->prefix}-money_format\">
-<option value=\"%!i\"".((get_option($this->prefix.'-money_format') == '%!i') ? ' selected' : '').">". money_format('%!i', 1234.56) ."</option>
-<option value=\"%!^i\"".((get_option($this->prefix.'-money_format') == '%!^i') ? ' selected' : '').">". money_format('%!^i', 1234.56) ."</option>
-<option value=\"%!=*(#10.2n\"".((get_option($this->prefix.'-money_format') == '%!=*(#10.2n') ? ' selected' : '').">". money_format('%!=*(#10.2n', 1234.56) ."</option>
-<option value=\"%!=*^-14#8.2i\"".((get_option($this->prefix.'-money_format') == '%!=*^-14#8.2i') ? ' selected' : '').">". money_format('%!=*^-14#8.2i', 1234.56) ."</option>
-</select>
-<div>This is based on your current locale, which is set to <code>". setlocale(LC_MONETARY, 0) ."</code></div>"
-            );
+        // Show money pulldown if we are using Panhandler or have set the uses_money flag
+        //
+        if  (
+            (($this->driver_type == 'Panhandler') || $this->uses_money) && 
+            (function_exists('money_format')) 
+            ) {
+                $this->settings->add_item(
+                    'Display Settings', 
+                    'Money Format', 
+                    'money_format', 
+                    'list', 
+                    false, 
+                    __('This is based on your current locale, which is set to ',$this->prefix).
+                        '<code>'. setlocale(LC_MONETARY, 0) .'</code>',
+                    array(
+                        money_format('%!i', 1234.56)            => '%!i',
+                        money_format('%!^i', 1234.56)           => '%!^i',
+                        money_format('%!=*(#10.2n', 1234.56)    => '%!=*(#10.2n',
+                        money_format('%!=*^-14#8.2i', 1234.56)  => '%!=*^-14#8.2i'
+                        )
+                    );
         }
     }
 
@@ -671,14 +782,18 @@ class wpCSL_plugin__slplus {
      *
      */
     function shortcode_show_items($atts, $content = NULL) {
-        if (   $this->ok_to_show() ) {
+        if ( $this->ok_to_show() ) {
 
             // Debugging
             //
-            if ($this->debugging && is_array($atts)) {
-                print "Shortcode called with attributes:<br/>\n";
-                foreach ($atts as $name=>$value) {
-                    print $name.':'.$value."<br/>\n";
+            if ($this->debugging) {
+                if (is_array($atts)) {
+                    print __('DEBUG: Shortcode called with attributes:',$this->prefix) . "<br/>\n";
+                    foreach ($atts as $name=>$value) {
+                        print $name.':'.$value."<br/>\n";
+                    }
+                } else {
+                    print __('DEBUG: Shortcode called with no attributes.',$this->prefix) . "<br/>\n";
                 }
             }            
             
@@ -759,10 +874,16 @@ class wpCSL_plugin__slplus {
                 }
 
             } else {
-                $content="No products found";
+                $content= __('No products found', $this->prefix);
             }
 
             return $content;
+            
+        // Not OK TO Show
+        } else {
+            if ($this->debugging) {
+                $content = __('DEBUG: Not OK To Show',$this->prefix);
+            }
         }
     }
 

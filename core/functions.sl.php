@@ -322,8 +322,10 @@ function activate_slplus() {
     global $slplus_plugin;
     
     // Check Registration
-    //    
-    $slplus_plugin->license->check_license_key();
+    //
+    if (isset($slplus_plugin->license)) {    
+        $slplus_plugin->license->check_license_key();
+    }
     
     // Data Updates
     //

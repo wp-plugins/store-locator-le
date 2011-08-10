@@ -11,7 +11,7 @@ class wpCSL_settings__slplus {
 
     /**------------------------------------
      ** method: __construct
-     **l
+     **
      ** Overload of the default class instantiation.
      **
      **/
@@ -21,7 +21,7 @@ class wpCSL_settings__slplus {
         $this->render_csl_blocks = true;        // Display the CSL info blocks
         $this->form_action = 'options.php';     // The form action for this page
         $this->save_text =__('Save Changes');
-        
+        $this->css_prefix = '';
         
         // Passed Params
         //        
@@ -123,25 +123,29 @@ class wpCSL_settings__slplus {
             $this->add_section(array(
                     'name' => 'Plugin Info',
                     'description' =>
-                        '<img src="'. $this->plugin_url .'/images/CSL_Logo_Only.jpg"
-                             style="float:left; padding: 0px 18px 0px 6px;"/>
+                        '<div class="'.$this->css_prefix.'-cslbox">
+                        <div class="'.$this->css_prefix.'-csllogo">
+                        <a href="http://www.cybersprocket.com/" target="cslinfo"><img src="'. $this->plugin_url .'/images/CSL_Logo_Only.jpg"/></a>
+                         </div>
+                         <div class="'.$this->css_prefix.'-clsinfo">
                          <h4>This plugin has been brought to you by <a href="http://www.cybersprocket.com"
                                 target="_new">Cyber Sprocket Labs</a></h4>
                          <p>Cyber Sprocket Labs is a custom software development company.  
-                            We develop desktop, mobile, and web applications 
-                            for all kinds of clients around the world.  Our small group of 
-                            Charleston South Carolina coders have touched all corners of the globe 
-                            with their work.<br/>
+                            We develop desktop, mobile, and web applications for clients large and small  
+                            from all around the world. We hope our plugin brings you closer to the perfect site.
+                            If there is anything we can do to improve our work or if you wish to hire us to customize
+                            this plugin please call our Charleston South Carolina headquarters or 
+                            <a href="http://www.cybersprocket.com/contact-us/" target="cyber-sprocket-labs">email us</a>
+                            and let us know.<br/>
+                            <br>
+                            <strong>Cyber Sprocket Is...</strong><br/>
+                            Lance Cleveland, Paul Grimes, Chris Rasys, Lobby Jones, Eric Stempert, Seth Hayward<br/>
                             <br/>
                             <strong>For more information:</strong><br/>
-                            <a href="http://www.cybersprocket.com target="_new">Please visit our website at www.cybersprocket.com</a>.<br/>
-                            -or-<br/>
-                            <a href="'. $this->url .'" target="_new">Visit the '.$this->name.' plugin page</a>.
+                            <a href="http://www.cybersprocket.com" target="cyber-sprocket-labs">Please visit our website at www.cybersprocket.com</a>.<br/>
                          </p>
-                         <p>
-                         We hope our plugin brings you a little closer to the perfect site.
-                         If there is anything we can do to improve our work please let us know.
-                         </p>
+                         </div>
+                         </div>
                          ',
                     'auto' => false
                 )
@@ -154,12 +158,16 @@ class wpCSL_settings__slplus {
      **
      **/
     function add_section($params) {
-        $this->sections[$params['name']] = new wpCSL_settings_section__slplus(
-            array_merge(
-                $params,
-                array('plugin_url' => $this->plugin_url)
-            )
-        );
+        if (!isset($this->sections[$params['name']])) {
+            $this->sections[$params['name']] = new wpCSL_settings_section__slplus(
+                array_merge(
+                    $params,
+                    array('plugin_url' => $this->plugin_url,
+                          'css_prefix' => $this->css_prefix,                       
+                            )
+                )
+            );
+        }            
     }
 
     /**------------------------------------
@@ -188,6 +196,7 @@ class wpCSL_settings__slplus {
         $this->sections[$section]->add_item(
             array(
                 'prefix' => $this->prefix,
+                'css_prefix' => $this->css_prefix,                
                 'display_name' => $display_name,
                 'name' => $name,
                 'type' => $type,
@@ -348,7 +357,12 @@ class wpCSL_settings__slplus {
              $('.postbox').children('h3, .handlediv').click(function(){
                  $(this).siblings('.inside').toggle();
              });
-         });
+         });         
+         jQuery(document).ready(function($) {
+             $('.".$this->css_prefix."-moreicon').click(function(){
+                 $(this).siblings('.".$this->css_prefix."-moretext').toggle();
+             });
+         });         
        </script>\n";
     }
 
@@ -389,6 +403,12 @@ class wpCSL_settings__slplus {
                 }
             }
         } else {
+            
+            // The requested section does not exist yet.
+            if (!isset($this->sections[$section])) { return false; }
+            
+            // Check the required items
+            //
             foreach ($this->sections[$section]->items as $item) {
                 if ($item->required && get_option($item->name) == '') return false;
             }
@@ -425,7 +445,9 @@ class wpCSL_settings_section__slplus {
         $this->items[] = new wpCSL_settings_item__slplus(
             array_merge(
                 $params,
-                array('plugin_url' => $this->plugin_url)
+                array('plugin_url' => $this->plugin_url,
+                      'css_prefix' => $this->css_prefix,
+                      )
             )
         );
     }
@@ -511,6 +533,9 @@ class wpCSL_settings_item__slplus {
         } else {
             $showThis = get_option($this->name);
         }
+        $showThis = htmlspecialchars($showThis);
+        
+        echo '<div class="'.$this->css_prefix.'-input">';
         
         switch ($this->type) {
             case 'textarea':
@@ -519,8 +544,7 @@ class wpCSL_settings_item__slplus {
                 break;
 
             case 'text':
-                echo "<input type=\"text\" name=\"{$this->name}\" value=\"".
-                    $showThis ."\" />";
+                echo "<input type=\"text\" name=\"{$this->name}\" value=\"". $showThis ."\" />";
                 break;
 
             case "checkbox":
@@ -541,17 +565,28 @@ class wpCSL_settings_item__slplus {
                 break;
 
         }
+        echo '</div>';
+
+        if ($this->description != null) {
+            $this->display_description_icon();
+        }
 
         if ($this->required) {
             echo ((get_option($this->name) == '') ?
-                ' <span><font color="red">This field is required</font></span> ' :
-                '');
+                '<div class="'.$this->css_prefix.'-reqbox">'.
+                    '<div class="'.$this->css_prefix.'-reqicon"></div>'.
+                    '<div class="'.$this->css_prefix.'-reqtext">This field is required.</div>'.
+                '</div>'
+                : ''
+                );
         }
-
+        
         if ($this->description != null) {
-            $this->display_description($this->description);
+            $this->display_description_text($this->description);
         }
 
+        
+        
         $this->footer();
     }
 
@@ -598,12 +633,15 @@ class wpCSL_settings_item__slplus {
 
     /**------------------------------------
      **/
-    function display_description($content) {
-        echo " <a href=\"javascript:;\" onclick=\"swapVisibility('{$this->name}_desc');\">";
-        echo '<img src="'.$this->plugin_url.
-            '/images/help-icon-18x20.png" border="0" class="helpicon" alt="More info" title="More info"></a>';
-        echo "<div style=\"display: none;\" id=\"{$this->name}_desc\">";
+    function display_description_icon() {
+        echo '<div class="'.$this->css_prefix.'-moreicon" title="click for more info"><br/></div>';        
+    }    
+    
+    /**------------------------------------
+     **/
+    function display_description_text($content) {
+        echo '<div class="'.$this->css_prefix.'-moretext">';
         echo $content;
-        echo "</div>";
+        echo '</div>';
     }
 }
