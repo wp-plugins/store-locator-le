@@ -123,11 +123,11 @@ class wpCSL_settings__slplus {
             $this->add_section(array(
                     'name' => 'Plugin Info',
                     'description' =>
-                        '<div class="'.$this->css_prefix.'-cslbox">
-                        <div class="'.$this->css_prefix.'-csllogo">
-                        <a href="http://www.cybersprocket.com/" target="cslinfo"><img src="'. $this->plugin_url .'/images/CSL_Logo_Only.jpg"/></a>
+                        '<div class="cybersprocket-cslbox">
+                        <div class="cybersprocket-csllogo">
+                        <a href="http://www.cybersprocket.com/" target="cslinfo"><img src="'. $this->plugin_url .'/images/CSL_banner_logo.png"/></a>
                          </div>
-                         <div class="'.$this->css_prefix.'-clsinfo">
+                         <div class="cybersprocket-cslinfo">
                          <h4>This plugin has been brought to you by <a href="http://www.cybersprocket.com"
                                 target="_new">Cyber Sprocket Labs</a></h4>
                          <p>Cyber Sprocket Labs is a custom software development company.  
@@ -139,7 +139,7 @@ class wpCSL_settings__slplus {
                             and let us know.<br/>
                             <br>
                             <strong>Cyber Sprocket Is...</strong><br/>
-                            Lance Cleveland, Paul Grimes, Chris Rasys, Lobby Jones, Eric Stempert, Seth Hayward<br/>
+                            Lance Cleveland, Paul Grimes, Chris Rasys, Lobby Jones, Seth Hayward<br/>
                             <br/>
                             <strong>For more information:</strong><br/>
                             <a href="http://www.cybersprocket.com" target="cyber-sprocket-labs">Please visit our website at www.cybersprocket.com</a>.<br/>

@@ -1,11 +1,11 @@
 === Store Locator LE ===
 Plugin Name: Store Locator LE
 Contributors: cybersprocket
-Donate link: http://www.cybersprocket.com/products/store-locator-le/
+Donate link: http://www.cybersprocket.com/products/store-locator-plus/
 Tags: store locator, store locater, google, google maps, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator le, store locater le
 Requires at least: 3.0
 Tested up to: 3.2.1
-Stable tag: 1.9.53
+Stable tag: 1.9.54
 
 This plugin puts a search form and an interactive Google map on your site so you can show visitors your store locations.    
 
@@ -45,14 +45,14 @@ Other features that are part of the Plus release that will not be part of the LE
 * [Starting Image](http://redmine.cybersprocket.com/projects/mc-closeststore/wiki/) : set a default starting image to show in place of the map before a search is performed.
 * Bug Fixes: Latest bug fixes come out on the plus edition first, LE is 2-4 weeks behind.
 
-= Want Some Special Features? =
+= Need Special Features? =
 
 Cyber Sprocket can provide modifications to the plugin to make it the perfect solution for your site.  
 We charge $60/hour to create custom additions that we roll into the next product release. 
 You get exactly the plugin you want and will have the benefit of having a mainstream product release.
 You get the benefit of getting our future upgrades without having to re-apply your patches.
 
-Learn more at: http://www.cybersprocket.com/services/wordpress-developers/
+Learn more at: http://www.cybersprocket.com/
 
 = Related Links =
 
@@ -105,6 +105,11 @@ custom styling.
 9. UI Map Result With Bubble
 
 == Changelog ==
+
+= 1.9.54 (September 2011) = 
+
+* Fix URL problem in admin links.
+* Fix starting map icon images on fresh installs.
 
 = 1.9.53 (August 2011) =
 

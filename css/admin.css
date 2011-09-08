@@ -294,3 +294,14 @@ div.feedburnerFeedBlock ul li span.headline {
     padding-top: 9px;
     width: 110px;
 }
+
+/**** Default CSL Settings Page ****/
+.cybersprocket-csllogo {
+    clear: both;
+    text-align: center;    
+}
+
+.cybersprocket-cslinfo {
+    clear: both;
+    margin-top: 12px;
+}

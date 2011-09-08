@@ -21,7 +21,7 @@ if (defined('SLPLUS_PLUGINDIR')) {
             'use_obj_defaults'      => true,        
             'prefix'                => SLPLUS_PREFIX,
             'name'                  => 'Store Locator LE',
-            'url'                   => 'http://www.cybersprocket.com/products/store-locator-le/',
+            'url'                   => 'http://www.cybersprocket.com/products/store-locator-plus/',
             'basefile'              => SLPLUS_BASENAME,
             'plugin_path'           => SLPLUS_PLUGINDIR,
             'plugin_url'            => SLPLUS_PLUGINURL,

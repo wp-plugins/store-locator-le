@@ -19,7 +19,7 @@ print "<div class='wrap'>
             <div id='icon-edit-locations' class='icon32'><br/></div>
             <h2>".
             __('Manage Locations', $text_domain).
-            "<a href='/wp-admin/admin.php?page=".SLPLUS_COREDIR."add-locations.php' class='button add-new-h2'>".
+            "<a href='".SLPLUS_ADMINPAGE."add-locations.php' class='button add-new-h2'>".
             __('Add Locations',$text_domain). 
             "</a></h2>";
 
@@ -29,7 +29,7 @@ print "<div class='wrap'>
 //
 $slak=$slplus_plugin->driver_args['api_key'];
 if (!$slak) {
-	print '<a href="/wp-admin/options-general.php?page=csl-slplus-options">';
+	print '<a href="'.get_option('siteurl')."/wp-admin/options-general.php?page=csl-slplus-options">';
 	_e('Google API Key needs to be set to activate this feature.', $text_domain);
 	print '</a>';
 

@@ -3,7 +3,7 @@
 Plugin Name: Store Locator LE
 Plugin URI: http://www.cybersprocket.com/products/store-locator-le/
 Description: An advanced store management interface with a front-end search form. Visitors can find your closest stores via the included Google Map generator.
-Version: 1.9.53
+Version: 1.9.54
 Author: Cyber Sprocket Labs
 Author URI: http://www.cybersprocket.com
 License: GPL3
@@ -49,6 +49,9 @@ if (defined('SLPLUS_COREURL') === false) {
 }
 if (defined('SLPLUS_ICONURL') === false) {
     define('SLPLUS_ICONURL', SLPLUS_COREURL . 'images/icons/');
+}
+if (defined('SLPLUS_ADMINPAGE') === false) {
+    define('SLPLUS_ADMINPAGE', get_option('siteurl') . '/wp-admin/admin.php?page=' . SLPLUS_COREDIR );
 }
 
 // The relative path from the plugins directory

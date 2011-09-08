@@ -319,7 +319,7 @@ $slpMapSettings = new wpCSL_settings__slplus(
             'name'              => $slplus_plugin->name . ' Display Settings',
             'plugin_url'        => $slplus_plugin->plugin_url,
             'render_csl_blocks' => false,
-            'form_action'       => '/wp-admin/admin.php?page='.SLPLUS_COREDIR.'map-designer.php',
+            'form_action'       => SLPLUS_ADMINPAGE.'map-designer.php',
             'save_text'         => 'Save Settings'
         )
  ); 
@@ -348,6 +348,30 @@ $slpMapSettings->add_section(
         )
  );
     
+
+//------------------------------------
+// Info Panel
+//
+$slpDescription = 
+    "Product Information: <a href='$slplus_plugin->url' target='cybersprocket'>$slplus_plugin->url</a><br/>";
+if ($slplus_plugin->debugging) {
+$slpDescription .= 
+        "Basename:  ".SLPLUS_BASENAME    ."<br/>" .
+        "Core Directory:   ".SLPLUS_COREDIR     ."<br/>" .
+        "Plugin Directory: ".SLPLUS_PLUGINDIR   ."<br/>" .
+        "Core URL: ".SLPLUS_COREURL   ."<br/>" .
+        "Plugin URL: ".SLPLUS_PLUGINURL   ."<br/>" .
+        "Admin Page: ".SLPLUS_ADMINPAGE   ."<br/>" .
+        ""
+        ;    
+}        
+$slpMapSettings->add_section(
+    array(
+            'name'          => __('Plugin Info',SLPLUS_PREFIX),
+            'description'   => $slpDescription,
+            'auto'          => true
+        )
+ );
     
 //------------------------------------
 // Render It 

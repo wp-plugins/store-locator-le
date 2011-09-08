@@ -27,7 +27,7 @@ print "<div class='wrap'>
             <div id='icon-add-locations' class='icon32'><br/></div>
             <h2>".
             __('Add Locations', SLPLUS_PREFIX).
-            "<a href='/wp-admin/admin.php?page=".SLPLUS_COREDIR."view-locations.php' class='button add-new-h2'>".
+            "<a href='".SLPLUS_ADMINPAGE."view-locations.php' class='button add-new-h2'>".
             __('Manage Locations',SLPLUS_PREFIX). 
             "</a></h2>";
 
