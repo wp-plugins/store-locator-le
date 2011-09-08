@@ -1,0 +1,26 @@
+<p>To use Store Locator Plus you only need to add a simple 
+shortcode to any page where you want to show a store search form and interactive
+map.  For example:<br/>
+<code>[SLPLUS]</code><br/>
+<br/>
+<strong>Want more features?</strong><br/>
+Check out our <a href="http://www.cybersprocket.com/products/store-locator-plus/">Store Locator Plus</a> product.<br/>
+<br/>
+Added features include:<br/>
+    <a href="http://redmine.cybersprocket.com/projects/mc-closeststore/wiki/CSV_Bulk_Uploads">CSV Bulk Uploads</a> - using the CSV bulk loader.<br/>
+    <a href="http://redmine.cybersprocket.com/projects/mc-closeststore/wiki/Map_Settings">Extended Map Settings</a> - Control more details about how the map looks, disable the scale, the zoom, and more.<br/>
+    <a href="http://redmine.cybersprocket.com/projects/mc-closeststore/wiki/Reporting">Reporting</a> - information on the reporting system and how it works.<br/>
+    <a href="http://redmine.cybersprocket.com/projects/mc-closeststore/wiki/Tag_Search">Tag Search</a> - how to use tag based location searches.<br/>
+<br/>
+<strong>Can't Add Locations?</strong><br/>
+Before you can add locations you must enter the Google Maps API Key on the
+Store Locator Plus settings page.  Once you have done that you will see a
+new admin panel menu "SLP Locations" that will allow you to add and edit the
+locations.
+<br/>
+<br/>
+<strong>Need More Assistance?</strong><br/><br/>
+For help setting up and using this plugin, please visit the 
+<strong><a href="http://redmine.cybersprocket.com/projects/mc-closeststore/wiki" target="newinfo">
+Store Locator Plus Knowledgebase</a></strong>.<br/> 
+</p>
