@@ -16,6 +16,8 @@ can show visitors your store locactions.  Users search for stores within a
 specified radius.  Full admin panel data entry and management of stores from a few to
 a few thousand.
 
+[youtube http://www.youtube.com/watch?v=ni_CrSoNr38]
+
 = Features =
 
 * You can use it for a variety of countries, as supported by Google Maps.
