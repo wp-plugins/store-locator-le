@@ -5,7 +5,7 @@ Donate link: http://www.cybersprocket.com/products/store-locator-plus/
 Tags: store locator, store locater, google, google maps, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator le, store locater le
 Requires at least: 3.0
 Tested up to: 3.2.1
-Stable tag: 1.9.54
+Stable tag: 1.9.55
 
 This plugin puts a search form and an interactive Google map on your site so you can show visitors your store locations.    
 
@@ -16,7 +16,7 @@ can show visitors your store locactions.  Users search for stores within a
 specified radius.  Full admin panel data entry and management of stores from a few to
 a few thousand.
 
-[youtube http://www.youtube.com/watch?v=ni_CrSoNr38]
+http://www.youtube.com/watch?v=ni_CrSoNr38
 
 = Features =
 
@@ -107,6 +107,10 @@ custom styling.
 9. UI Map Result With Bubble
 
 == Changelog ==
+
+= 1.9.55 (September 9th 2011) = 
+
+* Fix syntax error in view locations.
 
 = 1.9.54 (September 2011) = 
 

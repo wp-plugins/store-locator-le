@@ -51,7 +51,7 @@ $mt=(trim(get_option('sl_map_type'))!="")?
     get_option('sl_map_type') : 
     "G_NORMAL_MAP";
 $wl=(trim(get_option('sl_website_label'))!="")? 
-    parseToXML(get_option('sl_website_label')) : 
+    htmlentities(get_option('sl_website_label')) : 
     "Website";
 $du=(trim(get_option('sl_distance_unit'))!="")? 
     get_option('sl_distance_unit') : 
@@ -89,7 +89,7 @@ var sl_map_home_icon='"         .get_option('sl_map_home_icon')         ."';
 var sl_map_end_icon='"          .get_option('sl_map_end_icon')          ."';
 var sl_google_map_domain='"     .get_option('sl_google_map_domain')     ."';
 
-var sl_google_map_country='".parseToXML(get_option('sl_google_map_country'))."';
+var sl_google_map_country='".htmlentities(get_option('sl_google_map_country'))."';
 
 var sl_load_locations_default="     .((get_option('sl_load_locations_default'               )==1)?'true':'false').";
 var slp_use_email_form="            .((get_option(SLPLUS_PREFIX.'_email_form'               )==1)?'true':'false').";

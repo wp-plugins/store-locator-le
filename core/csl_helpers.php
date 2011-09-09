@@ -24,11 +24,6 @@ function csl_slplus_setup_admin_interface() {
             "Your license " . get_option(SLPLUS_PREFIX . '-license_key') . " could not be validated."
         );            
     }    
-    
-    // No SimpleXML Support
-    if (!function_exists('parsetoxml')) {
-        $slplus_plugin->notifications->add_notice(1, __('SimpleXML is required but not enabled.',SLPLUS_PREFIX));
-    }
 
     // Already been here?  Get out.
     if (isset($slplus_plugin->settings->sections['How to Use'])) { return; }

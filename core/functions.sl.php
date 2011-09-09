@@ -34,17 +34,6 @@ function move_upload_directories() {
 	}
 }
 
-/* -----------------*/
-function parseToXML($htmlStr) { 
-    $xmlStr=str_replace('<','&lt;',$htmlStr); 
-    $xmlStr=str_replace('>','&gt;',$xmlStr); 
-    $xmlStr=str_replace('"','&quot;',$xmlStr); 
-    $xmlStr=str_replace("'",'&#39;',$xmlStr); 
-    $xmlStr=str_replace("&",'&amp;',$xmlStr); 
-    $xmlStr=str_replace("," ,"&#44;" ,$xmlStr);
-    return $xmlStr; 
-} 
-
 /*-----------------*/
 
 function initialize_variables() {

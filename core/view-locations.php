@@ -29,7 +29,7 @@ print "<div class='wrap'>
 //
 $slak=$slplus_plugin->driver_args['api_key'];
 if (!$slak) {
-	print '<a href="'.get_option('siteurl')."/wp-admin/options-general.php?page=csl-slplus-options">';
+	print '<a href="'.get_option('siteurl').'/wp-admin/options-general.php?page=csl-slplus-options">';
 	_e('Google API Key needs to be set to activate this feature.', $text_domain);
 	print '</a>';
 
