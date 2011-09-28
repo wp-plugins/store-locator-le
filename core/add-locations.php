@@ -26,13 +26,17 @@ global $wpdb, $sl_upload_path, $sl_path;
 print "<div class='wrap'>
             <div id='icon-add-locations' class='icon32'><br/></div>
             <h2>".
-            __('Add Locations', SLPLUS_PREFIX).
-            "<a href='".SLPLUS_ADMINPAGE."view-locations.php' class='button add-new-h2'>".
-            __('Manage Locations',SLPLUS_PREFIX). 
-            "</a></h2>";
-
-
+            __('Store Locator Plus - Add Locations', SLPLUS_PREFIX).
+            "</h2>";
+            
 initialize_variables();
+
+//-------------------------
+// Navbar Section
+//-------------------------    
+print '<div id="slplus_navbar">';
+print get_string_from_phpexec(SLPLUS_COREDIR.'/templates/navbar.php');
+print '</div>';
 
 
 //Inserting addresses by manual input

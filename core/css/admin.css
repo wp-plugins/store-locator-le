@@ -1,98 +1,126 @@
 /***************************
- * Reporting Interface
+ * Anywhere
  */
-#icon-Store_Locator_Plus_Reporting {
-    background: url("../../core/images/StoreLocatorPlus_icons32.png") no-repeat scroll -12px -3px transparent;
+
+ #icon-Store_Locator_Plus_-_Map_Settings,
+ #icon-Store_Locator_LE_-_Map_Settings,
+ #icon-Store_Locator_Plus_-_Reporting,
+ #icon-Store_Locator_LE_-_Reporting,
+ #icon-Store_Locator_Plus,
+ #icon-Store_Locator_LE,
+ #icon-edit-locations, 
+ #icon-add-locations, 
+ #icon-locations 
+ {
+    background: url("../../core/images/StoreLocatorPlus_icons32.png") no-repeat scroll -75px -3px transparent;
 }
 
-#rb_details th {
-    font-size: 12px;
-    background: #F4F4DD;
-    padding: 6px 20px 6px 6px;
+ 
+/*----------------------------------
+ *
+ * A div that looks like a button. 
+ */
+.like-a-button {
+	background: #FFF; /* for non-css3 browsers */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD'); /* for IE */
+    background: -webkit-gradient(linear, left top, left bottom, from(#FFF), to(#DDD)); /* for webkit browsers */
+    background: -moz-linear-gradient(top,  #FFF,  #DDD); /* for firefox 3.6+ */  
+  
+  border: 1px solid #BBBBBB;
+  border-radius: 3px 3px 3px 3px;
+  margin: 6px;
+  padding: 3px;
+  text-align: center;
+  width: 150px;
+  cursor: pointer;
+  color: #5F5E5E;
+  display: block;
+  
+  /* Corners */
+  -webkit-border-radius:6px;
+  -moz-border-radius:6px;
+  border-radius:6px;
+   -khtml-border-radius: 6px;
+   
+   /* Shadow */
+   -moz-box-shadow: 0px 1px 3px #AAA;
+   -webkit-box-shadow: 0px 1px 3px #AAA;
+   box-shadow: 0px 1px 3px #AAA;   
 }
-
-#rb_details td {
-    line-height: 1.5em;
+.like-a-button:hover {
+	background: #DDD; /* for non-css3 browsers */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF'); /* for IE */
+    background: -webkit-gradient(linear, left top, left bottom, from(#DDD), to(#FFF)); /* for webkit browsers */
+    background: -moz-linear-gradient(top,  #DDD,  #FFF); /* for firefox 3.6+ */  
 }
-
-#rb_details.reportblock .form_entry {
-    width: 120px;
-    text-align: center;
-}
-
-#rb_details.reportblock label {
-    width: 90px;
-    text-align: right;
-}
-
-
-
-#rb_details .rb_column, .section_column {
-    float: left;
-    border: solid 1px #F0F0FF;
-    margin-right: 24px;
-    padding: 0px;
-    margin-top: 3px;
-}
-
-
-#poststuff #rb_details h2, #poststuff .section_column h2 {
-    margin-bottom: 3px;  
-    margin-top: 0px;
-    padding: 0px 6px;
-    background: #F4F4FF;
-}
-
-.section_description {
-    padding-bottom: 6px;
-    color: #666666;
-}
-
-.alignright {
-    text-align: right;
-}
-
-/* Table Header */
-#rb_details thead tr .header {
-  	background-repeat: no-repeat;
-	background-position: center right;
-	cursor: pointer;    
-}
-
-#rb_details .headerSortUp {
-    background-image: url("../../core/images/arrow_sm_black_down.png");
-}
-
-#rb_details .headerSortDown {
-    background-image: url("../../core/images/arrow_sm_black_up.png");
+.like-a-button A {
+    text-decoration:none;
 }
 
 
-/* Table Body */
-#rb_details tbody td {
-    padding-right: 6px;
-    min-width: 53px;    
-}
-.rowon {
-    background: #F4F4F4;
-}
-.rowoff {
-    background: #FFFFFF;
-}
+/*----------------------------------
+ *
+ * jQuery Modal Dialogue 
+ */
+ div.ui-dialog {
+     border: solid 1px #BFBFBF;
+     background: white;
+     padding: 0px;
+     margin: 12px;
+ }
 
-/* Report Block Buttons */
-#rb_details input[type="button"] {
-    width: 100px;
-}
+ div.ui-dialog div.ui-dialog-titlebar {
+     padding: 3px;
+     background: #BFBFBF;
+     text-align: center;
+     font-weight: bold;
+     margin: 0px;
+ }
+ 
+ div.ui-dialog div.ui-dialog-titlebar a.ui-dialog-titlebar-close span.ui-icon {
+     float: right;
+     margin-left: 3px;
+ }
+ 
+ div.ui-dialog div.ui-dialog-content {
+     padding: 9px;
+ }
 
 
 /***************************
- * Manage Locations Form
+ * The Navbar
  */
-
-#icon-edit-locations, #icon-locations {
-    background: url("../../core/images/icon_location.png") no-repeat scroll -312px -5px transparent;
+div#slplus_navbar {
+    background: none;
+    border: none;
+    margin: 0px;
+    padding: 0px;
+    left: -15px;
 }
+
+#slplus_navbar ul {
+    margin: 0px;
+}
+#slplus_navbar li {
+  float: left;
+  margin: 6px;
+  padding: 3px;
+}
+
+#slplus_navbar div.handlediv {
+    display: none;
+    visibility: hidden;
+}
+#slplus_navbar h3.hndle {
+    display: none;
+    visibility: hidden;
+}
+
+
+
+/***************************
+ * Locations: Manage
+ */
 
 .add_location_form label {
     width: 120px;
@@ -111,13 +139,11 @@
 }
 
 
+
 /***************************
- * Map Settings
+ * Settings: Map
  */
  
- #icon-Store_Locator_Plus_Display_Settings {
-    background: url("../../core/images/StoreLocatorPlus_icons32.png") no-repeat scroll -75px -3px transparent;
-}
 
 .form_entry {
     clear:both;
@@ -170,8 +196,9 @@
 
 
 /***************************
- * General Settings
+ * Settings: General
  **/
+ 
 #wpcontent .csl_select, #wpcontent .csl_option
 {
     padding-right: 6px;
@@ -248,6 +275,20 @@ div.feedburnerFeedBlock ul li span.headline {
 	border-right:solid #ddd 1px;
 }
 
+th.optionpack {
+   background-color:#D4D4D4;
+}
+td.optionpack {
+   background-color:#D4D4D4;
+}
+.form-table td.optionpack_topline {
+  border-top: 1px solid #949494;
+  background: #B4B4B4;
+  line-height: 1em;
+  margin: 0;
+  padding: 5px 3px;
+}
+
 /*** Generic Formatting ***/
 .floatright {
     float: right;
@@ -266,6 +307,7 @@ div.feedburnerFeedBlock ul li span.headline {
     vertical-align: middle;
     padding: 0px;
     text-align: right;
+    font-weight:bold;
 }
 
 /**** Manage Locations Page ****/
@@ -280,7 +322,7 @@ div.feedburnerFeedBlock ul li span.headline {
     float: left;
     text-align: left;
     padding-top: 7px;
-    width: 200px;
+    width: 250px;
 }
 .searchlocations {
     float: right;
@@ -295,7 +337,11 @@ div.feedburnerFeedBlock ul li span.headline {
     width: 110px;
 }
 
-/**** Default CSL Settings Page ****/
+.top_listing_bar {
+    clear:both;
+}
+
+
 .cybersprocket-csllogo {
     clear: both;
     text-align: center;    
@@ -305,3 +351,90 @@ div.feedburnerFeedBlock ul li span.headline {
     clear: both;
     margin-top: 12px;
 }
+
+
+/***************************
+ * Reporting Interface
+ */
+
+#rb_details th {
+    font-size: 12px;
+    background: #F4F4DD;
+    padding: 6px 20px 6px 6px;
+}
+
+#rb_details td {
+    line-height: 1.5em;
+}
+
+#rb_details.reportblock .form_entry {
+    width: 120px;
+    text-align: center;
+}
+
+#rb_details.reportblock label {
+    width: 90px;
+    text-align: right;
+}
+
+
+
+#rb_details .rb_column, .section_column {
+    float: left;
+    border: solid 1px #F0F0FF;
+    margin-right: 24px;
+    padding: 0px;
+    margin-top: 3px;
+}
+
+
+#poststuff #rb_details h2, #poststuff .section_column h2 {
+    margin-bottom: 3px;  
+    margin-top: 0px;
+    padding: 0px 6px;
+    background: #F4F4FF;
+}
+
+.section_description {
+    padding-bottom: 6px;
+    color: #666666;
+}
+
+.alignright {
+    text-align: right;
+}
+
+
+/* Table Header */
+#rb_details thead tr .header {
+  	background-repeat: no-repeat;
+	background-position: center right;
+	cursor: pointer;    
+}
+
+#rb_details .headerSortUp {
+    background-image: url("../../core/images/arrow_sm_black_down.png");
+}
+
+#rb_details .headerSortDown {
+    background-image: url("../../core/images/arrow_sm_black_up.png");
+}
+
+
+/* Table Body */
+#rb_details tbody td {
+    padding-right: 6px;
+    min-width: 53px;    
+}
+.rowon {
+    background: #F4F4F4;
+}
+.rowoff {
+    background: #FFFFFF;
+}
+
+/* Report Block Buttons */
+#rb_details input[type="button"] {
+    width: 100px;
+}
+

@@ -34,7 +34,15 @@ class wpCSL_themes__slplus {
      * Add the theme settings to the admin panel.
      *
      */
-    function add_admin_settings() {
+    function add_admin_settings($settingsObj, $core='/core/') {
+        
+        // What settings object?
+        // This allows us to use settings objects not attached
+        // to a parent "plugin" object
+        //
+        if ($settingsObj == null) {
+            $settingsObj = $this->settings;
+        }
         
         // The Themes
         // No themes? Force the default at least
@@ -48,18 +56,18 @@ class wpCSL_themes__slplus {
         //
         $lastNewThemeDate = get_option($this->prefix.'-theme_lastupdated');
         $newEntry = array();
-        if ($dh = opendir($this->plugin_path.'/core/css/')) {
+        if ($dh = opendir($this->plugin_path.$core.'css/')) {
             while (($file = readdir($dh)) !== false) {
                 
                 // If not a hidden file
                 //
                 if (!preg_match('/^\./',$file)) {                
-                    $thisFileModTime = filemtime($this->plugin_path.'/core/css/'.$file);
+                    $thisFileModTime = filemtime($this->plugin_path.$core.'css/'.$file);
                     
                     // We have a new theme file possibly...
                     //
                     if ($thisFileModTime > $lastNewThemeDate) {
-                        $newEntry = $this->GetThemeInfo($this->plugin_path.'/core/css/'.$file);
+                        $newEntry = $this->GetThemeInfo($this->plugin_path.$core.'css/'.$file);
                         $themeArray = array_merge($themeArray, array($newEntry['label'] => $newEntry['file']));                                        
                         update_option($this->prefix.'-theme_lastupdated', $thisFileModTime);
                     }
@@ -74,7 +82,7 @@ class wpCSL_themes__slplus {
             update_option($this->prefix.'-theme_array',$themeArray);
         }  
             
-        $this->settings->add_item(
+        $settingsObj->add_item(
             __('Display Settings',$this->prefix), 
             __('Select A Theme',$this->prefix),   
             'theme',    

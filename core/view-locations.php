@@ -18,11 +18,16 @@ foreach($_GET as $key=>$val) {
 print "<div class='wrap'>
             <div id='icon-edit-locations' class='icon32'><br/></div>
             <h2>".
-            __('Manage Locations', $text_domain).
-            "<a href='".SLPLUS_ADMINPAGE."add-locations.php' class='button add-new-h2'>".
-            __('Add Locations',$text_domain). 
-            "</a></h2>";
+            __('Store Locator Plus - Manage Locations', $text_domain).
+            "</h2>";
 
+            
+//-------------------------
+// Navbar Section
+//-------------------------    
+print '<div id="slplus_navbar">';
+print get_string_from_phpexec(SLPLUS_COREDIR.'/templates/navbar.php');
+print '</div>';            
 
 // Check Google API Key
 // Not present : show message

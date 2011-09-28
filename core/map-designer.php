@@ -316,13 +316,26 @@ $slpMapSettings = new wpCSL_settings__slplus(
             'no_license'        => true,
             'prefix'            => $slplus_plugin->prefix,
             'url'               => $slplus_plugin->url,
-            'name'              => $slplus_plugin->name . ' Display Settings',
+            'name'              => $slplus_plugin->name . ' - Map Settings',
             'plugin_url'        => $slplus_plugin->plugin_url,
             'render_csl_blocks' => false,
             'form_action'       => SLPLUS_ADMINPAGE.'map-designer.php',
             'save_text'         => 'Save Settings'
         )
  ); 
+
+//-------------------------
+// Navbar Section
+//-------------------------    
+$slpMapSettings->add_section(
+    array(
+        'name' => 'Navigation',
+        'div_id' => 'slplus_navbar',
+        'description' => get_string_from_phpexec(SLPLUS_COREDIR.'/templates/navbar.php'),
+        'is_topmenu' => true,
+        'auto' => false
+    )
+);
 
 //------------------------------------
 // Create The Search Form Settings Panel

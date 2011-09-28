@@ -720,6 +720,7 @@ function csl_slplus_add_options_page() {
 function add_admin_javascript() {
         global $sl_base, $sl_upload_base, $sl_dir, $google_map_domain, $sl_path, 
             $sl_upload_path, $map_character_encoding, $slplus_plugin;
+        wp_enqueue_script('jquery-ui-dialog');               
 		$api=$slplus_plugin->driver_args['api_key'];
         print "<script src='".SLPLUS_PLUGINURL."/core/js/functions.js'></script>\n
         <script type='text/javascript'>

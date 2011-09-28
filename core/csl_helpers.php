@@ -27,15 +27,42 @@ function csl_slplus_setup_admin_interface() {
 
     // Already been here?  Get out.
     if (isset($slplus_plugin->settings->sections['How to Use'])) { return; }
+
+    //-------------------------
+    // Navbar Section
+    //-------------------------    
+    $slplus_plugin->settings->add_section(
+        array(
+            'name' => 'Navigation',
+            'div_id' => 'slplus_navbar',
+            'description' => get_string_from_phpexec(SLPLUS_COREDIR.'/templates/navbar.php'),
+            'is_topmenu' => true,
+            'auto' => false
+        )
+    );
     
-    
+    //-------------------------
+    // Option Packages
+    //-------------------------
+    if (!$slplus_plugin->no_license) {    
+        $slplus_plugin->license->add_licensed_package(
+                array(
+                    'name'              => 'Widget Pack',
+                    'help_text'         => 'Click the buy now button to purchase this add-on.  When done, refresh this page.',
+                    'sku'               => 'SLPLUS-WIDGETS',
+                    'paypal_button_id'  => 'FA99CZBPNZJGG'
+                )            
+            );
+    }        
+  
     //-------------------------
     // How to Use Section
     //-------------------------    
     $slplus_plugin->settings->add_section(
         array(
             'name' => 'How to Use',
-            'description' => get_string_from_phpexec(SLPLUS_PLUGINDIR.'/how_to_use.txt')
+            'description' => get_string_from_phpexec(SLPLUS_PLUGINDIR.'/how_to_use.txt'),
+            'start_collapsed' => true
         )
     );
 

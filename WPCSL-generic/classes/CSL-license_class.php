@@ -1,4 +1,13 @@
 <?php
+/************************************************************************
+*
+* file: CSL-license_class.php
+*
+* Handle the license management subsystem for WPCSL-Generic.
+*
+* Process the license keys, validating them against the license server.
+* 
+************************************************************************/
 
 class wpCSL_license__slplus {
 
@@ -8,13 +17,30 @@ class wpCSL_license__slplus {
         }
     }
 
-    /**
+    /**------------------------------------
      ** method: check_license_key()
      **
      ** Currently only checks for an existing license key (PayPal
      ** transaction ID).
      **/
-    function check_license_key() {
+    function check_license_key($theSKU='', $isa_package=false, $usethis_license='') {
+
+        // The SKU
+        //
+        if ($theSKU == '') {
+            $theSKU = $this->sku;
+        }
+        
+        // The forced license
+        // needed for plugins with no main license 
+        // but licensed packages
+        //
+        if ($usethis_license == '') {
+            $usethis_license = get_option($this->prefix . '-license_key');
+        }
+        
+        // Package test v. standard test?
+        $checkPackage = $isa_package ? 'true' : 'false';
         
         // HTTP Handler is not set fail the license check
         //
@@ -24,11 +50,13 @@ class wpCSL_license__slplus {
         //  
         $query_string = http_build_query(
             array(
-                'id' => get_option($this->prefix . '-license_key'),
-                'siteurl' => get_option('siteurl')
+                'id' => $usethis_license,
+                'siteurl' => get_option('siteurl'),
+                'sku' => $theSKU,
+                'checkpackage' => $checkPackage
             )
         );
-
+        
         // Places we check the license
         //
         $csl_urls = array(
@@ -43,23 +71,58 @@ class wpCSL_license__slplus {
             $result = $this->http_handler->request( 
                             $csl_url . $query_string, 
                             array('timeout' => 60) 
-                            );      
+                            ); 
             if ($this->http_result_is_ok($result) ) {
                 $response = ($result['body'] != 'false');
             }
 
             // If we get a true response record it in the DB and exit
             //
-            if ($response) { 
-                update_option($this->prefix.'-purchased',true);
+            if ($response) {
+                
+                //.............
+                // Licensed
+                // main product
+                if (!$isa_package) { 
+                    update_option($this->prefix.'-purchased',true); 
+            
+                // add on package
+                } else {
+                    update_option($this->prefix.'-'.$theSKU.'-isenabled',true);
+                }
                 return true; 
             }
         }
-        update_option($this->prefix.'-purchased',false);
+                
+        //.............
+        // Not licensed
+        // main product
+        if (!$isa_package) { 
+            update_option($this->prefix.'-purchased',false);
+            
+        // add on package
+        } else {
+            update_option($this->prefix.'-'.$theSKU.'-isenabled',false);            
+        }
+        
+        
         return false;
     }
 
+    /**------------------------------------
+     ** method: check_product_key()
+     **
+     **/
     function check_product_key() {
+        
+        // If main product is not licensed (denoted by has_package=true)
+        // and we are not checking a package, pretend we are licensed
+        // and get out of here.
+        //
+        if ($this->has_packages) {
+            return true;
+        }
+        
         if (get_option($this->prefix.'-purchased') != '1') {
             if (get_option($this->prefix.'-license_key') != '') {
                 update_option($this->prefix.'-purchased', $this->check_license_key());
@@ -80,12 +143,16 @@ class wpCSL_license__slplus {
         return (isset($notices)) ? $notices : false;
     }
 
+    /**------------------------------------
+     ** method: initialize_options()
+     **
+     **/
     function initialize_options() {
         register_setting($this->prefix.'-settings', $this->prefix.'-license_key');
         register_setting($this->prefix.'-Settings', $this->prefix.'-purchased');
     }
 
-    /**
+    /**-----------------------------------
      * method: http_result_is_ok()
      *
      * Determine if the http_request result that came back is valid.
@@ -108,5 +175,74 @@ class wpCSL_license__slplus {
         if ( $result['body'] == ''    ) { return false; }
 
         return true;
+    }
+    
+    
+    /**------------------------------------
+     ** method: add_licensed_package()
+     **
+     ** Add a package object to the license object.
+     **
+     ** Packages are components that have their own license keys to be
+     ** activated, but are always related to a parent product with a valid
+     ** license.
+     **
+     **/
+    function add_licensed_package($params) {
+        
+        // If we don't have a package name or SKU get outta here
+        //
+        if (!isset($params['name']) || !isset($params['sku'])) return;
+        
+        // Setup the new package only if it was not setup before
+        //
+        if (!isset($this->packages[$params['name']])) {
+            $this->packages[$params['name']] = new wpCSL_license_package__slplus(
+                array_merge(
+                    $params,
+                    array(
+                        'prefix' => $this->prefix,
+                        'parent' => $this
+                        )
+                    )
+            );
+        } 
+   }
+    
+}
+
+
+/****************************************************************************
+ **
+ ** class: wpCSL_license_package__slplus
+ **
+ **/
+class wpCSL_license_package__slplus {
+
+    /**------------------------------------
+     **/
+    function __construct($params) {
+        foreach ($params as $name => $value) {
+            $this->$name = $value;
+        }
+        
+        
+        // Register these settings
+        //
+        $this->enabled_option_name = $this->prefix.'-'.$this->sku.'-isenabled';
+        $this->lk_option_name      = $this->prefix.'-'.$this->sku.'-lk';
+        
+        register_setting($this->prefix.'-settings', $this->enabled_option_name);                        
+        register_setting($this->prefix.'-settings', $this->lk_option_name);                        
+
+        // If the isenabled flag is not explicitly passed in,
+        // set this package to the pre-saved enabled/disabled setting from wp_options
+        // which will return false if never set before
+        //
+        if (!isset($this->isenabled)) $this->isenabled = get_option($this->enabled_option_name);        
+        
+        // Set our license key property
+        //
+        $this->license_key = get_option($this->lk_option_name);
     }
 }

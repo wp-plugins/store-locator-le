@@ -8,7 +8,7 @@
 * share a code libary and reduce code redundancy.
 * 
 ************************************************************************/
-define('WPCSL__slplus__VERSION', '1.4.13');
+define('WPCSL__slplus__VERSION', '1.4.14');
 
 // (LC) 
 // These helper files should only be loaded if needed by the plugin
@@ -67,6 +67,9 @@ require_once('CSL-themes_class.php');
 *
 *     * 'url' :: The URL for the product page at Cyber Sprocket Labs.
 *
+*     * 'has_packages' :: defaults to false, if true that means the main product is
+*       not licensed but we still need the license class to manage add-ons.
+*
 */
 class wpCSL_plugin__slplus {
 
@@ -81,7 +84,9 @@ class wpCSL_plugin__slplus {
         $this->columns          = 1;
         $this->driver_type      = 'Panhandler';
         $this->css_prefix       = '';
+        $this->sku              = '';
         $this->uses_money       = true;
+        $this->has_packages     = false;
 
         // Do the setting override or initial settings.
         //
@@ -142,7 +147,11 @@ class wpCSL_plugin__slplus {
             'name'              => $this->name,
             'url'               => $this->url,
             'paypal_button_id'  => $this->paypal_button_id,
-            'no_license'        => $this->no_license
+            'no_license'        => $this->no_license,
+            'sku'               => $this->sku,
+            'has_packages'      => $this->has_packages,
+            'parent'            => $this
+            
         );
 
         $this->cache_config = array(
@@ -150,17 +159,19 @@ class wpCSL_plugin__slplus {
             'path' => $this->cache_path
         );
         
-        if (!$this->no_license) {
+        if ($this->has_packages || !$this->no_license) {
             $this->license_config = array(
                 'prefix'        => $this->prefix,
-                'http_handler'  => $this->http_handler
+                'http_handler'  => $this->http_handler,
+                'sku'           => $this->sku,
+                'has_packages'  => $this->has_packages
             );
         }            
 
         $this->themes_config = array(
             'prefix'        => $this->prefix,
             'plugin_path'   => $this->plugin_path,
-            'plugin_url'        => $this->plugin_url,                
+            'plugin_url'    => $this->plugin_url,                
         );
 
         $this->initialize();
@@ -249,7 +260,7 @@ class wpCSL_plugin__slplus {
             case 'wpCSL_helper__slplus':
             case 'default':
             default:
-                $this->helper = new wpCSL_helper__slplus($this->helper_config);
+                $this->helper = new wpCSL_helper__slplus();
 
         }
     }    
@@ -334,7 +345,7 @@ class wpCSL_plugin__slplus {
             case 'wpCSL_license__slplus':
             case 'default':
             default:
-                if (!$this->no_license) {
+                if ($this->has_packages || !$this->no_license) {
                     $this->license = new wpCSL_license__slplus($this->license_config);
                 }
 
@@ -382,7 +393,7 @@ class wpCSL_plugin__slplus {
             $this->create_notifications('default');
             $this->create_products('default');
             $this->create_settings('default');
-            if (!$this->no_license) { $this->create_license('default'); }
+            if ($this->has_packages || !$this->no_license) { $this->create_license('default'); }
             $this->create_cache('default');
             $this->create_themes('default'); 
         } else {
@@ -394,7 +405,7 @@ class wpCSL_plugin__slplus {
                 $this->create_products($this->products_obj_name);
             if (isset($this->settings_obj_name))
                 $this->create_settings($this->settings_obj_name);
-            if (!$this->no_license && isset($this->license_obj_name))
+            if (($this->has_packages || !$this->no_license) && isset($this->license_obj_name))
                 $this->create_license($this->license_obj_name);
             if (isset($this->cache_obj_name))
                 $this->create_cache($this->cache_obj_name);
@@ -450,7 +461,7 @@ class wpCSL_plugin__slplus {
         }
         
         // License
-        if (!$this->no_license) { 
+        if ($this->has_packages || !$this->no_license) { 
             if (isset($this->license)) {
                 if (isset($this->notifications) && !isset($this->license->notifications))
                     $this->license->notifications = &$this->notifications;
@@ -538,7 +549,7 @@ class wpCSL_plugin__slplus {
         // No Driver
         //
         } else {
-            if ($this->debugging) {
+            if (($this->debugging) && ($this->driver_type != 'none')) {
                 print __('DEBUG: No driver found.', $this->prefix);
             }
         }
@@ -585,7 +596,7 @@ class wpCSL_plugin__slplus {
             $this->cache->check_cache();
         }
 
-        if (isset($this->license)) {
+        if (!$this->has_packages && isset($this->license)) {
             $this->license->check_product_key();
         }
     }
@@ -678,7 +689,8 @@ class wpCSL_plugin__slplus {
     function add_display_settings() {         
         $this->settings->add_section(array(
                 'name' => __('Display Settings',$this->prefix),
-                'description' => ''
+                'description' => '',
+                'start_collapsed' => true
             )
         );
         

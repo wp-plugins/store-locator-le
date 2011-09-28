@@ -21,7 +21,8 @@ class wpCSL_settings__slplus {
         $this->render_csl_blocks = true;        // Display the CSL info blocks
         $this->form_action = 'options.php';     // The form action for this page
         $this->save_text =__('Save Changes');
-        $this->css_prefix = '';
+        $this->css_prefix = '';  
+        $this->has_packages = false;
         
         // Passed Params
         //        
@@ -32,11 +33,28 @@ class wpCSL_settings__slplus {
         // Only show the license section if the plugin settings
         // wants a license module
         if (!$this->no_license) {
+            $this->license_section_title = 'Plugin License';
             $this->add_section(array(
-                    'name' => 'Plugin License',
+                    'name' => $this->license_section_title,
                     'description' => "<p>To obtain a key, please purchase this plugin " .
-                        "from <a href=\"{$this->url}\" target=\"_new\">{$this->url}</a></p>",
-                    'auto' => false
+                        "from <a href=\"{$this->url}\" target=\"_new\">{$this->url}</a>.</p>",
+                    'auto' => false,
+                    'div_id' => 'csl_license_block'
+                )
+            );
+            
+        // We don't have a main license but we have paid option
+        // packages
+        } else if ($this->has_packages) {
+            $this->license_section_title = 'Premium Options';
+            $this->add_section(array(
+                    'name' => $this->license_section_title,
+                    'description' => "<p>{$this->name} has premium options available.<br/>" .
+                        "Visit <a href=\"{$this->url}\" target=\"_new\">{$this->url}</a> to " .
+                        "learn more about the available add-on packages.<br/> After you purchase " .
+                        "an add-on package come back here to activate your add-on packages.</p>",
+                    'auto' => false,
+                    'div_id' => 'csl_license_block'
                 )
             );
         }
@@ -109,7 +127,8 @@ class wpCSL_settings__slplus {
                              <div style="clear:left;">&nbsp;</div>
                            </div>
                          </p>',
-                    'auto' => false
+                    'auto' => false,
+                    'start_collapsed' => true
                 )
             );
     
@@ -247,13 +266,21 @@ class wpCSL_settings__slplus {
      **/
     function render_settings_page() {
         $this->header();
+        
+        // Redner all top menus first.
+        //
+        foreach ($this->sections as $section) {
+            if (isset($section->is_topmenu) && ($section->is_topmenu)) {
+                $section->display();
+            }
+        }        
 
         // Only render license section if plugin settings
         // asks for it
-        if (!$this->no_license) {
-            $this->sections['Plugin License']->header();
+        if ($this->has_packages || !$this->no_license) {
+            $this->sections[$this->license_section_title]->header();
             $this->show_plugin_settings();
-            $this->sections['Plugin License']->footer();
+            $this->sections[$this->license_section_title]->footer();
         }
 
         // Draw each settings section as defined in the plugin config file
@@ -282,69 +309,214 @@ class wpCSL_settings__slplus {
      **/
     function show_plugin_settings() {
        $license_ok =(  (get_option($this->prefix.'-purchased') == '1')   &&
-            	      (get_option($this->prefix.'-license_key') != '')            	    	    
-            	      );     
-    	    
+                      (get_option($this->prefix.'-license_key') != '')            	    	    
+                          );     
+        
+        // If has_packages is true that means we have an unlicensed product
+        // so we don't want to show the license box
+        //
+        if (!$this->has_packages) {
+            $content = "<tr valign=\"top\">\n";
+            $content .= "  <th  class=\"input_label\" scope=\"row\">License Key *</th>";
+            $content .= "    <td>";
+            $content .= "<input type=\"text\"".
+                ((!$license_ok) ?
+                    "name=\"{$this->prefix}-license_key\"" :
+                    '') .
+                " value=\"". get_option($this->prefix.'-license_key') .
+                "\"". ($license_ok?'disabled' :'') .
+                " />";
+    
+            if ($license_ok) {
+                $content .= "<input type=\"hidden\" name=\"{$this->prefix}-license_key\" value=\"".
+                    get_option($this->prefix.'-license_key')."\"/>";
+                $content .= '<span><img src="'. $this->plugin_url .
+                    '/images/check_green.png" border="0" style="padding-left: 5px;" ' .
+                    'alt="License validated!" title="License validated!"></span>';
+            }
+            
+            $content .= (!$license_ok) ?
+                ('<span><font color="red"><br/>Without a license key, this plugin will ' .
+                    'only function for Admins</font></span>') :
+                '';
+            $content .= (!(get_option($this->prefix.'-license_key') == '') &&
+                        !get_option($this->prefix.'-purchased')) ?
+                ('<span><font color="red">Your license key could not be verified</font></span>') :
+                '';
+    
+            if (!$license_ok) {
+                $content .= $this->MakePayPalButton($this->paypal_button_id);
+            }
+            
+            $content .= '<div id="prodsku">sku: ';
+            if (isset($this->sku) && ($this->sku != '')) {
+                $content .= $this->sku;
+            } else {
+                $content .= 'not set';            
+            }        
+            $content .= '</div>';
+            
 
-        $content = "<tr valign=\"top\">\n";
-        $content .= "  <th scope=\"row\">License Key *</th>";
-        $content .= "    <td>";
-        $content .= "<input type=\"text\"".
-            ((!$license_ok) ?
-                "name=\"{$this->prefix}-license_key\"" :
-                '') .
-            " value=\"". get_option($this->prefix.'-license_key') .
-            "\"". ($license_ok?'disabled' :'') .
-            " />";
-
-        if ($license_ok) {
-            $content .= "<input type=\"hidden\" name=\"{$this->prefix}-license_key\" value=\"".
-                get_option($this->prefix.'-license_key')."\"/>";
-            $content .= '<span><img src="'. $this->plugin_url .
-                '/images/check_green.png" border="0" style="padding-left: 5px;" ' .
-                'alt="License validated!" title="License validated!"></span>';
+            
+        // If we are using has_packages we need to seed our content string
+        //
+        } else {
+            $content ='';
+        }            
+      
+        // List the packages
+        //
+        if (isset($this->parent->license->packages) && ($this->parent->license->packages > 0)) {
+            $content .='<tr><td colspan="2" class="optionpack_topline">'.__('The following optional add-ons are available').':</td></tr>';
+            $content .= '<tr valign="top">';
+            foreach ($this->parent->license->packages as $package) {
+                $content .= '<th class="input_label optionpack">'.$package->name.'</th>';
+                $content .= '<td class="optionpack">'.$this->EnabledOrBuymeString($license_ok,$package).'</td>';
+            }
+            $content .= '</tr>';
         }
         
-        $content .= (!$license_ok) ?
-            ('<span><font color="red"><br/>Without a license key, this plugin will ' .
-                'only function for Admins</font></span>') :
-            '';
-        $content .= (!(get_option($this->prefix.'-license_key') == '') &&
-                    !get_option($this->prefix.'-purchased')) ?
-            ('<span><font color="red">Your license key could not be verified</font></span>') :
-            '';
-
+        // If the main product or packages show the license box
+        // Then show a save button here
+        //
+       $license_ok =(  (get_option($this->prefix.'-purchased') == '1')   &&
+                      (get_option($this->prefix.'-license_key') != '')            	    	    
+                          );            
         if (!$license_ok) {
-            $content .= "
-                <div>
-                  <a href=\"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick" .
-                      "&hosted_button_id={$this->paypal_button_id}\"
-                      target=\"_new\">
-                    <img alt=\"PayPal - The safer, easier way to pay online!\"
-                        src=\"https://www.paypal.com/en_US/i/btn/btn_buynowCC_LG.gif\" />
-                  </a>
-                </div>
-                <div>
-                  <p>Your license key is emailed to you within 15 minutes of your
-                     purchase. If you did not receive your license check your spam
-                     folder.  <a href='http://www.cybersprocket.com/contact-us/'
-                     target='cyber sprocket'>Contact us</a> if you need your license
-                     sent again.
-                  </p>
-                </div>";
+            $content .= '<tr><td colspan="2">' .
+                $this->generate_save_button_string().
+                '</td></tr>';
         }
+        
 
-        $content .= ' </td></tr>';
-
-        echo $content;
+        echo $content;                
     }
+    
+    /**------------------------------------
+     ** method: EnabledOrBuymeString
+     **
+     **/
+    function EnabledOrBuymeString($mainlicenseOK, $package) {
+        $content = '';
+        
+        // If the main product is licensed or we want to force
+        // the packages list, show the checkbox or buy/validate button. 
+        //
+        if ($mainlicenseOK || $this->has_packages) {
+            
+            // Check if package is licensed now.
+            //
+            if (!$package->isenabled) {
+                $package->isenabled = 
+                    $package->parent->check_license_key(
+                        $package->sku, 
+                        true,
+                        ($this->has_packages ? $package->license_key : '')
+                        );                              
+            }
+            
+            // Package is enabled, just show that
+            //
+            if ($package->isenabled) {
+                $packString = $package->name . ' is enabled!';
+                $content .= 
+                    '<span><img src="'. $this->plugin_url .
+                    '/images/check_green.png" border="0" style="padding-left: 5px;" ' .
+                    'alt="'.$packString.'" title="'.$packString.'"></span>';
+                    
+                // OK - the license was verified, this package is valid
+                // but the mainlicense was not set...
+                // go set it.
+                if (!$mainlicenseOK && ($package->license_key != '')) {
+                    update_option($this->prefix.'-purchased',true);   
+                    update_option($this->prefix.'-license_key',$package->license_key);
+                }                      
+                    
+            // Package not enabled, show buy button
+            //
+            } else {
+                $content .= $this->MakePayPalButton($package->paypal_button_id, $package->help_text);
+                
+                // Show license entry box if we need to
+                //
+                if ($this->has_packages) {                    
+                    $content .= "{$package->sku} Activation Key: <input type='text' ".
+                            "name='{$package->lk_option_name}'" .
+                            " value='' ".
+                            " />";                     
+                    if ($package->license_key != '') {
+                        $content .= 
+                            "<br/><span class='csl_info'>".
+                            "The key {$package->license_key} could not be validated.".
+                            "</span>";
+                    }
+                }
+            }
+            
+        // Main product not licensed, tell them.
+        //
+        } else {
+            $content .= '<span>You must license the product before you can purchase add-on packages.</span>';
+        }
+        
+        return $content;
+    }
+    
+    /**------------------------------------
+     ** method: MakePayPalButton
+     **
+     **/
+    function MakePayPalButton($buttonID, $helptext = '') {
+        
+        // Set default help text
+        //
+        if ($helptext == '') {
+            $helptext = 'Your license key is emailed within minutes of your purchase.<br/>'. 
+                  'If you do not receive your license check your spam '.
+                     'folder then <a href="http://www.cybersprocket.com/contact-us/" '.
+                     'target="Cyber Sprocket">Contact us</a>.';
+        }
+        
+        // PayPal Form String
+        $ppFormString = 
+                    "<form action='https://www.paypal.com/cgi-bin/webscr' target='_blank' method='post'>".
+                    "<input type='hidden' name='cmd' value='_s-xclick'>".
+                    "<input type='hidden' name='hosted_button_id' value='$buttonID'>".
+                    "<input type='hidden' name='on0' value='Main License Key'>".
+                    "<input type='hidden' name='os0' value='" . get_option($this->prefix.'-license_key') . "'>".                    "<input type='image' src='https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif' border='0' name='submit' alt='Lobby says buy more sprockets!'>".
+                    "<img alt='' border='0' src='https://www.paypalobjects.com/en_US/i/scr/pixel.gif' width='1' height='1'>".                    
+                    "</form>"
+                ;
+        
+        // Modal Form Helpers
+        //
+        // 
+        //
+        $modalFormSetup = '
+            <script>
+            jQuery(function() {
+                jQuery( "#ppform_iframe_'.$buttonID.'" ).contents().find("body").html("'.$ppFormString.'");                                
+            });
+            </script>        
+            ';
+            
+        // Build paypal form and send it back
+        //
+        return $modalFormSetup .
+        '<div><iframe height="70" scrolling="no" id="ppform_iframe_'.$buttonID.'" name="ppform_iframe_'.$buttonID.'" src=""></iframe></div>'.                
+                '<div>'.
+                  '<p>'.$helptext.'</p>'.
+                '</div>';
+    }
+    
+    
 
     /**------------------------------------
      ** method: header
      **
      **/
     function header() {
-        echo "<div class=\"wrap\">\n";
+        echo "<div class='wrap'>\n";
         screen_icon(preg_replace('/\s/','_',$this->name));
         echo "<h2>{$this->name}</h2>\n";
         echo "<form method='post' action='".$this->form_action."'>\n";
@@ -371,11 +543,19 @@ class wpCSL_settings__slplus {
      **
      **/
     function footer() {
-        printf('</div></div><p class="submit">
-            <input type="submit" class="button-primary" value="%s" />
-          </p></form></div>',
+        print '</div></div>' .
+              $this->generate_save_button_string() .
+             '</form></div>';
+    }
+        
+    /**------------------------------------
+     ** method: generate_save_button_string
+     **
+     **/
+    function generate_save_button_string() {
+        return sprintf('<input type="submit" class="button-primary" value="%s" />',
          $this->save_text
-         );
+         );                    
     }
 
     /**------------------------------------
@@ -478,13 +658,13 @@ class wpCSL_settings_section__slplus {
     /**------------------------------------
      **/
     function header() {
-        echo "<div class=\"postbox\">
+        echo "<div class=\"postbox\" " . (isset($this->div_id) ?  "id='$this->div_id'" : '') . ">
          <div class=\"handlediv\" title=\"Click to toggle\"><br/></div>
          <h3 class=\"hndle\">
            <span>{$this->name}</span>
            <a name=\"".strtolower(strtr($this->name, ' ', '_'))."\"></a>
          </h3>
-         <div class=\"inside\">
+         <div class=\"inside\" " . (isset($this->start_collapsed) && $this->start_collapsed ? 'style="display:none;"' : '') . ">
             <div class='section_description'>{$this->description}</div>
     <table class=\"form-table\" style=\"margin-top: 0pt;\">\n";
 
