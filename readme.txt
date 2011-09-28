@@ -5,7 +5,7 @@ Donate link: http://www.cybersprocket.com/products/store-locator-plus/
 Tags: store locator, store locater, google, google maps, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator le, store locater le
 Requires at least: 3.0
 Tested up to: 3.2.1
-Stable tag: 1.9.56
+Stable tag: 1.9.57
 
 This plugin puts a search form and an interactive Google map on your site so you can show visitors your store locations.    
 
@@ -31,7 +31,7 @@ http://www.youtube.com/watch?v=ni_CrSoNr38
 
 = Want More? Try Store Locator Plus =
 
-Version 2.0 of [Store Locator Plus](http://www.cyberpsrocket.com/products/store-locator-plus/) has just been released with 78 new features and/or bug fixes. 
+Version 2.0 of [Store Locator Plus](http://www.cybersprocket.com/products/store-locator-plus/) has just been released with 78 new features and/or bug fixes. 
 The latest 2.0 release includes a new reporting system for tracking what your users are looking for in the map search forms and what results they retrieve.
 You also have control over almost every display element of the map including turning on/off the scroll wheel zoom, scale overlay, compass overlay, and more.
 
@@ -58,7 +58,7 @@ Learn more at: http://www.cybersprocket.com/
 
 = Related Links =
 
-* [Store Locator Plus](http://www.cyberpsrocket.com/products/store-locator-plus/) 
+* [Store Locator Plus](http://www.cybersprocket.com/products/store-locator-plus/) 
 * [Other Cyber Sprocket Plugins](http://wordpress.org/extend/plugins/profile/cybersprocket/) 
 * [Our Facebook Page](http://www.facebook.com/cyber.sprocket.labs)
 
@@ -107,6 +107,10 @@ custom styling.
 9. UI Map Result With Bubble
 
 == Changelog ==
+
+= 1.9.57 (September 28th 2011) =
+
+* Fix typo in readme URL.
 
 = 1.9.56 (September 28th 2011) = 
 
