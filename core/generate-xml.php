@@ -44,8 +44,8 @@ if (
 	(get_option(SLPLUS_PREFIX.'_show_tag_search') ==1) &&
 	isset($_GET['tags']) && ($_GET['tags'] != '')
    ){
-    $posted_tag = preg_replace('/\s+(.*?)/','$1',$_GET['tags']);
-    $posted_tag = preg_replace('/(.*?)\s+/','$1',$posted_tag);
+    $posted_tag = preg_replace('/^\s+(.*?)/','$1',$_GET['tags']);
+    $posted_tag = preg_replace('/(.*?)\s+$/','$1',$posted_tag);
 	$tag_filter = " AND ( sl_tags LIKE '%%". $posted_tag ."%%') ";
 }
 
@@ -86,7 +86,9 @@ if (get_option(SLPLUS_PREFIX.'-reporting_enabled') === 'on') {
     $slp_QueryID = mysql_insert_id();
 }
 
-
+// Show Tags
+//
+$slplus_show_tags = (get_option(SLPLUS_PREFIX.'_show_tags') ==1);
 
 // Start XML file, echo parent node
 echo "<markers>\n";
@@ -110,9 +112,9 @@ while ($row = @mysql_fetch_assoc($result)){
   echo 'hours="' . htmlentities($row['sl_hours']) . '" ';
   echo 'phone="' . htmlentities($row['sl_phone']) . '" ';
   echo 'image="' . htmlentities($row['sl_image']) . '" ';
-  if ($tag_filter != '') {
-  	  echo 'tags="'  . htmlentities($row['sl_tags']) . '" ';
-  }  	  
+  if ($slplus_show_tags) {  
+      echo 'tags="'  . htmlentities($row['sl_tags']) . '" ';
+  }
   echo "/>\n";
   
     // Reporting

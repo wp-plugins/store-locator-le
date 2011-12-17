@@ -1,10 +1,10 @@
-# Copyright (C) 2010 Store Locator Plus
+# Copyright (C) 2011 Cyber Sprocket Labs
 # This file is distributed under the same license as the Store Locator Plus package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Store Locator Plus 1.8.2\n"
-"Report-Msgid-Bugs-To: http://wordpress.org/tag/store-locator-plus\n"
-"POT-Creation-Date: 2011-05-12 02:13:04+00:00\n"
+"Project-Id-Version: Store Locator LE 1.9.57\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/store-locator-le\n"
+"POT-Creation-Date: 2011-12-17 15:13:40+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,548 +12,740 @@ msgstr ""
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
-#: variables.sl.php:15 view-locations.php:21 add-locations.php:46
-#: templates/map_settings.php:18 functions.sl.php:634 functions.sl.php:635
-msgid "Manage Locations"
+#: WPCSL-generic/classes/CSL-settings_class.php:23
+msgid "Save Changes"
 msgstr ""
 
-#: view-locations.php:23 view-locations.php:340 add-locations.php:44
-#: templates/map_settings.php:15 functions.sl.php:627 functions.sl.php:628
-msgid "Add Locations"
+#: WPCSL-generic/classes/CSL-settings_class.php:370
+msgid "The following optional add-ons are available"
 msgstr ""
 
-#: view-locations.php:33
-msgid "Google API Key needs to be set to activate this feature."
+#: WPCSL-generic/classes/CSL-themes_class.php:86
+#: WPCSL-generic/classes/CSL-plugin.php:691
+msgid "Display Settings"
 msgstr ""
 
-#: view-locations.php:137 view-locations.php:147
-msgid "Expanded"
+#: WPCSL-generic/classes/CSL-themes_class.php:87
+msgid "Select A Theme"
 msgstr ""
 
-#: view-locations.php:140 view-locations.php:146 map-designer.php:145
-msgid "Normal"
+#: WPCSL-generic/classes/CSL-themes_class.php:91
+msgid "How should the plugin UI elements look?"
 msgstr ""
 
-#: view-locations.php:155 view-locations.php:293 view-locations.php:299
-#: view-locations.php:303
-msgid "View"
+#: WPCSL-generic/classes/CSL-plugin.php:553
+msgid "DEBUG: No driver found."
 msgstr ""
 
-#: view-locations.php:164
-msgid "Search Locations"
+#: WPCSL-generic/classes/CSL-plugin.php:565
+#: WPCSL-generic/classes/CSL-plugin.php:566
+msgid "Support"
 msgstr ""
 
-#: view-locations.php:171
-msgid "Locations Per Page"
+#: WPCSL-generic/classes/CSL-plugin.php:569
+msgid "Purchase"
 msgstr ""
 
-#: view-locations.php:176 functions.sl.php:706
-msgid "Choose"
+#: WPCSL-generic/classes/CSL-plugin.php:570
+msgid "Buy Now"
 msgstr ""
 
-#: view-locations.php:190
-msgid "Delete Selected"
+#: WPCSL-generic/classes/CSL-plugin.php:573
+msgid "Settings"
 msgstr ""
 
-#: view-locations.php:190 view-locations.php:192
-msgid "You sure"
-msgstr ""
-
-#: view-locations.php:192 view-locations.php:220
-#: templates/add_location_address.php:44 functions.sl.php:713
-msgid "Tags"
-msgstr ""
-
-#: view-locations.php:192
-msgid "Tag Selected"
-msgstr ""
-
-#: view-locations.php:192
-msgid "Remove Tag From Selected"
-msgstr ""
-
-#: view-locations.php:212
-msgid "Actions"
-msgstr ""
-
-#: view-locations.php:213
-msgid "ID"
-msgstr ""
-
-#: view-locations.php:214 functions.sl.php:707
-msgid "Name"
-msgstr ""
-
-#: view-locations.php:215
-msgid "Street"
-msgstr ""
-
-#: view-locations.php:216
-msgid "Street2"
-msgstr ""
-
-#: view-locations.php:217 functions.sl.php:710
-msgid "City"
-msgstr ""
-
-#: view-locations.php:218 functions.sl.php:711
-msgid "State"
-msgstr ""
-
-#: view-locations.php:219 functions.sl.php:712
-msgid "Zip"
-msgstr ""
-
-#: view-locations.php:224 view-locations.php:273
-#: templates/add_location_address.php:41 functions.sl.php:714
-msgid "Description"
-msgstr ""
-
-#: view-locations.php:227 view-locations.php:275
-#: templates/add_location_address.php:48 functions.sl.php:716
-msgid "URL"
-msgstr ""
-
-#: view-locations.php:230 view-locations.php:276 view-locations.php:296
-msgid "Email"
-msgstr ""
-
-#: view-locations.php:233 view-locations.php:277
-#: templates/add_location_address.php:54 functions.sl.php:715
-msgid "Hours"
-msgstr ""
-
-#: view-locations.php:236 view-locations.php:278
-#: templates/add_location_address.php:57 functions.sl.php:717
-msgid "Phone"
-msgstr ""
-
-#: view-locations.php:239 functions.sl.php:718
-msgid "Image"
-msgstr ""
-
-#: view-locations.php:263
-msgid "Type&nbsp;Address"
-msgstr ""
-
-#: view-locations.php:270 map-designer.php:419
-msgid "Update"
-msgstr ""
-
-#: view-locations.php:270 functions.sl.php:700 functions.sl.php:737
-msgid "Cancel"
-msgstr ""
-
-#: view-locations.php:272 templates/add_location_address.php:39
-msgid "Additional Information"
-msgstr ""
-
-#: view-locations.php:274
-msgid "Tags (seperate with commas)"
-msgstr ""
-
-#: view-locations.php:279 templates/add_location_address.php:60
-msgid "Image URL (shown with location)"
-msgstr ""
-
-#: view-locations.php:309
-msgid "Edit"
-msgstr ""
-
-#: view-locations.php:312
-msgid "Delete"
-msgstr ""
-
-#: view-locations.php:336
-msgid "No Locations Showing for this Search of "
-msgstr ""
-
-#: view-locations.php:338
-msgid "No Locations Currently in Database"
-msgstr ""
-
-#: add-locations.php:73
-msgid "Added Succesfully"
-msgstr ""
-
-#: add-locations.php:125
-msgid "The CSV file has too many fields."
-msgstr ""
-
-#: add-locations.php:129
-msgid "Got %d expected less than %d."
-msgstr ""
-
-#: add-locations.php:142
-msgid "locations added succesfully."
-msgstr ""
-
-#: add-locations.php:148
-msgid "File could not be saved, check the plugin directory permissions:"
-msgstr ""
-
-#: add-locations.php:157
-msgid "Uploaded file needs to be in CSV format."
-msgstr ""
-
-#: include/config.php:52
-msgid "SimpleXML is required but not enabled."
-msgstr ""
-
-#: search-links.php:50
-msgid "for your search of"
-msgstr ""
-
-#: search-links.php:50
-msgid "Clear&nbsp;Results"
-msgstr ""
-
-#: search-links.php:57
-msgid "Results"
-msgstr ""
-
-#: search-links.php:59
-msgid "total"
-msgstr ""
-
-#: search-links.php:71
-msgid "Previous"
-msgstr ""
-
-#: search-links.php:82
-msgid "Next"
-msgstr ""
-
-#: templates/search_form.php:87
-msgid "Any"
-msgstr ""
-
-#: templates/edit_location_address.php:8 templates/add_location_address.php:14
-msgid "Name of Location"
-msgstr ""
-
-#: templates/edit_location_address.php:11
-#: templates/add_location_address.php:17
-msgid "Street - Line 1"
-msgstr ""
-
-#: templates/edit_location_address.php:14
-#: templates/add_location_address.php:20
-msgid "Street - Line 2"
-msgstr ""
-
-#: templates/edit_location_address.php:17
-#: templates/add_location_address.php:23
-msgid "City, State, ZIP"
-msgstr ""
-
-#: templates/edit_location_address.php:22
-#: templates/add_location_address.php:29
-msgid "Country"
-msgstr ""
-
-#: templates/map_settings.php:12 functions.sl.php:641 functions.sl.php:642
-msgid "Map Settings"
-msgstr ""
-
-#: templates/map_settings.php:27
-msgid "Search Settings"
-msgstr ""
-
-#: templates/map_settings.php:33
-msgid "Search Features"
-msgstr ""
-
-#: templates/map_settings.php:34
-msgid "Show Search By..."
-msgstr ""
-
-#: templates/map_settings.php:38
-msgid "City Pulldown"
-msgstr ""
-
-#: templates/map_settings.php:49
-msgid "Country Pulldown"
-msgstr ""
-
-#: templates/map_settings.php:60
-msgid "Tag Input"
-msgstr ""
-
-#: templates/map_settings.php:71
-msgid "Preselected Tag Searches"
-msgstr ""
-
-#: templates/map_settings.php:78
+#: WPCSL-generic/classes/CSL-plugin.php:734
 msgid ""
-"Enter a comma (,) separated list of tags to show in the search pulldown, "
-"mark the default selection with parenthesis '( )'. This is a default setting "
-"that can be overriden on each page within the shortcode."
+"Your PHP settings have disabled exec(), your locale list cannot be "
+"determined."
 msgstr ""
 
-#: templates/map_settings.php:85
-msgid "Show \"any\" on tag pulldown"
+#: WPCSL-generic/classes/CSL-plugin.php:751
+msgid "This is based on your current locale, which is set to "
 msgstr ""
 
-#: templates/map_settings.php:94
-msgid ""
-"If checked the tag pulldown list will have an 'any' option that returns any "
-"location."
+#: WPCSL-generic/classes/CSL-plugin.php:803
+msgid "DEBUG: Shortcode called with attributes:"
 msgstr ""
 
-#: templates/add_location_address.php:9
-msgid "Enter An Address"
+#: WPCSL-generic/classes/CSL-plugin.php:808
+msgid "DEBUG: Shortcode called with no attributes."
 msgstr ""
 
-#: templates/add_location_address.php:32 templates/add_location_address.php:64
-msgid "Add Location"
+#: WPCSL-generic/classes/CSL-plugin.php:889
+msgid "No products found"
 msgstr ""
 
-#: templates/add_location_address.php:51
-msgid "email"
+#: WPCSL-generic/classes/CSL-plugin.php:897
+msgid "DEBUG: Not OK To Show"
 msgstr ""
 
-#: templates/add_location_address.php:69
-msgid "Bulk Upload"
-msgstr ""
-
-#: templates/add_location_address.php:72
-msgid "Upload Locations"
-msgstr ""
-
-#: map-designer.php:71
+#: WPCSL-generic/core/map-designer.php:146 core/map-designer.php:146
 msgid "Successful Update"
 msgstr ""
 
-#: map-designer.php:146
+#: WPCSL-generic/core/map-designer.php:218
+#: WPCSL-generic/core/view-locations.php:139
+#: WPCSL-generic/core/view-locations.php:145 core/map-designer.php:218
+#: core/view-locations.php:144 core/view-locations.php:150
+msgid "Normal"
+msgstr ""
+
+#: WPCSL-generic/core/map-designer.php:219 core/map-designer.php:219
 msgid "Satellite"
 msgstr ""
 
-#: map-designer.php:147
+#: WPCSL-generic/core/map-designer.php:220 core/map-designer.php:220
 msgid "Hybrid"
 msgstr ""
 
-#: map-designer.php:148
+#: WPCSL-generic/core/map-designer.php:221 core/map-designer.php:221
 msgid "Physical"
 msgstr ""
 
-#: map-designer.php:215
+#: WPCSL-generic/core/map-designer.php:306 core/map-designer.php:306
 msgid ""
-"You have switched from <strong>'wordpress-store-locator-location-finder'</"
-"strong> to <strong>'store-locator'</strong> --- great!<br>Now, please re-"
-"select your <b>'Home Icon'</b> and <b>'Destination Icon'</b> below, so that "
-"they show up properly on your store locator map."
+"Please re-select your <b>Home Icon</b> and <b>Destination Icon</b> below, so "
+"that they show up properly on your map."
 msgstr ""
 
-#: map-designer.php:227
-msgid "Labels"
+#: WPCSL-generic/core/map-designer.php:333 core/map-designer.php:346
+msgid "Search Form"
 msgstr ""
 
-#: map-designer.php:231
-msgid "Address Input"
+#: WPCSL-generic/core/map-designer.php:345 core/map-designer.php:358
+msgid "Map"
 msgstr ""
 
-#: map-designer.php:235
-msgid "Label for search form address entry.</span>"
+#: WPCSL-generic/core/templates/settings_mapform.php:9
+#: WPCSL-generic/core/templates/settings_searchform.php:8
+#: core/templates/settings_mapform.php:9
+#: core/templates/settings_searchform.php:8
+msgid "Features"
 msgstr ""
 
-#: map-designer.php:241
-msgid "Search By Tag Label"
-msgstr ""
-
-#: map-designer.php:247
-msgid "Label for search form tags field.</span>"
-msgstr ""
-
-#: map-designer.php:253
-msgid "Radius Dropdown"
-msgstr ""
-
-#: map-designer.php:257
-msgid "Label for search form radius pulldown.</span>"
-msgstr ""
-
-#: map-designer.php:263
-msgid "Website URL"
-msgstr ""
-
-#: map-designer.php:267
-msgid "Label for website URL in search results.</span>"
-msgstr ""
-
-#: map-designer.php:273
-msgid "Instruction Message"
-msgstr ""
-
-#: map-designer.php:277
-msgid "Instruction text when map is first displayed.</span>"
-msgstr ""
-
-#: map-designer.php:288
-msgid "Map Designer"
-msgstr ""
-
-#: map-designer.php:295
-msgid "Defaults"
-msgstr ""
-
-#: map-designer.php:296
+#: WPCSL-generic/core/templates/settings_mapform.php:11
+#: core/templates/settings_mapform.php:11
 msgid "Default Map Type"
 msgstr ""
 
-#: map-designer.php:299
+#: WPCSL-generic/core/templates/settings_mapform.php:15
+#: core/templates/settings_mapform.php:15
 msgid "Show Map Inset Box"
 msgstr ""
 
-#: map-designer.php:302
+#: WPCSL-generic/core/templates/settings_mapform.php:20
+#: core/templates/settings_mapform.php:20
 msgid "Immediately Show Locations"
 msgstr ""
 
-#: map-designer.php:305
+#: WPCSL-generic/core/templates/settings_mapform.php:25
+#: core/templates/settings_mapform.php:25
 msgid "Default Locations Shown"
 msgstr ""
 
-#: map-designer.php:307
+#: WPCSL-generic/core/templates/settings_mapform.php:29
+#: core/templates/settings_mapform.php:29
 msgid "Recommended Max: 50"
 msgstr ""
 
-#: map-designer.php:310
-msgid "Starting Image"
-msgstr ""
-
-#: map-designer.php:312
-msgid "If set, this image will be displayed until a search is performed."
-msgstr ""
-
-#: map-designer.php:320
-msgid "Google Map Interface"
-msgstr ""
-
-#: map-designer.php:323
-msgid "Select Your Location"
-msgstr ""
-
-#: map-designer.php:335
-msgid "Select Character Encoding"
-msgstr ""
-
-#: map-designer.php:350
+#: WPCSL-generic/core/templates/settings_mapform.php:45
+#: core/templates/settings_mapform.php:45
 msgid "Dimensions"
 msgstr ""
 
-#: map-designer.php:352
+#: WPCSL-generic/core/templates/settings_mapform.php:48
+#: core/templates/settings_mapform.php:48
 msgid "Zoom Level"
 msgstr ""
 
-#: map-designer.php:354
-msgid "19=street level, 0=world view. Show locations overrides this setting."
+#: WPCSL-generic/core/templates/settings_mapform.php:52
+#: core/templates/settings_mapform.php:52
+msgid ""
+"19=street level, 0=world view. \"Immediately show locations\" will overrides "
+"this setting."
 msgstr ""
 
-#: map-designer.php:357
+#: WPCSL-generic/core/templates/settings_mapform.php:59
+#: core/templates/settings_mapform.php:59
 msgid "Map Height"
 msgstr ""
 
-#: map-designer.php:361
+#: WPCSL-generic/core/templates/settings_mapform.php:65
+#: core/templates/settings_mapform.php:65
 msgid "Map Width"
 msgstr ""
 
-#: map-designer.php:365
+#: WPCSL-generic/core/templates/settings_mapform.php:74
+#: core/templates/settings_mapform.php:74
+msgid "Icons"
+msgstr ""
+
+#: WPCSL-generic/core/templates/settings_mapform.php:78
+#: core/templates/settings_mapform.php:78
+msgid "Remove Credits"
+msgstr ""
+
+#: WPCSL-generic/core/templates/settings_mapform.php:83
+#: core/templates/settings_mapform.php:83
+msgid "Home Icon"
+msgstr ""
+
+#: WPCSL-generic/core/templates/settings_mapform.php:90
+#: core/templates/settings_mapform.php:90
+msgid "Destination Icon"
+msgstr ""
+
+#: WPCSL-generic/core/templates/settings_mapform.php:101
+#: WPCSL-generic/core/templates/edit_location_address.php:22
+#: WPCSL-generic/core/templates/add_location_address.php:29
+#: core/templates/settings_mapform.php:101
+#: core/templates/edit_location_address.php:22
+#: core/templates/add_location_address.php:29
+msgid "Country"
+msgstr ""
+
+#: WPCSL-generic/core/templates/settings_mapform.php:103
+#: core/templates/settings_mapform.php:103
+msgid "Select Your Location"
+msgstr ""
+
+#: WPCSL-generic/core/templates/settings_mapform.php:115
+#: core/templates/settings_mapform.php:115
+msgid "Select Character Encoding"
+msgstr ""
+
+#: WPCSL-generic/core/templates/search_form.php:87
+#: core/templates/search_form.php:87
+msgid "Any"
+msgstr ""
+
+#: WPCSL-generic/core/templates/edit_location_address.php:8
+#: WPCSL-generic/core/templates/add_location_address.php:14
+#: core/templates/edit_location_address.php:8
+#: core/templates/add_location_address.php:14
+msgid "Name of Location"
+msgstr ""
+
+#: WPCSL-generic/core/templates/edit_location_address.php:11
+#: WPCSL-generic/core/templates/add_location_address.php:17
+#: core/templates/edit_location_address.php:11
+#: core/templates/add_location_address.php:17
+msgid "Street - Line 1"
+msgstr ""
+
+#: WPCSL-generic/core/templates/edit_location_address.php:14
+#: WPCSL-generic/core/templates/add_location_address.php:20
+#: core/templates/edit_location_address.php:14
+#: core/templates/add_location_address.php:20
+msgid "Street - Line 2"
+msgstr ""
+
+#: WPCSL-generic/core/templates/edit_location_address.php:17
+#: WPCSL-generic/core/templates/add_location_address.php:23
+#: core/templates/edit_location_address.php:17
+#: core/templates/add_location_address.php:23
+msgid "City, State, ZIP"
+msgstr ""
+
+#: WPCSL-generic/core/templates/settings_searchform.php:12
+#: core/templates/settings_searchform.php:12
+msgid "Show City Pulldown"
+msgstr ""
+
+#: WPCSL-generic/core/templates/settings_searchform.php:22
+#: core/templates/settings_searchform.php:22
 msgid "Radii Options"
 msgstr ""
 
-#: map-designer.php:368
+#: WPCSL-generic/core/templates/settings_searchform.php:26
+#: core/templates/settings_searchform.php:26
 msgid ""
 "Separate each number with a comma ','. Put parenthesis '( )' around the "
 "default.</span>"
 msgstr ""
 
-#: map-designer.php:372
+#: WPCSL-generic/core/templates/settings_searchform.php:32
+#: core/templates/settings_searchform.php:32
 msgid "Distance Unit"
 msgstr ""
 
-#: map-designer.php:375
+#: WPCSL-generic/core/templates/settings_searchform.php:35
+#: core/templates/settings_searchform.php:35
 msgid "Kilometers"
 msgstr ""
 
-#: map-designer.php:376
+#: WPCSL-generic/core/templates/settings_searchform.php:36
+#: core/templates/settings_searchform.php:36
 msgid "Miles"
 msgstr ""
 
-#: map-designer.php:389
-msgid "Design"
+#: WPCSL-generic/core/templates/settings_searchform.php:58
+#: core/templates/map_settings.php:56
+#: core/templates/settings_searchform.php:58
+msgid "Labels"
 msgstr ""
 
-#: map-designer.php:395
-msgid "Remove Credits"
+#: WPCSL-generic/core/templates/settings_searchform.php:61
+#: core/templates/map_settings.php:59
+#: core/templates/settings_searchform.php:61
+msgid "Address Input"
 msgstr ""
 
-#: map-designer.php:402
-msgid "Home Icon"
+#: WPCSL-generic/core/templates/settings_searchform.php:65
+#: core/templates/map_settings.php:61
+#: core/templates/settings_searchform.php:65
+msgid "Label for search form address entry."
 msgstr ""
 
-#: map-designer.php:411
-msgid "Destination Icon"
+#: WPCSL-generic/core/templates/settings_searchform.php:77
+#: core/templates/map_settings.php:71
+#: core/templates/settings_searchform.php:77
+msgid "Radius Dropdown"
 msgstr ""
 
-#: WPCSL-generic/classes/CSL-settings_class.php:341
-msgid "Save Changes"
+#: WPCSL-generic/core/templates/settings_searchform.php:81
+#: core/templates/map_settings.php:73
+#: core/templates/settings_searchform.php:81
+msgid "Label for search form radius pulldown."
 msgstr ""
 
-#: WPCSL-generic/classes/CSL-plugin.php:460
-msgid "Settings"
+#: WPCSL-generic/core/templates/settings_searchform.php:87
+#: core/templates/map_settings.php:77
+#: core/templates/settings_searchform.php:87
+msgid "Website URL"
 msgstr ""
 
-#: WPCSL-generic/classes/CSL-plugin.php:462
-#: WPCSL-generic/classes/CSL-plugin.php:463
-msgid "Support"
+#: WPCSL-generic/core/templates/settings_searchform.php:91
+#: core/templates/map_settings.php:79
+#: core/templates/settings_searchform.php:91
+msgid "Label for website URL in search results."
 msgstr ""
 
-#: WPCSL-generic/classes/CSL-plugin.php:466
-#: WPCSL-generic/classes/CSL-plugin.php:467
-msgid "Purchase"
+#: WPCSL-generic/core/templates/settings_searchform.php:97
+#: core/templates/map_settings.php:83
+#: core/templates/settings_searchform.php:97
+msgid "Instruction Message"
 msgstr ""
 
-#: functions.sl.php:620 functions.sl.php:621
-msgid "SLP Locations"
+#: WPCSL-generic/core/templates/settings_searchform.php:101
+#: core/templates/map_settings.php:85
+#: core/templates/settings_searchform.php:101
+msgid "Instruction text when map is first displayed."
 msgstr ""
 
-#: functions.sl.php:698
+#: WPCSL-generic/core/templates/email_form.php:5
+#: core/templates/email_form.php:5
+msgid "From"
+msgstr ""
+
+#: WPCSL-generic/core/templates/email_form.php:12
+#: core/templates/email_form.php:12
+msgid "To"
+msgstr ""
+
+#: WPCSL-generic/core/templates/email_form.php:19
+#: core/templates/email_form.php:19
+msgid "Subject"
+msgstr ""
+
+#: WPCSL-generic/core/templates/email_form.php:26
+#: core/templates/email_form.php:26
+msgid "Message"
+msgstr ""
+
+#: WPCSL-generic/core/templates/add_location_address.php:9
+#: core/templates/add_location_address.php:9
+msgid "Enter An Address"
+msgstr ""
+
+#: WPCSL-generic/core/templates/add_location_address.php:32
+#: WPCSL-generic/core/templates/add_location_address.php:64
+#: core/templates/add_location_address.php:32
+#: core/templates/add_location_address.php:64
+msgid "Add Location"
+msgstr ""
+
+#: WPCSL-generic/core/templates/add_location_address.php:39
+#: WPCSL-generic/core/view-locations.php:271
+#: core/templates/add_location_address.php:39 core/view-locations.php:276
+msgid "Additional Information"
+msgstr ""
+
+#: WPCSL-generic/core/templates/add_location_address.php:41
+#: WPCSL-generic/core/view-locations.php:223
+#: WPCSL-generic/core/view-locations.php:272
+#: WPCSL-generic/core/functions.sl.php:776
+#: core/templates/add_location_address.php:41 core/view-locations.php:228
+#: core/view-locations.php:277 core/functions.sl.php:782
+msgid "Description"
+msgstr ""
+
+#: WPCSL-generic/core/templates/add_location_address.php:44
+#: WPCSL-generic/core/view-locations.php:191
+#: WPCSL-generic/core/view-locations.php:219
+#: WPCSL-generic/core/functions.sl.php:775
+#: core/templates/add_location_address.php:44 core/view-locations.php:196
+#: core/view-locations.php:224 core/functions.sl.php:781
+msgid "Tags"
+msgstr ""
+
+#: WPCSL-generic/core/templates/add_location_address.php:48
+#: WPCSL-generic/core/view-locations.php:226
+#: WPCSL-generic/core/view-locations.php:274
+#: WPCSL-generic/core/functions.sl.php:778
+#: core/templates/add_location_address.php:48 core/view-locations.php:231
+#: core/view-locations.php:279 core/functions.sl.php:784
+msgid "URL"
+msgstr ""
+
+#: WPCSL-generic/core/templates/add_location_address.php:51
+#: core/templates/add_location_address.php:51
+msgid "email"
+msgstr ""
+
+#: WPCSL-generic/core/templates/add_location_address.php:54
+#: WPCSL-generic/core/view-locations.php:232
+#: WPCSL-generic/core/view-locations.php:276
+#: WPCSL-generic/core/functions.sl.php:777
+#: core/templates/add_location_address.php:54 core/view-locations.php:237
+#: core/view-locations.php:281 core/functions.sl.php:783
+msgid "Hours"
+msgstr ""
+
+#: WPCSL-generic/core/templates/add_location_address.php:57
+#: WPCSL-generic/core/view-locations.php:235
+#: WPCSL-generic/core/view-locations.php:277
+#: WPCSL-generic/core/functions.sl.php:779
+#: core/templates/add_location_address.php:57 core/view-locations.php:240
+#: core/view-locations.php:282 core/functions.sl.php:785
+msgid "Phone"
+msgstr ""
+
+#: WPCSL-generic/core/templates/add_location_address.php:60
+#: WPCSL-generic/core/view-locations.php:278
+#: core/templates/add_location_address.php:60 core/view-locations.php:283
+msgid "Image URL (shown with location)"
+msgstr ""
+
+#: WPCSL-generic/core/csl_helpers.php:22
+msgid "SimpleXML is required but not enabled."
+msgstr ""
+
+#: WPCSL-generic/core/csl_helpers.php:90 core/csl_helpers.php:120
+msgid "These settings affect how the reporting system behaves. "
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:21
+#: WPCSL-generic/core/functions.sl.php:685
+#: WPCSL-generic/core/functions.sl.php:686
+#: WPCSL-generic/core/variables.sl.php:15
+#: WPCSL-generic/core/add-locations.php:31 core/templates/map_settings.php:16
+#: core/functions.sl.php:690 core/functions.sl.php:691
+#: core/variables.sl.php:14
+msgid "Manage Locations"
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:23
+#: WPCSL-generic/core/view-locations.php:339
+#: WPCSL-generic/core/functions.sl.php:678
+#: WPCSL-generic/core/functions.sl.php:679
+#: WPCSL-generic/core/add-locations.php:29 core/templates/map_settings.php:13
+#: core/view-locations.php:344 core/functions.sl.php:683
+#: core/functions.sl.php:684
+msgid "Add Locations"
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:33 core/view-locations.php:38
+msgid "Google API Key needs to be set to activate this feature."
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:136
+#: WPCSL-generic/core/view-locations.php:146 core/view-locations.php:141
+#: core/view-locations.php:151
+msgid "Expanded"
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:154
+#: WPCSL-generic/core/view-locations.php:292
+#: WPCSL-generic/core/view-locations.php:298
+#: WPCSL-generic/core/view-locations.php:302 core/view-locations.php:159
+#: core/view-locations.php:297 core/view-locations.php:303
+#: core/view-locations.php:307
+msgid "View"
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:163 core/view-locations.php:168
+msgid "Search Locations"
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:170 core/view-locations.php:175
+msgid "Locations Per Page"
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:175
+#: WPCSL-generic/core/functions.sl.php:768 core/view-locations.php:180
+#: core/functions.sl.php:774
+msgid "Choose"
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:189 core/view-locations.php:194
+msgid "Delete Selected"
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:189
+#: WPCSL-generic/core/view-locations.php:191 core/view-locations.php:194
+#: core/view-locations.php:196
+msgid "You sure"
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:191 core/view-locations.php:196
+msgid "Tag Selected"
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:191 core/view-locations.php:196
+msgid "Remove Tag From Selected"
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:211 core/view-locations.php:216
+msgid "Actions"
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:212 core/view-locations.php:217
+msgid "ID"
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:213
+#: WPCSL-generic/core/functions.sl.php:769 core/view-locations.php:218
+#: core/functions.sl.php:775
+msgid "Name"
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:214 core/view-locations.php:219
+msgid "Street"
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:215 core/view-locations.php:220
+msgid "Street2"
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:216
+#: WPCSL-generic/core/functions.sl.php:772 core/view-locations.php:221
+#: core/functions.sl.php:778
+msgid "City"
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:217
+#: WPCSL-generic/core/functions.sl.php:773 core/view-locations.php:222
+#: core/functions.sl.php:779
+msgid "State"
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:218
+#: WPCSL-generic/core/functions.sl.php:774 core/view-locations.php:223
+#: core/functions.sl.php:780
+msgid "Zip"
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:229
+#: WPCSL-generic/core/view-locations.php:275
+#: WPCSL-generic/core/view-locations.php:295 core/view-locations.php:234
+#: core/view-locations.php:280 core/view-locations.php:300
+msgid "Email"
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:238
+#: WPCSL-generic/core/functions.sl.php:780 core/view-locations.php:243
+#: core/functions.sl.php:786
+msgid "Image"
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:262 core/view-locations.php:267
+msgid "Type&nbsp;Address"
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:269 core/view-locations.php:274
+msgid "Update"
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:269
+#: WPCSL-generic/core/functions.sl.php:762
+#: WPCSL-generic/core/functions.sl.php:799 core/view-locations.php:274
+#: core/functions.sl.php:768 core/functions.sl.php:805
+msgid "Cancel"
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:273 core/view-locations.php:278
+msgid "Tags (seperate with commas)"
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:308 core/view-locations.php:313
+msgid "Edit"
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:311 core/view-locations.php:316
+msgid "Delete"
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:335 core/view-locations.php:340
+msgid "No Locations Showing for this Search of "
+msgstr ""
+
+#: WPCSL-generic/core/view-locations.php:337 core/view-locations.php:342
+msgid "No Locations Currently in Database"
+msgstr ""
+
+#: WPCSL-generic/core/functions.sl.php:281 core/functions.sl.php:270
+msgid "Could not add/update address.  Error: %s."
+msgstr ""
+
+#: WPCSL-generic/core/functions.sl.php:291
+#: WPCSL-generic/core/functions.sl.php:300
+#: WPCSL-generic/core/functions.sl.php:307 core/functions.sl.php:280
+#: core/functions.sl.php:289 core/functions.sl.php:296
+msgid "Address %s <font color=red>failed to geocode</font>. "
+msgstr ""
+
+#: WPCSL-generic/core/functions.sl.php:292
+#: WPCSL-generic/core/functions.sl.php:308 core/functions.sl.php:281
+#: core/functions.sl.php:297
+msgid "Received status %s."
+msgstr ""
+
+#: WPCSL-generic/core/functions.sl.php:301 core/functions.sl.php:290
+msgid "Unknown Address! Received status %s."
+msgstr ""
+
+#: WPCSL-generic/core/functions.sl.php:692
+#: WPCSL-generic/core/functions.sl.php:693 core/templates/map_settings.php:10
+#: core/functions.sl.php:697 core/functions.sl.php:698
+msgid "Map Settings"
+msgstr ""
+
+#: WPCSL-generic/core/functions.sl.php:703
+#: WPCSL-generic/core/functions.sl.php:704 core/functions.sl.php:708
+#: core/functions.sl.php:709
+msgid "Reports"
+msgstr ""
+
+#: WPCSL-generic/core/functions.sl.php:760 core/functions.sl.php:766
 msgid "Choose Heading That Matches Columns You Want to Import"
 msgstr ""
 
-#: functions.sl.php:698
+#: WPCSL-generic/core/functions.sl.php:760 core/functions.sl.php:766
 msgid "Leave headings for undesired columns unchanged"
 msgstr ""
 
-#: functions.sl.php:700 functions.sl.php:737
+#: WPCSL-generic/core/functions.sl.php:762
+#: WPCSL-generic/core/functions.sl.php:799 core/functions.sl.php:768
+#: core/functions.sl.php:805
 msgid "Import Locations"
 msgstr ""
 
-#: functions.sl.php:708
+#: WPCSL-generic/core/functions.sl.php:770 core/functions.sl.php:776
 msgid "Street(Line1)"
 msgstr ""
 
-#: functions.sl.php:709
+#: WPCSL-generic/core/functions.sl.php:771 core/functions.sl.php:777
 msgid "Street(Line2)"
 msgstr ""
 
-#: functions.sl.php:719
+#: WPCSL-generic/core/functions.sl.php:781 core/functions.sl.php:787
 msgid "Is Private?"
 msgstr ""
 
+#: WPCSL-generic/core/search-links.php:55 core/search-links.php:55
+msgid "for your search of"
+msgstr ""
+
+#: WPCSL-generic/core/search-links.php:57 core/search-links.php:57
+msgid "Clear&nbsp;Results"
+msgstr ""
+
+#: WPCSL-generic/core/search-links.php:65 core/search-links.php:65
+msgid "Results"
+msgstr ""
+
+#: WPCSL-generic/core/search-links.php:67 core/search-links.php:67
+msgid "total"
+msgstr ""
+
+#: WPCSL-generic/core/search-links.php:79 core/search-links.php:79
+msgid "Previous"
+msgstr ""
+
+#: WPCSL-generic/core/search-links.php:90 core/search-links.php:90
+msgid "Next"
+msgstr ""
+
+#: WPCSL-generic/core/add-locations.php:58 core/add-locations.php:62
+msgid "Added Succesfully"
+msgstr ""
+
+#: WPCSL-generic/core/add-locations.php:112 core/add-locations.php:116
+msgid "The CSV file has too many fields."
+msgstr ""
+
+#: WPCSL-generic/core/add-locations.php:116 core/add-locations.php:120
+msgid "Got %d expected less than %d."
+msgstr ""
+
+#: WPCSL-generic/core/add-locations.php:129 core/add-locations.php:133
+msgid "locations added succesfully."
+msgstr ""
+
+#: WPCSL-generic/core/add-locations.php:135 core/add-locations.php:139
+msgid "File could not be saved, check the plugin directory permissions:"
+msgstr ""
+
+#: WPCSL-generic/core/add-locations.php:144 core/add-locations.php:148
+msgid "Uploaded file needs to be in CSV format."
+msgstr ""
+
+#: core/map-designer.php:383
+msgid "Plugin Info"
+msgstr ""
+
+#: core/templates/map_settings.php:25
+msgid "Search Settings"
+msgstr ""
+
+#: core/templates/map_settings.php:31
+msgid "Search Features"
+msgstr ""
+
+#: core/templates/map_settings.php:32
+msgid "Show Search By..."
+msgstr ""
+
+#: core/templates/map_settings.php:36
+msgid "City Pulldown"
+msgstr ""
+
+#: core/templates/map_settings.php:91
+msgid "Map Designer"
+msgstr ""
+
+#: core/view-locations.php:21
+msgid "Store Locator Plus - Manage Locations"
+msgstr ""
+
+#: core/add-locations.php:29
+msgid "Store Locator Plus - Add Locations"
+msgstr ""
+
 #. Plugin Name of the plugin/theme
-msgid "Store Locator Plus"
+msgid "Store Locator LE"
 msgstr ""
 
 #. Plugin URI of the plugin/theme
-msgid "http://www.cybersprocket.com/products/store-locator-plus/"
+msgid "http://www.cybersprocket.com/products/store-locator-le/"
 msgstr ""
 
 #. Description of the plugin/theme
 msgid ""
-"Store Locator Plus is based on the popular Google Maps Store Locator with a "
-"few customizations we needed for our clients. Hopefully other WordPress "
-"users will find our additions useful."
+"An advanced store management interface with a front-end search form. "
+"Visitors can find your closest stores via the included Google Map generator."
 msgstr ""
 
 #. Author of the plugin/theme

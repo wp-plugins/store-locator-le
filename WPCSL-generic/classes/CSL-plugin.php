@@ -8,7 +8,7 @@
 * share a code libary and reduce code redundancy.
 * 
 ************************************************************************/
-define('WPCSL__slplus__VERSION', '1.4.14');
+define('WPCSL__slplus__VERSION', '1.5.1');
 
 // (LC) 
 // These helper files should only be loaded if needed by the plugin
@@ -134,11 +134,13 @@ class wpCSL_plugin__slplus {
             'url' => 'options-general.php?page='.$this->prefix.'-options',
         );
         
-        $this->products_config = array(
-            'prefix'            => $this->prefix,
-            'css_prefix'        => $this->css_prefix,
-            'columns'           => $this->columns,
-         );
+        if ($this->driver_type != 'none') {
+            $this->products_config = array(
+                'prefix'            => $this->prefix,
+                'css_prefix'        => $this->css_prefix,
+                'columns'           => $this->columns,
+             );
+        }            
 
         $this->settings_config = array(
             'prefix'            => $this->prefix,
@@ -171,7 +173,8 @@ class wpCSL_plugin__slplus {
         $this->themes_config = array(
             'prefix'        => $this->prefix,
             'plugin_path'   => $this->plugin_path,
-            'plugin_url'    => $this->plugin_url,                
+            'plugin_url'    => $this->plugin_url,  
+            'support_url'   => $this->support_url
         );
 
         $this->initialize();
@@ -388,6 +391,10 @@ class wpCSL_plugin__slplus {
      ** method: create_objects
      **/
     function create_objects() {
+        
+        // use_obj_defaults is set, use the invoke the default 
+        // set of wpCSL objects
+        //
         if (isset($this->use_obj_defaults) && $this->use_obj_defaults) {
             $this->create_helper('default');
             $this->create_notifications('default');
@@ -395,7 +402,10 @@ class wpCSL_plugin__slplus {
             $this->create_settings('default');
             if ($this->has_packages || !$this->no_license) { $this->create_license('default'); }
             $this->create_cache('default');
-            $this->create_themes('default'); 
+            $this->create_themes('default');
+            
+        // Custom objects are in place
+        //
         } else {
             if (isset($this->helper_obj_name))
                 $this->create_helper($this->helper_obj_name);
@@ -510,10 +520,12 @@ class wpCSL_plugin__slplus {
             add_action('admin_init', array($this, 'admin_init'),50);
             add_action('admin_notices', array($this->notifications, 'display'));          
         } else {
-            // non-admin enqueues, actions, and filters
-            add_action('wp_head', array($this, 'checks'));
-            add_filter('wp_print_scripts', array($this, 'user_header_js'));
-            add_filter('wp_print_styles', array($this, 'user_header_css'));
+            if (!$this->themes_enabled) {
+                // non-admin enqueues, actions, and filters
+                add_action('wp_head', array($this, 'checks'));
+                add_filter('wp_print_scripts', array($this, 'user_header_js'));
+                add_filter('wp_print_styles', array($this, 'user_header_css'));
+            }
         }
 
         add_filter('plugin_row_meta', array($this, 'add_meta_links'), 10, 2);
@@ -642,7 +654,16 @@ class wpCSL_plugin__slplus {
                         $this->notifications->add_notice(1, $e->getMessage());
                     }
                 }
-            }
+
+            // No Driver Found
+            //
+            } else {
+                if ($this->debugging) {
+                    print __('DEBUG: could not locate driver:', $this->prefix) . 
+                        $this->plugin_path . 'Custom/Drivers/'. $this->driver_name .'.php' .
+                        "<br/>\n";                                        
+                }
+            }                
         }
 
         // The driver class should now exist, let's load it's definition
@@ -657,6 +678,7 @@ class wpCSL_plugin__slplus {
                                 'http_handler'  => $this->http_handler,
                                 'debugging'     => $this->debugging,
                                 'prefix'        => $this->prefix,
+                                'parent'        => $this
                                 ),
                             $this->driver_args
                             );
@@ -666,6 +688,7 @@ class wpCSL_plugin__slplus {
                                 'http_handler'  => $this->http_handler,
                                 'debugging'     => $this->debugging,
                                 'prefix'        => $this->prefix,
+                                'parent'        => $this
                                 );
                 }
 
@@ -776,15 +799,30 @@ class wpCSL_plugin__slplus {
      * the driver class.
      *
      **/
-    function display_objects($objectlist) {
+    function display_objects($objectlist = NULL) {
         $HTML_to_display = 'Could not figure out how to display the data for this shortcode.';
         if ( is_callable(array($this->driver,'render_objects_to_HTML'), true)) {
             $HTML_to_display = $this->driver->render_objects_to_HTML($objectlist);
         }
         return $HTML_to_display;
     }
-
-
+    
+    /**-------------------------------------
+     ** method: render_shortcode
+     **
+     ** process the shortcode for custom data drivers
+     ** should get back an HTML string to replace the shortcode with
+     **
+     **/
+    function render_shortcode($atts) {
+        $HTML_to_display = 'Could not figure out how to display this shortcode.';
+        if ( is_callable(array($this->driver,'render_shortcode_as_HTML'), true)) {
+            $HTML_to_display = $this->driver->render_shortcode_as_HTML($atts);
+        }
+        return $HTML_to_display;
+    }
+    
+    
     /**-------------------------------------
      * Method: SHORTCODE_SHOW_ITEMS
      *
@@ -795,6 +833,7 @@ class wpCSL_plugin__slplus {
      */
     function shortcode_show_items($atts, $content = NULL) {
         if ( $this->ok_to_show() ) {
+            $content = '';
 
             // Debugging
             //
@@ -836,60 +875,20 @@ class wpCSL_plugin__slplus {
                 $this->driver->set_default_option_values($defaults);
             }
 
-
-            
-            // Fetch the products
-            // Check the cache first, then go direct to the source
+            // Render a list of objects to HTML (usually products)
             //
-            if (isset($this->cache) && get_option($this->prefix.'-cache_enable')) {
-                if (!($products = $this->cache->load(md5(implode(',',$atts)))) ) {
-                    $products = $this->driver->get_products($atts);
-                }
-            } else {
-                try {
-                    $products = $this->driver->get_products($atts);
-                }
+            if (
+                ($this->driver_type == 'Panhandler') ||
+                ($this->driver_type == 'product')
+                ) {
+                $content = $this->render_object_list($atts);
 
-                // Deal with errors
-                // These should probably be posted to the notifications system...
-                catch (PanhandlerError $error) {
-                    return $error->message;
-                }
+            // Custom data driver
+            //
+            } elseif ($this->driver_type == 'custom') {
+                $content = $this->render_shortcode($atts);            
             }
 
-            // If there was an error show that and exit,
-            // otherwise save the returned data to the cache if it is enabled
-            //
-            if (is_a($products, 'PanhandlerError')) return $products->message;
-            else {
-                if (isset($this->cache) && get_option($this->prefix.'-cache_enable')) {
-                    $this->cache->save(md5(implode(',',$atts)), $products);
-                }
-            }
-
-            // If there are products, return the HTML that will display them
-            // otherwise return the simple "No products found" message.
-            //
-            if (count($products) > 0) {
-
-                // Legacy Panhandler Stuff
-                //
-                if (is_a($products[0], 'PanhandlerProduct')) {
-                    $content = $this->products->display_products($products);
-
-                    // Object Display, yes Panhandler appendages
-                    // still abound leaving us with a $products var name
-                    // for now.
-                    //
-                } else {
-                    $content = $this->display_objects($products);
-                }
-
-            } else {
-                $content= __('No products found', $this->prefix);
-            }
-
-            return $content;
             
         // Not OK TO Show
         } else {
@@ -897,6 +896,75 @@ class wpCSL_plugin__slplus {
                 $content = __('DEBUG: Not OK To Show',$this->prefix);
             }
         }
+        return $content;
+    }
+    
+    /**-------------------------------------
+     ** method: render_object_list
+     **
+     ** Show products via the shortcode processor.
+     **
+     ** This is legacy code that came out of shortcode_show_items.
+     ** It was separated to continue the generalization of wpCSL.
+     **
+     ** returns: a string that represents the product info in HTML format
+     **
+     **/
+    function render_object_list($atts) {
+        // Fetch the products
+        // Check the cache first, then go direct to the source
+        //
+        if (isset($this->cache) && get_option($this->prefix.'-cache_enable')) {
+            if (!($products = $this->cache->load(md5(implode(',',(array)$atts)))) ) {
+                $products = $this->driver->get_products($atts);
+            }
+        } else {
+            try {
+                $products = $this->driver->get_products($atts);
+            }
+
+            // Deal with errors
+            // These should probably be posted to the notifications system...
+            catch (PanhandlerError $error) {
+                return $error->message;
+            }
+        }
+
+        // If there was an error show that and exit,
+        // otherwise save the returned data to the cache if it is enabled
+        //
+        if (is_a($products, 'PanhandlerError')) return $products->message;
+        else {
+            if (isset($this->cache) && get_option($this->prefix.'-cache_enable')) {
+                $this->cache->save(md5(implode(',', (array)$atts)), $products);
+            }
+        }
+
+        // If there are products, return the HTML that will display them
+        // otherwise return the simple "No products found" message.
+        //
+        if (count($products) > 0) {
+
+            // Legacy Panhandler Stuff
+            //
+            if (is_a($products[0], 'PanhandlerProduct')) {
+                $content = $this->products->display_products($products);
+
+                // Object Display, yes Panhandler appendages
+                // still abound leaving us with a $products var name
+                // for now.
+                //
+            } else {
+                $content = $this->display_objects($products);
+            }   
+            
+        // No products, show an error message as the output
+        //
+        } else {
+            $content= __('No products found', $this->prefix);
+        }
+
+        return $content;            
     }
 
     /**-------------------------------------

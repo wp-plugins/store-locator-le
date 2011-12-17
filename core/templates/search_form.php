@@ -1,7 +1,8 @@
 <?php
   global $search_label, $width, $height, $width_units, $height_units, $hide,
       $sl_radius, $sl_radius_label, $text_domain, $r_options, $button_style,
-      $sl_instruction_message, $cs_options, $country_options, $prefix, $fnvars;
+      $sl_instruction_message, $cs_options, $slplus_state_options, $country_options, 
+      $prefix, $fnvars, $slplus_plugin;
 ?>
 <div id='sl_div'>
   <form onsubmit='searchLocations(); return false;' id='searchForm' action=''>
@@ -28,6 +29,21 @@
             
             <?php
             //------------------------------------------------
+            // Show State Pulldown Is Enabled
+            //
+            if ($slplus_state_options != '') { 
+            ?>
+            <div id='addy_in_state'>
+                <select id='addressInputState' 
+                    onchange='aI=document.getElementById("searchForm").addressInput;if(this.value!=""){oldvalue=aI.value;aI.value=this.value;}else{aI.value=oldvalue;}'>
+                    <option value=''>--Search By State--</option>
+                    <?php echo $slplus_state_options?>
+                </select>
+            </div>
+            <?php } ?>            
+            
+            <?php
+            //------------------------------------------------
             // Show Country Pulldown Is Enabled
             //
             if ($country_options != '') { 
@@ -45,7 +61,8 @@
             //------------------------------------------------
             // Show Tag Search Is Enabled
             //
-            if (get_option(SLPLUS_PREFIX.'_show_tag_search') ==1) {                
+            if ($slplus_plugin->license->packages['Plus Pack']->isenabled) {                                    
+                if (get_option(SLPLUS_PREFIX.'_show_tag_search') ==1) {                
             ?>
             <div id='search_by_tag' class='search_item' <?php if (isset($fnvars['only_with_tag'])) { print "style='display:none;'"; }?>>   
                 <label for='tag_to_search_for'><?php 
@@ -99,7 +116,9 @@
                     }                        
                 ?>
             </div>	   
-	   <?php } ?>
+	   <?php     }
+	        }
+	   ?>
 	   
             <?php
             //------------------------------------------------

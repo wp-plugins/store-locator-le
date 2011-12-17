@@ -96,6 +96,7 @@ if (!$_POST) {
     update_option('sl_website_label', $_POST['sl_website_label']);
     update_option('sl_instruction_message', $_POST['sl_instruction_message']);
     update_option('sl_zoom_level', $_POST['zoom_level']);
+    update_option('sl_zoom_tweak', $_POST['zoom_tweak']);
     update_option('sl_map_type', $_POST['sl_map_type']);
     update_option('sl_num_initial_displayed', $_POST['sl_num_initial_displayed']);    
     update_option('sl_distance_unit', $_POST['sl_distance_unit']);
@@ -112,7 +113,9 @@ if (!$_POST) {
     #
     $_POST['sl_use_city_search']=isset($_POST['sl_use_city_search'])?1:0;
     update_option('sl_use_city_search',$_POST['sl_use_city_search']);
-
+            
+    $_POST['slplus_show_state_pd']=isset($_POST['slplus_show_state_pd'])?1:0;
+    update_option('slplus_show_state_pd',$_POST['slplus_show_state_pd']);
     
     $_POST['sl_use_country_search']=isset($_POST['sl_use_country_search'])?1:0;
     update_option('sl_use_country_search',$_POST['sl_use_country_search']);
@@ -130,6 +133,7 @@ if (!$_POST) {
         '_show_tag_search',
         '_show_tag_any',
         '_email_form',
+        '_show_tags',
         '_disable_scrollwheel',
         '_disable_initialdirectory',
         '_disable_largemapcontrol3d',
@@ -237,16 +241,36 @@ $zl[]=0;$zl[]=1;$zl[]=2;$zl[]=3;$zl[]=4;$zl[]=5;$zl[]=6;$zl[]=7;$zl[]=8;
 $zl[]=9;$zl[]=10;$zl[]=11;$zl[]=12;$zl[]=13;$zl[]=14;$zl[]=15;$zl[]=16;
 $zl[]=17;$zl[]=18;$zl[]=19;
 
+
+// Zoom Level
+//
+$slp_current_setting = get_option('sl_zoom_level');
+if ($slp_current_setting == '') { $slp_current_setting = 4; }
 $zoom="<select name='zoom_level'>";
 foreach ($zl as $value) {
 	$zoom.="<option value='$value' ";
-	if (get_option('sl_zoom_level')==$value){ $zoom.=" selected ";}
+	if ($slp_current_setting==$value){ $zoom.=" selected ";}
 	$zoom.=">$value</option>";
 }
 $zoom.="</select>";
 
+// Zoom Adjustment
+//
+$slp_current_setting = get_option('sl_zoom_tweak');
+if ($slp_current_setting == '') { $slp_current_setting = 4; }
+$zoom_adj="<select name='zoom_tweak'>";
+foreach ($zl as $value) {
+	$zoom_adj.="<option value='$value' ";
+	if ($slp_current_setting==$value){ $zoom_adj.=" selected ";}
+	$zoom_adj.=">$value</option>";
+}
+$zoom_adj.="</select>";
+
+// Map Type
+//
+$slp_current_setting = get_option('sl_map_type');
 foreach($map_type as $key=>$value) {
-	$selected2=(get_option('sl_map_type')==$value)? " selected " : "";
+	$selected2=($slp_current_setting==$value)? " selected " : "";
 	$map_type_options.="<option value='$value' $selected2>$key</option>\n";
 }
 

@@ -373,6 +373,7 @@ class wpCSL_settings__slplus {
                 $content .= '<th class="input_label optionpack">'.$package->name.'</th>';
                 $content .= '<td class="optionpack">'.$this->EnabledOrBuymeString($license_ok,$package).'</td>';
             }
+
             $content .= '</tr>';
         }
         
@@ -387,7 +388,6 @@ class wpCSL_settings__slplus {
                 $this->generate_save_button_string().
                 '</td></tr>';
         }
-        
 
         echo $content;                
     }
@@ -406,23 +406,41 @@ class wpCSL_settings__slplus {
             
             // Check if package is licensed now.
             //
-            if (!$package->isenabled) {
-                $package->isenabled = 
-                    $package->parent->check_license_key(
-                        $package->sku, 
-                        true,
-                        ($this->has_packages ? $package->license_key : '')
-                        );                              
-            }
-            
+
+            $package->isenabled =
+                $package->parent->check_license_key(
+                    $package->sku,
+                    true,
+                    ($this->has_packages ? $package->license_key : '')
+                );
+
+            $installed_version = get_option($this->prefix.'-'.$package->sku.'-version');
+            $latest_version = get_option($this->prefix.'-'.$package->sku.'-latest-version');
+
+            // Upgrade is available if the current package version < the latest available
+            // -AND- the current package version is has been set
+            $upgrade_available = (
+                        ($installed_version != '') &&                
+                        (   get_option($this->prefix.'-'.$package->sku.'-version-numeric') <
+                            get_option($this->prefix.'-'.$package->sku.'-latest-version-numeric')
+                        )                        
+                    );
+
             // Package is enabled, just show that
             //
             if ($package->isenabled) {
                 $packString = $package->name . ' is enabled!';
-                $content .= 
-                    '<span><img src="'. $this->plugin_url .
+
+                $content .=
+                    '<div><img src="'. $this->plugin_url .
                     '/images/check_green.png" border="0" style="padding-left: 5px;" ' .
-                    'alt="'.$packString.'" title="'.$packString.'"></span>';
+                    'alt="'.$packString.'" title="'.$packString.'">' .
+                    'Version ' . $installed_version .'</div>'.
+                    '<input type="hidden" '.
+                            'name="'.$package->lk_option_name.'" '.
+                            ' value="'.$package->license_key.'" '.
+                            ' />';
+                    ;
                     
                 // OK - the license was verified, this package is valid
                 // but the mainlicense was not set...
@@ -434,12 +452,20 @@ class wpCSL_settings__slplus {
                     
             // Package not enabled, show buy button
             //
-            } else {
-                $content .= $this->MakePayPalButton($package->paypal_button_id, $package->help_text);
-                
+            }
+
+            if (!$package->isenabled || $upgrade_available) {
+                if ($package->isenabled && $upgrade_available) {
+                    $content .= '<b>There is a new version available: ' . $latest_version . '</b><br>';
+                    $content .= $this->MakePayPalButton($package->paypal_upgrade_button_id, $package->help_text);
+                    $content .= "Once you've made your purchase, the plugin will automatically re-validate with the latest version.";
+                } else {
+                    $content .= $this->MakePayPalButton($package->paypal_button_id, $package->help_text);
+                }
+
                 // Show license entry box if we need to
                 //
-                if ($this->has_packages) {                    
+                if ($this->has_packages && !$upgrade_available) {
                     $content .= "{$package->sku} Activation Key: <input type='text' ".
                             "name='{$package->lk_option_name}'" .
                             " value='' ".

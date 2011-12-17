@@ -39,10 +39,10 @@ function move_upload_directories() {
 function initialize_variables() {
     global $height, $width, $width_units, $height_units, $radii;
     global $icon, $icon2, $google_map_domain, $google_map_country, $theme, $sl_base, $sl_upload_base, $location_table_view;
-    global $search_label, $zoom_level, $sl_use_city_search, $sl_use_name_search, $sl_default_map;
+    global $search_label, $zoom_level, $zoom_tweak, $sl_use_city_search, $sl_use_name_search, $sl_default_map;
     global $sl_radius_label, $sl_website_label, $sl_num_initial_displayed, $sl_load_locations_default;
     global $sl_distance_unit, $sl_map_overview_control, $sl_admin_locations_per_page, $sl_instruction_message;
-    global $sl_map_character_encoding, $sl_use_country_search;
+    global $sl_map_character_encoding, $sl_use_country_search, $slplus_show_state_pd;
     
     $sl_map_character_encoding=get_option('sl_map_character_encoding');
     if (empty($sl_map_character_encoding)) {
@@ -114,10 +114,20 @@ function initialize_variables() {
         $sl_use_country_search="1";
         add_option('sl_use_country_search', $sl_use_country_search);
         }
+    $slplus_show_state_pd=get_option('slplus_show_state_pd');
+    if (empty($slplus_show_state_pd)) {
+        $slplus_show_state_pd="1";
+        add_option('slplus_show_state_pd', $slplus_show_state_pd);
+        }
     $zoom_level=get_option('sl_zoom_level');
     if (empty($zoom_level)) {
         $zoom_level="4";
         add_option('sl_zoom_level', $zoom_level);
+        }
+    $zoom_tweak=get_option('sl_zoom_tweak');
+    if (empty($zoom_tweak)) {
+        $zoom_tweak="1";
+        add_option('sl_zoom_tweak', $zoom_tweak);
         }
     $search_label=get_option('sl_search_label');
     if (empty($search_label)) {
@@ -310,16 +320,11 @@ function do_geocoding($address,$sl_id='') {
 function activate_slplus() {
     global $slplus_plugin;
     
-    // Check Registration
-    //
-    if (isset($slplus_plugin->license)) {    
-        $slplus_plugin->license->check_license_key();
-    }
-    
+   
     // Data Updates
     //
     global $sl_db_version, $sl_installed_ver;
-	$sl_db_version='2.0.1';     //***** CHANGE THIS ON EVERY STRUCT CHANGE
+	$sl_db_version='2.2';     //***** CHANGE THIS ON EVERY STRUCT CHANGE
     $sl_installed_ver = get_option( SLPLUS_PREFIX."-db_version" );
 
 	install_main_table();
@@ -376,7 +381,7 @@ function install_main_table() {
 			sl_latitude varchar(255) NULL,
 			sl_longitude varchar(255) NULL,
 			sl_tags mediumtext NULL,
-			sl_description varchar(255) NULL,
+			sl_description text NULL,
 			sl_email varchar(255) NULL,
 			sl_url varchar(255) NULL,
 			sl_hours varchar(255) NULL,
@@ -400,6 +405,9 @@ function install_main_table() {
             dbDelta("UPDATE $table_name SET sl_lastupdated=current_timestamp " . 
                 "WHERE sl_lastupdated < '2011-06-01'"
                 );
+        }   
+	    if (floatval($sl_installed_ver) < 2.2) {
+            dbDelta("ALTER $table_name MODIFY sl_description text ");
         }   
     }         
 }
@@ -493,6 +501,7 @@ function head_scripts() {
             $theme=get_option('sl_map_theme');
             if ($theme!="") {print "\n<link  href='".$sl_upload_base."/themes/$theme/style.css' rel='stylesheet' type='text/css'/>";}
             $zl=(trim(get_option('sl_zoom_level'))!="")? get_option('sl_zoom_level') : 4;		            
+            $ztweak=(trim(get_option('sl_zoom_tweak'))!="")? get_option('sl_zoom_tweak') : 1;		            
             }
         } else {
             if ($slplus_plugin->debugging) {
@@ -527,7 +536,8 @@ function head_scripts() {
 	    $slplus_plugin, $prefix,	        
 	    $search_label, $width, $height, $width_units, $height_units, $hide,
 	    $sl_radius, $sl_radius_label, $r_options, $button_style,
-	    $sl_instruction_message, $cs_options, $country_options,$fnvars;	 	    
+	    $sl_instruction_message, $cs_options, 
+	    $country_options, $slplus_state_options, $fnvars;	 	    
     $fnvars = array();
 
     //----------------------
@@ -537,16 +547,7 @@ function head_scripts() {
     if (function_exists('slplus_shortcode_atts')) {
         slplus_shortcode_atts($attributes);
     }
-    
-    // Plugin is not licensed or user is not admin
-    //
-    if (!$slplus_plugin->ok_to_show()) {
-        if(get_option($prefix.'-debugging') == 'on') {
-            print 'Store Locator Plus is not licensed.';
-        }
-        return;
-    }
-                
+                   
     $height=(get_option('sl_map_height'))? 
     get_option('sl_map_height') : "500" ;
     
@@ -576,6 +577,7 @@ function head_scripts() {
     $r_options      =(isset($r_options)         ?$r_options      :'');
     $cs_options     =(isset($cs_options)        ?$cs_options     :'');
     $country_options=(isset($country_options)   ?$country_options:'');
+    $slplus_state_options=(isset($slplus_state_options)   ?$slplus_state_options:'');
 
     foreach ($r_array as $value) {
         $s=(ereg("\(.*\)", $value))? " selected='selected' " : "" ;
@@ -618,11 +620,13 @@ function head_scripts() {
     //----------------------
     // Create Country Pulldown
     // [LE/PLUS]
-    //
-    if (function_exists('slplus_create_country_pd')) {
-        $country_options = slplus_create_country_pd();
+    //    
+    if ($slplus_plugin->license->packages['Plus Pack']->isenabled) {                    
+        $country_options = slplus_create_country_pd();    
+        $slplus_state_options = slplus_create_state_pd();
     } else {
-        $country_options = '';
+        $country_options = '';    
+        $slplus_state_options = '';
     }
         
     $theme_base=$sl_upload_base."/images";
@@ -648,6 +652,7 @@ function head_scripts() {
     $columns = 1;
     $columns += (get_option('sl_use_city_search')!=1) ? 1 : 0;
     $columns += (get_option('sl_use_country_search')!=1) ? 1 : 0; 	    
+    $columns += (get_option('slplus_show_state_pd')!=1) ? 1 : 0; 	    
     $sl_radius_label=get_option('sl_radius_label');
     $file = SLPLUS_COREDIR . 'templates/search_form.php';
 
@@ -702,15 +707,17 @@ function csl_slplus_add_options_page() {
 		
 		// Plus Reporting
 		//
-		if (function_exists('slplus_add_report_settings')) {
-            add_submenu_page(
-                SLPLUS_COREDIR.'add-locations.php',
-                __("Reports", SLPLUS_PREFIX), 
-                __("Reports", SLPLUS_PREFIX), 
-                'administrator', 
-                SLPLUS_PLUGINDIR.'reporting.php'
-                );		    
-		}
+		if ($slplus_plugin->license->packages['Plus Pack']->isenabled) { 		
+            if (function_exists('slplus_add_report_settings')) {
+                add_submenu_page(
+                    SLPLUS_COREDIR.'add-locations.php',
+                    __("Reports", SLPLUS_PREFIX), 
+                    __("Reports", SLPLUS_PREFIX), 
+                    'administrator', 
+                    SLPLUS_PLUGINDIR.'reporting.php'
+                    );		    
+            }
+        }            
 	}
 
 }

@@ -1,5 +1,5 @@
 <?php 
-global $text_domain, $sl_upload_path;
+global $text_domain, $sl_upload_path, $slplus_plugin;
 ?>
 <table cellpadding='10px' cellspacing='0' style='width:100%' class='manual_add_table'>
     <tr>
@@ -67,10 +67,11 @@ global $text_domain, $sl_upload_path;
 		</tr>
 
         <?php
-        if (function_exists('execute_and_output_plustemplate')) {
+        if (
+            $slplus_plugin->license->packages['Plus Pack']->isenabled &&
+            function_exists('execute_and_output_plustemplate')
+            ) {
             execute_and_output_plustemplate('addlocations_bulkupload.php');
-        } else {
-            print "<tr><td>Need more? <a href='http://www.cybersprocket.com/'>Check out our other WordPress offerings.</a></td></tr>";
         }
         ?>  		
 	</table>

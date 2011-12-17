@@ -1,6 +1,6 @@
 <?php 
     global $map_type_options, $sl_num_initial_displayed, $the_domain, $char_enc,
-            $zoom, $height,$height_units,$width,$width_units,
+            $zoom, $zoom_adj, $height,$height_units,$width,$width_units,
             $icon_notification_msg,$checked3,$icon,$icon2,$icon_str,$icon2_str;    
 ?>
 <div id='map_settings'>
@@ -48,12 +48,30 @@
                 <label for='zoom_level'><?php _e("Zoom Level", SLPLUS_PREFIX);?>:</label>
                 <?php echo $zoom; ?>
                 <?php
-                echo slp_createhelpdiv('sl_num_initial_displayed',
-                    __('19=street level, 0=world view. "Immediately show locations" will overrides this setting.', SLPLUS_PREFIX)
+                echo slp_createhelpdiv('zoom_level',
+                    __('19=street level, 0=world view. This is the initial zoom level of the map '.
+                       ' if you do not check of "Immediately show locations.".  It is also the ' .
+                       ' zoom level that will be used if a single location is returned by the search.' . 
+                       ' All searches will automatically zoom in to a level that shows all of the matches on the map.', 
+                       SLPLUS_PREFIX)
                     );
                 ?>                 
                 
             </div>
+
+            <div class='form_entry'>
+                <label for='zoom_tweak'><?php _e("Zoom  Adjustment", SLPLUS_PREFIX);?>:</label>
+                <?php echo $zoom_adj; ?>
+                <?php
+                echo slp_createhelpdiv('zoom_tweak',
+                    __('For the "auto-zoom" when results are shown the map will zoom to show all the returned locations, '.
+                        'this setting allows you to determine how tight to zoom in. The higher the number the further out the zoom gets.', 
+                       SLPLUS_PREFIX)
+                    );
+                ?>                 
+                
+            </div>
+
             
             <div class='form_entry'>
                 <label for='height'><?php _e("Map Height", SLPLUS_PREFIX);?>:</label>

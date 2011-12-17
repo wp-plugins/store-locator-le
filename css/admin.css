@@ -90,7 +90,7 @@
 /***************************
  * The Navbar
  */
-div#slplus_navbar {
+div #slplus_navbar {
     background: none;
     border: none;
     margin: 0px;
@@ -107,11 +107,11 @@ div#slplus_navbar {
   padding: 3px;
 }
 
-#slplus_navbar div.handlediv {
+#slplus_navbar div .handlediv {
     display: none;
     visibility: hidden;
 }
-#slplus_navbar h3.hndle {
+#slplus_navbar h3 .hndle {
     display: none;
     visibility: hidden;
 }

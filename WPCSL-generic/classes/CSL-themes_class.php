@@ -22,10 +22,18 @@ class wpCSL_themes__slplus {
         // Properties with default values
         //
         $this->columns = 1;                 // How many columns/row in our display output.
+        $this->css_dir = 'css/';
         
         foreach ($params as $name => $value) {
             $this->$name = $value;
-        }        
+        }
+
+        // Remember the base directory path, then
+        // Append plugin path to the directories
+        //
+        $this->css_url = $this->plugin_url . '/'. $this->css_dir;
+        $this->css_dir = $this->plugin_path . 
+            $this->css_dir;       
     }
     
     /*-------------------------------------
@@ -34,16 +42,11 @@ class wpCSL_themes__slplus {
      * Add the theme settings to the admin panel.
      *
      */
-    function add_admin_settings($settingsObj, $core='/core/') {
-        
-        // What settings object?
-        // This allows us to use settings objects not attached
-        // to a parent "plugin" object
-        //
+    function add_admin_settings($settingsObj = null) {
         if ($settingsObj == null) {
             $settingsObj = $this->settings;
         }
-        
+
         // The Themes
         // No themes? Force the default at least
         //
@@ -56,18 +59,18 @@ class wpCSL_themes__slplus {
         //
         $lastNewThemeDate = get_option($this->prefix.'-theme_lastupdated');
         $newEntry = array();
-        if ($dh = opendir($this->plugin_path.$core.'css/')) {
+        if ($dh = opendir($this->css_dir)) {
             while (($file = readdir($dh)) !== false) {
                 
                 // If not a hidden file
                 //
                 if (!preg_match('/^\./',$file)) {                
-                    $thisFileModTime = filemtime($this->plugin_path.$core.'css/'.$file);
+                    $thisFileModTime = filemtime($this->css_dir.$file);
                     
                     // We have a new theme file possibly...
                     //
                     if ($thisFileModTime > $lastNewThemeDate) {
-                        $newEntry = $this->GetThemeInfo($this->plugin_path.$core.'css/'.$file);
+                        $newEntry = $this->GetThemeInfo($this->css_dir.$file);
                         $themeArray = array_merge($themeArray, array($newEntry['label'] => $newEntry['file']));                                        
                         update_option($this->prefix.'-theme_lastupdated', $thisFileModTime);
                     }
@@ -81,14 +84,14 @@ class wpCSL_themes__slplus {
         if (count($newEntry, COUNT_RECURSIVE) > 1) {
             update_option($this->prefix.'-theme_array',$themeArray);
         }  
-            
+                            
         $settingsObj->add_item(
             __('Display Settings',$this->prefix), 
             __('Select A Theme',$this->prefix),   
             'theme',    
             'list', 
             false, 
-            __('How should the plugin UI elements look?',$this->prefix),
+            __('How should the plugin UI elements look?  Check the <a href="'.$this->support_url.'" target="Cyber Sprocket">documentation</a> for more info.',$this->prefix),
             $themeArray
         );        
     }    
@@ -123,7 +126,7 @@ class wpCSL_themes__slplus {
      **
      **/
      function configure_theme($themeFile) {
-        $newEntry = $this->GetThemeInfo($this->plugin_path.'/core/'.$themeFile);
+        $newEntry = $this->GetThemeInfo($this->css_dir.$themeFile);
         $this->products->columns = $newEntry['columns'];
      }
      
@@ -133,13 +136,14 @@ class wpCSL_themes__slplus {
      ** Set the user stylesheet to what we selected.
      **/
     function assign_user_stylesheet() {
-        $theme = get_option($this->prefix.'-theme');
-        if ($theme == '') { $theme='mp-white-1up'; }
-        $themeFile = "css/$theme.css";
+        $themeFile = get_option($this->prefix.'-theme') . '.css';
+        if ($themeFile == '.css') { $theme='mp-white-1up.css'; }
         
-        if ( file_exists($this->plugin_path.'/core/'.$themeFile)) {
-            wp_register_style($this->prefix.'_user_css', $this->plugin_url . '/core/' .$themeFile); 
-            wp_enqueue_style ($this->prefix.'_user_css');
+        if ( file_exists($this->css_dir.$themeFile)) {
+            wp_deregister_style($this->prefix.'css');             
+            wp_dequeue_style($this->prefix.'_user_header_css');             
+            wp_register_style($this->prefix.'_user_header_css', $this->css_url .$themeFile); 
+            wp_enqueue_style ($this->prefix.'_user_header_css');
             $this->configure_theme($themeFile);
         }
     }     

@@ -34,8 +34,8 @@ if (
 	(get_option($prefix.'_show_tag_search') ==1) &&
 	isset($_GET['tags']) && ($_GET['tags'] != '')
    ){
-    $posted_tag = preg_replace('/\s+(.*?)/','$1',$_GET['tags']);
-    $posted_tag = preg_replace('/(.*?)\s+/','$1',$posted_tag);
+    $posted_tag = preg_replace('/^\s+(.*?)/','$1',$_GET['tags']);
+    $posted_tag = preg_replace('/(.*?)\s+$/','$1',$posted_tag);
 	$tag_filter = " AND ( sl_tags LIKE '%%". $posted_tag ."%%') ";
 }
    
@@ -46,12 +46,11 @@ $multiplier=3959;
 $multiplier=(get_option('sl_distance_unit')=="km")? ($multiplier*1.609344) : $multiplier;
     
 // Select all the rows in the markers table
-$query = "SELECT sl_address, sl_address2, sl_store, sl_city, sl_state, ".
-    "sl_zip, sl_country, sl_latitude, sl_longitude, sl_description, sl_url, ".
+$query = "SELECT *, ".
 	"( $multiplier * acos( cos( radians('".$_GET['lat']."') ) * cos( radians( sl_latitude ) ) * " .
 	        "cos( radians( sl_longitude ) - radians('".$_GET['lng']."') ) + sin( radians('".$_GET['lat']."') ) * ".
-	        "sin( radians( sl_latitude ) ) ) ) AS sl_distance, ".    
-    "sl_email, sl_hours, sl_phone, sl_image FROM ".$wpdb->prefix."store_locator ".
+	        "sin( radians( sl_latitude ) ) ) ) AS sl_distance ".    
+    "FROM ".$wpdb->prefix."store_locator ".
     "WHERE sl_store<>'' AND sl_longitude<>'' AND sl_latitude<>'' $tag_filter ".
     "LIMIT $num_initial_displayed";
     
@@ -59,6 +58,10 @@ $result = mysql_query($query);
 if (!$result) {
   die('Invalid query: ' . mysql_error());
 }
+
+// Show Tags
+//
+$slplus_show_tags = (get_option(SLPLUS_PREFIX.'_show_tags') ==1);
 
 // Start XML file, echo parent node
 echo "<markers>\n";
@@ -81,6 +84,9 @@ while ($row = @mysql_fetch_assoc($result)){
   echo 'hours="' . htmlentities($row['sl_hours']) . '" ';
   echo 'phone="' . htmlentities($row['sl_phone']) . '" ';
   echo 'image="' . htmlentities($row['sl_image']) . '" ';
+  if ($slplus_show_tags) {  
+      echo 'tags="'  . htmlentities($row['sl_tags']) . '" ';
+  }
   echo "/>\n";
 }
 

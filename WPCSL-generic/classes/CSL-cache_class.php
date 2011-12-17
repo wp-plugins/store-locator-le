@@ -50,10 +50,11 @@ class wpCSL_cache__slplus {
     }
 
     function load($filename) {
-        if (!$this->enabled || ((time() - filemtime($cache_file)) <= $this->retain_time)) {
+        $cache_file = $this->path . '/' . $filename;
+
+        if (!$this->enabled || !file_exists($cache_file) || ((time() - filemtime($cache_file)) >= $this->retain_time) ) {
             return false;
         }
-        $cache_file = $this->path . '/' . $filename;
 
         if (file_exists($cache_file)) {
             $contents = file_get_contents($cache_file);
@@ -64,10 +65,12 @@ class wpCSL_cache__slplus {
     }
 
     function save($filename, $data) {
-        if (!$this->enabled || ((time() - filemtime($cache_file)) >= $this->retain_time)){
+        $cache_file = $this->path . '/' . $filename;
+
+        if ( !$this->enabled || (file_exists($cache_file) && ((time() - filemtime($cache_file)) >= $this->retain_time) ) ){
             return false;
         }
-        $cache_file = $this->path . '/' . $filename;
+
         return file_put_contents($cache_file, serialize($data));
     }
 
@@ -76,7 +79,6 @@ class wpCSL_cache__slplus {
 
         $is_cachable = false;
         if (get_option($this->prefix.'-cache_enable')) {
-            $cache_file = $this->path . '/' . $filename;
 
             if (!file_exists($this->path)) {
                 if (isset($this->notifications)) {

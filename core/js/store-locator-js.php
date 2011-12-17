@@ -47,6 +47,9 @@ if (ereg($sl_upload_base, get_option('sl_map_end_icon'))){
 $zl=(trim(get_option('sl_zoom_level'))!="")? 
     get_option('sl_zoom_level') : 
     4;
+$ztweak=(trim(get_option('sl_zoom_tweak'))!="")? 
+    get_option('sl_zoom_tweak') : 
+    1;    
 $mt=(trim(get_option('sl_map_type'))!="")? 
     get_option('sl_map_type') : 
     "G_NORMAL_MAP";
@@ -76,6 +79,7 @@ var add_base=allScripts[allScripts.length -1].src.replace('/js/store-locator-js.
 var add_upload_base='$sl_upload_base';
 var slp_encryption_code='".$slp_enc_key."';
 var sl_zoom_level=$zl;
+var sl_zoom_tweak=$ztweak;
 var sl_map_type=$mt;
 var sl_website_label='$wl';
 var sl_distance_unit='$du';
@@ -95,6 +99,7 @@ var sl_load_locations_default="     .((get_option('sl_load_locations_default'   
 var slp_use_email_form="            .((get_option(SLPLUS_PREFIX.'_email_form'               )==1)?'true':'false').";
 var slp_disablescrollwheel="        .((get_option(SLPLUS_PREFIX.'_disable_scrollwheel'      )==1)?'true':'false').";
 var slp_disableinitialdirectory="   .((get_option(SLPLUS_PREFIX.'_disable_initialdirectory' )==1)?'true':'false').";
+var slp_show_tags="                 .((get_option(SLPLUS_PREFIX.'_show_tags'                )==1)?'true':'false').";
 
 // These controls have inverse logic
 var slp_largemapcontrol3d=" .((get_option(SLPLUS_PREFIX.'_disable_largemapcontrol3d')==1)?'false':'true').";
