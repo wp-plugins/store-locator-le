@@ -5,7 +5,7 @@ Donate link: http://www.cybersprocket.com/products/store-locator-plus/
 Tags: store locator, store locater, google, google maps, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus
 Requires at least: 3.0
 Tested up to: 3.3
-Stable tag: 2.2
+Stable tag: 2.2.3
 
 Store Locator Plus is an advanced system for managing multiple physical locations via a fully integrated WordPress solution. Store just a few or as many as a few thousand locations in the WordPress database using the built-in location management system.     
 
@@ -131,7 +131,7 @@ More screenshots are available via our [online documentation](http://redmine.cyb
 
 == Changelog ==
 
-= 2.2 (December 2011) = 
+= 2.2.1 (December 2011) = 
 
 * Store Locator Plus and LE are now merged, allowing for direct-from-WordPress upgrades.
 * General performance improvements via reduced memory usage while running searches.
@@ -141,6 +141,7 @@ More screenshots are available via our [online documentation](http://redmine.cyb
 * If only 1 location is returned the map no longer auto-zooms onto that location, is uses the zoom level setting.
 * Added zoom level adjustment for how tight to zoom in on results.
 * Increase performance & reduce disk I/O when building map settings page.
+* Language file updated (/core/languages/store-locator-plus.pot)
 * Plus Pack: state pulldown now available
 * Plus Pack: tags with spaces can be filtered and searched
 * Plus Pack: allow tags in table and bubble
