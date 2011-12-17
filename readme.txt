@@ -5,7 +5,7 @@ Donate link: http://www.cybersprocket.com/products/store-locator-plus/
 Tags: store locator, store locater, google, google maps, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus
 Requires at least: 3.0
 Tested up to: 3.3
-Stable tag: 2.2.2
+Stable tag: 2.2.3
 
 Store Locator Plus is an advanced system for managing multiple physical locations via a fully integrated WordPress solution. Store just a few or as many as a few thousand locations in the WordPress database using the built-in location management system.     
 
