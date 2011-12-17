@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: Store Locator LE
-Plugin URI: http://www.cybersprocket.com/products/store-locator-le/
-Description: An advanced store management interface with a front-end search form. Visitors can find your closest stores via the included Google Map generator.
-Version: 1.9.57
+Plugin Name: Store Locator Plus
+Plugin URI: http://www.cybersprocket.com/products/store-locator-plus/
+Description: An advanced system for managing multiple physical locations via a fully integrated WordPress solution. Store just a few or as many as a few thousand locations in the WordPress database using the built-in location management system. 
+Version: 2.2.2
 Author: Cyber Sprocket Labs
 Author URI: http://www.cybersprocket.com
 License: GPL3
@@ -26,6 +26,11 @@ License: GPL3
 
 */
 
+
+// Globals
+global $sl_upload_path,$slpath;
+$sl_upload_path='';
+$sl_path='';
 
 // Drive Path Defines 
 //
@@ -53,7 +58,9 @@ if (defined('SLPLUS_ICONURL') === false) {
 if (defined('SLPLUS_ADMINPAGE') === false) {
     define('SLPLUS_ADMINPAGE', get_option('siteurl') . '/wp-admin/admin.php?page=' . SLPLUS_COREDIR );
 }
-
+if (defined('SLPLUS_PLUSPAGE') === false) {
+    define('SLPLUS_PLUSPAGE', get_option('siteurl') . '/wp-admin/admin.php?page=' . SLPLUS_PLUGINDIR );
+}
 // The relative path from the plugins directory
 //
 if (defined('SLPLUS_BASENAME') === false) {
@@ -69,6 +76,7 @@ if (defined('SLPLUS_PREFIX') === false) {
 // Include our needed files
 //
 include_once(SLPLUS_PLUGINDIR . '/include/config.php'   );
+include_once(SLPLUS_PLUGINDIR . 'plus.php'              );
 include_once(SLPLUS_COREDIR   . 'csl_helpers.php'       );
 include_once(SLPLUS_COREDIR   . 'variables.sl.php'      );
 include_once(SLPLUS_COREDIR   . 'functions.sl.php'      );
@@ -82,7 +90,7 @@ add_action('admin_menu', 'csl_slplus_add_options_page');
 add_action('admin_init','csl_slplus_setup_admin_interface',10);
 add_action('admin_print_scripts', 'add_admin_javascript');
 add_action('admin_print_styles','add_admin_stylesheet');
-
+add_action('admin_head', 'slpreport_downloads');    
 
 // Short Codes
 //
@@ -93,3 +101,4 @@ add_shortcode('slplus','store_locator_shortcode');
 // Text Domains
 //
 load_plugin_textdomain(SLPLUS_PREFIX, false, SLPLUS_BASENAME . '/core/languages/');
+
