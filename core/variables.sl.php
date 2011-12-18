@@ -11,7 +11,7 @@ $sl_path=ABSPATH.'wp-content/plugins/'.$sl_dir; //absolute server path to plugin
 $sl_upload_path=ABSPATH.'wp-content/uploads/sl-uploads'; //absolute server path to store locator uploads directory
 
 $view_link="| <a href='".SLPLUS_ADMINPAGE."view-locations.php'>".
-    __("Manage Locations", $text_domain)."</a>";
+    __("Manage Locations", SLPLUS_PREFIX)."</a>";
     
 
 $web_domain=$_SERVER['HTTP_HOST'];

@@ -1,6 +1,6 @@
 <?php
   global $search_label, $width, $height, $width_units, $height_units, $hide,
-      $sl_radius, $sl_radius_label, $text_domain, $r_options, $button_style,
+      $sl_radius, $sl_radius_label, $r_options, $button_style,
       $sl_instruction_message, $cs_options, $slplus_state_options, $country_options, 
       $prefix, $fnvars, $slplus_plugin;
 ?>
@@ -101,7 +101,7 @@
                         //
                         if (get_option($prefix.'_show_tag_any')==1) {
                             print "<option value=''>".
-                                        __('Any',$text_domain).
+                                        __('Any',SLPLUS_PREFIX).
                                         '</option>';
                         }
                         
@@ -143,7 +143,7 @@
             if (get_option(SLPLUS_PREFIX.'_hide_radius_selections') == 0) {                
             ?>           
                 <div id='addy_in_radius'>
-                    <label for='radiusSelect'><?php _e($sl_radius_label, $text_domain);?></label>
+                    <label for='radiusSelect'><?php _e($sl_radius_label, SLPLUS_PREFIX);?></label>
                     <select id='radiusSelect'><?php echo $r_options;?></select>
                 </div>
                 

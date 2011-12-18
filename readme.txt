@@ -5,13 +5,18 @@ Donate link: http://www.cybersprocket.com/products/store-locator-plus/
 Tags: store locator, store locater, google, google maps, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus
 Requires at least: 3.0
 Tested up to: 3.3
-Stable tag: 2.2.3
+Stable tag: 2.2.4
 
-Store Locator Plus is an advanced system for managing multiple physical locations via a fully integrated WordPress solution. Store just a few or as many as a few thousand locations in the WordPress database using the built-in location management system.     
+This plugin puts a search form and an interactive Google map on your site so you can show visitors your store locations.    
 
 == Description ==
 
-Store Locator Plus is an advanced system for managing multiple physical locations via a fully integrated WordPress solution. Store just a few or as many as a few thousand locations in the WordPress database using the built-in location management system. You can add details such as a store description, hours, a website address, an email address, and tags for each location and then display those locations easily on any page using a shortcode. The location search form and Google Map will automatically be displayed.
+This plugin puts a search form and an interactive Google map on your site so you 
+can show visitors your store locactions.  Users search for stores within a 
+specified radius.  Full admin panel data entry and management of stores from a few to
+a few thousand.
+
+http://www.youtube.com/watch?v=ni_CrSoNr38
 
 = Features =
 
@@ -131,7 +136,7 @@ More screenshots are available via our [online documentation](http://redmine.cyb
 
 == Changelog ==
 
-= 2.2.1 (December 2011) = 
+= 2.2.4 (December 2011) = 
 
 * Store Locator Plus and LE are now merged, allowing for direct-from-WordPress upgrades.
 * General performance improvements via reduced memory usage while running searches.
@@ -146,7 +151,7 @@ More screenshots are available via our [online documentation](http://redmine.cyb
 * Plus Pack: tags with spaces can be filtered and searched
 * Plus Pack: allow tags in table and bubble
 * Plus Pack: tags in table and bubble now wrapped with div and spans with unique classes to allow for icon displays
-
+* patch 2.2.4 - update language maps for better language support
 
 = 2.1 (October 2011) =
 
@@ -308,5 +313,5 @@ More screenshots are available via our [online documentation](http://redmine.cyb
 
 == Upgrade Notice ==
 
-This upgrade has no special instructions.
+Plus Edition users should record their license key and use it to license the Plus Pack.
 
