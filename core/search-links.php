@@ -52,9 +52,9 @@ $qry = isset($_GET['q'])?$_GET['q']:'';
 $cleared=ereg_replace("q=$qry", "", $_SERVER['REQUEST_URI']);
 
 $extra_text=(trim($qry)!='')    ? 
-    __("for your search of", $text_domain).
+    __("for your search of", SLPLUS_PREFIX).
         " <strong>\"$qry\"</strong>&nbsp;|&nbsp;<a href='$cleared'>".
-        __("Clear&nbsp;Results", $text_domain)."</a>" : 
+        __("Clear&nbsp;Results", SLPLUS_PREFIX)."</a>" : 
     "" ;
 ?>
 </td>
@@ -62,9 +62,9 @@ $extra_text=(trim($qry)!='')    ?
 <?php 
 
 	$end_num=($numMembers2<($start+$num_per_page))? $numMembers2 : ($start+$num_per_page) ;
-	print "<nobr>".__("Results", $text_domain)." <strong>".($start+1)." - ".$end_num."</strong>"; 
+	print "<nobr>".__("Results", SLPLUS_PREFIX)." <strong>".($start+1)." - ".$end_num."</strong>"; 
 	if (!ereg("doSearch", (isset($_GET['u'])?$_GET['u']:''))) {
-		print " ($numMembers2 ".__("total", $text_domain).")".$extra_text; 
+		print " ($numMembers2 ".__("total", SLPLUS_PREFIX).")".$extra_text; 
 	}
 	print "</nobr>";
 
@@ -76,7 +76,7 @@ $extra_text=(trim($qry)!='')    ?
 <?php 
 if (($start-$num_per_page)>=0) {
   print "<a class='' href='$prev_page' rel='nofollow'>";
-  print __("Previous", $text_domain)."&nbsp;$num_per_page";
+  print __("Previous", SLPLUS_PREFIX)."&nbsp;$num_per_page";
   print "</a>";
 }
 if (($start-$num_per_page)>=0 && ($start+$num_per_page)<$numMembers2) { ?>
@@ -87,7 +87,7 @@ if (($start-$num_per_page)>=0 && ($start+$num_per_page)<$numMembers2) { ?>
 <?php 
 if (($start+$num_per_page)<$numMembers2) { 
  print "<a class='' href='$next_page' rel='nofollow'>";
- print __("Next", $text_domain)."&nbsp;$num_per_page";
+ print __("Next", SLPLUS_PREFIX)."&nbsp;$num_per_page";
  print "</a><br>";
 } 
 ?>
