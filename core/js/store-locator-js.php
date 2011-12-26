@@ -30,6 +30,9 @@ include("../variables.sl.php");
 
 if(get_option(SLPLUS_PREFIX.'-debugging') == 'on') {
     error_reporting(1);
+    $debugmode = 'true';
+} else {
+    $debugmode = 'false';
 }
 
 if (ereg($sl_upload_base, get_option('sl_map_home_icon'))){
@@ -74,6 +77,7 @@ $end_size =(function_exists('getimagesize') && file_exists($end_icon_path)) ?
 //
 print "
 if (document.getElementById('map')){window.onunload = function (){ GUnload(); }}
+var debugmode=$debugmode;
 var allScripts=document.getElementsByTagName('script');
 var add_base=allScripts[allScripts.length -1].src.replace('/js/store-locator-js.php','');
 var add_upload_base='$sl_upload_base';

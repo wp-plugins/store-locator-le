@@ -5,7 +5,7 @@ Donate link: http://www.cybersprocket.com/products/store-locator-plus/
 Tags: store locator, store locater, google, google maps, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus
 Requires at least: 3.0
 Tested up to: 3.3
-Stable tag: 2.2.4
+Stable tag: 2.2.5
 
 This plugin puts a search form and an interactive Google map on your site so you can show visitors your store locations.    
 
@@ -135,6 +135,12 @@ Some of the features in the Plus Pack include:
 More screenshots are available via our [online documentation](http://redmine.cybersprocket.com/projects/mc-closeststore/wiki).
 
 == Changelog ==
+
+= 2.2.5 (December 26th, 2011) =
+
+* Fix address lookup for address search with comma or space.
+* Retain ability to search for addresses with UTF8 characters like ü in für.
+* Added extended debugging messages to address search.
 
 = 2.2.4 (December 2011) = 
 
