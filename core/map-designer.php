@@ -105,6 +105,7 @@ if (!$_POST) {
         update_option('sl_starting_image', $_POST['sl_starting_image']);
         update_option($prefix.'_search_tag_label', $_POST[$prefix.'_search_tag_label']);
         update_option($prefix.'_tag_search_selections', $_POST[$prefix.'_tag_search_selections']);
+        update_option(SLPLUS_PREFIX.'_state_pd_label', $_POST[SLPLUS_PREFIX.'_state_pd_label']);
     }    
     
     # Checkbox settings - can set to issset and save that because the
