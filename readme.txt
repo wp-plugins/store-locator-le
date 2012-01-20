@@ -4,8 +4,8 @@ Contributors: cybersprocket
 Donate link: http://www.cybersprocket.com/products/store-locator-plus/
 Tags: store locator, store locater, google, google maps, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus
 Requires at least: 3.0
-Tested up to: 3.3
-Stable tag: 2.2.5
+Tested up to: 3.3.1
+Stable tag: 2.3
 
 This plugin puts a search form and an interactive Google map on your site so you can show visitors your store locations.    
 
@@ -135,6 +135,21 @@ Some of the features in the Plus Pack include:
 More screenshots are available via our [online documentation](http://redmine.cybersprocket.com/projects/mc-closeststore/wiki).
 
 == Changelog ==
+
+= 2.3 (January 19th, 2012) =
+
+* PLUS PACK Feature #7165: Manage Locations : Filter To Uncoded Only
+* PLUS PACK Feature #7166: Recode locations that failed to geocode.
+* PLUS PACK Feature #7231: Add label to State Pulldown.
+* Fix missing map marker.
+* Feature #7230: Change default radius selection.
+* Feature #7229: Fix typo in zoom level instruction.
+* Manage Locations Updates
+** Feature #7233: Clean up action bar header.
+** Feature #7235: Update expand/normal view interface.
+** Feature #7236: Manage locations: Stylize the page length setting.
+** Feature #7237: Manage locations: use icon sprites v. text for edit/delete. 
+
 
 = 2.2.5 (December 26th, 2011) =
 

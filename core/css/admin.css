@@ -24,7 +24,8 @@
 	background: #FFF; /* for non-css3 browsers */
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD'); /* for IE */
     background: -webkit-gradient(linear, left top, left bottom, from(#FFF), to(#DDD)); /* for webkit browsers */
-    background: -moz-linear-gradient(top,  #FFF,  #DDD); /* for firefox 3.6+ */  
+    background: -moz-linear-gradient(top,  #FFF,  #DDD); /* for firefox 3.6+ */
+    text-decoration: none;
   
   border: 1px solid #BBBBBB;
   border-radius: 3px 3px 3px 3px;
@@ -90,7 +91,9 @@
 /***************************
  * The Navbar
  */
-div #slplus_navbar {
+div #slplus_navbar,
+div #slplus_actionbar
+{
     background: none;
     border: none;
     margin: 0px;
@@ -98,24 +101,96 @@ div #slplus_navbar {
     left: -15px;
 }
 
-#slplus_navbar ul {
+#slplus_navbar ul,
+#slplus_actionbar ul
+{
     margin: 0px;
 }
-#slplus_navbar li {
+#slplus_navbar li,
+#slplus_actionbar li
+{
   float: left;
   margin: 6px;
   padding: 3px;
 }
 
-#slplus_navbar div .handlediv {
+#slplus_navbar div .handlediv,
+#slplus_actionbar div .handlediv
+{
     display: none;
     visibility: hidden;
 }
-#slplus_navbar h3 .hndle {
+#slplus_navbar h3 .hndle,
+#slplus_actionbar h3 .hndle
+{
     display: none;
     visibility: hidden;
 }
 
+/* Action Bar Specific */
+div#action_buttons {
+    width: 888px;
+    position: relative;
+    margin-top: 12px;    
+}
+div#action_bar_header,
+div#filter_bar_header
+{
+    background: none repeat scroll 0 0 #808080;
+    border-left: 1px solid orange;
+    border-right: 1px solid orange;
+    border-top: 1px solid orange;
+    color: white;
+    text-align: center;
+    width: 100%;
+}
+div#action_bar_header h3,
+div#filter_bar_header h3
+{
+    padding:3px 0px;
+    margin: 0px;
+}
+div#slplus_actionbar {
+    clear:both;
+    padding-top: 1px;
+}
+div#tag_block {
+    width: 340px;
+}
+div#slplus_actionbar div#tag_actions {
+    clear: both;
+}
+div#slplus_actionbar div#tagentry {
+    clear:both;
+}
+div#other_actions {
+}
+div#search_block {
+}
+div#list_options select {
+    padding: 0px;
+    margin: 0px;
+}
+input#search-q {
+    width: 140px;
+}
+.viewtype {
+}
+p.centerbutton {
+   margin: auto;
+   width: 166px;
+}
+div#filter_buttons {
+    clear: both;
+}
+div.orangebox {
+    background: none repeat scroll 0 0 #F0E68C;
+    border: 1px solid orange;
+    float: left;
+    text-align: center;
+    width: 180px;
+    height: 70px;
+}
 
 
 /***************************
@@ -324,22 +399,7 @@ td.optionpack {
     padding-top: 7px;
     width: 250px;
 }
-.searchlocations {
-    float: right;
-    text-align:right;
-    width: 400px;
-}
-.viewtype {
-    float: left;
-    text-align: left;
-    vertical-align: bottom;
-    padding-top: 9px;
-    width: 110px;
-}
 
-.top_listing_bar {
-    clear:both;
-}
 
 
 .cybersprocket-csllogo {
@@ -438,3 +498,15 @@ td.optionpack {
     width: 100px;
 }
 
+/* Icons */
+.edit_icon {
+  background: url("../../images/General_icons16.png") no-repeat scroll -62px 0 transparent;
+}
+.delete_icon {
+  background: url("../../images/General_icons16.png") no-repeat scroll -84px 0 transparent;
+}
+.icon_span {
+    height:20px;
+    width:20px;
+    padding: 9px;
+}
