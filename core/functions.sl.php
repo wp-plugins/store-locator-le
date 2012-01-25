@@ -190,7 +190,7 @@ function initialize_variables() {
     
     $radii=get_option('sl_map_radii');
     if (empty($radii)) {
-        add_option('sl_map_radii', "1,5,10,25,(50),100,200,500");
+        add_option('sl_map_radii', "10,25,50,100,(200),500");
         $radii=get_option('sl_map_radii');
         }
 }
@@ -750,7 +750,7 @@ function add_admin_stylesheet() {
 function set_query_defaults() {
 	global $where, $o, $d;
 	
-	$qry = isset($_GET['q']) ? $_GET['q'] : '';
+	$qry = isset($_REQUEST['q']) ? $_REQUEST['q'] : '';
 	$where=($qry!='')? 
 	        " WHERE ".
 	        "sl_store    LIKE '%$qry%' OR ".
