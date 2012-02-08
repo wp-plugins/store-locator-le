@@ -5,7 +5,7 @@ Donate link: http://www.cybersprocket.com/products/store-locator-plus/
 Tags: store locator, store locater, google, google maps, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus
 Requires at least: 3.0
 Tested up to: 3.3.1
-Stable tag: 2.3.1
+Stable tag: 2.4
 
 This plugin puts a search form and an interactive Google map on your site so you can show visitors your store locations.    
 
@@ -32,6 +32,30 @@ http://www.youtube.com/watch?v=ni_CrSoNr38
 * Bulk upload your locations via the CSV loader.
 * Location search tracking and reporting, find out what your visitors are looking for.
 * Popup email form.
+
+== Optional Plus Pack Available ==
+
+The plugin has an optional plus pack available that adds advanced features to the Store Locator Plus product.
+Some of the added features include:
+
+* CSV Bulk Uploads - using the CSV bulk loader
+* Extended Map Settings - Control more details about how the map looks, disable the scale, the zoom, and more.
+* Extended Manage Location Features - more controls for managing locations.
+* Reporting - information on the reporting system and how it works.
+* Tag Search - how to use tag based location searches.
+* Custom Themes (Plus Pack v2.4) - easily add your own custom styles that stay in place during patches and upgrades.
+
+Learn More about these features at the [Store Locator Plus Support Pages](http://redmine.cybersprocket.com/projects/mc-closeststore/wiki)
+
+== Upgrades ==
+
+We will offer upgrade versions from time-to-time when special new features are added to the product.  
+If you do not purchase the upgrade you will still receive bug fixes and minor feature additions, however
+some of the newest features may not be available to you.   
+
+The main product will always remain fully functional and free.  If you'd like to have some of the latest
+"bells & whistles" purchasing the upgrades is a great way to help support us and encourage us to add even
+more items the next time around.
 
 = Looking For Customized WordPress Plugins? =
 
@@ -135,6 +159,14 @@ Some of the features in the Plus Pack include:
 More screenshots are available via our [online documentation](http://redmine.cybersprocket.com/projects/mc-closeststore/wiki).
 
 == Changelog ==
+
+= 2.4 (February 8th, 2012) =
+
+* Force height on icon sizes.
+* Fixed problem with menu/button links on admin panel for subdirectory installs.
+* Fixed problem with certain international characters stopping the initial map zoom/search.
+* PLUS PACK v2.4 : Integrated custom themes system. (paid upgrade)
+* PLUS PACK v2.4 : You can now set your center location for the map. (paid upgrade)
 
 = 2.3.1 (January 25th, 2012) =
 

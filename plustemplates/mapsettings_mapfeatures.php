@@ -106,5 +106,25 @@
         __('Hide map type',SLPLUS_PREFIX),
         __('Turn the map type selector off.', SLPLUS_PREFIX)
         );
-    }    
+
+
+    // Plus Pack Version 2.4
+    //
+    if ($slplus_plugin->license->packages['Plus Pack']->active_version >= 2004000) {
+?>        
+
+        <!-- Map Starting Point -->
+        <div class='form_entry'>
+            <label  for='<?php echo SLPLUS_PREFIX; ?>_map_center'><?php _e("Center Map At",SLPLUS_PREFIX); ?>:</label>
+            <textarea name='<?php echo SLPLUS_PREFIX; ?>_map_center'><?php echo get_option(SLPLUS_PREFIX.'_map_center'); ?></textarea>
+            <?php
+            echo slp_createhelpdiv(SLPLUS_PREFIX.'_starting_image',
+                __('Enter an address to serve as the initial focus for the map.  (Default: center of the country).', SLPLUS_PREFIX)
+                );
+            ?>      
+            
+        </div>        
+<?php        
+    }   
+}    
 ?>        

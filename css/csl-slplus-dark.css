@@ -1,8 +1,8 @@
 /**
- ** file: csl-slplus.css
- ** label: Original SLPlus Theme
+ ** file: csl-slplus-dark.css
+ ** label: Dark SLPlus Theme
  **
- ** The Original SLPLUS Theme.
+ ** A new darker theme based on the original.
  **
  **/
 
@@ -210,15 +210,20 @@ border: none;
 	height:250px;
 	font-size: 11px;
 }
+
+/*-----------------------------------
+ * Results Table Under The Map
+ */
 .results_entry {
 	cursor:pointer;
 	cursor:hand;
-	padding:4px;
-	border-bottom:solid silver 1px;
-	background-color:transparent;
+	padding:0px;
+	border-bottom:none;
+	background-color: #404040;
+	color: #F4F4F4;
 }
 .results_entry:hover {
-	background-color:salmon;
+	background-color: #999;
 }
 .results_row_left_column {
 	width:30%;
@@ -226,7 +231,9 @@ border: none;
 	vertical-align:top;
 }
 .results_row_left_column .location_name {
+    font-size: 14px;
 	font-weight:bold;
+    color: #FFFF88;
 }
 .results_row_center_column {
 	width:40%;
@@ -237,3 +244,14 @@ border: none;
 	vertical-align:top;
 	text-align:right;
 }
+div#map_sidebar .results_row_right_column A.storelocatorlink {
+    text-decoration: none;
+    color: #8888FF;
+}
+div#map_sidebar .results_entry TABLE {
+    padding: 0px;
+    margin: 0px;
+}
+
+/* Results Scrollbar */
+

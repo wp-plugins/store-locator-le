@@ -51,9 +51,9 @@ class wpCSL_themes__slplus {
         // No themes? Force the default at least
         //
         $themeArray = get_option($this->prefix.'-theme_array');
-        if (count($themeArray, COUNT_RECURSIVE) <= 2) {
+        if (count($themeArray, COUNT_RECURSIVE) < 2) {
             $themeArray = array('Default MP Layout' => 'mp-white-1up');
-        }    
+        } 
     
         // Check for theme files
         //
@@ -78,10 +78,20 @@ class wpCSL_themes__slplus {
             }
             closedir($dh);
         }
+
+        // Delete the default theme if we have specific ones
+        //
+        $resetDefault = false;
         
+        if ((count($themeArray, COUNT_RECURSIVE) > 1) && isset($themeArray['Default MP Layout'])){        
+            unset($themeArray['Default MP Layout']);
+            $resetDefault = true;
+        }
+        
+
         // We added at least one new theme
         //
-        if (count($newEntry, COUNT_RECURSIVE) > 1) {
+        if ((count($newEntry, COUNT_RECURSIVE) > 1) || $resetDefault) {
             update_option($this->prefix.'-theme_array',$themeArray);
         }  
                             
@@ -137,14 +147,14 @@ class wpCSL_themes__slplus {
      **/
     function assign_user_stylesheet() {
         $themeFile = get_option($this->prefix.'-theme') . '.css';
-        if ($themeFile == '.css') { $theme='mp-white-1up.css'; }
+        if ($themeFile == '.css') { $themeFile='mp-white-1up.css'; }
         
         if ( file_exists($this->css_dir.$themeFile)) {
-            wp_deregister_style($this->prefix.'css');             
+            wp_deregister_style($this->prefix.'_user_header_css');             
             wp_dequeue_style($this->prefix.'_user_header_css');             
             wp_register_style($this->prefix.'_user_header_css', $this->css_url .$themeFile); 
             wp_enqueue_style ($this->prefix.'_user_header_css');
             $this->configure_theme($themeFile);
-        }
+        }      
     }     
 }

@@ -12,7 +12,7 @@
  #icon-add-locations, 
  #icon-locations 
  {
-    background: url("../../core/images/StoreLocatorPlus_icons32.png") no-repeat scroll -75px -3px transparent;
+    background: url("../core/images/StoreLocatorPlus_icons32.png") no-repeat scroll -75px -3px transparent;
 }
 
  
@@ -473,11 +473,11 @@ td.optionpack {
 }
 
 #rb_details .headerSortUp {
-    background-image: url("../../core/images/arrow_sm_black_down.png");
+    background-image: url("../core/images/arrow_sm_black_down.png");
 }
 
 #rb_details .headerSortDown {
-    background-image: url("../../core/images/arrow_sm_black_up.png");
+    background-image: url("../core/images/arrow_sm_black_up.png");
 }
 
 
@@ -500,10 +500,16 @@ td.optionpack {
 
 /* Icons */
 .edit_icon {
-  background: url("../../images/General_icons16.png") no-repeat scroll -62px 0 transparent;
+  background: url("../core/images/General_icons16.png") no-repeat scroll -62px 0 transparent;
+  font-size: 20px;
 }
 .delete_icon {
-  background: url("../../images/General_icons16.png") no-repeat scroll -84px 0 transparent;
+  background: url("../core/images/General_icons16.png") no-repeat scroll -84px 0 transparent;
+  font-size: 20px;
+}
+.view_icon {
+  background: url("../core/Images/General_icons16.png") no-repeat scroll -84px 0 transparent;
+  font-size: 20px;  
 }
 .icon_span {
     height:20px;
