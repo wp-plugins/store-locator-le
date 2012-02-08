@@ -138,6 +138,35 @@ function sl_load_locations(map,lat,lng) {
     );
  }
 
+
+/**************************************
+ * function: escapeExtended()
+ *
+ * Escape any extended characters, such as ü in für.
+ * Standard US ASCII characters (< char #128) are unchanged
+ *
+ */ 
+function escapeExtended(string) {
+		string = string.replace(/\r\n/g,"\n");
+		var utftext = "";
+ 
+		for (var n = 0; n < string.length; n++) {
+ 
+			var c = string.charCodeAt(n);
+ 
+			if (c < 128) {
+				utftext += string.charAt(n);
+			}
+			else
+			{
+				utftext += escape(string.charAt(n));
+			}
+ 
+		}
+ 
+		return utftext; 
+}		
+
 /**************************************
  * function: searchLocations()
  *
@@ -148,11 +177,19 @@ function sl_load_locations(map,lat,lng) {
 function searchLocations() {
     var address = document.getElementById('addressInput').value;
     
-    geocoder.getLatLng(escape(address), 
+    geocoder.getLatLng(escapeExtended(address), 
         function(latlng) {
             if (!latlng) {
-                alert(address + ' not found');
+                var theMessage = ''; 
+                if (debugmode) {
+                    theMessage = 'Google geocoder could not find ' + escape (address) + ' :: ';
+                }
+                theMessage += address + ' not found'; 
+                alert(theMessage);
             } else {
+                if (debugmode) {
+                    alert('Searching near ' + address + ' ' + latlng);
+                }
                 searchLocationsNear(latlng, address); 
             }
         }

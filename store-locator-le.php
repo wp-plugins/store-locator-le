@@ -3,7 +3,7 @@
 Plugin Name: Store Locator Plus
 Plugin URI: http://www.cybersprocket.com/products/store-locator-plus/
 Description: An advanced system for managing multiple physical locations via a fully integrated WordPress solution. Store just a few or as many as a few thousand locations in the WordPress database using the built-in location management system. 
-Version: 2.2.4
+Version: 2.4
 Author: Cyber Sprocket Labs
 Author URI: http://www.cybersprocket.com
 License: GPL3
@@ -56,10 +56,10 @@ if (defined('SLPLUS_ICONURL') === false) {
     define('SLPLUS_ICONURL', SLPLUS_COREURL . 'images/icons/');
 }
 if (defined('SLPLUS_ADMINPAGE') === false) {
-    define('SLPLUS_ADMINPAGE', get_option('siteurl') . '/wp-admin/admin.php?page=' . SLPLUS_COREDIR );
+    define('SLPLUS_ADMINPAGE', admin_url() . 'admin.php?page=' . SLPLUS_COREDIR );
 }
 if (defined('SLPLUS_PLUSPAGE') === false) {
-    define('SLPLUS_PLUSPAGE', get_option('siteurl') . '/wp-admin/admin.php?page=' . SLPLUS_PLUGINDIR );
+    define('SLPLUS_PLUSPAGE', admin_url() . 'admin.php?page=' . SLPLUS_PLUGINDIR );
 }
 // The relative path from the plugins directory
 //
@@ -89,8 +89,9 @@ add_action('wp_head', 'head_scripts');
 add_action('admin_menu', 'csl_slplus_add_options_page');
 add_action('admin_init','csl_slplus_setup_admin_interface',10);
 add_action('admin_print_scripts', 'add_admin_javascript');
-add_action('admin_print_styles','add_admin_stylesheet');
 add_action('admin_head', 'slpreport_downloads');    
+add_action('wp_print_styles', 'setup_stylesheet_for_slplus');
+add_action('admin_print_styles','setup_ADMIN_stylesheet_for_slplus');
 
 // Short Codes
 //

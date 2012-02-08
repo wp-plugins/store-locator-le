@@ -103,8 +103,10 @@ if (!$_POST) {
 
     if (function_exists('execute_and_output_plustemplate')) {
         update_option('sl_starting_image', $_POST['sl_starting_image']);
-        update_option($prefix.'_search_tag_label', $_POST[$prefix.'_search_tag_label']);
-        update_option($prefix.'_tag_search_selections', $_POST[$prefix.'_tag_search_selections']);
+        update_option(SLPLUS_PREFIX.'_search_tag_label',        $_POST[SLPLUS_PREFIX.'_search_tag_label']);
+        update_option(SLPLUS_PREFIX.'_tag_search_selections',   $_POST[SLPLUS_PREFIX.'_tag_search_selections']);
+        update_option(SLPLUS_PREFIX.'_state_pd_label',          $_POST[SLPLUS_PREFIX.'_state_pd_label']);
+        update_option(SLPLUS_PREFIX.'_map_center',              $_POST[SLPLUS_PREFIX.'_map_center']);        
     }    
     
     # Checkbox settings - can set to issset and save that because the
@@ -224,19 +226,7 @@ $map_type["".__("Satellite", SLPLUS_PREFIX).""]="G_SATELLITE_MAP";
 $map_type["".__("Hybrid", SLPLUS_PREFIX).""]="G_HYBRID_MAP";
 $map_type["".__("Physical", SLPLUS_PREFIX).""]="G_PHYSICAL_MAP";
 
-// Custom Themes
-if (is_dir($sl_upload_path."/themes/")) {
-	$theme_dir=opendir($sl_upload_path."/themes/"); 
 
-	while (false !== ($a_theme=readdir($theme_dir))) {
-		if (!ereg("^\.{1,2}$", $a_theme) && !ereg("\.(php|txt|htm(l)?)", $a_theme)) {
-
-			$selected=($a_theme==get_option('sl_map_theme'))? " selected " : "";
-			$theme_str.="<option value='$a_theme' $selected>$a_theme</option>\n";
-		}
-	}
-}
-	
 $zl[]=0;$zl[]=1;$zl[]=2;$zl[]=3;$zl[]=4;$zl[]=5;$zl[]=6;$zl[]=7;$zl[]=8;
 $zl[]=9;$zl[]=10;$zl[]=11;$zl[]=12;$zl[]=13;$zl[]=14;$zl[]=15;$zl[]=16;
 $zl[]=17;$zl[]=18;$zl[]=19;

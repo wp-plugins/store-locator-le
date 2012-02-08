@@ -26,7 +26,8 @@ if (defined('SLPLUS_PLUGINDIR')) {
             'notifications_obj_name'=> 'default',
             'products_obj_name'     => 'none',
             'settings_obj_name'     => 'default',
-            'themes_obj_name'       => 'none',            
+            
+            'themes_obj_name'       => 'default',            
             
             'prefix'                => SLPLUS_PREFIX,
             'css_prefix'            => SLPLUS_PREFIX,
@@ -82,9 +83,22 @@ function add_options_packages_for_slplus() {
                 'paypal_upgrade_button_id' => 'TZSPX7PD26XJU'
             )
         );
-
+    
     if ($slplus_plugin->license->packages['Plus Pack']->isenabled_after_forcing_recheck()) {
-        // do nothing (for now)
+        
+         //--------------------------------
+         // Plus Pack v2.4+ Only
+         //
+         if ($slplus_plugin->license->packages['Plus Pack']->active_version >= 2004000) {
+             
+             //--------------------------------
+             // Enable Themes
+             //
+             $slplus_plugin->themes_enabled = true;
+             $slplus_plugin->themes->css_dir = SLPLUS_PLUGINDIR . 'css/';
+         }             
+         
+         
     }       
 
 }

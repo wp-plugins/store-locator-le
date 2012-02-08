@@ -97,23 +97,23 @@ while ($row = @mysql_fetch_assoc($result)){
     
   // ADD TO XML DOCUMENT NODE
   echo '<marker ';
-  echo 'name="' . htmlentities($row['sl_store']) . '" ';
+  echo 'name="' . esc_attr($row['sl_store']) . '" ';
   echo 'address="' . 
-        htmlentities($row['sl_address']) . ', '. 
-        htmlentities($row['sl_address2']) . ', '.
-        htmlentities($row['sl_city']). ', ' .htmlentities($row['sl_state']).' ' .
-        htmlentities($row['sl_zip']).'" ';
+        esc_attr($row['sl_address']) . ', '. 
+        esc_attr($row['sl_address2']) . ', '.
+        esc_attr($row['sl_city']). ', ' .esc_attr($row['sl_state']).' ' .
+        esc_attr($row['sl_zip']).'" ';
   echo 'lat="' . $row['sl_latitude'] . '" ';
   echo 'lng="' . $row['sl_longitude'] . '" ';
   echo 'distance="' . $row['sl_distance'] . '" ';
-  echo 'description="' . htmlentities($row['sl_description']) . '" ';
-  echo 'url="' . htmlentities($row['sl_url']) . '" ';
-  echo 'email="' . htmlentities($row['sl_email']) . '" ';
-  echo 'hours="' . htmlentities($row['sl_hours']) . '" ';
-  echo 'phone="' . htmlentities($row['sl_phone']) . '" ';
-  echo 'image="' . htmlentities($row['sl_image']) . '" ';
+  echo 'description="' . esc_attr($row['sl_description']) . '" ';
+  echo 'url="' . esc_attr($row['sl_url']) . '" ';
+  echo 'email="' . esc_attr($row['sl_email']) . '" ';
+  echo 'hours="' . esc_attr($row['sl_hours']) . '" ';
+  echo 'phone="' . esc_attr($row['sl_phone']) . '" ';
+  echo 'image="' . esc_attr($row['sl_image']) . '" ';
   if ($slplus_show_tags) {  
-      echo 'tags="'  . htmlentities($row['sl_tags']) . '" ';
+      echo 'tags="'  . esc_attr($row['sl_tags']) . '" ';
   }
   echo "/>\n";
   

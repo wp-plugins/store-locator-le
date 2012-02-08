@@ -50,7 +50,7 @@
                 <?php
                 echo slp_createhelpdiv('zoom_level',
                     __('19=street level, 0=world view. This is the initial zoom level of the map '.
-                       ' if you do not check of "Immediately show locations.".  It is also the ' .
+                       ' if you do not check off "Immediately show locations.".  It is also the ' .
                        ' zoom level that will be used if a single location is returned by the search.' . 
                        ' All searches will automatically zoom in to a level that shows all of the matches on the map.', 
                        SLPLUS_PREFIX)
