@@ -22,17 +22,50 @@
             </div>
             
             <div class='form_entry'>
-                <label for='sl_num_initial_displayed'><? _e("Default Locations Shown", SLPLUS_PREFIX); ?>:</label>
+                <label for='sl_num_initial_displayed'><? _e('Immediately show up to', SLPLUS_PREFIX); ?></label>
                 <input name='sl_num_initial_displayed' value='<?php echo $sl_num_initial_displayed;?>' class='small'>
+                <?php _e('locations.', SLPLUS_PREFIX); ?>
                 <?php
                 echo slp_createhelpdiv('sl_num_initial_displayed',
                     __('Recommended Max: 50', SLPLUS_PREFIX)
                     );
                 ?>                 
             </div>
-
+            
             <?php
+             //--------------------------------
+             // Plus Pack
+             //            
             if (function_exists('execute_and_output_plustemplate')) {
+                
+                     //--------------------------------
+                     // Plus Pack v2.4+ Only
+                     //
+                     global $slplus_plugin;
+                     if ($slplus_plugin->license->packages['Plus Pack']->active_version >= 2004000) {                    
+            ?>                
+                        <div class='form_entry'>
+                            <label for='<?php echo SLPLUS_PREFIX.'_maxreturned'; ?>'><? _e("Return at most", SLPLUS_PREFIX); ?></label>
+                            <input name='<?php echo SLPLUS_PREFIX.'_maxreturned'; ?>' 
+                                value='<?php 
+                                    echo (trim(get_option(SLPLUS_PREFIX.'_maxreturned'))!="")? 
+                                        get_option(SLPLUS_PREFIX.'_maxreturned') : 
+                                        '25';                    
+                                ?>' 
+                                class='small'>
+                            <? _e("locations when searching.", SLPLUS_PREFIX); ?>
+                            <?php
+                            echo slp_createhelpdiv(SLPLUS_PREFIX-'_maxreturned',
+                                __('Enter a number to limit how many results are returned during a search. The default is 25.', SLPLUS_PREFIX)
+                                );
+                            ?>                 
+                        </div>
+            <?php
+                }
+                
+                //--------------------------------
+                // Plus Pack Any Version
+                //
                 execute_and_output_plustemplate('mapsettings_mapfeatures.php');
             }    
             ?>

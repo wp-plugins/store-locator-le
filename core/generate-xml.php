@@ -25,6 +25,10 @@ $multiplier=3959;
 $multiplier=(get_option('sl_distance_unit')=="km")? ($multiplier*1.609344) : $multiplier;
 
 
+$option[SLPLUS_PREFIX.'_maxreturned']=(trim(get_option(SLPLUS_PREFIX.'_maxreturned'))!="")? 
+    get_option(SLPLUS_PREFIX.'_maxreturned') : 
+    '25';
+
 //-----------------
 // Set the active MySQL database
 //
@@ -55,11 +59,13 @@ $query = sprintf(
 	"( $multiplier * acos( cos( radians('%s') ) * cos( radians( sl_latitude ) ) * cos( radians( sl_longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( sl_latitude ) ) ) ) AS sl_distance ".
 	"FROM ${dbPrefix}store_locator HAVING (sl_distance < '%s') ".
 	$tag_filter .
-	'ORDER BY sl_distance',
+	'ORDER BY sl_distance ASC ' .
+	'LIMIT %s',
 	mysql_real_escape_string($center_lat),
 	mysql_real_escape_string($center_lng),
 	mysql_real_escape_string($center_lat),
-	mysql_real_escape_string($radius)
+	mysql_real_escape_string($radius),
+	mysql_real_escape_string($option[SLPLUS_PREFIX.'_maxreturned'])
 	);
 
 

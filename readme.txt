@@ -5,7 +5,7 @@ Donate link: http://www.cybersprocket.com/products/store-locator-plus/
 Tags: store locator, store locater, google, google maps, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus
 Requires at least: 3.0
 Tested up to: 3.3.1
-Stable tag: 2.4
+Stable tag: 2.5
 
 This plugin puts a search form and an interactive Google map on your site so you can show visitors your store locations.    
 
@@ -159,6 +159,12 @@ Some of the features in the Plus Pack include:
 More screenshots are available via our [online documentation](http://redmine.cybersprocket.com/projects/mc-closeststore/wiki).
 
 == Changelog ==
+
+= 2.5 (March 9th, 2012) =
+
+* [PLUS PACK v2.4+] Limit to N results.
+* [PLUS PACK] Starting image can now be stored off-site simply use http as the prefix.
+* Map height/width over 100% would cause erratic behavior.  Auto-set max to 100% if over 100.
 
 = 2.4 (February 8th, 2012) =
 

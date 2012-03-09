@@ -84,11 +84,22 @@ if (!$_POST) {
     
     $_POST['height']=ereg_replace("[^0-9]", "", $_POST['height']);
     $_POST['width']=ereg_replace("[^0-9]", "", $_POST['width']);
-    update_option('sl_map_height', $_POST['height']);
-    update_option('sl_map_width', $_POST['width']);
-    update_option('sl_map_radii', $_POST['radii']);
+
+    // Height if % set range 0..100    
+    if ($_POST['height_units'] == '%') {
+        $_POST['height'] = max(0,min($_POST['height'],100));
+    }    
     update_option('sl_map_height_units', $_POST['height_units']);
+    update_option('sl_map_height', $_POST['height']);
+    
+    // Width if % set range 0..100        
+    if ($_POST['width_units'] == '%') {
+        $_POST['width'] = max(0,min($_POST['width'],100));
+    }    
     update_option('sl_map_width_units', $_POST['width_units']);
+    update_option('sl_map_width', $_POST['width']);
+    
+    update_option('sl_map_radii', $_POST['radii']);
     update_option('sl_map_home_icon', $_POST['icon']);
     update_option('sl_map_end_icon', $_POST['icon2']);
     update_option('sl_search_label', $_POST['search_label']);
@@ -107,6 +118,7 @@ if (!$_POST) {
         update_option(SLPLUS_PREFIX.'_tag_search_selections',   $_POST[SLPLUS_PREFIX.'_tag_search_selections']);
         update_option(SLPLUS_PREFIX.'_state_pd_label',          $_POST[SLPLUS_PREFIX.'_state_pd_label']);
         update_option(SLPLUS_PREFIX.'_map_center',              $_POST[SLPLUS_PREFIX.'_map_center']);        
+        update_option(SLPLUS_PREFIX.'_maxreturned',             $_POST[SLPLUS_PREFIX.'_maxreturned']);
     }    
     
     # Checkbox settings - can set to issset and save that because the
