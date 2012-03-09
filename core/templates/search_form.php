@@ -34,6 +34,9 @@
             if ($slplus_state_options != '') { 
             ?>
             <div id='addy_in_state'>
+                <label for='addressInputState'><?php 
+                	print get_option($prefix.'_state_pd_label');                
+                	?></label>
                 <select id='addressInputState' 
                     onchange='aI=document.getElementById("searchForm").addressInput;if(this.value!=""){oldvalue=aI.value;aI.value=this.value;}else{aI.value=oldvalue;}'>
                     <option value=''>--Search By State--</option>
@@ -176,7 +179,12 @@ $sl_starting_image=get_option('sl_starting_image');
 if ($sl_starting_image != '') {    
 ?>
             <div id='map_box_image' style='width:<?php echo $width?><?php echo $width_units?>; height:<?php echo $height?><?php echo $height_units?>'>      
-                <img src='<?php echo SLPLUS_PLUGINURL."$sl_starting_image"; ?>'>
+                <img src='<?php 
+                        if (preg_match('/^http/',$sl_starting_image) <= 0) {
+                            echo SLPLUS_PLUGINURL;
+                        }
+                        echo $sl_starting_image;                        
+                    ?>'>
             </div>
             <div id='map_box_map'>
 <?php

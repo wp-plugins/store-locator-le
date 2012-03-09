@@ -158,7 +158,7 @@ class wpCSL_settings__slplus {
                             and let us know.<br/>
                             <br>
                             <strong>Cyber Sprocket Is...</strong><br/>
-                            Lance Cleveland, Paul Grimes, Chris Rasys, Lobby Jones, Seth Hayward<br/>
+                            Lance Cleveland, Paul Grimes, Chris Rasys, Lobby Jones, Seth Hayward, Chase Ring, Corey Blalock, Thomas Phifer, Aaron Knight.<br/>
                             <br/>
                             <strong>For more information:</strong><br/>
                             <a href="http://www.cybersprocket.com" target="cyber-sprocket-labs">Please visit our website at www.cybersprocket.com</a>.<br/>

@@ -9,12 +9,24 @@
 *
 ************************************************************************/
 
-class wpCSL_license__slplus {
+class wpCSL_license__slplus {    
 
+    /**------------------------------------
+     ** CONSTRUCTOR
+     **/
     function __construct($params) {
+        
+        // Defaults
+        //
+
+        // Set by incoming parameters
+        //
         foreach ($params as $name => $value) {
             $this->$name = $value;
         }
+        
+        // Override incoming parameters
+        
     }
 
     /**------------------------------------
@@ -82,6 +94,7 @@ class wpCSL_license__slplus {
             // If we get a true response record it in the DB and exit
             //
             if ($response->result) {
+                
                 //.............
                 // Licensed
                 // main product
@@ -244,6 +257,8 @@ class wpCSL_license__slplus {
  **/
 class wpCSL_license_package__slplus {
 
+    public $active_version = 0;
+    
     /**------------------------------------
      **/
     function __construct($params) {
@@ -265,6 +280,10 @@ class wpCSL_license_package__slplus {
         // Set our license key property
         //
         $this->license_key = get_option($this->lk_option_name);
+        
+        // Set our active version (what we are licensed for)
+        //
+        $this->active_version =  get_option($this->prefix.'-'.$this->sku.'-latest-version-numeric'); 
     }
     
     
@@ -281,7 +300,8 @@ class wpCSL_license_package__slplus {
     function isenabled_after_forcing_recheck() {
         if (!$this->isenabled) {
             $this->parent->check_license_key($this->sku, true, get_option($this->lk_option_name));
-            $this->isenabled = get_option($this->enabled_option_name); 
+            $this->isenabled = get_option($this->enabled_option_name);
+            $this->active_version =  get_option($this->prefix.'-'.$this->sku.'-latest-version-numeric');             
         }
         return $this->isenabled;
     }

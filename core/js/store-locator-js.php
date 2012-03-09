@@ -30,6 +30,9 @@ include("../variables.sl.php");
 
 if(get_option(SLPLUS_PREFIX.'-debugging') == 'on') {
     error_reporting(1);
+    $debugmode = 'true';
+} else {
+    $debugmode = 'false';
 }
 
 if (ereg($sl_upload_base, get_option('sl_map_home_icon'))){
@@ -54,7 +57,7 @@ $mt=(trim(get_option('sl_map_type'))!="")?
     get_option('sl_map_type') : 
     "G_NORMAL_MAP";
 $wl=(trim(get_option('sl_website_label'))!="")? 
-    htmlentities(get_option('sl_website_label')) : 
+    esc_attr(get_option('sl_website_label')) : 
     "Website";
 $du=(trim(get_option('sl_distance_unit'))!="")? 
     get_option('sl_distance_unit') : 
@@ -74,6 +77,7 @@ $end_size =(function_exists('getimagesize') && file_exists($end_icon_path)) ?
 //
 print "
 if (document.getElementById('map')){window.onunload = function (){ GUnload(); }}
+var debugmode=$debugmode;
 var allScripts=document.getElementsByTagName('script');
 var add_base=allScripts[allScripts.length -1].src.replace('/js/store-locator-js.php','');
 var add_upload_base='$sl_upload_base';
@@ -93,7 +97,7 @@ var sl_map_home_icon='"         .get_option('sl_map_home_icon')         ."';
 var sl_map_end_icon='"          .get_option('sl_map_end_icon')          ."';
 var sl_google_map_domain='"     .get_option('sl_google_map_domain')     ."';
 
-var sl_google_map_country='".htmlentities(get_option('sl_google_map_country'))."';
+var sl_google_map_country='".SetMapCenter()."';
 
 var sl_load_locations_default="     .((get_option('sl_load_locations_default'               )==1)?'true':'false').";
 var slp_use_email_form="            .((get_option(SLPLUS_PREFIX.'_email_form'               )==1)?'true':'false').";
@@ -107,3 +111,26 @@ var slp_scalecontrol="      .((get_option(SLPLUS_PREFIX.'_disable_scalecontrol' 
 var slp_maptypecontrol="    .((get_option(SLPLUS_PREFIX.'_disable_maptypecontrol'   )==1)?'false':'true').";
 ";
 
+//-----------------------------------------------------------
+// FUNCTIONS
+//-----------------------------------------------------------
+
+/*-------------------------
+ * SetMapCenter()
+ *
+ * Set the starting point for the center of the map.
+ * Uses country by default.
+ * Plus Pack v2.4+ allows for a custom address.
+ */
+function SetMapCenter() {
+    global $slplus_plugin;
+    $customAddress = get_option(SLPLUS_PREFIX.'_map_center');
+    if (
+        (preg_replace('/\W/','',$customAddress) != '') &&
+        $slplus_plugin->license->packages['Plus Pack']->isenabled_after_forcing_recheck() &&
+        ($slplus_plugin->license->packages['Plus Pack']->active_version >= 2004000) 
+        ) {
+        return str_replace(array("\r\n","\n","\r"),', ',esc_attr($customAddress));
+    }
+    return esc_attr(get_option('sl_google_map_country'));    
+}

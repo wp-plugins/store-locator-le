@@ -23,9 +23,6 @@ function move_upload_directories() {
 		mkdir($sl_upload_path . "/custom-css", 0755);
 	}
 	
-	if (is_dir($sl_path . "/themes") && !is_dir($sl_upload_path . "/themes")) {
-		csl_copyr($sl_path . "/themes", $sl_upload_path . "/themes");
-	}
 	if (is_dir($sl_path . "/languages") && !is_dir($sl_upload_path . "/languages")) {
 		csl_copyr($sl_path . "/languages", $sl_upload_path . "/languages");
 	}
@@ -190,7 +187,7 @@ function initialize_variables() {
     
     $radii=get_option('sl_map_radii');
     if (empty($radii)) {
-        add_option('sl_map_radii', "1,5,10,25,(50),100,200,500");
+        add_option('sl_map_radii', "10,25,50,100,(200),500");
         $radii=get_option('sl_map_radii');
         }
 }
@@ -494,10 +491,25 @@ function head_scripts() {
                     <script src='".SLPLUS_PLUGINURL."/core/js/store-locator-js.php' type='text/javascript'></script>
                     <script src='".SLPLUS_PLUGINURL."/core/js/store-locator.js' type='text/javascript'></script>
                     <script src='".SLPLUS_PLUGINURL."/core/js/functions.js' type='text/javascript'></script>\n";
-            $has_custom_css=(file_exists($sl_upload_path."/custom-css/csl-slplus.css"))? 
-                $sl_upload_base."/custom-css" : 
-                $sl_base; 
-            print "<link  href='".$has_custom_css."/core/css/csl-slplus.css' type='text/css' rel='stylesheet'/>";
+            
+                    
+                
+            // CSL Theme System
+            //
+            if (get_option(SLPLUS_PREFIX . '-theme' ) != '') {
+                    setup_stylesheet_for_slplus();
+                
+            // Legacy Custom CSS
+            //
+            } else {
+                $has_custom_css=(file_exists($sl_upload_path."/custom-css/csl-slplus.css"))? 
+                    $sl_upload_base."/custom-css" : 
+                    $sl_base; 
+                print "<link  href='".$has_custom_css."/core/css/csl-slplus.css' type='text/css' rel='stylesheet'/>";
+            }
+            
+            
+            
             $theme=get_option('sl_map_theme');
             if ($theme!="") {print "\n<link  href='".$sl_upload_base."/themes/$theme/style.css' rel='stylesheet' type='text/css'/>";}
             $zl=(trim(get_option('sl_zoom_level'))!="")? get_option('sl_zoom_level') : 4;		            
@@ -740,17 +752,12 @@ function add_admin_javascript() {
         }
 }
 
-/*---------------------------------*/
-function add_admin_stylesheet() {
-  global $sl_base;
-  print "<link rel='stylesheet' type='text/css' href='".SLPLUS_PLUGINURL."/core/css/admin.css'>\n";
-}
 
 /*---------------------------------*/
 function set_query_defaults() {
 	global $where, $o, $d;
 	
-	$qry = isset($_GET['q']) ? $_GET['q'] : '';
+	$qry = isset($_REQUEST['q']) ? $_REQUEST['q'] : '';
 	$where=($qry!='')? 
 	        " WHERE ".
 	        "sl_store    LIKE '%$qry%' OR ".

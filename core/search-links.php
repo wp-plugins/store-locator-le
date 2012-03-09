@@ -72,7 +72,7 @@ $extra_text=(trim($qry)!='')    ?
 </div>
 </td>
 <td align=right valign=bottom width='33%' style='padding-right:0px'>
-<table><tr><td width=75><nobr><img src='/core/images/spacer.gif' height=1 width=75 alt='' border=0>
+<table><tr><td width=75><nobr>
 <?php 
 if (($start-$num_per_page)>=0) {
   print "<a class='' href='$prev_page' rel='nofollow'>";
@@ -83,7 +83,7 @@ if (($start-$num_per_page)>=0 && ($start+$num_per_page)<$numMembers2) { ?>
 &nbsp;&nbsp;|&nbsp;
 <?php } ?>
 </td>
-<td width='85px' valign=bottom><img src='/core/images/spacer.gif' height=1 width=45 alt='' border=0>
+<td width='85px' valign=bottom>
 <?php 
 if (($start+$num_per_page)<$numMembers2) { 
  print "<a class='' href='$next_page' rel='nofollow'>";

@@ -17,7 +17,7 @@
     $slplus_plugin->notifications->add_notice(9,__('Enter your Google API key to enable location management.',SLPLUS_PREFIX));
 }
 ?>
-    <li class='like-a-button'><a href="/wp-admin/options-general.php?page=csl-slplus-options">Settings: General</a></li>    
+    <li class='like-a-button'><a href="<?php echo admin_url(); ?>options-general.php?page=csl-slplus-options">Settings: General</a></li>    
     <?php 
     //--------------------------------
     // Plus Version : Show Reports Tab
