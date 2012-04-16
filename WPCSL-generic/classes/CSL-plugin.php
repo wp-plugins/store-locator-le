@@ -8,7 +8,7 @@
 * share a code libary and reduce code redundancy.
 * 
 ************************************************************************/
-define('WPCSL__slplus__VERSION', '1.5.1');
+define('WPCSL__slplus__VERSION', '1.7');
 
 // (LC) 
 // These helper files should only be loaded if needed by the plugin
@@ -87,6 +87,9 @@ class wpCSL_plugin__slplus {
         $this->sku              = '';
         $this->uses_money       = true;
         $this->has_packages     = false;
+        $this->display_settings_collapsed = true;
+        $this->show_locale      = true;
+        $this->broadcast_url    = 'http://www.cybersprocket.com/signage/index.php';
 
         // Do the setting override or initial settings.
         //
@@ -142,7 +145,9 @@ class wpCSL_plugin__slplus {
              );
         }            
 
-        $this->settings_config = array(
+        $this->settings_config = array(            
+            'http_handler'      => $this->http_handler,
+            'broadcast_url'     => $this->broadcast_url,
             'prefix'            => $this->prefix,
             'css_prefix'        => $this->css_prefix,
             'plugin_url'        => $this->plugin_url,
@@ -156,17 +161,20 @@ class wpCSL_plugin__slplus {
             
         );
 
-        $this->cache_config = array(
-            'prefix' => $this->prefix,
-            'path' => $this->cache_path
-        );
+        if ($this->cache_obj_name != 'none') {
+            $this->cache_config = array(
+                'prefix' => $this->prefix,
+                'path' => $this->cache_path
+            );
+        }            
         
         if ($this->has_packages || !$this->no_license) {
             $this->license_config = array(
                 'prefix'        => $this->prefix,
                 'http_handler'  => $this->http_handler,
                 'sku'           => $this->sku,
-                'has_packages'  => $this->has_packages
+                'has_packages'  => $this->has_packages,
+                'parent'        => $this
             );
         }            
 
@@ -562,7 +570,7 @@ class wpCSL_plugin__slplus {
         //
         } else {
             if (($this->debugging) && ($this->driver_type != 'none')) {
-                print __('DEBUG: No driver found.', $this->prefix);
+                print __('DEBUG: No driver found.',WPCSL__slplus__VERSION);
             }
         }
     }
@@ -574,15 +582,15 @@ class wpCSL_plugin__slplus {
 
         if ($file == $this->basefile) {
             if (isset($this->support_url)) {
-                $links[] = '<a href="'.$this->support_url.'" title="'.__('Support') . '">'.
-                            __('Support') . '</a>';
+                $links[] = '<a href="'.$this->support_url.'" title="'.__('Support',WPCSL__slplus__VERSION) . '">'.
+                            __('Support',WPCSL__slplus__VERSION) . '</a>';
             }
             if (isset($this->purchase_url)) {
-                $links[] = '<a href="'.$this->purchase_url.'" title="'.__('Purchase') . '">'.
-                            __('Buy Now') . '</a>';
+                $links[] = '<a href="'.$this->purchase_url.'" title="'.__('Purchase',WPCSL__slplus__VERSION) . '">'.
+                            __('Buy Now',WPCSL__slplus__VERSION) . '</a>';
             }
             $links[] = '<a href="options-general.php?page='.$this->prefix.'-options" title="'.
-                            __('Settings') . '">'.__('Settings') . '</a>';
+                            __('Settings',WPCSL__slplus__VERSION) . '">'.__('Settings',WPCSL__slplus__VERSION) . '</a>';
         }
         return $links;
     }
@@ -659,7 +667,7 @@ class wpCSL_plugin__slplus {
             //
             } else {
                 if ($this->debugging) {
-                    print __('DEBUG: could not locate driver:', $this->prefix) . 
+                    print __('DEBUG: could not locate driver:',WPCSL__slplus__VERSION) . 
                         $this->plugin_path . 'Custom/Drivers/'. $this->driver_name .'.php' .
                         "<br/>\n";                                        
                 }
@@ -709,11 +717,11 @@ class wpCSL_plugin__slplus {
      * Add the display settings section to the admin panel.
      *
      **/
-    function add_display_settings() {         
+    function add_display_settings() {      
         $this->settings->add_section(array(
-                'name' => __('Display Settings',$this->prefix),
+                'name' => __('Display Settings',WPCSL__slplus__VERSION),
                 'description' => '',
-                'start_collapsed' => true
+                'start_collapsed' => $this->display_settings_collapsed
             )
         );
         
@@ -728,36 +736,38 @@ class wpCSL_plugin__slplus {
 
         // If we have an exec function and get locales, show the pulldown.
         //        
-        if (function_exists('exec')) {
-            if (exec('locale -a', $locales)) {
-                $locale_custom = array();
-    
-                foreach ($locales as $locale) {
-                    $locale_custom[$locale] = $locale;
+        if ($this->show_locale){
+            if (function_exists('exec')) {
+                if (exec('locale -a', $locales)) {
+                    $locale_custom = array();
+        
+                    foreach ($locales as $locale) {
+                        $locale_custom[$locale] = $locale;
+                    }
+        
+                    $this->settings->add_item(
+                        'Display Settings', 
+                        'Locale', 
+                        'locale', 
+                        'list', 
+                        false, 
+                        __('Sets the locale for PHP program processing, affects time and currency processing. '.
+                            'If you change this, save settings and then select money format.',WPCSL__slplus__VERSION),
+                        $locale_custom
+                    );
                 }
-    
-                $this->settings->add_item(
-                    'Display Settings', 
-                    'Locale', 
-                    'locale', 
-                    'list', 
-                    false, 
-                    __('Sets the locale for PHP program processing, affects time and currency processing. '.
-                        'If you change this, save settings and then select money format.',$this->prefix),
-                    $locale_custom
-                );
+            } else {
+                    $this->settings->add_item(
+                        'Display Settings', 
+                        'Locale', 
+                        'locale', 
+                        null, 
+                        false, 
+                        __('Your PHP settings have disabled exec(), your locale list cannot be determined.',WPCSL__slplus__VERSION),
+                        '&nbsp;'
+                    );
             }
-        } else {
-                $this->settings->add_item(
-                    'Display Settings', 
-                    'Locale', 
-                    'locale', 
-                    null, 
-                    false, 
-                    __('Your PHP settings have disabled exec(), your locale list cannot be determined.',$this->prefix),
-                    '&nbsp;'
-                );
-        }
+        }            
 
         // Show money pulldown if we are using Panhandler or have set the uses_money flag
         //
@@ -771,7 +781,7 @@ class wpCSL_plugin__slplus {
                     'money_format', 
                     'list', 
                     false, 
-                    __('This is based on your current locale, which is set to ',$this->prefix).
+                    __('This is based on your current locale, which is set to ',WPCSL__slplus__VERSION).
                         '<code>'. setlocale(LC_MONETARY, 0) .'</code>',
                     array(
                         money_format('%!i', 1234.56)            => '%!i',
@@ -839,12 +849,12 @@ class wpCSL_plugin__slplus {
             //
             if ($this->debugging) {
                 if (is_array($atts)) {
-                    print __('DEBUG: Shortcode called with attributes:',$this->prefix) . "<br/>\n";
+                    print __('DEBUG: Shortcode called with attributes:',WPCSL__slplus__VERSION) . "<br/>\n";
                     foreach ($atts as $name=>$value) {
                         print $name.':'.$value."<br/>\n";
                     }
                 } else {
-                    print __('DEBUG: Shortcode called with no attributes.',$this->prefix) . "<br/>\n";
+                    print __('DEBUG: Shortcode called with no attributes.',WPCSL__slplus__VERSION) . "<br/>\n";
                 }
             }            
             
@@ -893,7 +903,7 @@ class wpCSL_plugin__slplus {
         // Not OK TO Show
         } else {
             if ($this->debugging) {
-                $content = __('DEBUG: Not OK To Show',$this->prefix);
+                $content = __('DEBUG: Not OK To Show',WPCSL__slplus__VERSION);
             }
         }
         return $content;
@@ -961,7 +971,7 @@ class wpCSL_plugin__slplus {
         // No products, show an error message as the output
         //
         } else {
-            $content= __('No products found', $this->prefix);
+            $content= __('No products found',WPCSL__slplus__VERSION);
         }
 
         return $content;            
@@ -1009,6 +1019,31 @@ class wpCSL_plugin__slplus {
         }
 
         return $results;
+    }
+    
+    /**-----------------------------------
+     * method: http_result_is_ok()
+     *
+     * Determine if the http_request result that came back is valid.
+     *
+     * params:
+     *  $result (required, object) - the http result
+     *
+     * returns:
+     *   (boolean) - true if we got a result, false if we got an error
+     */
+    function http_result_is_ok($result) {
+
+        // Yes - we can make a very long single logic check
+        // on the return, but it gets messy as we extend the
+        // test cases. This is marginally less efficient but
+        // easy to read and extend.
+        //
+        if ( is_a($result,'WP_Error') ) { return false; }
+        if ( !isset($result['body'])  ) { return false; }
+        if ( $result['body'] == ''    ) { return false; }
+
+        return true;
     }
 }
 

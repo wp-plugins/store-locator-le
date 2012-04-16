@@ -1,6 +1,6 @@
 <?php
 global $slplus_plugin;
-if ($slplus_plugin->license->packages['Plus Pack']->isenabled) {
+if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
 ?>    
 <div class='form_entry'>
     <label for='search_tag_label'><?php _e("Search By Tag Label", SLPLUS_PREFIX); ?>:</label>

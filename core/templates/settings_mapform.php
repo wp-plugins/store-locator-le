@@ -34,15 +34,15 @@
             
             <?php
              //--------------------------------
-             // Plus Pack
+             // Pro Pack
              //            
             if (function_exists('execute_and_output_plustemplate')) {
                 
                      //--------------------------------
-                     // Plus Pack v2.4+ Only
+                     // Pro Pack v2.4+ Only
                      //
                      global $slplus_plugin;
-                     if ($slplus_plugin->license->packages['Plus Pack']->active_version >= 2004000) {                    
+                     if ($slplus_plugin->license->packages['Pro Pack']->active_version >= 2004000) {                    
             ?>                
                         <div class='form_entry'>
                             <label for='<?php echo SLPLUS_PREFIX.'_maxreturned'; ?>'><? _e("Return at most", SLPLUS_PREFIX); ?></label>
@@ -64,7 +64,7 @@
                 }
                 
                 //--------------------------------
-                // Plus Pack Any Version
+                // Pro Pack Any Version
                 //
                 execute_and_output_plustemplate('mapsettings_mapfeatures.php');
             }    
@@ -132,14 +132,14 @@
     
             <div class='form_entry'>
                 <label for='icon'><?php _e('Home Icon', SLPLUS_PREFIX);?></label>
-                <input name='icon' size='45' value='<?php echo $icon;?>' onchange="document.getElementById('prev').src=this.value">
+                <input name='icon' dir='rtl' size='45' value='<?php echo $icon;?>' onchange="document.getElementById('prev').src=this.value">
                     &nbsp;&nbsp;<img id='prev' src='<?php echo $icon;?>' align='top'><br/>
                 <div style='margin-left: 150px;'><?php echo $icon_str;?></div>        
             </div>
     
             <div class='form_entry'>
                 <label for='icon2'><?php _e('Destination Icon', SLPLUS_PREFIX);?></label>
-                <input name='icon2' size='45' value='<?php echo $icon2;?>' onchange="document.getElementById('prev2').src=this.value">
+                <input name='icon2' dir='rtl' size='45' value='<?php echo $icon2;?>' onchange="document.getElementById('prev2').src=this.value">
                     &nbsp;&nbsp;<img id='prev2' src='<?php echo $icon2;?>'align='top'><br/>
                 <div style='margin-left: 150px;'><?php echo $icon2_str;?></div>
             </div>

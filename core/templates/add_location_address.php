@@ -68,7 +68,7 @@ global $text_domain, $sl_upload_path, $slplus_plugin;
 
         <?php
         if (
-            $slplus_plugin->license->packages['Plus Pack']->isenabled &&
+            $slplus_plugin->license->packages['Pro Pack']->isenabled &&
             function_exists('execute_and_output_plustemplate')
             ) {
             execute_and_output_plustemplate('addlocations_bulkupload.php');

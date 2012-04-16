@@ -5,6 +5,22 @@
  ** The collection of main core functions for Store Locator Plus
  ***************************************************************************/
 
+global $sl_dir, $sl_base, $sl_path, $sl_upload_path, $sl_upload_base;
+
+$text_domain=SLPLUS_PREFIX;
+$prefix = SLPLUS_PREFIX;
+
+$sl_dir =SLPLUS_PLUGINDIR;  //plugin absolute server directory name
+$sl_base=SLPLUS_PLUGINURL;  //URL to plugin directory
+$sl_path=ABSPATH.'wp-content/plugins/'.$sl_dir; //absolute server path to plugin directory
+$sl_upload_path=ABSPATH.'wp-content/uploads/sl-uploads'; //absolute server path to store locator uploads directory
+
+$map_character_encoding=(get_option('sl_map_character_encoding')!="")? 
+    "&amp;oe=".get_option('sl_map_character_encoding') : 
+    "";
+$sl_upload_base=get_option('siteurl')."/wp-content/uploads/sl-uploads"; //URL to store locator uploads directory
+ 
+ 
 
 /* -----------------*/
 function move_upload_directories() {
@@ -436,98 +452,6 @@ function slplus_dbupdater($sql,$table_name) {
     }   
 }
 
-
-/***********************************
- ** function: head_scripts
- **
- ** Create the javascript elements needed for the google map for pages that use
- ** the plugin only.   This was inherited and needs to be cleaned up a bit.
- ** 
- ** We'll still want to ensure we only load up scripts (and CSS, etc.) on pages
- ** where the map will be displayed.
- **/
-function head_scripts() {
-	global $sl_dir, $sl_base, $sl_upload_base, $sl_path, $sl_upload_path, $wpdb, $pagename, $map_character_encoding;
-	global $slplus_plugin;
-	
-	//Check if currently on page with shortcode
-	$pageID = isset($_GET['p'])         ? $_GET['p']       : 
-	          (isset($_GET['page_id'])   ? $_GET['page_id'] : '');
-	$on_sl_page=$wpdb->get_results("SELECT post_name FROM ".$wpdb->prefix."posts ".
-	        "WHERE (post_content LIKE '%[STORE-LOCATOR%' OR post_content LIKE '%[SLPLUS%') AND " .
-	        "post_status IN ('publish', 'draft') AND ".
-	        "(post_name='$pagename' OR ID='$pageID')", 
-	        ARRAY_A);
-	
-	//Checking if code used in posts	
-	$sl_code_is_used_in_posts=$wpdb->get_results(
-	    "SELECT post_name FROM ".$wpdb->prefix."posts ".
-	    "WHERE (post_content LIKE '%[STORE-LOCATOR%' OR post_content LIKE '%[SLPLUS%') AND post_type='post'"
-	    );
-	
-	//If shortcode used in posts, get post IDs, and put into array of numbers
-	if ($sl_code_is_used_in_posts) {
-		$sl_post_ids=$wpdb->get_results("SELECT ID FROM ".$wpdb->prefix."posts WHERE post_content LIKE '%[STORE-LOCATOR%' AND post_type='post'", ARRAY_A);
-		foreach ($sl_post_ids as $val) { $post_ids_array[]=$val['ID'];}
-	} else {			    
-	     //post number that'll never be reached
-		$post_ids_array=array(9999999999999999999999999999999999999);
-	}
-	
-	// If on page with store locator shortcode, on an archive, search, or 404 page 
-    // while shortcode has been used in a post, on the front page, or a specific 
-    // post with shortcode, display code, otherwise, don't
-	if ($on_sl_page || is_search() || 
-        ((is_archive() || is_404()) && $sl_code_is_used_in_posts) || 
-        is_front_page() || is_single($post_ids_array)
-        ) {
-        if (isset($slplus_plugin) && $slplus_plugin->ok_to_show()) {
-            $api_key=$slplus_plugin->driver_args['api_key'];
-            $google_map_domain=(get_option('sl_google_map_domain')!="")? 
-                    get_option('sl_google_map_domain') : 
-                    "maps.google.com";
-            
-            print  "<script src='http://$google_map_domain/maps?file=api&amp;v=2&amp;key=$api_key&amp;sensor=false{$map_character_encoding}' type='text/javascript'></script>
-                    <script src='".SLPLUS_PLUGINURL."/core/js/store-locator-js.php' type='text/javascript'></script>
-                    <script src='".SLPLUS_PLUGINURL."/core/js/store-locator.js' type='text/javascript'></script>
-                    <script src='".SLPLUS_PLUGINURL."/core/js/functions.js' type='text/javascript'></script>\n";
-            
-                    
-                
-            // CSL Theme System
-            //
-            if (get_option(SLPLUS_PREFIX . '-theme' ) != '') {
-                    setup_stylesheet_for_slplus();
-                
-            // Legacy Custom CSS
-            //
-            } else {
-                $has_custom_css=(file_exists($sl_upload_path."/custom-css/csl-slplus.css"))? 
-                    $sl_upload_base."/custom-css" : 
-                    $sl_base; 
-                print "<link  href='".$has_custom_css."/core/css/csl-slplus.css' type='text/css' rel='stylesheet'/>";
-            }
-            
-            
-            
-            $theme=get_option('sl_map_theme');
-            if ($theme!="") {print "\n<link  href='".$sl_upload_base."/themes/$theme/style.css' rel='stylesheet' type='text/css'/>";}
-            $zl=(trim(get_option('sl_zoom_level'))!="")? get_option('sl_zoom_level') : 4;		            
-            $ztweak=(trim(get_option('sl_zoom_tweak'))!="")? get_option('sl_zoom_tweak') : 1;		            
-            }
-        } else {
-            if ($slplus_plugin->debugging) {
-                $sl_page_ids=$wpdb->get_results("SELECT ID FROM ".$wpdb->prefix."posts WHERE post_content LIKE '%[STORE-LOCATOR%' AND post_status='publish'", ARRAY_A);
-                print "<!-- No store locator on this page, so no unnecessary scripts for better site performance. (";
-                if ($sl_page_ids) {
-                    foreach ($sl_page_ids as $value) { print "$value[ID],";}
-                }
-                print ")-->";
-            }
-        }
-}
-
-
 /**************************************
  ** function: store_locator_shortcode
  **
@@ -560,32 +484,19 @@ function head_scripts() {
         slplus_shortcode_atts($attributes);
     }
                    
-    $height=(get_option('sl_map_height'))? 
-    get_option('sl_map_height') : "500" ;
+    $height         = get_option('sl_map_height','500');    
+    $height_units   = get_option('sl_map_height_units','px');    
+    $search_label   = get_option('sl_search_label',__('Address',SLPLUS_PREFIX));
+    $unit_display   = get_option('sl_distance_unit','mi');    
+    $width          = get_option('sl_map_width','100');        
+    $width_units    = get_option('sl_map_width_units','%');
     
-    $width=(get_option('sl_map_width'))? 
-    get_option('sl_map_width') : "100" ;
-        
-    $radii=(get_option('sl_map_radii'))? 
-    get_option('sl_map_radii') : "1,5,10,(25),50,100,200,500" ;
+    $radii          = get_option('sl_map_radii','1,5,10,(25),50,100,200,500');
+    $r_array        = explode(",", $radii);
     
-    $height_units=(get_option('sl_map_height_units'))? 
-    get_option('sl_map_height_units') : "px";
+    $sl_instruction_message = get_option('sl_instruction_message',__('Enter Your Address or Zip Code Above.',SLPLUS_PREFIX));
     
-    $width_units=(get_option('sl_map_width_units'))? 
-    get_option('sl_map_width_units') : "%";
     
-    $sl_instruction_message=(get_option('sl_instruction_message'))? 
-    get_option('sl_instruction_message') : 
-    "Enter Your Address or Zip Code Above.";
-
-    $r_array=explode(",", $radii);
-    $search_label=(get_option('sl_search_label'))? 
-    get_option('sl_search_label') : "Address" ;
-    
-    $unit_display=(get_option('sl_distance_unit')=="km")? 
-    "km" : "mi";
-
     $r_options      =(isset($r_options)         ?$r_options      :'');
     $cs_options     =(isset($cs_options)        ?$cs_options     :'');
     $country_options=(isset($country_options)   ?$country_options:'');
@@ -633,7 +544,7 @@ function head_scripts() {
     // Create Country Pulldown
     // [LE/PLUS]
     //    
-    if ($slplus_plugin->license->packages['Plus Pack']->isenabled) {                    
+    if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {                    
         $country_options = slplus_create_country_pd();    
         $slplus_state_options = slplus_create_state_pd();
     } else {
@@ -671,8 +582,79 @@ function head_scripts() {
     // Prep fnvars for passing to our template
     //
     $fnvars = array_merge($fnvars,(array) $attributes);       // merge in passed attributes
+    
+    
+    // Prepare some data for JavaScript injection...
+    //
+    $slplus_home_icon = get_option('sl_map_home_icon');
+    $slplus_end_icon  = get_option('sl_map_end_icon');
+    $slplus_home_icon_file = str_replace(SLPLUS_ICONURL,SLPLUS_ICONDIR,$slplus_home_icon);
+    $slplus_end_icon_file  = str_replace(SLPLUS_ICONURL,SLPLUS_ICONDIR,$slplus_end_icon);
+    $slplus_home_size=(function_exists('getimagesize') && file_exists($slplus_home_icon_file))? 
+        getimagesize($slplus_home_icon_file) : 
+        array(0 => 20, 1 => 34);    
+    $slplus_end_size =(function_exists('getimagesize') && file_exists($slplus_end_icon_file)) ? 
+        getimagesize($slplus_end_icon_file)  : 
+        array(0 => 20, 1 => 34);
+    
+    // Lets get some variables into our script
+    //
+    $scriptData = array(
+        'debug_mode'    => (get_option(SLPLUS_PREFIX.'-debugging') == 'on'),
+        'disable_scroll'=> (get_option(SLPLUS_PREFIX.'_disable_scrollwheel')==1),
+        'disable_dir'   => (get_option(SLPLUS_PREFIX.'_disable_initialdirectory' )==1),
+        'distance_unit' => esc_attr(get_option('sl_distance_unit'),'miles'),
+        'load_locations'=> (get_option('sl_load_locations_default')==1),
+        'map_3dcontrol' => (get_option(SLPLUS_PREFIX.'_disable_largemapcontrol3d')==0),
+        'map_country'   => SetMapCenter(),
+        'map_domain'    => get_option('sl_google_map_domain','maps.google.com'),
+        'map_home_icon' => $slplus_home_icon,
+        'map_home_sizew'=> $slplus_home_size[0],
+        'map_home_sizeh'=> $slplus_home_size[1],
+        'map_end_icon'  => $slplus_end_icon,
+        'map_end_sizew' => $slplus_end_size[0],
+        'map_end_sizeh' => $slplus_end_size[1],
+        'map_scalectrl' => (get_option(SLPLUS_PREFIX.'_disable_scalecontrol')==0),
+        'map_type'      => get_option('sl_map_type','G_NORMAL_MAP'),
+        'map_typectrl'  => (get_option(SLPLUS_PREFIX.'_disable_maptypecontrol')==0),
+        'show_tags'     => (get_option(SLPLUS_PREFIX.'_show_tags')==1),
+        'overview_ctrl' => get_option('sl_map_overview_control',0),
+        'use_email_form'=> (get_option(SLPLUS_PREFIX.'_email_form')==1),
+        'website_label' => esc_attr(get_option('sl_website_label','Website')),
+        'zoom_level'    => get_option('sl_zoom_level',4),
+        'zoom_tweak'    => get_option('sl_zoom_tweak',1),
+        );
+    wp_localize_script('slplus_map','slplus',$scriptData);                 
 
+    // Set our flag for later processing
+    // of JavaScript files
+    //
+    if (!defined('SLPLUS_SHORTCODE_RENDERED')) {
+        define('SLPLUS_SHORTCODE_RENDERED',true);
+    }
+    
     return get_string_from_phpexec($file); 
+}
+
+
+/**************************************
+ * SetMapCenter()
+ *
+ * Set the starting point for the center of the map.
+ * Uses country by default.
+ * Pro Pack v2.4+ allows for a custom address.
+ */
+function SetMapCenter() {
+    global $slplus_plugin;
+    $customAddress = get_option(SLPLUS_PREFIX.'_map_center');
+    if (
+        (preg_replace('/\W/','',$customAddress) != '') &&
+        $slplus_plugin->license->packages['Pro Pack']->isenabled_after_forcing_recheck() &&
+        ($slplus_plugin->license->packages['Pro Pack']->active_version >= 2004000) 
+        ) {
+        return str_replace(array("\r\n","\n","\r"),', ',esc_attr($customAddress));
+    }
+    return esc_attr(get_option('sl_google_map_country','United States'));    
 }
 
 /**************************************
@@ -719,7 +701,7 @@ function csl_slplus_add_options_page() {
 		
 		// Plus Reporting
 		//
-		if ($slplus_plugin->license->packages['Plus Pack']->isenabled) { 		
+		if ($slplus_plugin->license->packages['Pro Pack']->isenabled) { 		
             if (function_exists('slplus_add_report_settings')) {
                 add_submenu_page(
                     SLPLUS_COREDIR.'add-locations.php',
@@ -752,83 +734,6 @@ function add_admin_javascript() {
         }
 }
 
-
-/*---------------------------------*/
-function set_query_defaults() {
-	global $where, $o, $d;
-	
-	$qry = isset($_REQUEST['q']) ? $_REQUEST['q'] : '';
-	$where=($qry!='')? 
-	        " WHERE ".
-	        "sl_store    LIKE '%$qry%' OR ".
-	        "sl_address  LIKE '%$qry%' OR ".
-	        "sl_address2 LIKE '%$qry%' OR ".
-	        "sl_city     LIKE '%$qry%' OR ".
-	        "sl_state    LIKE '%$qry%' OR ".
-	        "sl_zip      LIKE '%$qry%' OR ".
-	        "sl_tags     LIKE '%$qry%' " 
-	        : 
-	        '' ;
-	$o= (isset($_GET['o']) && (trim($_GET['o']) != ''))
-	    ? $_GET['o'] : "sl_store";
-	$d= (isset($_GET['d']) && (trim($_GET['d'])=='DESC')) 
-	    ? "DESC" : "ASC";
-}
-
-/*----------------------------------*/
-function match_imported_data($the_array) {
-    print "<h3>".__("Choose Heading That Matches Columns You Want to Import", SLPLUS_PREFIX).":</h3>(".__("Leave headings for undesired columns unchanged", SLPLUS_PREFIX).")<br><br>
-    <form method='post'>
-    <input type='button' value='".__("Cancel", SLPLUS_PREFIX)."' class='button' onclick='history.go(-1)'>&nbsp;<input type='submit' value='".__("Import Locations", SLPLUS_PREFIX)."' class='button'>
-    <table class='widefat'><thead><tr style='/*background-color:black*/'>";
-    
-    $array_to_be_counted=(is_array($the_array[0]))? $the_array[0] : $the_array[1] ; //needed for the csv import (where first line is usually skipped)  vs the point-click-add import (where there's only the first line)
-    for ($ctr=1; $ctr<=count($array_to_be_counted); $ctr++) {
-    print "<td><select name='field_map[]'>";
-    print "<option value=''>".__("Choose")."</option>
-            <option value='sl_store'>".__("Name", SLPLUS_PREFIX)."</option>
-                <option value='sl_address'>".__("Street(Line1)", SLPLUS_PREFIX)."</option>
-                <option value='sl_address2'>".__("Street(Line2)", SLPLUS_PREFIX)."</option>
-                <option value='sl_city'>".__("City", SLPLUS_PREFIX)."</option>
-                <option value='sl_state'>".__("State", SLPLUS_PREFIX)."</option>
-                <option value='sl_zip'>".__("Zip", SLPLUS_PREFIX)."</option>
-                <option value='sl_tags'>".__("Tags", SLPLUS_PREFIX)."</option>
-                <option value='sl_description'>".__("Description", SLPLUS_PREFIX)."</option>
-                <option value='sl_hours'>".__("Hours", SLPLUS_PREFIX)."</option>
-                <option value='sl_url'>".__("URL", SLPLUS_PREFIX)."</option>
-                <option value='sl_phone'>".__("Phone", SLPLUS_PREFIX)."</option>
-                <option value='sl_image'>".__("Image", SLPLUS_PREFIX)."</option>
-                <option value='sl_private'>".__("Is Private?", SLPLUS_PREFIX)."</option>";
-    print "</select></td>";
-    }
-    print "</tr></thead>";
-    
-    foreach ($the_array as $key=>$value) {
-    print "<tr style='border-bottom:solid silver 1px'>";
-    $bgcolor="#ddd";
-    $ctr2=0;
-    foreach ($value as $key2=>$value2) {
-        $bgcolor=($bgcolor=="#fff" || empty($bgcolor))? "#ddd" : "#fff";
-        print "<td style='background-color:$bgcolor'>$value2<input type='hidden' value='$value2' name='column{$ctr2}[]'></td>\n";
-        $ctr2++;
-    }
-    print "</tr>\n";
-    }
-    print "</table><input type='hidden' name='finish_import' value='1'>
-    <input type='hidden' name='total_entries' value='".(count($the_array))."'>
-    <input type='button' value='".__("Cancel", SLPLUS_PREFIX)."' class='button' onclick='history.go(-1)'>&nbsp;<input type='submit' value='".__("Import Locations", SLPLUS_PREFIX)."' class='button'></form>";
-}
-/*--------------------------------------------------------------*/
-
-function do_hyperlink(&$text, $target="'_blank'")
-{
-   // match protocol://address/path/
-   $text = ereg_replace("[a-zA-Z]+://([.]?[a-zA-Z0-9_/?&amp;%20,=-\+-])*", "<a href=\"\\0\" target=$target>\\0</a>", $text);
-   $text = ereg_replace("(^| )(www([.]?[a-zA-Z0-9_/=-\+-])*)", "\\1<a href=\"http://\\2\" target=$target>\\2</a>", $text);
-   return $text;
-}
-
-
 /*-------------------------------------------------------------*/
 function comma($a) {
 	$a=ereg_replace('"', "&quot;", $a);
@@ -838,12 +743,6 @@ function comma($a) {
 	$a=ereg_replace(" & ", " &amp; ", $a);
 	return ereg_replace("," ,"&#44;" ,$a);
 	
-}
-
-
-/*-----------------------------------------------------------*/
-function url_test($url) {
-	return (strtolower(substr($url,0,7))=="http://");
 }
 
 /************************************************************

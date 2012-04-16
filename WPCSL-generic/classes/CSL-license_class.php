@@ -87,7 +87,7 @@ class wpCSL_license__slplus {
                             $csl_url . $query_string, 
                             array('timeout' => 60) 
                             ); 
-            if ($this->http_result_is_ok($result) ) {
+            if ($this->parent->http_result_is_ok($result) ) {
                 $response = json_decode($result['body']);
             }
 
@@ -164,8 +164,10 @@ class wpCSL_license__slplus {
                 if (isset($this->notifications)) {
                     $this->notifications->add_notice(
                         2,
-                        "You have not provided a valid license key for this plugin. " .
-                            "Until you do so, it will only display content for Admin users.",
+                        __("You have not provided a valid license key for this plugin. " .
+                            "Until you do so, it will only display content for Admin users." 
+                            ,WPCSL__slplus__VERSION
+                            ),
                         "options-general.php?page={$this->prefix}-options#product_settings"
                     );
                 }
@@ -189,32 +191,6 @@ class wpCSL_license__slplus {
             }
         }            
     }
-
-    /**-----------------------------------
-     * method: http_result_is_ok()
-     *
-     * Determine if the http_request result that came back is valid.
-     *
-     * params:
-     *  $result (required, object) - the http result
-     *
-     * returns:
-     *   (boolean) - true if we got a result, false if we got an error
-     */
-    private function http_result_is_ok($result) {
-
-        // Yes - we can make a very long single logic check
-        // on the return, but it gets messy as we extend the
-        // test cases. This is marginally less efficient but
-        // easy to read and extend.
-        //
-        if ( is_a($result,'WP_Error') ) { return false; }
-        if ( !isset($result['body'])  ) { return false; }
-        if ( $result['body'] == ''    ) { return false; }
-
-        return true;
-    }
-    
     
     /**------------------------------------
      ** method: add_licensed_package()
@@ -258,6 +234,7 @@ class wpCSL_license__slplus {
 class wpCSL_license_package__slplus {
 
     public $active_version = 0;
+    public $force_enabled = false;
     
     /**------------------------------------
      **/
@@ -275,7 +252,7 @@ class wpCSL_license_package__slplus {
         // set this package to the pre-saved enabled/disabled setting from wp_options
         // which will return false if never set before
         //
-        $this->isenabled = get_option($this->enabled_option_name);        
+        $this->isenabled = ($this->force_enabled || get_option($this->enabled_option_name));        
         
         // Set our license key property
         //
@@ -283,7 +260,7 @@ class wpCSL_license_package__slplus {
         
         // Set our active version (what we are licensed for)
         //
-        $this->active_version =  get_option($this->prefix.'-'.$this->sku.'-latest-version-numeric'); 
+        $this->active_version =  (isset($this->force_version)?$this->force_version:get_option($this->prefix.'-'.$this->sku.'-latest-version-numeric')); 
     }
     
     

@@ -1,9 +1,9 @@
 <?php
     //----------------------------------------------------------------------
-    // Plus Pack Enabled
+    // Pro Pack Enabled
     //
     global $slplus_plugin;
-    if ($slplus_plugin->license->packages['Plus Pack']->isenabled) {                
+    if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {                
 ?>
 
 <!-- No Initial Directory -->
@@ -108,9 +108,9 @@
         );
 
 
-    // Plus Pack Version 2.4
+    // Pro Pack Version 2.4
     //
-    if ($slplus_plugin->license->packages['Plus Pack']->active_version >= 2004000) {
+    if ($slplus_plugin->license->packages['Pro Pack']->active_version >= 2004000) {
 ?>        
 
         <!-- Map Starting Point -->

@@ -6,25 +6,43 @@
  *
  *****************************************************************************/
 
+/*********************************
+ * Check our stuff loaded
+ *********************************/
+ 
+// Check the WordPress environment was loaded
+//
+if (typeof GLatLng == 'undefined' ) {    
+    alert('SLPLUS: Google Map Interface did not load.');
+}
 var map;
 var geocoder;
 
+var allScripts=document.getElementsByTagName('script');
+var add_base=allScripts[allScripts.length -1].src.replace(/\/js\/store\-locator\-map.js(.*)$/,'');
+
 var theIcon = new GIcon(G_DEFAULT_ICON);
-    theIcon.image = sl_map_end_icon;
-if (sl_map_end_icon.indexOf('flag')!='-1') {
-    theIcon.shadow = add_base + "/images/flag_shadow.png";
-} else if (sl_map_end_icon.indexOf('arrow')!='-1') {
-    theIcon.shadow = add_base + "/images/arrow_shadow.png";
-} else if (sl_map_end_icon.indexOf('bubble')!='-1') {
-    theIcon.shadow = add_base + "/images/bubble_shadow.png";
-} else if (sl_map_end_icon.indexOf('marker')!='-1') {
-    theIcon.shadow = add_base + "/images/marker_shadow.png";
-} else if (sl_map_end_icon.indexOf('sign')!='-1') {
-    theIcon.shadow = add_base + "/images/sign_shadow.png";
+    theIcon.image = slplus.map_end_icon;
+if (slplus.map_end_icon.indexOf('flag')!='-1') {
+    theIcon.shadow = add_base + "/images/icons/flag_shadow.png";
+} else if (slplus.map_end_icon.indexOf('arrow')!='-1') {
+    theIcon.shadow = add_base + "/images/icons/arrow_shadow.png";
+} else if (slplus.map_end_icon.indexOf('bubble')!='-1') {
+    theIcon.shadow = add_base + "/images/icons/bubble_shadow.png";
+} else if (slplus.map_end_icon.indexOf('marker')!='-1') {
+    theIcon.shadow = add_base + "/images/icons/marker_shadow.png";
+} else if (slplus.map_end_icon.indexOf('sign')!='-1') {
+    theIcon.shadow = add_base + "/images/icons/sign_shadow.png";
 } else {
     theIcon.shadow = add_base + "/images/blank.png";
 }
-theIcon.iconSize = new GSize(sl_map_end_icon_width, sl_map_end_icon_height);
+theIcon.iconSize = new GSize(slplus.map_end_sizew, slplus.map_end_sizeh);
+
+if (document.getElementById('map')){
+    window.onunload = function (){ 
+        GUnload(); 
+        }
+}
 
 
 /**************************************
@@ -37,26 +55,27 @@ function sl_load() {
     if (GBrowserIsCompatible()) {
         geocoder = new GClientGeocoder();
         map = new GMap2(document.getElementById('map'));
-        if (sl_map_overview_control==1) {
+        if (parseInt(slplus.overview_ctrl)==1) {
             map.addControl(new GOverviewMapControl());
         }
         map.addMapType(G_PHYSICAL_MAP);
-        
         // This is asynchronous, as such we have no idea when it will return
         //
-        geocoder.getLatLng(sl_google_map_country, 
+        geocoder.getLatLng(slplus.map_country, 
             function(latlng) {
-                map.setCenter(latlng, sl_zoom_level, sl_map_type);
-                
+                if (!slplus.load_locations) {                    
+                    map.setCenter(latlng, parseInt(slplus.zoom_level), eval(slplus.map_type));
+                }
+                                
                 var customUI = map.getDefaultUI();
-                customUI.controls.largemapcontrol3d = slp_largemapcontrol3d;   
-                customUI.controls.scalecontrol = slp_scalecontrol;
-                customUI.controls.hierarchicalmaptypecontrol = slp_maptypecontrol;                
+                customUI.controls.largemapcontrol3d = slplus.map_3dcontrol;   
+                customUI.controls.scalecontrol = slplus.map_scalectrl;
+                customUI.controls.hierarchicalmaptypecontrol = slplus.map_typectrl;                
                 map.setUI(customUI);
                 
-                if (slp_disablescrollwheel) { map.disableScrollWheelZoom(); }
+                if (slplus.disable_scroll) { map.disableScrollWheelZoom(); }
                 
-                if (sl_load_locations_default) {                    
+                if (slplus.load_locations) {                    
                     sl_load_locations(map,latlng.lat(),latlng.lng());
                 }
             }
@@ -84,7 +103,7 @@ function sl_load_locations(map,lat,lng) {
         taglist = null;
     }
 
-    if (!slp_disableinitialdirectory) {
+    if (!slplus.disable_dir) {
         var sidebar = document.getElementById('map_sidebar');
         sidebar.innerHTML = '';           
     }
@@ -114,26 +133,26 @@ function sl_load_locations(map,lat,lng) {
                                     
                 map.addOverlay(marker);
     
-                if (!slp_disableinitialdirectory) {
+                if (!slplus.disable_dir) {
                     var sidebarEntry = createSidebarEntry(marker, name, address, distance, '', url, email, phone,tags);
                     sidebar.appendChild(sidebarEntry);
                 }
                                     
                 bounds.extend(point);
             }
-              var FinalZoom = sl_zoom_level;
+              var FinalZoom = parseInt(slplus.zoom_level);
               if (markers.length > 1) {            
-                    FinalZoom = map.getBoundsZoomLevel(bounds)-sl_zoom_tweak;
+                    FinalZoom = map.getBoundsZoomLevel(bounds)-parseInt(slplus.zoom_tweak);
               }
             map.setCenter(bounds.getCenter(), FinalZoom);
             
             var customUI = map.getDefaultUI();
-            customUI.controls.largemapcontrol3d = slp_largemapcontrol3d;   
-            customUI.controls.scalecontrol = slp_scalecontrol;
-            customUI.controls.hierarchicalmaptypecontrol = slp_maptypecontrol;                
+            customUI.controls.largemapcontrol3d = slplus.map_3dcontrol;   
+            customUI.controls.scalecontrol = slplus.map_scalectrl;
+            customUI.controls.hierarchicalmaptypecontrol = slplus.map_typectrl;                
             map.setUI(customUI);
             
-            if (slp_disablescrollwheel) { map.disableScrollWheelZoom(); }
+            if (slplus.disable_scroll) { map.disableScrollWheelZoom(); }
         }
     );
  }
@@ -181,13 +200,13 @@ function searchLocations() {
         function(latlng) {
             if (!latlng) {
                 var theMessage = ''; 
-                if (debugmode) {
+                if (slplus.debug_mode) {
                     theMessage = 'Google geocoder could not find ' + escape (address) + ' :: ';
                 }
                 theMessage += address + ' not found'; 
                 alert(theMessage);
             } else {
-                if (debugmode) {
+                if (slplus.debug_mode) {
                     alert('Searching near ' + address + ' ' + latlng);
                 }
                 searchLocationsNear(latlng, address); 
@@ -231,21 +250,21 @@ function searchLocationsNear(center, homeAddress) {
             map.clearOverlays();
    
             var homeIcon = new GIcon(G_DEFAULT_ICON);
-            homeIcon.image = sl_map_home_icon;
-            if (sl_map_home_icon.indexOf('flag')!='-1') {
+            homeIcon.image = slplus.map_home_icon;
+            if (slplus.map_home_icon.indexOf('flag')!='-1') {
                 homeIcon.shadow = add_base + "/images/icons/flag_shadow.png";
-            } else if (sl_map_home_icon.indexOf('arrow')!='-1') {
+            } else if (slplus.map_home_icon.indexOf('arrow')!='-1') {
                 homeIcon.shadow = add_base + "/images/icons/arrow_shadow.png";
-            } else if (sl_map_home_icon.indexOf('bubble')!='-1') {
+            } else if (slplus.map_home_icon.indexOf('bubble')!='-1') {
                 homeIcon.shadow = add_base + "/images/icons/bubble_shadow.png";
-            } else if (sl_map_home_icon.indexOf('marker')!='-1') {
+            } else if (slplus.map_home_icon.indexOf('marker')!='-1') {
                 homeIcon.shadow = add_base + "/images/icons/marker_shadow.png";
-            } else if (sl_map_home_icon.indexOf('sign')!='-1') {
+            } else if (slplus.map_home_icon.indexOf('sign')!='-1') {
                 homeIcon.shadow = add_base + "/images/icons/sign_shadow.png";
             } else {
                 homeIcon.shadow = add_base + "/images/icons/blank.png";
             }
-            homeIcon.iconSize = new GSize(sl_map_home_icon_width, sl_map_home_icon_height);
+            homeIcon.iconSize = new GSize(slplus.map_home_sizew, slplus.map_home_sizeh);
 
             var bounds = new GLatLngBounds(); 
             markerOpts = { icon:homeIcon };
@@ -265,9 +284,8 @@ function searchLocationsNear(center, homeAddress) {
             if (markers.length == 0) {
                 sidebar.innerHTML = '<div class="no_results_found"><h2>No results found.</h2></div>';
                 geocoder = new GClientGeocoder();
-                geocoder.getLatLng(sl_google_map_country, 
+                geocoder.getLatLng(slplus.map_country, 
                     function(latlng) {
-                       // map.setCenter(point, sl_zoom_level);
                     }
                 );
                 return;
@@ -297,9 +315,9 @@ function searchLocationsNear(center, homeAddress) {
                 bounds.extend(point);
             }
             
-          var FinalZoom = sl_zoom_level;
+          var FinalZoom = parseInt(slplus.zoom_level);
           if (markers.length > 1) {            
-                FinalZoom = map.getBoundsZoomLevel(bounds)-sl_zoom_tweak;
+                FinalZoom = map.getBoundsZoomLevel(bounds)-parseInt(slplus.zoom_tweak);
           }
           map.setCenter(bounds.getCenter(), FinalZoom); 
         }
@@ -318,13 +336,13 @@ function createMarker(point, name, address, homeAddress, description, url, email
   }
   
   if (url.indexOf("http://")!=-1 && url.indexOf(".")!=-1) {
-    more_html+="| <a href='"+url+"' target='_blank' class='storelocatorlink'><nobr>" + sl_website_label +"</nobr></a>"
+    more_html+="| <a href='"+url+"' target='_blank' class='storelocatorlink'><nobr>" + slplus.website_label +"</nobr></a>"
   } else {
     url="";
   }
   
   if (email.indexOf("@")!=-1 && email.indexOf(".")!=-1) {
-    if (!slp_use_email_form) { 
+    if (!slplus.use_email_form) { 
       more_html+="| <a href='mailto:"+email+"' target='_blank' class='storelocatorlink'><nobr>" + email +"</nobr></a>";
     } else {
       more_html+="| <a href='javascript:slp_show_email_form("+'"'+email+'"'+");' class='storelocatorlink'><nobr>" + email +"</nobr></a><br/>";
@@ -358,16 +376,16 @@ function createMarker(point, name, address, homeAddress, description, url, email
     
     // If we want to show tags in the bubble...
     //
-    if (slp_show_tags) {
+    if (slplus.show_tags) {
       if (jQuery.trim(tags) != '') {
           more_html += '<br/>'+tags;
       }
     }       
   
   if (homeAddress.split(" ").join("")!="") {
-    var html = '<div id="sl_info_bubble"><!--tr><td--><strong>' + name + '</strong><br>' + street + street2 + city + state_zip + '<br/> <a href="http://' + sl_google_map_domain + '/maps?saddr=' + encodeURIComponent(homeAddress) + '&daddr=' + encodeURIComponent(address) + '" target="_blank" class="storelocatorlink">Directions</a> ' + more_html + '<br/><!--/td></tr--></div>'; 
+    var html = '<div id="sl_info_bubble"><!--tr><td--><strong>' + name + '</strong><br>' + street + street2 + city + state_zip + '<br/> <a href="http://' + slplus.map_domain + '/maps?saddr=' + encodeURIComponent(homeAddress) + '&daddr=' + encodeURIComponent(address) + '" target="_blank" class="storelocatorlink">Directions</a> ' + more_html + '<br/><!--/td></tr--></div>'; 
   } else {
-    var html = '<div id="sl_info_bubble"><!--tr><td--><strong>' + name + '</strong><br>' + street + street2 + city + state_zip + '<br/> <a href="http://' + sl_google_map_domain + '/maps?q=' + encodeURIComponent(address) + '" target="_blank" class="storelocatorlink">Map</a> ' + more_html + '<!--/td></tr--></div>';
+    var html = '<div id="sl_info_bubble"><!--tr><td--><strong>' + name + '</strong><br>' + street + street2 + city + state_zip + '<br/> <a href="http://' + slplus.map_domain + '/maps?q=' + encodeURIComponent(address) + '" target="_blank" class="storelocatorlink">Map</a> ' + more_html + '<!--/td></tr--></div>';
   }
   GEvent.addListener(marker, 'click', function() {
     marker.openInfoWindowHtml(html);
@@ -395,11 +413,11 @@ function createSidebarEntry(marker, name, address, distance, homeAddress, url, e
       
       var link = '';
       if(url.indexOf("http://")==-1) {url="http://"+url;} 
-      if (url.indexOf("http://")!=-1 && url.indexOf(".")!=-1) {link="<a href='"+url+"' target='_blank' class='storelocatorlink'><nobr>" + sl_website_label +"</nobr></a><br/>"} else {url="";}
+      if (url.indexOf("http://")!=-1 && url.indexOf(".")!=-1) {link="<a href='"+url+"' target='_blank' class='storelocatorlink'><nobr>" + slplus.website_label +"</nobr></a><br/>"} else {url="";}
 
       var elink = "";
       if (email.indexOf("@")!=-1 && email.indexOf(".")!=-1) {
-          if (!slp_use_email_form) { 
+          if (!slplus.use_email_form) { 
               elink="<a href='mailto:"+email+"' target='_blank' class='storelocatorlink'><nobr>" + email +"</nobr></a><br/>";
           } else {
               elink="<a href='javascript:slp_show_email_form("+'"'+email+'"'+");' class='storelocatorlink'><nobr>" + email +"</nobr></a><br/>";
@@ -409,7 +427,7 @@ function createSidebarEntry(marker, name, address, distance, homeAddress, url, e
       // If we want to show tags in the table...
       //
       var taginfo = "";
-      if (slp_show_tags) {
+      if (slplus.show_tags) {
           if (jQuery.trim(tags) != '') {
               var tagclass = tags.replace(/\W/g,'_');
               taginfo = '<br/><div class="'+tagclass+'"><span class="tagtext">'+tags+'</span></div>';
@@ -426,7 +444,7 @@ function createSidebarEntry(marker, name, address, distance, homeAddress, url, e
                  '<tr>' +
                     '<td class="results_row_left_column">' +
                         '<span class="location_name">' + name + '</span><br>' + 
-                        distance.toFixed(1) + ' ' + sl_distance_unit + '</td>' +
+                        distance.toFixed(1) + ' ' + slplus.distance_unit + '</td>' +
                     '<td class="results_row_center_column">' + 
                         street +  
                         street2 + 
@@ -436,7 +454,7 @@ function createSidebarEntry(marker, name, address, distance, homeAddress, url, e
                     '<td class="results_row_right_column">' + 
                         link + 
                         elink +
-                        '<a href="http://' + sl_google_map_domain + 
+                        '<a href="http://' + slplus.map_domain + 
                         '/maps?saddr=' + encodeURIComponent(homeAddress) + 
                         '&daddr=' + encodeURIComponent(address) + 
                         '" target="_blank" class="storelocatorlink">Directions</a>'+
@@ -451,3 +469,5 @@ function createSidebarEntry(marker, name, address, distance, homeAddress, url, e
       }); 
     return div;
 }
+
+

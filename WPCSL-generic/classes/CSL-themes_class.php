@@ -24,7 +24,7 @@ class wpCSL_themes__slplus {
         $this->columns = 1;                 // How many columns/row in our display output.
         $this->css_dir = 'css/';
         
-        foreach ($params as $name => $value) {
+        foreach ($params as $name => $value) {            
             $this->$name = $value;
         }
 
@@ -42,9 +42,27 @@ class wpCSL_themes__slplus {
      * Add the theme settings to the admin panel.
      *
      */
-    function add_admin_settings($settingsObj = null) {
+    function add_admin_settings($settingsObj = null) {        
         if ($settingsObj == null) {
             $settingsObj = $this->settings;
+        }
+        
+        // Exit is directory does not exist
+        //
+        if (!is_dir($this->css_dir)) {
+            if (isset($this->notifications)) {
+                $this->notifications->add_notice(
+                    2,
+                    sprintf(
+                        __('The theme directory:<br/>%s<br/>is missing. ' .
+                            'Create it to enable themes and get rid of this message.',
+                            WPCSL__slplus__VERSION
+                            ),                        
+                        $this->css_dir
+                        )
+                );
+            }            
+            return;
         }
 
         // The Themes
@@ -96,12 +114,15 @@ class wpCSL_themes__slplus {
         }  
                             
         $settingsObj->add_item(
-            __('Display Settings',$this->prefix), 
-            __('Select A Theme',$this->prefix),   
+            __('Display Settings',WPCSL__slplus__VERSION), 
+            __('Select A Theme',WPCSL__slplus__VERSION),   
             'theme',    
             'list', 
             false, 
-            __('How should the plugin UI elements look?  Check the <a href="'.$this->support_url.'" target="Cyber Sprocket">documentation</a> for more info.',$this->prefix),
+            __('How should the plugin UI elements look?  Check the <a href="'.
+                $this->support_url.
+                '" target="Cyber Sprocket">documentation</a> for more info.',
+                WPCSL__slplus__VERSION),
             $themeArray
         );        
     }    

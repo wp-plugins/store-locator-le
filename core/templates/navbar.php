@@ -20,9 +20,9 @@
     <li class='like-a-button'><a href="<?php echo admin_url(); ?>options-general.php?page=csl-slplus-options">Settings: General</a></li>    
     <?php 
     //--------------------------------
-    // Plus Version : Show Reports Tab
+    // Pro Version : Show Reports Tab
     //
-    if ($slplus_plugin->license->packages['Plus Pack']->isenabled) {      
+    if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {      
         print '<li class="like-a-button"><a href="'.SLPLUS_PLUSPAGE.'reporting.php">Reports</a></li>';
     }
     ?>    

@@ -20,7 +20,7 @@ class wpCSL_settings__slplus {
         //
         $this->render_csl_blocks = true;        // Display the CSL info blocks
         $this->form_action = 'options.php';     // The form action for this page
-        $this->save_text =__('Save Changes');
+        $this->save_text =__('Save Changes',WPCSL__slplus__VERSION);
         $this->css_prefix = '';  
         $this->has_packages = false;
         
@@ -141,8 +141,49 @@ class wpCSL_settings__slplus {
     
             $this->add_section(array(
                     'name' => 'Plugin Info',
-                    'description' =>
-                        '<div class="cybersprocket-cslbox">
+                    'description' => $this->get_broadcast(),
+                    'auto' => false
+                )
+            );
+        }       
+    }
+    
+    /**------------------------------------
+     ** method: get_broadcast
+     **
+     **/
+     function get_broadcast() {
+         $content = '';
+         
+        // HTTP Handler is not set fail the license check
+        //
+        if (isset($this->http_handler)) { 
+            if ($this->broadcast_url != '') {
+                $result = $this->http_handler->request( 
+                                $this->broadcast_url, 
+                                array('timeout' => 60) 
+                                ); 
+                if ($this->parent->http_result_is_ok($result) ) {
+                    return $result['body'];
+                }
+            }                
+        }         
+        
+        // Return default content
+        //
+        if ($content == '') {
+            return $this->default_broadcast();
+        }
+     }
+     
+    /**------------------------------------
+     ** method: get_broadcast
+     **
+     **/
+     function default_broadcast() {
+         return
+                        '
+                        <div class="cybersprocket-cslbox">
                         <div class="cybersprocket-csllogo">
                         <a href="http://www.cybersprocket.com/" target="cslinfo"><img src="'. $this->plugin_url .'/images/CSL_banner_logo.png"/></a>
                          </div>
@@ -158,19 +199,16 @@ class wpCSL_settings__slplus {
                             and let us know.<br/>
                             <br>
                             <strong>Cyber Sprocket Is...</strong><br/>
-                            Lance Cleveland, Paul Grimes, Chris Rasys, Lobby Jones, Seth Hayward, Chase Ring, Corey Blalock, Thomas Phifer, Aaron Knight.<br/>
+                            Lobby Jones and a bunch of coders.<br/>
                             <br/>
                             <strong>For more information:</strong><br/>
                             <a href="http://www.cybersprocket.com" target="cyber-sprocket-labs">Please visit our website at www.cybersprocket.com</a>.<br/>
                          </p>
                          </div>
                          </div>
-                         ',
-                    'auto' => false
-                )
-            );
-        }       
-    }
+                         ' ;    
+     }
+    
 
     /**------------------------------------
      ** method: add_section
@@ -188,6 +226,20 @@ class wpCSL_settings__slplus {
             );
         }            
     }
+    
+
+    /**------------------------------------
+     ** method: get_item
+     **
+     **/
+    function get_item($name) {
+        $option_name = $this->prefix . '-' . $name;
+        if (!isset($this->$option_name)) {
+            $this->$option_name = get_option($option_name);             
+        }
+        return $this->$option_name;
+    }
+    
 
     /**------------------------------------
      ** Class: WPCSL_Settings
@@ -367,7 +419,8 @@ class wpCSL_settings__slplus {
         // List the packages
         //
         if (isset($this->parent->license->packages) && ($this->parent->license->packages > 0)) {
-            $content .='<tr><td colspan="2" class="optionpack_topline">'.__('The following optional add-ons are available').':</td></tr>';
+            $content .='<tr><td colspan="2" class="optionpack_topline">'.
+            __('The following optional add-ons are available',WPCSL__slplus__VERSION).':</td></tr>';
             $content .= '<tr valign="top">';
             foreach ($this->parent->license->packages as $package) {
                 $content .= '<th class="input_label optionpack">'.$package->name.'</th>';
@@ -407,14 +460,21 @@ class wpCSL_settings__slplus {
             // Check if package is licensed now.
             //
 
-            $package->isenabled =
-                $package->parent->check_license_key(
-                    $package->sku,
-                    true,
-                    ($this->has_packages ? $package->license_key : '')
+            $package->isenabled = (
+                
+                    $package->force_enabled ||
+                    
+                    $package->parent->check_license_key(
+                        $package->sku,
+                        true,
+                        ($this->has_packages ? $package->license_key : '')
+                    )
                 );
 
-            $installed_version = get_option($this->prefix.'-'.$package->sku.'-version');
+            $installed_version = (isset($package->force_version)?
+                        $package->force_version :
+                        get_option($this->prefix.'-'.$package->sku.'-version')
+                        );
             $latest_version = get_option($this->prefix.'-'.$package->sku.'-latest-version');
 
             // Upgrade is available if the current package version < the latest available

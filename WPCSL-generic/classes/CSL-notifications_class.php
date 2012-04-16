@@ -40,9 +40,9 @@ class wpCSL_notifications__slplus {
                 $notice_output .= "<div id='{$this->prefix}_notice' class='updated fade'
                     style='background-color: rgb(255, ".$color.", 25);'>\n";
                 $notice_output .= sprintf(
-                    __('<p><strong><a href="%1$s">'.$this->name.
-                    '</a> needs attention: </strong>'),
-                    $this->url
+                    __('<p><strong><a href="%s">%s</a> needs attention: </strong>',WPCSL__slplus__VERSION),
+                    $this->url, 
+                    $this->name
                 );
                 $notice_output .= "<ul>\n";
             }

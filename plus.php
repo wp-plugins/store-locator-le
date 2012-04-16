@@ -109,7 +109,7 @@ function install_reporting_tables() {
 function slplus_add_report_settings() {
     global $slplus_plugin;
     
-    if ($slplus_plugin->license->packages['Plus Pack']->isenabled) {    
+    if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {    
         $slplus_plugin->settings->add_item(
             'Reporting', 
             'Enable reporting', 
@@ -132,9 +132,9 @@ function slplus_create_country_pd() {
     global $wpdb;
     global $slplus_plugin;
     
-    // Plus Pack Enabled
+    // Pro Pack Enabled
     //
-    if ($slplus_plugin->license->packages['Plus Pack']->isenabled) {            
+    if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {            
         $myOptions = '';
         
         // If Use Country Search option is enabled
@@ -162,7 +162,7 @@ function slplus_create_country_pd() {
         }    
         return $myOptions;
 
-    // No Plus Pack
+    // No Pro Pack
     //
     } else {
         return '';
@@ -179,9 +179,9 @@ function slplus_create_state_pd() {
     global $wpdb;
     global $slplus_plugin;
     
-    // Plus Pack Enabled
+    // Pro Pack Enabled
     //
-    if ($slplus_plugin->license->packages['Plus Pack']->isenabled) {            
+    if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {            
         $myOptions = '';
         
         // If Use State Search option is enabled
@@ -209,7 +209,7 @@ function slplus_create_state_pd() {
         }    
         return $myOptions;
 
-    // No Plus Pack
+    // No Pro Pack
     //
     } else {
         return '';
@@ -282,9 +282,9 @@ function slpreport_downloads() {
 function slplus_shortcode_atts($attributes) {
     global $slplus_plugin;
 
-    // Plus Pack Enabled
+    // Pro Pack Enabled
     //
-    if ($slplus_plugin->license->packages['Plus Pack']->isenabled) {                
+    if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {                
         shortcode_atts(
             array(
                 'tags_for_pulldown'=> null, 

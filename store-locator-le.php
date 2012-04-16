@@ -1,14 +1,14 @@
 <?php
 /*
 Plugin Name: Store Locator Plus
-Plugin URI: http://www.cybersprocket.com/products/store-locator-plus/
+Plugin URI: http://www.storelocatorplus.com/
 Description: An advanced system for managing multiple physical locations via a fully integrated WordPress solution. Store just a few or as many as a few thousand locations in the WordPress database using the built-in location management system. 
-Version: 2.5
+Version: 2.6
 Author: Cyber Sprocket Labs
 Author URI: http://www.cybersprocket.com
 License: GPL3
 
-	Copyright 2011  Cyber Sprocket Labs (info@cybersprocket.com)
+	Copyright 2012  Cyber Sprocket Labs (info@cybersprocket.com)
 
         This program is free software; you can redistribute it and/or modify
         it under the terms of the GNU General Public License as published by
@@ -78,20 +78,24 @@ if (defined('SLPLUS_PREFIX') === false) {
 include_once(SLPLUS_PLUGINDIR . '/include/config.php'   );
 include_once(SLPLUS_PLUGINDIR . 'plus.php'              );
 include_once(SLPLUS_COREDIR   . 'csl_helpers.php'       );
-include_once(SLPLUS_COREDIR   . 'variables.sl.php'      );
 include_once(SLPLUS_COREDIR   . 'functions.sl.php'      );
+require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-actions_class.php');
 
+// Activation Action (install/upgrade)
+//
 register_activation_hook( __FILE__, 'activate_slplus');
 
 // Actions
 //
-add_action('wp_head', 'head_scripts');
+add_action('wp_enqueue_scripts',array('SLPlus_Actions','wp_enqueue_scripts'));
 add_action('admin_menu', 'csl_slplus_add_options_page');
 add_action('admin_init','csl_slplus_setup_admin_interface',10);
 add_action('admin_print_scripts', 'add_admin_javascript');
 add_action('admin_head', 'slpreport_downloads');    
 add_action('wp_print_styles', 'setup_stylesheet_for_slplus');
 add_action('admin_print_styles','setup_ADMIN_stylesheet_for_slplus');
+add_action('shutdown',array('SLPlus_Actions','shutdown'));
+
 
 // Short Codes
 //
@@ -102,4 +106,3 @@ add_shortcode('slplus','store_locator_shortcode');
 // Text Domains
 //
 load_plugin_textdomain(SLPLUS_PREFIX, false, SLPLUS_BASENAME . '/core/languages/');
-

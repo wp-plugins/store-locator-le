@@ -284,9 +284,12 @@ $icon_dir=opendir(SLPLUS_ICONDIR);
 
 // List icons
 while (false !== ($an_icon=readdir($icon_dir))) {
-	if (!ereg("^\.{1,2}$", $an_icon) && !ereg("shadow", $an_icon) && !ereg("\.db", $an_icon)) {
+	if (
+	    (preg_match('/\.(png|gif|jpg)/i', $an_icon) > 0) && 
+	    (preg_match('/shadow\.(png|gif|jpg)/i', $an_icon) <= 0) 
+	    ) {
 		$icon_str.=
-		"<img style='height:25px; cursor:hand; cursor:pointer; border:solid white 2px; padding:2px' 
+		"<img style='cursor:pointer; padding:2px; margin: 0px 2px;' 
 		     src='".SLPLUS_ICONURL.$an_icon."'
 		     onclick='document.forms[0].icon.value=this.src;document.getElementById(\"prev\").src=this.src;'
 		     onmouseover='style.borderColor=\"red\";' 
@@ -300,7 +303,7 @@ if (is_dir($sl_upload_path."/custom-icons/")) {
 	while (false !== ($an_icon=readdir($icon_upload_dir))) {
 		if (!ereg("^\.{1,2}$", $an_icon) && !ereg("shadow", $an_icon) && !ereg("\.db", $an_icon)) {
 			$icon_str.=
-			"<img style='height:25px; cursor:hand; cursor:pointer; border:solid white 2px; padding:2px' 
+			"<img style='cursor:pointer; padding:2px; margin: 0px 2px;' 
 			src='$sl_upload_base/custom-icons/$an_icon' 
 			onclick='document.forms[\"mapDesigner\"].icon.value=this.src;document.getElementById(\"prev\").src=this.src;' 
 			onmouseover='style.borderColor=\"red\";' 

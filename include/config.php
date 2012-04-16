@@ -34,9 +34,9 @@ if (defined('SLPLUS_PLUGINDIR')) {
             'name'                  => 'Store Locator Plus',
             'sku'                   => 'SLPLUS',
             
-            'url'                   => 'http://www.cybersprocket.com/products/store-locator-plus/',            
-            'support_url'            => 'http://redmine.cybersprocket.com/projects/mc-closeststore',
-            'purchase_url'           => 'http://cybersprocket.com/products/store-locator-plus/',
+            'url'                   => 'http://www.storelocatorplus.com/',            
+            'support_url'            => 'http://storelocatorplus.com/faq/',
+            'purchase_url'           => 'http://storelocatorplus.com/download/',
             
             'basefile'              => SLPLUS_BASENAME,
             'plugin_path'           => SLPLUS_PLUGINDIR,
@@ -70,11 +70,11 @@ if (defined('SLPLUS_PLUGINDIR')) {
 function add_options_packages_for_slplus() {
     global $slplus_plugin;          
     
-    // Add : Plus Pack
+    // Add : Pro Pack
     //
     $slplus_plugin->license->add_licensed_package(
             array(
-                'name'              => 'Plus Pack',
+                'name'              => 'Pro Pack',
                 'help_text'         => 'A variety of enhancements are provided with this package.  ' .
                                        'See the <a href="'.$slplus_plugin->purchase_url.'" target="Cyber Sprocket">product page</a> for details.  If you purchased this add-on ' .
                                        'come back to this page to enter the license key to activate the new features.',
@@ -84,12 +84,12 @@ function add_options_packages_for_slplus() {
             )
         );
     
-    if ($slplus_plugin->license->packages['Plus Pack']->isenabled_after_forcing_recheck()) {
+    if ($slplus_plugin->license->packages['Pro Pack']->isenabled_after_forcing_recheck()) {
         
          //--------------------------------
-         // Plus Pack v2.4+ Only
+         // Pro Pack v2.4+ Only
          //
-         if ($slplus_plugin->license->packages['Plus Pack']->active_version >= 2004000) {
+         if ($slplus_plugin->license->packages['Pro Pack']->active_version >= 2004000) {
              
              //--------------------------------
              // Enable Themes

@@ -1,8 +1,8 @@
 /**
- ** file: csl-slplus-dark.css
- ** label: Dark SLPlus Theme
+ ** file: csl-slplus-boxed.css
+ ** label: Basic Boxes Theme
  **
- ** A new darker theme based on the original.
+ ** Side-by-side boxes for output listing.
  **
  **/
 
@@ -59,6 +59,9 @@
 	padding:4px;
 }
 
+table#search_table td {
+    border: none;
+}
 
 /***** Search Form Inputs  *****/
 #address_search {
@@ -111,16 +114,18 @@
 #addy_in_country {
     float: left;
 }
-#addy_in_address {
+div#addy_in_address.search_item {
     clear:both;
     padding-top: 3px;
     padding-bottom: 3px;
+    width: 377px;
+    float: left;
 }
 #addy_in_radius {
-    clear:both;
+    clear: both;
     float: left;
     padding-top: 3px;
-    padding-right: 12px;
+    padding-right: 0px;
 }
 
 #radius_in_submit {
@@ -150,7 +155,7 @@
 
 /***** Store Locator Map DIV *****/
 #sl_div {
-	padding:10px;
+	padding: 0px;
 	font-weight:bold;
 }
 #sl_div a {
@@ -168,14 +173,20 @@
 }
 #sl_div table, #sl_div tr, #sl_div td {
 	border:none;
+	margin: 0px;
 }
 #sl_div #map { 
 	color:black; 
 	font-weight:normal;
+	border: solid 2px black;
 }
 
 #sl_div #map img {
     visibility: visible;    
+}
+
+table#map_table td {
+    border: none;
 }
 
 /***** Popup Info Window for Specific Location *****/
@@ -248,7 +259,7 @@
 	font-weight:normal;
 	text-align:justify;
 	overflow: auto;
-	height:250px;
+	height:150px;
 	font-size: 11px;
 }
 
@@ -256,35 +267,65 @@
  * Results Table Under The Map
  */
 .results_entry {
-	cursor:pointer;
-	cursor:hand;
-	padding:0px;
-	border-bottom:none;
-	background-color: #404040;
-	color: #F4F4F4;
+    background-color: #F4F4AA;
+    border: 2px solid black;
+    color: #444444;
+    cursor: pointer;
+    float: left;
+    height: 140px;
+    margin: 0 2px 2px;
+    padding: 3px;
+    position: relative;
+    width: 177px;
 }
 .results_entry:hover {
-	background-color: #999;
+	background-color: #FFFFDD;
 }
-.results_row_left_column {
-	width:30%;
-	padding-right:4px;
-	vertical-align:top;
+
+#content tr td .results_row_left_column {
+	width: 177px;
+	height: 50px;
+	margin: 0px;
+	padding: 0px 3px;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	border:none;
+	text-align:center;
+	color: #888;
 }
-.results_row_left_column .location_name {
-    font-size: 14px;
-	font-weight:bold;
-    color: #FFFF88;
+
+#content tr td .results_row_center_column {
+	width: 177px;
+	height: 50px;
+	margin: 0px;
+	padding: 0px 3px;
+	position: absolute;
+	left: 0px;
+	top: 52px;
+	border:none;
+	text-align:center;
 }
-.results_row_center_column {
-	width:40%;
-	vertical-align:top;
+#content tr td .results_row_right_column {
+	width: 177px;
+	height: 50px;
+	margin: 0px;
+	padding: 0px 3px;
+	position: absolute;
+	left: 0px;
+	top: 104px;
+	border:none;
+	text-align:center;
 }
-.results_row_right_column {
-	width:30%;
-	vertical-align:top;
-	text-align:right;
+
+#content tr td .results_row_left_column .location_name {
+    color: black;
+    font-family: Arial,Helvetica,Verdana,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    width: 177px;
 }
+
 div#map_sidebar .results_row_right_column A.storelocatorlink {
     text-decoration: none;
     color: #8888FF;

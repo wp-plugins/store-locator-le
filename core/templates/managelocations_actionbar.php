@@ -34,9 +34,9 @@ function doAction(theAction,thePrompt) {
             
             <?php 
             //----------
-            // Plus Pack
+            // Pro Pack
             //
-            if ($slplus_plugin->license->packages['Plus Pack']->isenabled) {
+            if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
                 ?>
                  <p class="centerbutton"><a class='like-a-button' href="#" onclick="doAction('recode','<?php echo __('Recode selected?',SLPLUS_PREFIX);?>')" name="delete_selected"><?php echo __("Recode Selected", SLPLUS_PREFIX); ?></a></p>
             <?php                 
@@ -45,9 +45,9 @@ function doAction(theAction,thePrompt) {
     </div>
     <?php 
     //----------
-    // Plus Pack
+    // Pro Pack
     //
-    if ($slplus_plugin->license->packages['Plus Pack']->isenabled) {
+    if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
     ?>
         <div id="tag_block" class='orangebox'>
             <div id="tag_actions">
@@ -90,7 +90,7 @@ function doAction(theAction,thePrompt) {
 //--------------------------------
 // Plus Version : Location Filters
 //
-if ($slplus_plugin->license->packages['Plus Pack']->isenabled) {      
+if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {      
 ?>
 <div id="filter_buttons">
     <div id="filter_bar_header"><h3><?php print __('Location Filters',SLPLUS_PREFIX); ?></h3></div>

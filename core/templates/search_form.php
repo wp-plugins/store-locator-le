@@ -6,7 +6,7 @@
 ?>
 <div id='sl_div'>
   <form onsubmit='searchLocations(); return false;' id='searchForm' action=''>
-    <table border='0' cellpadding='3px' class='sl_header'><tr>
+    <table  id='search_table' border='0' cellpadding='3px' class='sl_header'><tr>
 	<td valign='top'>
 	    <div id='address_search'>
 
@@ -64,7 +64,7 @@
             //------------------------------------------------
             // Show Tag Search Is Enabled
             //
-            if ($slplus_plugin->license->packages['Plus Pack']->isenabled) {                                    
+            if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {                                    
                 if (get_option(SLPLUS_PREFIX.'_show_tag_search') ==1) {                
             ?>
             <div id='search_by_tag' class='search_item' <?php if (isset($fnvars['only_with_tag'])) { print "style='display:none;'"; }?>>   
@@ -134,8 +134,12 @@
                 <input type='text' id='addressInput' size='50' />
            </div>
            <?php
-            } else {           
-                print "<input type='hidden' id='addressInput' value='' />";
+            } else {
+                ?>
+            <div id='addy_in_address' class='search_item'>
+            <input type='hidden' id='addressInput' value='' />
+           </div>
+           <?php
             }
             ?>
 
@@ -171,7 +175,7 @@
         </div>
 	  </td>
 	</tr></table>
-	<table width='100%' cellspacing='0px' cellpadding='0px'> 
+	<table id='map_table' width='100%' cellspacing='0px' cellpadding='0px'> 
      <tr>
         <td width='100%' valign='top'>
 <?php
@@ -218,7 +222,6 @@ if ($sl_starting_image != '') {
         </td>
     </tr>
   </table></form>
-<p><script type="text/javascript">if (document.getElementById("map")){setTimeout("sl_load()",1000);}</script></p>
 </div>
 
 
