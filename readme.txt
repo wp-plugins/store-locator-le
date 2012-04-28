@@ -1,5 +1,5 @@
-=== Store Locator Plus ===
-Plugin Name: Store Locator Plus
+=== Google Maps via Store Locator Plus ===
+Plugin Name: Google Maps via Store Locator Plus
 Contributors: cybersprocket
 Donate link: http://www.storelocatorplus.com/
 Tags: store locator, store locater, google, google maps, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus
