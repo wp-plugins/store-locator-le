@@ -2,12 +2,9 @@
  * Anywhere
  */
 
- #icon-Store_Locator_Plus_-_Map_Settings,
- #icon-Store_Locator_LE_-_Map_Settings,
- #icon-Store_Locator_Plus_-_Reporting,
- #icon-Store_Locator_LE_-_Reporting,
+ #icon-Store_Locator_Plus___Map_Settings,
+ #icon-Store_Locator_Plus___Reporting,
  #icon-Store_Locator_Plus,
- #icon-Store_Locator_LE,
  #icon-edit-locations, 
  #icon-add-locations, 
  #icon-locations 
@@ -15,6 +12,9 @@
     background: url("../core/images/StoreLocatorPlus_icons32.png") no-repeat scroll -75px -3px transparent;
 }
 
+div#wpbody-content div.wrap div.updated {
+    clear: both;
+}
  
 /*----------------------------------
  *
@@ -58,6 +58,65 @@
     text-decoration:none;
 }
 
+/*----------------------------------
+ * WPCSL Magic
+ */
+
+div.csl-slplus-input {
+    float: left;
+} 
+ 
+/* More Info Box */
+div.csl-slplus-moreicon {
+    background: url("../core/images/General_icons16.png") 
+        no-repeat scroll 
+        -17px 0px 
+        transparent; 
+    height:20px;
+    width: 20px;
+    float: left;
+    cursor: pointer;  
+    margin-top: 2px;
+    margin-left: 3px;
+}
+div.csl-slplus-moretext {
+    display: none;
+    clear: both;    
+}
+
+
+/*----------------------------------
+ * Option Packs
+ */
+ div.optionpack_box {
+    float: left;     
+    background-color: #F4F4AA;
+    border: 1px solid #888844;
+    padding: 12px;
+    text-align: center;
+    width: 340px;     
+    margin: 6px;
+    
+  /* Corners */
+  -webkit-border-radius:10px;
+  -moz-border-radius:10px;
+  border-radius:10px;
+   -khtml-border-radius: 10px;    
+    border-radius: 10px 10px 10px 10px;
+ }
+ div.optionpack_box iframe {
+     margin: 0px auto;
+     width: 160px;
+ }
+ div.optionpack_name {
+     font-size: 17px;
+     font-weight: bold;
+     text-align: center;
+     margin-bottom: 12px;
+ }
+ div.optionpack_info {
+     text-align: center;
+ }
 
 /*----------------------------------
  *
@@ -194,9 +253,14 @@ div.orangebox {
 
 
 /***************************
- * Locations: Manage
+ * Locations: Add
  */
-
+ div.add_location_form {
+     display:block;
+     position:relative;
+     width: 100%;
+ }
+table.manual_update_table label,
 .add_location_form label {
     width: 120px;
     float: left;
@@ -213,7 +277,54 @@ div.orangebox {
     width: 40em;
 }
 
+.add_location_form INPUT[type='submit'] {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 150px;
+}
+.add_location_form INPUT[type='submit']:hover {
+    background: none;
+    background-color: #228b22;
+}
+input#bulk_file {
+    width: 70%;
+}
 
+
+/***************************
+ * Locations: Manage
+ */
+ div.wrap table.slplus.widefat thead tr th {
+    background: #404040; /* for non-css3 browsers */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#808080', endColorstr=' #404040'); /* for IE */
+    background: -webkit-gradient(linear, left top, left bottom, from(#808080), to( #404040)); /* for webkit browsers */
+    background: -moz-linear-gradient(top,  #808080,   #404040); /* for firefox 3.6+ */
+    background-image: -moz-linear-gradient(center top , #808080, #404040);
+    text-decoration: none;     
+ }
+ div.wrap table.slplus.widefat thead tr th,
+ div.wrap table.slplus.widefat thead tr th a 
+ {
+    color: #EEEEFF;
+    font-weight: bold;
+    text-decoration: none;    
+    text-shadow: none;
+    font-size: 14px;
+    font-family: "Trebuchet MS", Helvetica, sans-serif; 
+ }
+ div.wrap table.slplus.widefat thead tr th a {
+    color: #9999FF;
+    text-decoration: underline;
+ }
+ div.wrap table.slplus.widefat thead tr th input.button {
+     vertical-align: middle;
+ }
+ input.disabled {
+    background: none repeat scroll 0 0 #FEFEFE;
+    border: 1px solid #DDDDDD;
+    color: #888888;     
+ }
 
 /***************************
  * Settings: Map
@@ -499,20 +610,44 @@ td.optionpack {
 }
 
 /* Icons */
-.edit_icon {
-  background: url("../core/images/General_icons16.png") no-repeat scroll -62px 0 transparent;
-  font-size: 20px;
-}
-.delete_icon {
-  background: url("../core/images/General_icons16.png") no-repeat scroll -84px 0 transparent;
-  font-size: 20px;
+.action_icon {
+    height: 20px;
+    width: 20px;
+    float: left;
+    background: url("../core/images/General_icons16.png") no-repeat scroll transparent;
 }
 .view_icon {
-  background: url("../core/Images/General_icons16.png") no-repeat scroll -84px 0 transparent;
-  font-size: 20px;  
+    background-position: -40px 0px; 
 }
-.icon_span {
-    height:20px;
-    width:20px;
-    padding: 9px;
+.view_icon:hover {
+  background-position: -40px -20px;
 }
+.edit_icon {
+  background-position: -62px 0px;
+}
+.edit_icon:hover {
+  background-position: -62px -20px;
+}
+.delete_icon {
+  background-position: -84px 0px;
+}
+.delete_icon:hover {
+  background-position: -84px -20px;
+}
+.createpage_icon {
+  background-position: -150px 0px;
+}
+.createpage_icon:hover {
+  background-position: -150px -20px;
+}
+
+.haspage_icon {
+  background-position: -150px -40px;
+}
+.haspage_icon:hover {
+  background-position: -150px -20px;
+}
+.thnowrap {
+    width: 64px;
+}
+

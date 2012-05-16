@@ -30,8 +30,7 @@ function doAction(theAction,thePrompt) {
 <div id="action_buttons">
     <div id="action_bar_header"><h3><?php print __('Location Actions',SLPLUS_PREFIX); ?></h3></div>
     <div id="other_actions"  class='orangebox'>
-        <p class="centerbutton"><a class='like-a-button' href="#" onclick="doAction('delete','<?php echo __('Delete selected?',SLPLUS_PREFIX);?>')" name="delete_selected"><?php echo __("Delete Selected", SLPLUS_PREFIX); ?></a></p>
-            
+        <p class="centerbutton"><a class='like-a-button' href="#" onclick="doAction('delete','<?php echo __('Delete selected?',SLPLUS_PREFIX);?>')" name="delete_selected"><?php echo __("Delete Selected", SLPLUS_PREFIX); ?></a></p>            
             <?php 
             //----------
             // Pro Pack
@@ -41,7 +40,7 @@ function doAction(theAction,thePrompt) {
                  <p class="centerbutton"><a class='like-a-button' href="#" onclick="doAction('recode','<?php echo __('Recode selected?',SLPLUS_PREFIX);?>')" name="delete_selected"><?php echo __("Recode Selected", SLPLUS_PREFIX); ?></a></p>
             <?php                 
             }
-            ?>    
+            ?>       
     </div>
     <?php 
     //----------
@@ -85,7 +84,7 @@ function doAction(theAction,thePrompt) {
         <?php print __(' locations', SLPLUS_PREFIX); ?>. 
     </div>    
 
-
+    
 <?php 
 //--------------------------------
 // Plus Version : Location Filters
@@ -93,9 +92,21 @@ function doAction(theAction,thePrompt) {
 if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {      
 ?>
 <div id="filter_buttons">
-    <div id="filter_bar_header"><h3><?php print __('Location Filters',SLPLUS_PREFIX); ?></h3></div>
+    <div id="filter_bar_header"><h3><?php print __('Location Actions and Filters',SLPLUS_PREFIX); ?></h3></div>
+    <?php 
+    //----------
+    // Store Pages
+    //
+    if ($slplus_plugin->license->packages['Store Pages']->isenabled) {
+        ?>
+        <div id="filterbox_0"  class='orangebox'>
+             <p class="centerbutton"><a class='like-a-button' href="#" onclick="doAction('createpage','<?php echo __('Create Pages?',SLPLUS_PREFIX);?>')" name="createpage_selected"><?php echo __("Create Pages", SLPLUS_PREFIX); ?></a></p>
+         </div>    
+    <?php                 
+    }
+    ?>         
     <div id="filterbox_1"  class='orangebox'>
-        <p class="centerbutton"><a class='like-a-button' href="#" onclick="doAction('show_uncoded','')" name="show_uncoded"><?php echo __("Uncoded Only", SLPLUS_PREFIX); ?></a></p>         
+        <p class="centerbutton"><a class='like-a-button' href="#" onclick="doAction('show_uncoded','')" name="show_uncoded"><?php echo __("Show Uncoded", SLPLUS_PREFIX); ?></a></p>         
         <p class="centerbutton"><a class='like-a-button' href="#" onclick="doAction('show_all','')" name="show_all"><?php echo __("Show All", SLPLUS_PREFIX); ?></a></p>         
     </div>
 </div>

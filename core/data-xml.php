@@ -22,9 +22,7 @@ if (!$db_selected) {
 }
 
 
-$num_initial_displayed=(trim(get_option('sl_num_initial_displayed'))!="")? 
-    get_option('sl_num_initial_displayed') : 
-    '25';
+$num_initial_displayed=trim(get_option('sl_num_initial_displayed','25'));
 
 
 // If tags are passed filter to just those tags
@@ -80,6 +78,7 @@ while ($row = @mysql_fetch_assoc($result)){
   echo 'distance="' . $row['sl_distance'] . '" ';
   echo 'description="' . esc_attr($row['sl_description']) . '" ';
   echo 'url="' . esc_attr($row['sl_url']) . '" ';
+  echo 'sl_pages_url="' . esc_attr($row['sl_pages_url']) . '" ';
   echo 'email="' . esc_attr($row['sl_email']) . '" ';
   echo 'hours="' . esc_attr($row['sl_hours']) . '" ';
   echo 'phone="' . esc_attr($row['sl_phone']) . '" ';

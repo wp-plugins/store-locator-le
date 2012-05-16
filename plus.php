@@ -57,7 +57,8 @@ function execute_and_output_plustemplate($file) {
  **
  **/
 function install_reporting_tables() {
-	global $wpdb;
+	global $wpdb, $sl_installed_ver;
+
     
 	$charset_collate = '';
     if ( ! empty($wpdb->charset) )
@@ -77,7 +78,8 @@ function install_reporting_tables() {
 			slp_repq_tags  varchar(255),
 			slp_repq_address varchar(255),
 			slp_repq_radius varchar(5),
-			PRIMARY KEY  (slp_repq_id)
+			PRIMARY KEY  (slp_repq_id),
+			INDEX (slp_repq_time)
 			)
 			$charset_collate						
 			";
@@ -93,11 +95,15 @@ function install_reporting_tables() {
 			slp_repqr_id    bigint(20) unsigned NOT NULL auto_increment,
 			slp_repq_id     bigint(20) unsigned NOT NULL,
 			sl_id           mediumint(8) unsigned NOT NULL,
-			PRIMARY KEY  (slp_repqr_id)
+			PRIMARY KEY  (slp_repqr_id),
+			INDEX (slp_repq_id)
 			)
 			$charset_collate						
 			";
-	slplus_dbupdater($sql, $table_name );
+
+    // Install or Update the slp_rep_query_results table
+    //
+    $slplusNewOrUpdated = slplus_dbupdater($sql,$table_name);     
 }
  
 /**************************************
@@ -112,15 +118,45 @@ function slplus_add_report_settings() {
     if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {    
         $slplus_plugin->settings->add_item(
             'Reporting', 
-            'Enable reporting', 
+            __('Enable reporting', SLPLUS_PREFIX), 
             'reporting_enabled', 
             'checkbox', 
             false,
-            'Enables tracking of searches and returned results.  The added overhead ' .
-            'can increase how long it takes to return location search results.'
+            __('Enables tracking of searches and returned results.  The added overhead ' .
+            'can increase how long it takes to return location search results.', SLPLUS_PREFIX)
         );    
     }
 }
+
+/**************************************
+ ** function: slplus_add_pages_settings()
+ ** 
+ ** Add store pages settings to the admin interface.
+ **
+ **/
+function slplus_add_pages_settings() {
+    global $slplus_plugin;
+    
+    if ($slplus_plugin->license->packages['Store Pages']->isenabled) {    
+        $slplus_plugin->settings->add_item(
+            'Store Pages', 
+            __('Pages Replace Websites', SLPLUS_PREFIX), 
+            'use_pages_links', 
+            'checkbox', 
+            false,
+            __('Use the Store Pages local URL in place of the website URL on the map results list.', SLPLUS_PREFIX)
+        );           
+        $slplus_plugin->settings->add_item(
+            'Store Pages', 
+            __('Prevent New Window', SLPLUS_PREFIX), 
+            'use_same_window', 
+            'checkbox', 
+            false,
+            __('Prevent Store Pages web links from opening in a new window.', SLPLUS_PREFIX)
+        );           
+    }
+}
+
 
 /**************************************
  ** function: slplus_create_country_pd()
@@ -284,14 +320,16 @@ function slplus_shortcode_atts($attributes) {
 
     // Pro Pack Enabled
     //
-    if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {                
-        shortcode_atts(
+    if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
+        $slpAtts =
             array(
                 'tags_for_pulldown'=> null, 
                 'only_with_tag'    => null,
-                ),
-            $attributes
-            );
+                );        
+        if ($slplus_plugin->license->packages['Pro Pack']->active_version >= 2007000) {
+            array_merge($slpAtts,array('theme' => null));
+        }
+        shortcode_atts($slpAtts,$attributes);
     }
 }
 
