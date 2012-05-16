@@ -70,7 +70,7 @@ class wpCSL_themes__slplus {
         //
         $themeArray = get_option($this->prefix.'-theme_array');
         if (count($themeArray, COUNT_RECURSIVE) < 2) {
-            $themeArray = array('Default MP Layout' => 'mp-white-1up');
+            $themeArray = array('Default' => 'default');
         } 
     
         // Check for theme files
@@ -101,8 +101,8 @@ class wpCSL_themes__slplus {
         //
         $resetDefault = false;
         
-        if ((count($themeArray, COUNT_RECURSIVE) > 1) && isset($themeArray['Default MP Layout'])){        
-            unset($themeArray['Default MP Layout']);
+        if ((count($themeArray, COUNT_RECURSIVE) > 1) && isset($themeArray['Default'])){        
+            unset($themeArray['Default']);
             $resetDefault = true;
         }
         
@@ -165,17 +165,45 @@ class wpCSL_themes__slplus {
      ** function: assign_user_stylesheet
      **
      ** Set the user stylesheet to what we selected.
+     **
+     ** For this to work with shortcode testing you MUST call it
+     ** via the WordPress wp_footer action hook.
+     **
+     ** Parameters:
+     **     themeFile    string  - if set use this theme v. the database setting
+     **
      **/
-    function assign_user_stylesheet() {
-        $themeFile = get_option($this->prefix.'-theme') . '.css';
-        if ($themeFile == '.css') { $themeFile='mp-white-1up.css'; }
+    function assign_user_stylesheet($themeFile = '') {
         
+        // If themefile not passed, fetch from db
+        //
+        if ($themeFile == '') {
+            $themeFile = get_option($this->prefix.'-theme','default') . '.css';
+            
+        } else {
+            // append .css if left off
+            if ((strlen($themeFile) < 4) || substr_compare($themeFile, '.css', -strlen('.css'), strlen('.css')) != 0) {         
+                $themeFile .= '.css';
+            }
+        }
+        
+        
+        // go to default if theme file is missing
+        //
+        if ( !file_exists($this->css_dir.$themeFile)) {
+            $themeFile = 'default.css';
+        }
+
+        // If the theme file exists (after forcing default if necessary)
+        // queue it up
+        //        
         if ( file_exists($this->css_dir.$themeFile)) {
             wp_deregister_style($this->prefix.'_user_header_css');             
-            wp_dequeue_style($this->prefix.'_user_header_css');             
-            wp_register_style($this->prefix.'_user_header_css', $this->css_url .$themeFile); 
-            wp_enqueue_style ($this->prefix.'_user_header_css');
+            wp_dequeue_style($this->prefix.'_user_header_css');                
+            if ($this->parent->shortcode_was_rendered) {            
+                wp_enqueue_style($this->prefix.'_user_header_css', $this->css_url .$themeFile);
+            }            
             $this->configure_theme($themeFile);
-        }      
+        }
     }     
 }

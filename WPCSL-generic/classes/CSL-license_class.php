@@ -91,6 +91,12 @@ class wpCSL_license__slplus {
                 $response = json_decode($result['body']);
             }
 
+            // If response is still a bool... and false... we have a problem...
+            //
+            if (is_bool($response) && !$response) {
+                return false;
+            }
+            
             // If we get a true response record it in the DB and exit
             //
             if ($response->result) {

@@ -34,11 +34,7 @@ function move_upload_directories() {
 	}
 	if (!is_dir($sl_upload_path . "/custom-icons")) {
 		mkdir($sl_upload_path . "/custom-icons", 0755);
-	}
-	if (!is_dir($sl_upload_path . "/custom-css")) {
-		mkdir($sl_upload_path . "/custom-css", 0755);
-	}
-	
+	}	
 	if (is_dir($sl_path . "/languages") && !is_dir($sl_upload_path . "/languages")) {
 		csl_copyr($sl_path . "/languages", $sl_upload_path . "/languages");
 	}
@@ -337,14 +333,13 @@ function activate_slplus() {
     // Data Updates
     //
     global $sl_db_version, $sl_installed_ver;
-	$sl_db_version='2.2';     //***** CHANGE THIS ON EVERY STRUCT CHANGE
+	$sl_db_version='2.7';     //***** CHANGE THIS ON EVERY STRUCT CHANGE
     $sl_installed_ver = get_option( SLPLUS_PREFIX."-db_version" );
 
 	install_main_table();
 	if (function_exists('install_reporting_tables')) {
 	    install_reporting_tables();
     }
-    
     
     // Update the version
     //
@@ -402,8 +397,13 @@ function install_main_table() {
 			sl_image varchar(255) NULL,
 			sl_private varchar(1) NULL,
 			sl_neat_title varchar(255) NULL,
+			sl_linked_postid int NULL,
+			sl_pages_url varchar(255) NULL,
 			sl_lastupdated  timestamp NOT NULL default current_timestamp,			
-			PRIMARY KEY  (sl_id)
+			PRIMARY KEY  (sl_id),
+			INDEX (sl_store),
+			INDEX (sl_longitude),
+			INDEX (sl_latitude)
 			) 
 			$charset_collate
 			";
@@ -478,9 +478,9 @@ function slplus_dbupdater($sql,$table_name) {
 
     //----------------------
     // Attribute Processing
-    // [LE/PLUS]
-    //    
-    if (function_exists('slplus_shortcode_atts')) {
+    //
+    if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
+        $slplus_plugin->shortcode_was_rendered = true;
         slplus_shortcode_atts($attributes);
     }
                    
@@ -542,7 +542,6 @@ function slplus_dbupdater($sql,$table_name) {
 
     //----------------------
     // Create Country Pulldown
-    // [LE/PLUS]
     //    
     if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {                    
         $country_options = slplus_create_country_pd();    
@@ -600,32 +599,34 @@ function slplus_dbupdater($sql,$table_name) {
     // Lets get some variables into our script
     //
     $scriptData = array(
-        'debug_mode'    => (get_option(SLPLUS_PREFIX.'-debugging') == 'on'),
-        'disable_scroll'=> (get_option(SLPLUS_PREFIX.'_disable_scrollwheel')==1),
-        'disable_dir'   => (get_option(SLPLUS_PREFIX.'_disable_initialdirectory' )==1),
-        'distance_unit' => esc_attr(get_option('sl_distance_unit'),'miles'),
-        'load_locations'=> (get_option('sl_load_locations_default')==1),
-        'map_3dcontrol' => (get_option(SLPLUS_PREFIX.'_disable_largemapcontrol3d')==0),
-        'map_country'   => SetMapCenter(),
-        'map_domain'    => get_option('sl_google_map_domain','maps.google.com'),
-        'map_home_icon' => $slplus_home_icon,
-        'map_home_sizew'=> $slplus_home_size[0],
-        'map_home_sizeh'=> $slplus_home_size[1],
-        'map_end_icon'  => $slplus_end_icon,
-        'map_end_sizew' => $slplus_end_size[0],
-        'map_end_sizeh' => $slplus_end_size[1],
-        'map_scalectrl' => (get_option(SLPLUS_PREFIX.'_disable_scalecontrol')==0),
-        'map_type'      => get_option('sl_map_type','G_NORMAL_MAP'),
-        'map_typectrl'  => (get_option(SLPLUS_PREFIX.'_disable_maptypecontrol')==0),
-        'show_tags'     => (get_option(SLPLUS_PREFIX.'_show_tags')==1),
-        'overview_ctrl' => get_option('sl_map_overview_control',0),
-        'use_email_form'=> (get_option(SLPLUS_PREFIX.'_email_form')==1),
-        'website_label' => esc_attr(get_option('sl_website_label','Website')),
-        'zoom_level'    => get_option('sl_zoom_level',4),
-        'zoom_tweak'    => get_option('sl_zoom_tweak',1),
+        'debug_mode'        => (get_option(SLPLUS_PREFIX.'-debugging') == 'on'),
+        'disable_scroll'    => (get_option(SLPLUS_PREFIX.'_disable_scrollwheel')==1),
+        'disable_dir'       => (get_option(SLPLUS_PREFIX.'_disable_initialdirectory' )==1),
+        'distance_unit'     => esc_attr(get_option('sl_distance_unit'),'miles'),
+        'load_locations'    => (get_option('sl_load_locations_default')==1),
+        'map_3dcontrol'     => (get_option(SLPLUS_PREFIX.'_disable_largemapcontrol3d')==0),
+        'map_country'       => SetMapCenter(),
+        'map_domain'        => get_option('sl_google_map_domain','maps.google.com'),
+        'map_home_icon'     => $slplus_home_icon,
+        'map_home_sizew'    => $slplus_home_size[0],
+        'map_home_sizeh'    => $slplus_home_size[1],
+        'map_end_icon'      => $slplus_end_icon,
+        'map_end_sizew'     => $slplus_end_size[0],
+        'map_end_sizeh'     => $slplus_end_size[1],
+        'map_scalectrl'     => (get_option(SLPLUS_PREFIX.'_disable_scalecontrol')==0),
+        'map_type'          => get_option('sl_map_type','G_NORMAL_MAP'),
+        'map_typectrl'      => (get_option(SLPLUS_PREFIX.'_disable_maptypecontrol')==0),
+        'show_tags'         => (get_option(SLPLUS_PREFIX.'_show_tags')==1),
+        'overview_ctrl'     => get_option('sl_map_overview_control',0),
+        'use_email_form'    => (get_option(SLPLUS_PREFIX.'_email_form')==1),
+        'use_pages_links'   => ($slplus_plugin->settings->get_item('use_pages_links')=='on'),
+        'use_same_window'   => ($slplus_plugin->settings->get_item('use_same_window')=='on'),                
+        'website_label'     => esc_attr(get_option('sl_website_label','Website')),
+        'zoom_level'        => get_option('sl_zoom_level',4),
+        'zoom_tweak'        => get_option('sl_zoom_tweak',1),
         );
-    wp_localize_script('slplus_map','slplus',$scriptData);                 
-
+    wp_localize_script('slplus_map','slplus',$scriptData);    
+    
     // Set our flag for later processing
     // of JavaScript files
     //
@@ -699,7 +700,7 @@ function csl_slplus_add_options_page() {
 		    SLPLUS_COREDIR.'map-designer.php'
 		    );
 		
-		// Plus Reporting
+		// Pro Pack Reporting
 		//
 		if ($slplus_plugin->license->packages['Pro Pack']->isenabled) { 		
             if (function_exists('slplus_add_report_settings')) {
@@ -711,7 +712,7 @@ function csl_slplus_add_options_page() {
                     SLPLUS_PLUGINDIR.'reporting.php'
                     );		    
             }
-        }            
+        }   
 	}
 
 }

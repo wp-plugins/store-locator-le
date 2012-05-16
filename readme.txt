@@ -1,18 +1,19 @@
-=== Google Maps via Store Locator Plus ===
+=== Store Locator Plus ===
 Plugin Name: Google Maps via Store Locator Plus
 Contributors: cybersprocket
 Donate link: http://www.storelocatorplus.com/
-Tags: store locator, store locater, google, google maps, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus
-Requires at least: 3.0
-Tested up to: 3.3.1
-Stable tag: 2.6.2
+Tags: google maps, store finder, store locator, store locater, google, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus, bing map, bing, yahoo maps, yahoo, mapping, retail
+Requires at least: 3.3
+Tested up to: 3.3.2
+Stable tag: 2.7
 
-This plugin puts a search form and an interactive Google map on your site so you can show visitors your store locations.    
+Store Locator Plus works with Google Maps to put a store location search on your site.  
+Tweak the look and feel with the custom settings or via the Pro Pack add-on themes. 
 
 == Description ==
 
-This plugin puts a search form and an interactive Google map on your site so you 
-can show visitors your store locactions.  Users search for stores within a 
+This plugin puts a search form and an interactive Google map on your site 
+so you  can show visitors your store locactions.  Users search for stores within a 
 specified radius.  Full admin panel data entry and management of stores from a few to
 a few thousand.
 
@@ -152,6 +153,16 @@ Some of the features in the Pro Pack include:
 * Additional search form elements.
 * The CSS Themes system.
 
+= What are Store Pages? =
+
+Store Pages are a new WordPress page type that are created from the location data you have entered in your Store Locator Plus locations database.
+Store Pages have their own categories and can be managed separately from the main WordPress site pages.  
+Store Pages content is fully accessible from your standard WordPress search and menu interface, providing a great way to get SEO value from your location data.
+
+Store Pages is a paid add-on for the free Store Locator Plus product. When you purchase the Store Pages add-on new features will be added to the base product.
+
+Please see the [Store Locator Plus website](http://www.storelocatorplus.com) for the latest feature list.
+
 = What happened to the Plus Pack? =
 
 We renamed it the Pro Pack.  Your Plus Pack license will work for the Pro Pack.
@@ -170,9 +181,39 @@ We renamed it the Pro Pack.  Your Plus Pack license will work for the Pro Pack.
 
 More screenshots are available via the [Store Locator Plus website](http://www.storelocatorplus.com/).
 
+== Upgrade Notice ==
+
+This version of the Store Locator Plus requires WordPress version 3.3 or higher.   
+Only in WordPress version 3.3 or higher can we provide the enhanced performance provided by loading the JavaScript and CSS files on pages that have a Store Locator Plus shortcode.
+
+If you are using the legacy ./custom-css implementation of CSS files you will need to upgrade to the [Pro Pack with themes](http://redmine.cybersprocket.com/projects/mc-closeststore/wiki/Custom_Themes).
+The theming system uses the built-in CSS management system of WordPress allowing for more efficient loading of CSS files only as needed.
+
+The legacy customization setup is going away.   You should migrate any legacy icons or stylesheets to the new themes location.   Icons should go in the main ./core/images/icons directory.   If you have open-source or commercial license approved icons you want to have included in the next release, please  [contact us](http://www.cybersprocket.com/contact-us/).
+
+[Version 2.7 Release Notes](http://redmine.cybersprocket.com/projects/mc-closeststore/versions/490)
+
 == Changelog ==
 
-= 2.6.2 (April 16th, 2012) =
+= 2.7 (May 14th, 2012) =
+
+[Version 2.7 Release Notes](http://redmine.cybersprocket.com/projects/mc-closeststore/versions/490)
+
+* [Store Pages] New premium add-on is available for purchase.
+* [Pro Pack 2.7+] You can now override the latitude/longitude of geocoded locations.
+* [Pro Pack 2.7+] You can override the default theme for the plugin via shortcode attributes.
+* [Pro Pack] Speed up reporting system for heavy traffic sites.
+* Add locations form tweaks.
+* More code performance and structure improvements.
+* Updated admin interface icons for manage listings, etc.
+* Navigation bar header UI cleanup.
+* The SLPlus themes only load/render on pages with the shortcode.
+* Blank addresses are now allowed, the search will default to the center of the map.
+* bug fix: do not re-run geocoding if address does not change during edit
+* bug fix: Selecting map type was not changing the UI.
+* NOTE: If you use the legacy ./custom-css you will need to upgrade to the Pro Pack and use themes.
+
+= 2.6 (April 12th, 2012) =
 
 * [Pro Pack] Dark Theme, add hand over submit, restyle submit button.
 * [Pro Pack] Simple Boxed Theme, side-by-side listing entries.

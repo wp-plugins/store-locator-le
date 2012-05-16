@@ -8,7 +8,7 @@
 * share a code libary and reduce code redundancy.
 * 
 ************************************************************************/
-define('WPCSL__slplus__VERSION', '1.7');
+define('WPCSL__slplus__VERSION', '1.8');
 
 // (LC) 
 // These helper files should only be loaded if needed by the plugin
@@ -90,6 +90,7 @@ class wpCSL_plugin__slplus {
         $this->display_settings_collapsed = true;
         $this->show_locale      = true;
         $this->broadcast_url    = 'http://www.cybersprocket.com/signage/index.php';
+        $this->shortcode_was_rendered = false;
 
         // Do the setting override or initial settings.
         //
@@ -182,7 +183,8 @@ class wpCSL_plugin__slplus {
             'prefix'        => $this->prefix,
             'plugin_path'   => $this->plugin_path,
             'plugin_url'    => $this->plugin_url,  
-            'support_url'   => $this->support_url
+            'support_url'   => $this->support_url,
+            'parent'        => $this
         );
 
         $this->initialize();
@@ -528,7 +530,7 @@ class wpCSL_plugin__slplus {
             add_action('admin_init', array($this, 'admin_init'),50);
             add_action('admin_notices', array($this->notifications, 'display'));          
         } else {
-            if (!$this->themes_enabled) {
+            if (!$this->themes_enabled && !$this->no_default_css) {
                 // non-admin enqueues, actions, and filters
                 add_action('wp_head', array($this, 'checks'));
                 add_filter('wp_print_scripts', array($this, 'user_header_js'));
@@ -843,6 +845,8 @@ class wpCSL_plugin__slplus {
      */
     function shortcode_show_items($atts, $content = NULL) {
         if ( $this->ok_to_show() ) {
+            $this->shortcode_was_rendered = true;
+            
             $content = '';
 
             // Debugging
@@ -990,12 +994,21 @@ class wpCSL_plugin__slplus {
      **/
     function user_header_css() {
 
-        if (isset($this->css_url)) {
-            wp_register_style($this->prefix.'css', $this->css_url);
+        $cssPath = '';
+        if (isset($this->css_url)) {            
+            $cssPath = $this->css_url;
         } else if (isset($this->plugin_url)) {
-            wp_register_style($this->prefix.'css', $this->plugin_url . '/css/'.$this->prefix.'.css');
+            if ( file_exists($this->plugin_path.'/css/'.$this->prefix.'.css') ) {
+                $cssPath = $this->plugin_url . '/css/'.$this->prefix.'.css';
+            }
         }
-        wp_enqueue_style($this->prefix.'css');
+        
+        if ($cssPath != '') {
+            wp_enqueue_style(
+                    $this->prefix.'css',
+                    $cssPath
+                    );
+        }            
         wp_enqueue_style('thickbox');
     }
 
