@@ -5,7 +5,16 @@
  ** class: wpCSL_settings__slplus
  **
  ** The main settings class.
- ** 
+ **
+ ** see: http://redmine.cybersprocket.com/projects/wpmod/wiki/Class_wpCSL_settings
+ **
+ ** Methods:
+ **
+ **     __construct         : Overload of the default class instantiation.
+ **     add_section 
+ **     default_broadcast
+ **     get_broadcast   
+ **     get_item            : Return the value of a WordPress option that was saved via the settings interface.
  **/
 class wpCSL_settings__slplus {
 
@@ -177,7 +186,7 @@ class wpCSL_settings__slplus {
      }
      
     /**------------------------------------
-     ** method: get_broadcast
+     ** method: default_broadcast
      **
      **/
      function default_broadcast() {
@@ -231,6 +240,7 @@ class wpCSL_settings__slplus {
     /**------------------------------------
      ** method: get_item
      **
+     ** Return the value of a WordPress option that was saved via the settings interface.
      **/
     function get_item($name) {
         $option_name = $this->prefix . '-' . $name;
@@ -263,7 +273,20 @@ class wpCSL_settings__slplus {
             ) {
 
         $name = $this->prefix .'-'.$name;
-    
+
+        //** Need to check the section exists first. **/
+        if (!isset($this->sections[$section])) {
+            if (isset($this->notifications)) {
+                $this->notifications->add_notice(
+                    3,
+                    sprintf(
+                       __('Program Error: section <em>%s</em> not defined.',WPCSL__slplus__VERSION),
+                       $section
+                       )
+                );
+            }            
+            return;
+        }
         $this->sections[$section]->add_item(
             array(
                 'prefix' => $this->prefix,
@@ -421,13 +444,14 @@ class wpCSL_settings__slplus {
         if (isset($this->parent->license->packages) && ($this->parent->license->packages > 0)) {
             $content .='<tr><td colspan="2" class="optionpack_topline">'.
             __('The following optional add-ons are available',WPCSL__slplus__VERSION).':</td></tr>';
-            $content .= '<tr valign="top">';
+            $content .= '<tr valign="top"><td class="optionpack" colspan="2">';
             foreach ($this->parent->license->packages as $package) {
-                $content .= '<th class="input_label optionpack">'.$package->name.'</th>';
-                $content .= '<td class="optionpack">'.$this->EnabledOrBuymeString($license_ok,$package).'</td>';
+                $content .= '<div class="optionpack_box" id="pack_'.$package->sku.'">';
+                $content .= '<div class="optionpack_name">'.$package->name.'</div>';
+                $content .= '<div class="optionpack_info">'.$this->EnabledOrBuymeString($license_ok,$package).'</div>';
+                $content .= '</div>';
             }
-
-            $content .= '</tr>';
+            $content .= '</td></tr>';
         }
         
         // If the main product or packages show the license box
@@ -603,7 +627,7 @@ class wpCSL_settings__slplus {
      **/
     function header() {
         echo "<div class='wrap'>\n";
-        screen_icon(preg_replace('/\s/','_',$this->name));
+        screen_icon(preg_replace('/\W/','_',$this->name));
         echo "<h2>{$this->name}</h2>\n";
         echo "<form method='post' action='".$this->form_action."'>\n";
         echo settings_fields($this->prefix.'-settings');
@@ -695,10 +719,11 @@ class wpCSL_settings_section__slplus {
     /**------------------------------------
      **/
     function __construct($params) {
+        $this->headerbar = true;        
         foreach ($params as $name => $value) {
             $this->$name = $value;
         }
-
+        
         if (!isset($this->auto)) $this->auto = true;
     }
 
@@ -744,13 +769,17 @@ class wpCSL_settings_section__slplus {
     /**------------------------------------
      **/
     function header() {
-        echo "<div class=\"postbox\" " . (isset($this->div_id) ?  "id='$this->div_id'" : '') . ">
-         <div class=\"handlediv\" title=\"Click to toggle\"><br/></div>
-         <h3 class=\"hndle\">
-           <span>{$this->name}</span>
-           <a name=\"".strtolower(strtr($this->name, ' ', '_'))."\"></a>
-         </h3>
-         <div class=\"inside\" " . (isset($this->start_collapsed) && $this->start_collapsed ? 'style="display:none;"' : '') . ">
+        echo "<div class=\"postbox\" " . (isset($this->div_id) ?  "id='$this->div_id'" : '') . ">";
+        
+        if ($this->headerbar) {
+            echo "<div class=\"handlediv\" title=\"Click to toggle\"><br/></div>
+             <h3 class=\"hndle\">
+               <span>{$this->name}</span>
+               <a name=\"".strtolower(strtr($this->name, ' ', '_'))."\"></a>
+             </h3>";
+        }             
+         
+         echo"<div class=\"inside\" " . (isset($this->start_collapsed) && $this->start_collapsed ? 'style="display:none;"' : '') . ">
             <div class='section_description'>{$this->description}</div>
     <table class=\"form-table\" style=\"margin-top: 0pt;\">\n";
 

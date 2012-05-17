@@ -58,7 +58,10 @@ function sl_load() {
         if (parseInt(slplus.overview_ctrl)==1) {
             map.addControl(new GOverviewMapControl());
         }
-        map.addMapType(G_PHYSICAL_MAP);
+        
+        map.addMapType(eval(slplus.map_type));        
+        map.setMapType(eval(slplus.map_type));
+        
         // This is asynchronous, as such we have no idea when it will return
         //
         geocoder.getLatLng(slplus.map_country, 
@@ -116,8 +119,12 @@ function sl_load_locations(map,lat,lng) {
                 var name = markers[i].getAttribute('name');
                 var address = markers[i].getAttribute('address');
                 var distance = parseFloat(markers[i].getAttribute('distance'));
-                var description = markers[i].getAttribute('description');
-                var url = markers[i].getAttribute('url');
+                var description = markers[i].getAttribute('description');                
+                if (slplus.use_pages_links) {
+                    var url = markers[i].getAttribute('sl_pages_url');
+                } else {
+                    var url = markers[i].getAttribute('url');
+                }                
                 var email = markers[i].getAttribute('email');
                 var hours = markers[i].getAttribute('hours');
                 var phone = markers[i].getAttribute('phone');
@@ -196,23 +203,32 @@ function escapeExtended(string) {
 function searchLocations() {
     var address = document.getElementById('addressInput').value;
     
-    geocoder.getLatLng(escapeExtended(address), 
-        function(latlng) {
-            if (!latlng) {
-                var theMessage = ''; 
-                if (slplus.debug_mode) {
-                    theMessage = 'Google geocoder could not find ' + escape (address) + ' :: ';
+    // Address was given, use it...
+    //
+    if (address != '') {
+        geocoder.getLatLng(escapeExtended(address), 
+            function(latlng) {
+                if (!latlng) {
+                    var theMessage = ''; 
+                    if (slplus.debug_mode) {
+                        theMessage = 'Google geocoder could not find ' + escape (address) + ' :: ';
+                    }
+                    theMessage += address + ' not found'; 
+                    alert(theMessage);
+                } else {
+                    if (slplus.debug_mode) {
+                        alert('Searching near ' + address + ' ' + latlng);
+                    }
+                    searchLocationsNear(latlng, address); 
                 }
-                theMessage += address + ' not found'; 
-                alert(theMessage);
-            } else {
-                if (slplus.debug_mode) {
-                    alert('Searching near ' + address + ' ' + latlng);
-                }
-                searchLocationsNear(latlng, address); 
             }
-        }
-    );
+        );
+
+    // No Address, Use Current Map Center
+    //
+    } else {
+        searchLocationsNear(map.getCenter(), '');         
+    }    
     
     jQuery('#map_box_image').hide();
     jQuery('#map_box_map').show();
@@ -221,7 +237,7 @@ function searchLocations() {
 
 
 /**************************************
- * function: searchLocations()
+ * function: searchLocationsNear()
  *
  * Run this when we do a search, first get the lat/long of the address entered
  * then call find locations near that address.
@@ -296,7 +312,11 @@ function searchLocationsNear(center, homeAddress) {
                 var address = markers[i].getAttribute('address');
                 var distance = parseFloat(markers[i].getAttribute('distance'));
                 var description = markers[i].getAttribute('description');
-                var url = markers[i].getAttribute('url');
+                if (slplus.use_pages_links) {
+                    var url = markers[i].getAttribute('sl_pages_url');
+                } else {
+                    var url = markers[i].getAttribute('url');
+                }                
                 var email = markers[i].getAttribute('email');
                 var hours = markers[i].getAttribute('hours');
                 var phone = markers[i].getAttribute('phone');
@@ -336,14 +356,14 @@ function createMarker(point, name, address, homeAddress, description, url, email
   }
   
   if (url.indexOf("http://")!=-1 && url.indexOf(".")!=-1) {
-    more_html+="| <a href='"+url+"' target='_blank' class='storelocatorlink'><nobr>" + slplus.website_label +"</nobr></a>"
+    more_html+="| <a href='"+url+"' target='"+(slplus.use_same_window?'_self':'_blank')+"' class='storelocatorlink'><nobr>" + slplus.website_label +"</nobr></a>"
   } else {
     url="";
   }
   
   if (email.indexOf("@")!=-1 && email.indexOf(".")!=-1) {
     if (!slplus.use_email_form) { 
-      more_html+="| <a href='mailto:"+email+"' target='_blank' class='storelocatorlink'><nobr>" + email +"</nobr></a>";
+        more_html+="| <a href='mailto:"+email+"' target='_blank' class='storelocatorlink'><nobr>" + email +"</nobr></a>";
     } else {
       more_html+="| <a href='javascript:slp_show_email_form("+'"'+email+'"'+");' class='storelocatorlink'><nobr>" + email +"</nobr></a><br/>";
     }                    
@@ -412,8 +432,8 @@ function createSidebarEntry(marker, name, address, distance, homeAddress, url, e
       var state_zip = address.split(',')[3];
       
       var link = '';
-      if(url.indexOf("http://")==-1) {url="http://"+url;} 
-      if (url.indexOf("http://")!=-1 && url.indexOf(".")!=-1) {link="<a href='"+url+"' target='_blank' class='storelocatorlink'><nobr>" + slplus.website_label +"</nobr></a><br/>"} else {url="";}
+      if (url.indexOf("http://")==-1) {url="http://"+url;} 
+      if (url.indexOf("http://")!=-1 && url.indexOf(".")!=-1) {link="<a href='"+url+"' target='"+(slplus.use_same_window?'_self':'_blank')+"' class='storelocatorlink'><nobr>" + slplus.website_label +"</nobr></a><br/>"} else {url="";}
 
       var elink = "";
       if (email.indexOf("@")!=-1 && email.indexOf(".")!=-1) {

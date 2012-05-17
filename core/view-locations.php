@@ -14,7 +14,7 @@
 //
 $hidden='';
 foreach($_REQUEST as $key=>$val) {
-	if ($key!="q" && $key!="o" && $key!="d" && $key!="start" && $key!="act" && $key!='sl_tags' && $key!='sl_id') {
+	if ($key!="q" && $key!="o" && $key!="sortorder" && $key!="start" && $key!="act" && $key!='sl_tags' && $key!='sl_id') {
 		$hidden.="<input type='hidden' value='$val' name='$key'>\n"; 
 	}
 }
@@ -67,34 +67,39 @@ if (!$slak) {
 		$field_value_str = '';
 		foreach ($_POST as $key=>$value) {
 			if (ereg("\-$_GET[edit]", $key)) {
-				$field_value_str.="sl_".ereg_replace("\-$_GET[edit]", "", $key)."='".
-                    trim(comma($value))."', ";
-                    
-                // strip off number at the end 
-                $key=ereg_replace("\-$_GET[edit]", "", $key); 
-				$_POST["$key"]=$value; 
+			    $slpFieldName = ereg_replace("\-$_GET[edit]", "", $key); 
+			    if (!$slplus_plugin->license->packages['Pro Pack']->isenabled) {
+			        if ( ($slpFieldName == 'latitude') || ($slpFieldName == 'longitude')) {
+			            continue;
+			        }
+                }			         
+				$field_value_str.="sl_".$slpFieldName."='".trim(comma($value))."', ";
+				$_POST[$slpFieldName]=$value; 
 			}
 		}
 		$field_value_str=substr($field_value_str, 0, strlen($field_value_str)-2);
-		$edit=$_GET['edit']; extract($_POST);
+		$edit=$_GET['edit']; 
+		extract($_POST);
 		$the_address="$address $address2, $city, $state $zip";
 		
-		$old_address=$wpdb->get_results("SELECT * FROM ".
-                        $wpdb->prefix."store_locator WHERE sl_id=$_GET[edit]", ARRAY_A);
-		$wpdb->query("UPDATE ".$wpdb->prefix."store_locator SET $field_value_str " .
-                        "WHERE sl_id=$_GET[edit]");
+		$old_address=$wpdb->get_results("SELECT * FROM ".$wpdb->prefix."store_locator WHERE sl_id=$_GET[edit]", ARRAY_A);
+		$wpdb->query("UPDATE ".$wpdb->prefix."store_locator SET $field_value_str WHERE sl_id=$_GET[edit]");
+		
+        if (!isset($old_address[0]['sl_address']))  { $old_address[0]['sl_address'] = '';   } 
+        if (!isset($old_address[0]['sl_address2'])) { $old_address[0]['sl_address2'] = '';  } 
+        if (!isset($old_address[0]['sl_city'])) 	{ $old_address[0]['sl_city'] = ''; 	    } 
+        if (!isset($old_address[0]['sl_state'])) 	{ $old_address[0]['sl_state'] = ''; 	} 
+        if (!isset($old_address[0]['sl_zip'])) 	    { $old_address[0]['sl_zip'] = ''; 		} 
                 
-                if (!isset($old_address['sl_address'])) { $old_address['sl_address'] = ''; 	} 
-                if (!isset($old_address['sl_address2'])){ $old_address['sl_address2'] = ''; 	} 
-                if (!isset($old_address['sl_city'])) 	{ $old_address['sl_city'] = ''; 	} 
-                if (!isset($old_address['sl_state'])) 	{ $old_address['sl_state'] = ''; 	} 
-                if (!isset($old_address['sl_zip'])) 	{ $old_address['sl_zip'] = ''; 		} 
-                
-		if ($the_address!=
-		    "$old_address[sl_address] $old_address[sl_address2], $old_address[sl_city], " .
-		    "$old_address[sl_state] $old_address[sl_zip]" || 
-		    ($old_address['sl_latitude']=="" || $old_address['sl_longitutde']=="")
-            	) {
+        // RE-geocode if the address changed
+        // or if the lat/long is not set
+        //
+		if (   ($the_address!=
+		        $old_address[0]['sl_address'].' '.$old_address[0]['sl_address2'].', '.$old_address[0]['sl_city'].', '.
+		        $old_address[0]['sl_state'].' '.$old_address[0]['sl_zip']
+		        ) ||
+		        ($old_address[0]['sl_latitude']=="" || $old_address[0]['sl_longitude']=="")
+            	) {        
 			do_geocoding($the_address,$_GET['edit']);
 		}
 		
@@ -160,7 +165,8 @@ if (!$slak) {
                         }                        
                     }
                 }                    
-            }              
+            }          
+            
         // Locations Per Page Action
         } elseif ($_REQUEST['act']=="locationsPerPage") {
             //If bulk delete is used
@@ -199,8 +205,40 @@ if (!$slak) {
                         
                         do_geocoding("$address[sl_address] $address[sl_address2], $address[sl_city], $address[sl_state] $address[sl_zip]",$thisLocation);
                 }                
-            }              
+            }
+            
+        // Create Store Page(s)
+        //
+        } elseif ($_REQUEST['act'] == 'createpage') {
+            if (isset($_REQUEST['sl_id'])) {
+                if (!is_array($_REQUEST['sl_id'])) {
+                    $theLocations = array($_REQUEST['sl_id']);
+                } else {
+                    $theLocations = $_REQUEST['sl_id'];
+                }
+                foreach ($theLocations as $thisLocation) {    
+                    $slpNewPostID = call_user_func(array('SLPlus_AdminUI','slpCreatePage'),$thisLocation);
+                    if ($slpNewPostID >= 0) {
+                        $slpNewPostURL = get_permalink($slpNewPostID);
+                        $wpdb->query("UPDATE ".$wpdb->prefix."store_locator ".
+                                        "SET sl_linked_postid=$slpNewPostID, ".
+                                        "sl_pages_url='$slpNewPostURL' ".
+                                        "WHERE sl_id=$thisLocation"
+                                        );                        
+                        print "<div class='updated settings-error'>" .
+                                ( (isset($_REQUEST['slp_pageid']) && ($slpNewPostID != $_REQUEST['slp_pageid']))?'Created new ':'Updated ').
+                                " store page #<a href='$slpNewPostURL'>$slpNewPostID</a>" .
+                                " for location # $thisLocation" .
+                                "</div>\n";
+                    } else {
+                        print "<div class='updated settings-error'>Could NOT create page" .
+                                " for location # $thisLocation" .
+                                "</div>\n";
+                    }
+                }
+            }
         }
+        
     }
     
     
@@ -225,8 +263,19 @@ if (!$slak) {
     print '<div id="slplus_actionbar">';
     print get_string_from_phpexec(SLPLUS_COREDIR.'/templates/managelocations_actionbar.php');
     print '</div>';   
-    
-    set_query_defaults();
+
+	$qry = isset($_REQUEST['q']) ? $_REQUEST['q'] : '';
+	$where=($qry!='')? 
+	        " WHERE ".
+	        "sl_store    LIKE '%$qry%' OR ".
+	        "sl_address  LIKE '%$qry%' OR ".
+	        "sl_address2 LIKE '%$qry%' OR ".
+	        "sl_city     LIKE '%$qry%' OR ".
+	        "sl_state    LIKE '%$qry%' OR ".
+	        "sl_zip      LIKE '%$qry%' OR ".
+	        "sl_tags     LIKE '%$qry%' " 
+	        : 
+	        '' ;
     
     /* Uncoded items */
     if (isset($_REQUEST['act'])) {
@@ -245,46 +294,65 @@ if (!$slak) {
     $num_per_page=$sl_admin_locations_per_page; 
     if ($numMembers2!=0) {include(SLPLUS_COREDIR.'search-links.php');}
 
-$opt = isset($_GET['o']) ? $_GET['o'] : '';
-$dir = isset($_GET['d']) ? $_GET['d'] : '';
-print "<br>
-<table class='widefat' cellspacing=0>
-<thead><tr >
-<th colspan='1'><input type='checkbox' onclick='checkAll(this,document.forms[\"locationForm\"])' class='button'></th>
-<th colspan='1'>".__("Actions", SLPLUS_PREFIX)."</th>
-<th><a href='".ereg_replace("&o=$opt&d=$dir", "", $_SERVER['REQUEST_URI'])."&o=sl_id&d=$d'>".__("ID", SLPLUS_PREFIX)."</a></th>
-<th><a href='".ereg_replace("&o=$opt&d=$dir", "", $_SERVER['REQUEST_URI'])."&o=sl_store&d=$d'>".__("Name", SLPLUS_PREFIX)."</a></th>
-<th><a href='".ereg_replace("&o=$opt&d=$dir", "", $_SERVER['REQUEST_URI'])."&o=sl_address&d=$d'>".__("Street", SLPLUS_PREFIX)."</a></th>
-<th><a href='".ereg_replace("&o=$opt&d=$dir", "", $_SERVER['REQUEST_URI'])."&o=sl_address2&d=$d'>".__("Street2", SLPLUS_PREFIX)."</a></th>
-<th><a href='".ereg_replace("&o=$opt&d=$dir", "", $_SERVER['REQUEST_URI'])."&o=sl_city&d=$d'>".__("City", SLPLUS_PREFIX)."</a></th>
-<th><a href='".ereg_replace("&o=$opt&d=$dir", "", $_SERVER['REQUEST_URI'])."&o=sl_state&d=$d'>".__("State", SLPLUS_PREFIX)."</a></th>
-<th><a href='".ereg_replace("&o=$opt&d=$dir", "", $_SERVER['REQUEST_URI'])."&o=sl_zip&d=$d'>".__("Zip", SLPLUS_PREFIX)."</a></th>
-<th><a href='".ereg_replace("&o=$opt&d=$dir", "", $_SERVER['REQUEST_URI'])."&o=sl_tags&d=$d'>".__("Tags", SLPLUS_PREFIX)."</a></th>";
+$opt= (isset($_GET['o']) && (trim($_GET['o']) != ''))
+    ? $_GET['o'] : "sl_store";
+$dir= (isset($_GET['sortorder']) && (trim($_GET['sortorder'])=='DESC')) 
+    ? 'DESC' : 'ASC';
 
+// Get the sort order and direction out of our URL
+//
+$slpCleanURL = str_replace("&o=$opt&sortorder=$dir", '', $_SERVER['REQUEST_URI']);    
+    
+// Flip the direction
+//
+$altdir= (($dir=='DESC') ? 'ASC':'DESC');
+
+print "<br>
+<table class='slplus widefat' cellspacing=0>
+    <thead>
+    <tr >
+        <th colspan='1'><input type='checkbox' onclick='checkAll(this,document.forms[\"locationForm\"])' class='button'></th>
+        <th colspan='1'>".__("Actions", SLPLUS_PREFIX)."</th>".
+        slpCreateColumnHeader($slpCleanURL,'sl_id'      ,__('ID'       ,SLPLUS_PREFIX),$opt,$dir) .
+        slpCreateColumnHeader($slpCleanURL,'sl_store'   ,__('Name'     ,SLPLUS_PREFIX),$opt,$dir) .
+        slpCreateColumnHeader($slpCleanURL,'sl_address' ,__('Street'   ,SLPLUS_PREFIX),$opt,$dir) .        
+        slpCreateColumnHeader($slpCleanURL,'sl_address2',__('Street2'  ,SLPLUS_PREFIX),$opt,$dir) .        
+        slpCreateColumnHeader($slpCleanURL,'sl_city'    ,__('City'     ,SLPLUS_PREFIX),$opt,$dir) .        
+        slpCreateColumnHeader($slpCleanURL,'sl_state'   ,__('State'    ,SLPLUS_PREFIX),$opt,$dir) .        
+        slpCreateColumnHeader($slpCleanURL,'sl_zip'     ,__('Zip'      ,SLPLUS_PREFIX),$opt,$dir) .        
+        slpCreateColumnHeader($slpCleanURL,'sl_tags'    ,__('Tags'     ,SLPLUS_PREFIX),$opt,$dir)                
+        ;
+
+      
+// Expanded View
+//
 if (get_option('sl_location_table_view')!="Normal") {
-    print "<th><a href='".ereg_replace("&o=$opt&d=$dir", "", $_SERVER['REQUEST_URI']).
-            "&o=sl_description&d=$d'>".__("Description", SLPLUS_PREFIX)."</a></th>".
-            
-        "<th><a href='".ereg_replace("&o=$opt&d=$dir", "", $_SERVER['REQUEST_URI']).
-            "&o=sl_url&d=$d'>".__("URL", SLPLUS_PREFIX)."</a></th>".
-            
-        "<th><a href='".ereg_replace("&o=$opt&d=$dir", "", $_SERVER['REQUEST_URI']).
-            "&o=sl_email&d=$d'>".__("Email", SLPLUS_PREFIX)."</a></th>".
-            
-        "<th><a href='".ereg_replace("&o=$opt&d=$dir", "", $_SERVER['REQUEST_URI']).
-            "&o=sl_hours&d=$d'>".__("Hours", SLPLUS_PREFIX)."</th>".
-            
-        "<th><a href='".ereg_replace("&o=$opt&d=$dir", "", $_SERVER['REQUEST_URI']).
-            "&o=sl_phone&d=$d'>".__("Phone", SLPLUS_PREFIX)."</a></th>".
-            
-        "<th><a href='".ereg_replace("&o=$opt&d=$dir", "", $_SERVER['REQUEST_URI']).
-            "&o=sl_image&d=$d'>".__("Image", SLPLUS_PREFIX)."</a></th>";
+    print 
+        slpCreateColumnHeader($slpCleanURL,'sl_description' ,__('Description'  ,SLPLUS_PREFIX),$opt,$dir) .
+        slpCreateColumnHeader($slpCleanURL,'sl_url'         ,__('URL'          ,SLPLUS_PREFIX),$opt,$dir);
+
+    // Store Pages URLs
+    //
+    if ($slplus_plugin->license->packages['Store Pages']->isenabled) {            
+        print slpCreateColumnHeader($slpCleanURL,
+                    'sl_pages_url'   ,
+                    __('Pages URL'    ,SLPLUS_PREFIX),
+                    $opt,$dir
+                    );
+    }
+        
+    print 
+        slpCreateColumnHeader($slpCleanURL,'sl_email'       ,__('Email'        ,SLPLUS_PREFIX),$opt,$dir) .
+        slpCreateColumnHeader($slpCleanURL,'sl_hours'       ,__('Hours'        ,SLPLUS_PREFIX),$opt,$dir) .
+        slpCreateColumnHeader($slpCleanURL,'sl_phone'       ,__('Phone'        ,SLPLUS_PREFIX),$opt,$dir) .
+        slpCreateColumnHeader($slpCleanURL,'sl_image'       ,__('Image'        ,SLPLUS_PREFIX),$opt,$dir)
+        ;    
 }
 
-print "<th>(Lat, Lon)</th></tr></thead>";
+print '<th>Lat</th><th>Lon</th></tr></thead>';
 
 if ($locales=$wpdb->get_results("SELECT * FROM " . $wpdb->prefix . 
-        "store_locator  $where ORDER BY $o $d LIMIT $start,$num_per_page", ARRAY_A)) {
+        "store_locator  $where ORDER BY $opt $dir LIMIT $start,$num_per_page", ARRAY_A)) {
 		
         $bgcol = '#eee';
 		foreach ($locales as $value) {
@@ -297,7 +365,8 @@ if ($locales=$wpdb->get_results("SELECT * FROM " . $wpdb->prefix .
 			//
 			if (isset($_GET['edit']) && ($locID==$_GET['edit'])) {
 				print "<tr style='background-color:$bgcol'>";
-	            $colspan=(get_option('sl_location_table_view')!="Normal")? 	16 : 11;	
+	            $colspan=(get_option('sl_location_table_view')!="Normal")? 	12 : 18;	
+                if ($slplus_plugin->license->packages['Store Pages']->isenabled) { $colspan++; }	            
 				
                 print "<td colspan='$colspan'><form name='manualAddForm' method=post>
                 <a name='a".$locID."'></a>
@@ -307,6 +376,16 @@ if ($locales=$wpdb->get_results("SELECT * FROM " . $wpdb->prefix .
                     <td valign='top'>";
                 
                 execute_and_output_template('edit_location_address.php');
+                
+                // Store Pages URLs
+                //
+                if (
+                    ($slplus_plugin->license->packages['Store Pages']->isenabled) &&
+                    ($value['sl_pages_url'] != '')
+                    ){
+                    $shortSPurl = preg_replace('/^.*?store_page=/','',$value['sl_pages_url']);
+                    print "<label for='store_page'>Store Page</label><a href='$value[sl_pages_url]' target='cybersprocket'>$shortSPurl</a><br/>";
+                }
                 
                 print "<br>
                         <nobr><input type='submit' value='".__("Update", SLPLUS_PREFIX)."' class='button-primary'><input type='button' class='button' value='".__("Cancel", SLPLUS_PREFIX)."' onclick='location.href=\"".ereg_replace("&edit=$_GET[edit]", "",$_SERVER['REQUEST_URI'])."\"'></nobr>
@@ -347,17 +426,25 @@ if ($locales=$wpdb->get_results("SELECT * FROM " . $wpdb->prefix .
                 
                 print "<tr style='background-color:$bgcol'>
                 <th><input type='checkbox' name='sl_id[]' value='$locID'></th>
-                <th>".
-                    "<a class='edit_icon' alt='".__('edit',SLPLUS_PREFIX)."' title='".__('edit',SLPLUS_PREFIX)."' 
+                <th class='thnowrap'>".
+                    "<a class='action_icon edit_icon' alt='".__('edit',SLPLUS_PREFIX)."' title='".__('edit',SLPLUS_PREFIX)."' 
                         href='".ereg_replace("&edit=".(isset($_GET['edit'])?$_GET['edit']:''), "",$_SERVER['REQUEST_URI']).
-                    "&edit=" . $locID ."#a$locID'><span class='icon_span'>&nbsp;</span></a>".
+                    "&edit=" . $locID ."#a$locID'></a>".
                     "&nbsp;" . 
-                    "<a class='delete_icon' alt='".__('delete',SLPLUS_PREFIX)."' title='".__('delete',SLPLUS_PREFIX)."' 
+                    "<a class='action_icon delete_icon' alt='".__('delete',SLPLUS_PREFIX)."' title='".__('delete',SLPLUS_PREFIX)."' 
                         href='".$_SERVER['REQUEST_URI']."&delete=$locID' " .
-                        "onclick=\"confirmClick('".sprintf(__('Delete %s?',SLPLUS_PREFIX),$value['sl_store'])."', this.href); return false;\"><span class='icon_span'>&nbsp;</span></a>".
-                "</th>
-                <th> $locID </th>
-                <td> $value[sl_store] </td>
+                        "onclick=\"confirmClick('".sprintf(__('Delete %s?',SLPLUS_PREFIX),$value['sl_store'])."', this.href); return false;\"></a>";
+
+                // Store Pages Active?
+                // Show the create page button
+                //
+                if ($slplus_plugin->license->packages['Store Pages']->isenabled) {
+                    call_user_func_array(array('SLPlus_AdminUI','slpRenderCreatePageButton'),array($locID,$value['sl_linked_postid']));
+                }
+
+        print "</th>
+                <th>$locID</th>
+                <td>$value[sl_store]</td>
                 <td>$value[sl_address]</td>
                 <td>$value[sl_address2]</td>
                 <td>$value[sl_city]</td>
@@ -367,14 +454,22 @@ if ($locales=$wpdb->get_results("SELECT * FROM " . $wpdb->prefix .
                 
                 if (get_option('sl_location_table_view')!="Normal") {
                     print "<td>$value[sl_description]</td>
-                    <td>$value[sl_url]</td>
-                    <td>$value[sl_email]</td>
-                    <td>$value[sl_hours]</td>
-                    <td>$value[sl_phone]</td>
-                    <td>$value[sl_image]</td>";
-                }
-                
-                print "<td>(".$value['sl_latitude'].",&nbsp;".$value['sl_longitude'].")</td> </tr>";
+                            <td>$value[sl_url]</td>
+                            ";
+                    // Store Pages URLs
+                    //
+                    if ($slplus_plugin->license->packages['Store Pages']->isenabled) {
+                        $shortSPurl = preg_replace('/^.*?store_page=/','',$value['sl_pages_url']);
+                        print "<td><a href='$value[sl_pages_url]' target='cybersprocket'>$shortSPurl</a></td>";
+                    }                    
+                    print "<td>$value[sl_email]</td>
+                            <td>$value[sl_hours]</td>
+                            <td>$value[sl_phone]</td>
+                            <td>$value[sl_image]</td>";
+                }                
+                print "<td>".$value['sl_latitude']."</td>";
+                print "<td>".$value['sl_longitude']."</td>";
+                print "</tr>";
 			}
 		}
 } else {
@@ -394,29 +489,25 @@ print "</form>";
 }
 print "</div>";
 
-/*-----------------------------------------------------------*/
+/*****************************
+ * function: url_test()
+ *
+ */
 function url_test($url) {
 	return (strtolower(substr($url,0,7))=="http://");
 }
 
-/*---------------------------------*/
-function set_query_defaults() {
-	global $where, $o, $d;
-	
-	$qry = isset($_REQUEST['q']) ? $_REQUEST['q'] : '';
-	$where=($qry!='')? 
-	        " WHERE ".
-	        "sl_store    LIKE '%$qry%' OR ".
-	        "sl_address  LIKE '%$qry%' OR ".
-	        "sl_address2 LIKE '%$qry%' OR ".
-	        "sl_city     LIKE '%$qry%' OR ".
-	        "sl_state    LIKE '%$qry%' OR ".
-	        "sl_zip      LIKE '%$qry%' OR ".
-	        "sl_tags     LIKE '%$qry%' " 
-	        : 
-	        '' ;
-	$o= (isset($_GET['o']) && (trim($_GET['o']) != ''))
-	    ? $_GET['o'] : "sl_store";
-	$d= (isset($_GET['d']) && (trim($_GET['d'])=='DESC')) 
-	    ? "DESC" : "ASC";
+/*****************************
+* function: slpCreateColumnHeader()
+*
+* Create the column headers for sorting the table.
+*
+*/
+function slpCreateColumnHeader($theURL,$fldID='sl_store',$fldLabel='ID',$opt='sl_store',$dir='ASC') {
+    if ($opt == $fldID) {
+        $curDIR = (($dir=='ASC')?'DESC':'ASC');
+    } else {
+        $curDIR = $dir;
+    }
+    return "<th><a href='$theURL&o=$fldID&sortorder=$curDIR'>$fldLabel</a></th>";
 }

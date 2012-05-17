@@ -2,8 +2,8 @@
 /*
 Plugin Name: Google Maps via Store Locator Plus
 Plugin URI: http://www.storelocatorplus.com/
-Description: An advanced system for managing multiple physical locations via a fully integrated WordPress solution. Store just a few or as many as a few thousand locations in the WordPress database using the built-in location management system. 
-Version: 2.6.2
+Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Gooogle Maps.  This is a highly customizable, easily expandable, enterprise-class location management system. 
+Version: 2.7.1
 Author: Cyber Sprocket Labs
 Author URI: http://www.cybersprocket.com
 License: GPL3
@@ -85,16 +85,20 @@ require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-actions_class.php');
 //
 register_activation_hook( __FILE__, 'activate_slplus');
 
-// Actions
+// Regular Actions
 //
-add_action('wp_enqueue_scripts',array('SLPlus_Actions','wp_enqueue_scripts'));
-add_action('admin_menu', 'csl_slplus_add_options_page');
-add_action('admin_init','csl_slplus_setup_admin_interface',10);
-add_action('admin_print_scripts', 'add_admin_javascript');
-add_action('admin_head', 'slpreport_downloads');    
-add_action('wp_print_styles', 'setup_stylesheet_for_slplus');
-add_action('admin_print_styles','setup_ADMIN_stylesheet_for_slplus');
-add_action('shutdown',array('SLPlus_Actions','shutdown'));
+add_action('init'               ,array('SLPlus_Actions','init')                 );
+add_action('wp_enqueue_scripts' ,array('SLPlus_Actions','wp_enqueue_scripts')   );
+add_action('shutdown'           ,array('SLPlus_Actions','shutdown')             );
+
+// Admin Actions
+//
+add_action('admin_menu'         , 'csl_slplus_add_options_page'                 );
+add_action('admin_init'         ,array('SLPlus_Actions','admin_init'),10        );
+add_action('admin_print_scripts', 'add_admin_javascript'                        );
+add_action('admin_print_styles' , 'setup_ADMIN_stylesheet_for_slplus'           );
+add_action('admin_head'         , 'slpreport_downloads'                         );
+
 
 
 // Short Codes

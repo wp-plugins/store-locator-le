@@ -2,25 +2,26 @@
 Plugin Name: Google Maps via Store Locator Plus
 Contributors: cybersprocket
 Donate link: http://www.storelocatorplus.com/
-Tags: store locator, store locater, google, google maps, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus
-Requires at least: 3.0
-Tested up to: 3.3.1
-Stable tag: 2.6.2
+Tags: google maps, store finder, store locator, store locater, google, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus, bing map, bing, yahoo maps, yahoo, mapping, retail
+Requires at least: 3.3
+Tested up to: 3.3.2
+Stable tag: 2.7.1
 
-This plugin puts a search form and an interactive Google map on your site so you can show visitors your store locations.    
+Store Locator Plus works with Google Maps to put a store location search on your site.  
+Tweak the look and feel with the custom settings. 
 
 == Description ==
 
-This plugin puts a search form and an interactive Google map on your site so you 
-can show visitors your store locactions.  Users search for stores within a 
-specified radius.  Full admin panel data entry and management of stores from a few to
-a few thousand.
+Whether you have a thousands of locations or just a handful, you can do it all from within the WordPress admin panel. No programming required. Set up an interactive Google map for your customers with a single shortcode. Categorize your stores and customize the map. You can export the results. This is a simple, quick, and easy plugin.
 
-http://www.youtube.com/watch?v=ni_CrSoNr38
+Store Locator Plus is an advanced system for managing multiple physical locations via a fully integrated WordPress solution. You can add details such as a store description, hours, a website address, an email address, and tags for each location and then display those locations easily on any page using a shortcode. The location search form and Google Map will automatically be displayed.
+
+Advanced customization is available via the settings interface in the admin panel. The map can be customized via the admin panel to fit better on your site by allowing for different sizes, map types (terrain, satellite, standard views), and default location settings. The search form can be customized to show or hide a country pulldown, a city and state pulldown, and tag search fields. You can also re-label every entry field and can opt to enable pop-up email forms to help reduce spam.
 
 = Features =
 
 * You can use it for a variety of countries, as supported by Google Maps.
+* The Store Pages add-on allows you to connect each of your locations with a Wordpress page -- so you can add hours, images and more!
 * Supports international languages and character sets.
 * Allows you to use unique map icons or your own custom map icons.
 * Change default map settings via the admin panel including:
@@ -33,7 +34,43 @@ http://www.youtube.com/watch?v=ni_CrSoNr38
 * Location search tracking and reporting, find out what your visitors are looking for.
 * Popup email form.
 
-== Pro Pack Available ==
+= Our Philosophy =
+
+Like all of our plugins, we strive to create code the runs efficiently and without bugs. We feel well-written plugins are few and far between. While there are plenty of plugins that look nice, far too many of those plugins, including the "cool shiny ones" have way to many hidden problems. We have found that over 90% of the plugins available on the WordPress plugin directory generate dozens, if not hundreds, of warnings and errors when we turn off the "hide all the problems" settings in PHP.
+
+These hidden problems impact memory usage, fill up disk space, and reduce performance via the typical default logging settings on most web hosts. While you may not see the errors on your WordPress site, they are still being tracked. The more errors, the more disk I/O, the slower the app.
+
+During our 20+ years of software development, we have also found that leaving "innocuous" warnings in place tends to lead to trouble further down the road. Warnings today often become errors tomorrow. Many programming languages, PHP included, continue to tighten security and close loopholes that are typically found living near all those warning messages. Some warnings are also telling you to "change this now, it will be gone tomorrow". Eventually tomorrow will come.
+
+While our plugins may not be the prettiest on the block, we do try to make sure that all the hidden stuff you don't see is designed as well as it can be. To sum it all up, we like to write plugins that last. We hope you appreciate our work.
+
+= New! Store Pages =
+
+You can have a WordPress page for each store location on your map turning your location data into SEO friendly content.  Store Pages are a special page type that is fully integrated with WordPress,  but you manage them through Store Locator Plus.  Store Pages also have their own taxonomy (category system) so you can manage Store Page categories without affecting the rest of your site.
+
+[more information](http://storelocatorplus.com/premium-add-ons/store-pages/)
+
+= Rate Us =
+
+Please [rate us](http://wordpress.org/extend/plugins/store-locator-le/)!
+Give us a chance to <a href="http://www.cybersprocket.com/contact-us/">address your concerns</a> if we didn't earn 5 stars.
+
+= Special Requests =
+
+We do accept feature requests for all of our plugins, free ones included. The most requested features will make it into the next version.
+    
+<strong>If you need a special feature NOW, <a href="http://www.cybersprocket.com/contact-us/">contact us</a>!</strong> We offer expedited feature development. Most features can be implemented in less than a week for $200!
+
+= Looking For Customized WordPress Plugins? =
+
+If you are looking for custom WordPress development for your own plugins, give 
+us a call.   Not only can we offer competitive rates but we can also leverage 
+our existing framework for WordPress applications which reduces development time 
+and costs.
+
+Learn more at: http://www.cybersprocket.com/services/wordpress-developers/
+
+= Pro Pack Available =
 
 The plugin has an optional Pro Pack available that adds advanced features to the Store Locator Plus product.
 Some of the added features include:
@@ -47,7 +84,7 @@ Some of the added features include:
 
 Learn More about these features at the [Store Locator Plus website](http://www.storelocatorplus.com/)
 
-== Upgrades ==
+= Upgrades =
 
 We will offer upgrade versions from time-to-time when special new features are added to the product.  
 If you do not purchase the upgrade you will still receive bug fixes and minor feature additions, however
@@ -56,15 +93,6 @@ some of the newest features may not be available to you.
 The main product will always remain fully functional and free.  If you'd like to have some of the latest
 "bells & whistles" purchasing the upgrades is a great way to help support us and encourage us to add even
 more items the next time around.
-
-= Looking For Customized WordPress Plugins? =
-
-If you are looking for custom WordPress development for your own plugins, give 
-us a call.   Not only can we offer competitive rates but we can also leverage 
-our existing framework for WordPress applications which reduces development time 
-and costs.
-
-Learn more at: http://www.cybersprocket.com/services/wordpress-developers/
 
 = Related Links =
 
@@ -152,6 +180,16 @@ Some of the features in the Pro Pack include:
 * Additional search form elements.
 * The CSS Themes system.
 
+= What are Store Pages? =
+
+Store Pages are a new WordPress page type that are created from the location data you have entered in your Store Locator Plus locations database.
+Store Pages have their own categories and can be managed separately from the main WordPress site pages.  
+Store Pages content is fully accessible from your standard WordPress search and menu interface, providing a great way to get SEO value from your location data.
+
+Store Pages is a paid add-on for the free Store Locator Plus product. When you purchase the Store Pages add-on new features will be added to the base product.
+
+Please see the [Store Locator Plus website](http://www.storelocatorplus.com) for the latest feature list.
+
 = What happened to the Plus Pack? =
 
 We renamed it the Pro Pack.  Your Plus Pack license will work for the Pro Pack.
@@ -170,9 +208,43 @@ We renamed it the Pro Pack.  Your Plus Pack license will work for the Pro Pack.
 
 More screenshots are available via the [Store Locator Plus website](http://www.storelocatorplus.com/).
 
+== Upgrade Notice ==
+
+This version of the Store Locator Plus requires WordPress version 3.3 or higher.   
+Only in WordPress version 3.3 or higher can we provide the enhanced performance provided by loading the JavaScript and CSS files on pages that have a Store Locator Plus shortcode.
+
+If you are using the legacy ./custom-css implementation of CSS files you will need to upgrade to the [Pro Pack with themes](http://redmine.cybersprocket.com/projects/mc-closeststore/wiki/Custom_Themes).
+The theming system uses the built-in CSS management system of WordPress allowing for more efficient loading of CSS files only as needed.
+
+The legacy customization setup is going away.   You should migrate any legacy icons or stylesheets to the new themes location.   Icons should go in the main ./core/images/icons directory.   If you have open-source or commercial license approved icons you want to have included in the next release, please  [contact us](http://www.cybersprocket.com/contact-us/).
+
+[Version 2.7 Release Notes](http://redmine.cybersprocket.com/projects/mc-closeststore/versions/490)
+
 == Changelog ==
 
-= 2.6.2 (April 16th, 2012) =
+= 2.7.1 (May 17th, 2012 =
+
+* Fixed readme file
+
+= 2.7 (May 14th, 2012) =
+
+[Version 2.7 Release Notes](http://redmine.cybersprocket.com/projects/mc-closeststore/versions/490)
+
+* [Store Pages] New premium add-on is available for purchase.
+* [Pro Pack 2.7+] You can now override the latitude/longitude of geocoded locations.
+* [Pro Pack 2.7+] You can override the default theme for the plugin via shortcode attributes.
+* [Pro Pack] Speed up reporting system for heavy traffic sites.
+* Add locations form tweaks.
+* More code performance and structure improvements.
+* Updated admin interface icons for manage listings, etc.
+* Navigation bar header UI cleanup.
+* The SLPlus themes only load/render on pages with the shortcode.
+* Blank addresses are now allowed, the search will default to the center of the map.
+* bug fix: do not re-run geocoding if address does not change during edit
+* bug fix: Selecting map type was not changing the UI.
+* NOTE: If you use the legacy ./custom-css you will need to upgrade to the Pro Pack and use themes.
+
+= 2.6 (April 12th, 2012) =
 
 * [Pro Pack] Dark Theme, add hand over submit, restyle submit button.
 * [Pro Pack] Simple Boxed Theme, side-by-side listing entries.
