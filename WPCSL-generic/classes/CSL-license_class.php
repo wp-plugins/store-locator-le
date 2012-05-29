@@ -9,7 +9,7 @@
 *
 ************************************************************************/
 
-class wpCSL_license__slplus {    
+class wpCSL_license__SLPLUS {    
 
     /**------------------------------------
      ** CONSTRUCTOR
@@ -35,8 +35,7 @@ class wpCSL_license__slplus {
      ** Currently only checks for an existing license key (PayPal
      ** transaction ID).
      **/
-    function check_license_key($theSKU='', $isa_package=false, $usethis_license='') {
-
+    function check_license_key($theSKU='', $isa_package=false, $usethis_license='', $force = false) {
         // The SKU
         //
         if ($theSKU == '') {
@@ -53,6 +52,23 @@ class wpCSL_license__slplus {
 
         // Don't check to see if the license is valid if there is no supplied license key
         if ($usethis_license == '') {
+            return false;
+        }
+
+        // Save the current date and retrieve the last time we checked
+        // with the server.
+        if (!$isa_package) {
+            $last_lookup = get_option($this->prefix.'-last_lookup');
+            update_option($this->prefix.'-last_lookup', time());
+        } else {
+            $last_lookup = get_option($this->prefix.'-'.$theSKU.'-last_lookup');
+            update_option($this->prefix.'-'.$theSKU.'-last_lookup', time());
+        }
+
+        // Only check every 3 days.
+        $date_differential = (3 * 24 * 60 * 60);
+
+        if (!$force && ($last_lookup + $date_differential) > time() ) {
             return false;
         }
 
@@ -80,21 +96,20 @@ class wpCSL_license__slplus {
             );
 
         // Check each server until all fail or ONE passes
-        //  
-        foreach ($csl_urls as $csl_url) {            
-            $response = false;
-            $result = $this->http_handler->request( 
-                            $csl_url . $query_string, 
-                            array('timeout' => 60) 
-                            ); 
+        //
+        $response = null;
+        foreach ($csl_urls as $csl_url) {
+            $result = $this->http_handler->request(
+                            $csl_url . $query_string,
+                            array('timeout' => 10)
+                            );
             if ($this->parent->http_result_is_ok($result) ) {
                 $response = json_decode($result['body']);
             }
 
             // If response is still a bool... and false... we have a problem...
-            //
-            if (is_bool($response) && !$response) {
-                return false;
+            if (is_null($response) || !is_object($response)) {
+                continue;
             }
             
             // If we get a true response record it in the DB and exit
@@ -131,19 +146,31 @@ class wpCSL_license__slplus {
                 return true;
             }
         }
-                
+
+        // Handle possible server disconnect
+        if (is_null($response)) {
+            if (!$isa_package) {
+                return get_option($this->prefix.'-purchased',false);
+
+                // add on package
+            } else {
+                return get_option($this->prefix.'-'.$theSKU.'-isenabled',false);
+            }
+        }
+
         //.............
         // Not licensed
         // main product
-        if (!$isa_package) { 
-            update_option($this->prefix.'-purchased',false);
-            
-        // add on package
-        } else {
-            update_option($this->prefix.'-'.$theSKU.'-isenabled',false);            
+        if (!$final_result) {
+            if (!$isa_package) {
+                update_option($this->prefix.'-purchased',false);
+
+                // add on package
+            } else {
+                update_option($this->prefix.'-'.$theSKU.'-isenabled',false);
+            }
         }
-        
-        
+
         return false;
     }
 
@@ -172,7 +199,7 @@ class wpCSL_license__slplus {
                         2,
                         __("You have not provided a valid license key for this plugin. " .
                             "Until you do so, it will only display content for Admin users." 
-                            ,WPCSL__slplus__VERSION
+                            ,WPCSL__SLPLUS__VERSION
                             ),
                         "options-general.php?page={$this->prefix}-options#product_settings"
                     );
@@ -217,7 +244,7 @@ class wpCSL_license__slplus {
         // Setup the new package only if it was not setup before
         //
         if (!isset($this->packages[$params['name']])) {
-            $this->packages[$params['name']] = new wpCSL_license_package__slplus(
+            $this->packages[$params['name']] = new wpCSL_license_package__SLPLUS(
                 array_merge(
                     $params,
                     array(
@@ -234,10 +261,10 @@ class wpCSL_license__slplus {
 
 /****************************************************************************
  **
- ** class: wpCSL_license_package__slplus
+ ** class: wpCSL_license_package__SLPLUS
  **
  **/
-class wpCSL_license_package__slplus {
+class wpCSL_license_package__SLPLUS {
 
     public $active_version = 0;
     public $force_enabled = false;
@@ -281,11 +308,18 @@ class wpCSL_license_package__slplus {
     }
     
     function isenabled_after_forcing_recheck() {
+        // Now attempt to license ourselves, make sure we license as
+        // siblings (second param) in order to properly set all of the
+        // required settings.
         if (!$this->isenabled) {
-            $this->parent->check_license_key($this->sku, true, get_option($this->lk_option_name));
+            $this->parent->check_license_key($this->sku, false, get_option($this->lk_option_name));
             $this->isenabled = get_option($this->enabled_option_name);
             $this->active_version =  get_option($this->prefix.'-'.$this->sku.'-latest-version-numeric');             
         }
+
+        // Attempt to register the parent
+        $this->parent->check_license_key($this->sku, true);
+
         return $this->isenabled;
     }
 }

@@ -2,7 +2,7 @@
 
 /****************************************************************************
  **
- ** class: wpCSL_settings__slplus
+ ** class: wpCSL_settings__SLPLUS
  **
  ** The main settings class.
  **
@@ -16,7 +16,7 @@
  **     get_broadcast   
  **     get_item            : Return the value of a WordPress option that was saved via the settings interface.
  **/
-class wpCSL_settings__slplus {
+class wpCSL_settings__SLPLUS {
 
     /**------------------------------------
      ** method: __construct
@@ -29,7 +29,7 @@ class wpCSL_settings__slplus {
         //
         $this->render_csl_blocks = true;        // Display the CSL info blocks
         $this->form_action = 'options.php';     // The form action for this page
-        $this->save_text =__('Save Changes',WPCSL__slplus__VERSION);
+        $this->save_text =__('Save Changes',WPCSL__SLPLUS__VERSION);
         $this->css_prefix = '';  
         $this->has_packages = false;
         
@@ -39,121 +39,137 @@ class wpCSL_settings__slplus {
             $this->$name = $value;
         }
 
-        // Only show the license section if the plugin settings
-        // wants a license module
-        if (!$this->no_license) {
-            $this->license_section_title = 'Plugin License';
-            $this->add_section(array(
-                    'name' => $this->license_section_title,
-                    'description' => "<p>To obtain a key, please purchase this plugin " .
-                        "from <a href=\"{$this->url}\" target=\"_new\">{$this->url}</a>.</p>",
-                    'auto' => false,
-                    'div_id' => 'csl_license_block'
-                )
-            );
-            
-        // We don't have a main license but we have paid option
-        // packages
-        } else if ($this->has_packages) {
-            $this->license_section_title = 'Premium Options';
-            $this->add_section(array(
-                    'name' => $this->license_section_title,
-                    'description' => "<p>{$this->name} has premium options available.<br/>" .
-                        "Visit <a href=\"{$this->url}\" target=\"_new\">{$this->url}</a> to " .
-                        "learn more about the available add-on packages.<br/> After you purchase " .
-                        "an add-on package come back here to activate your add-on packages.</p>",
-                    'auto' => false,
-                    'div_id' => 'csl_license_block'
-                )
-            );
-        }
-
-        // Render CSL Blocks - if set false we don't need this overhead
+        // Only do this if we are on admin panel
         //
-        if ($this->render_csl_blocks) {        
-            $this->csl_php_modules = get_loaded_extensions();
-            natcasesort($this->csl_php_modules);
-            global $wpdb;
-            $this->add_section(
-                array(
-                    'name' => 'Plugin Environment',
-                    'description' =>
-                        '<p>Here are the technical details about your plugin:<br />
-                           <div style="border: solid 1px #E0E0E0; padding: 6px; margin: 6px;
-                               background-color: #F4F4F4;">
-                               
-                             <div style="clear:left;">
-                               <div style="width:150px; float:left; text-align: right;
-                                   padding-right: 6px;">Active WPCSL:</div>
-                               <div style="float: left;">' . plugin_dir_path(__FILE__) . '</div>
-                             </div>                                
-                             <div style="clear:left;">
-                               <div style="width:150px; float:left; text-align: right;
-                                   padding-right: 6px;">Site URL:</div>
-                               <div style="float: left;">' . get_option('siteurl') . '</div>
-                             </div>
-                             <div style="clear:left;">
-                               <div style="width:150px; float:left; text-align: right;
-                                   padding-right: 6px;">Encryption Key:</div>
-                               <div style="float: left;">' . md5(get_option($this->prefix.'-license_key')) . '</div>
-                             </div>
-                             <div style="clear:left;">
-                               <div style="width:150px; float:left; text-align: right;
-                                   padding-right: 6px;">License Key:</div>
-                               <div style="float: left;">' . (get_option($this->prefix.'-purchased')?'licensed':'unlicensed') . '</div>
-                             </div>
-                             
-                             <div style="clear:left;">
-                               <div style="width:150px; float:left; text-align: right;
-                                   padding-right: 6px;">WPCSL Version:</div>
-                               <div style="float: left;">' . WPCSL__slplus__VERSION . '
-                               </div>
-                             </div>
-                             <div style="clear:left;">
-                               <div style="width:150px; float:left; text-align: right;
-                                   padding-right: 6px;">WordPress Version:</div>
-                               <div style="float: left;">' . $GLOBALS['wp_version'] . '
-                               </div>
-                             </div>
-                             <div style="clear:left;">
-                               <div style="width:150px; float:left; text-align: right;
-                                   padding-right: 6px;">MySQL Version:</div>
-                               <div style="float: left;">' . $wpdb->db_version() . '
-                               </div>
-                             </div>
-                             <div style="clear:left;">
-                               <div style="width:150px; float:left; text-align: right;
-                                   padding-right: 6px;">PHP Version:</div>
-                               <div style="float: left;">' . phpversion() .'</div>
-                             </div>
-                             <div style="clear:left;">
-                               <div style="width:150px; float:left; text-align: right;
-                                   padding-right: 6px;">PHP Modules:</div>
-                               <div style="float: left;">' .
-                                 implode('<br/>',$this->csl_php_modules) . '
-                               </div>
-                             </div>
-                             <div style="clear:left;">&nbsp;</div>
-                           </div>
-                         </p>',
-                    'auto' => false,
-                    'start_collapsed' => true
-                )
-            );
+        if (is_admin() && $this->parent->isOurAdminPage) {
+            
+            // Only show the license section if the plugin settings
+            // wants a license module
+            if (!$this->no_license) {
+                $this->license_section_title = 'Plugin License';
+                $this->add_section(array(
+                        'name' => $this->license_section_title,
+                        'description' => "<p>To obtain a key, please purchase this plugin " .
+                            "from <a href=\"{$this->url}\" target=\"_new\">{$this->url}</a>.</p>",
+                        'auto' => false,
+                        'div_id' => 'csl_license_block'
+                    )
+                );
+                
+            // We don't have a main license but we have paid option
+            // packages
+            } else if ($this->has_packages) {
+                $this->license_section_title = 'Premium Options';
+                $this->add_section(array(
+                        'name' => $this->license_section_title,
+                        'description' => "<h1>{$this->name} has premium options available.</h1>" .
+                            "<p>Visit <a href=\"{$this->url}\" target=\"_new\">{$this->url}</a> to " .
+                            "learn more about the available add-on packages.<br/> After you purchase " .
+                            "an add-on package come back here to activate your add-on packages.</p>",
+                        'auto' => false,
+                        'div_id' => 'csl_license_block'
+                    )
+                );
+            }
     
-            $this->add_item(
-                'Plugin Environment', 
-                'Enable Debugging Output: ',   
-                'debugging',    
-                'checkbox'
-            );
-    
-            $this->add_section(array(
-                    'name' => 'Plugin Info',
-                    'description' => $this->get_broadcast(),
-                    'auto' => false
-                )
-            );
+            // Render CSL Blocks - if set false we don't need this overhead
+            //
+            if ($this->render_csl_blocks) {        
+                $this->csl_php_modules = get_loaded_extensions();
+                natcasesort($this->csl_php_modules);
+                global $wpdb;
+                $this->add_section(
+                    array(
+                        'name' => 'Plugin Environment',
+                        'description' =>
+                            '<p>Here are the technical details about your plugin:<br />
+                               <div style="border: solid 1px #E0E0E0; padding: 6px; margin: 6px;
+                                   background-color: #F4F4F4;">
+
+
+                                 <div style="clear:left;">
+                                   <div style="width:150px; float:left; text-align: right;
+                                       padding-right: 6px;">CSL IP Addresses:</div>
+                                   <div style="float: left;">' . 
+                                        gethostbyname('cybersprocket.com') . 
+                                        ' and ' .  
+                                        gethostbyname('license.cybersprocket.com') . 
+                                    '</div>
+                                 </div>                                
+                                   
+                                 <div style="clear:left;">
+                                   <div style="width:150px; float:left; text-align: right;
+                                       padding-right: 6px;">Active WPCSL:</div>
+                                   <div style="float: left;">' . plugin_dir_path(__FILE__) . '</div>
+                                 </div>                                
+                                 <div style="clear:left;">
+                                   <div style="width:150px; float:left; text-align: right;
+                                       padding-right: 6px;">Site URL:</div>
+                                   <div style="float: left;">' . get_option('siteurl') . '</div>
+                                 </div>
+                                 <div style="clear:left;">
+                                   <div style="width:150px; float:left; text-align: right;
+                                       padding-right: 6px;">Encryption Key:</div>
+                                   <div style="float: left;">' . md5(get_option($this->prefix.'-license_key')) . '</div>
+                                 </div>
+                                 <div style="clear:left;">
+                                   <div style="width:150px; float:left; text-align: right;
+                                       padding-right: 6px;">License Key:</div>
+                                   <div style="float: left;">' . (get_option($this->prefix.'-purchased')?'licensed':'unlicensed') . '</div>
+                                 </div>
+                                 
+                                 <div style="clear:left;">
+                                   <div style="width:150px; float:left; text-align: right;
+                                       padding-right: 6px;">WPCSL Version:</div>
+                                   <div style="float: left;">' . WPCSL__SLPLUS__VERSION . '
+                                   </div>
+                                 </div>
+                                 <div style="clear:left;">
+                                   <div style="width:150px; float:left; text-align: right;
+                                       padding-right: 6px;">WordPress Version:</div>
+                                   <div style="float: left;">' . $GLOBALS['wp_version'] . '
+                                   </div>
+                                 </div>
+                                 <div style="clear:left;">
+                                   <div style="width:150px; float:left; text-align: right;
+                                       padding-right: 6px;">MySQL Version:</div>
+                                   <div style="float: left;">' . $wpdb->db_version() . '
+                                   </div>
+                                 </div>
+                                 <div style="clear:left;">
+                                   <div style="width:150px; float:left; text-align: right;
+                                       padding-right: 6px;">PHP Version:</div>
+                                   <div style="float: left;">' . phpversion() .'</div>
+                                 </div>
+                                 <div style="clear:left;">
+                                   <div style="width:150px; float:left; text-align: right;
+                                       padding-right: 6px;">PHP Modules:</div>
+                                   <div style="float: left;">' .
+                                     implode('<br/>',$this->csl_php_modules) . '
+                                   </div>
+                                 </div>
+                                 <div style="clear:left;">&nbsp;</div>
+                               </div>
+                             </p>',
+                        'auto' => false,
+                        'start_collapsed' => true
+                    )
+                );
+        
+                $this->add_item(
+                    'Plugin Environment', 
+                    'Enable Debugging Output: ',   
+                    'debugging',    
+                    'checkbox'
+                );
+        
+                $this->add_section(array(
+                        'name' => 'Plugin Info',
+                        'description' => $this->get_broadcast(),
+                        'auto' => false
+                    )
+                );
+            }
         }       
     }
     
@@ -170,7 +186,7 @@ class wpCSL_settings__slplus {
             if ($this->broadcast_url != '') {
                 $result = $this->http_handler->request( 
                                 $this->broadcast_url, 
-                                array('timeout' => 60) 
+                                array('timeout' => 3) 
                                 ); 
                 if ($this->parent->http_result_is_ok($result) ) {
                     return $result['body'];
@@ -225,7 +241,7 @@ class wpCSL_settings__slplus {
      **/
     function add_section($params) {
         if (!isset($this->sections[$params['name']])) {
-            $this->sections[$params['name']] = new wpCSL_settings_section__slplus(
+            $this->sections[$params['name']] = new wpCSL_settings_section__SLPLUS(
                 array_merge(
                     $params,
                     array('plugin_url' => $this->plugin_url,
@@ -280,7 +296,7 @@ class wpCSL_settings__slplus {
                 $this->notifications->add_notice(
                     3,
                     sprintf(
-                       __('Program Error: section <em>%s</em> not defined.',WPCSL__slplus__VERSION),
+                       __('Program Error: section <em>%s</em> not defined.',WPCSL__SLPLUS__VERSION),
                        $section
                        )
                 );
@@ -329,9 +345,11 @@ class wpCSL_settings__slplus {
             $this->cache->initialize_options();
         }
 
-        foreach ($this->sections as $section) {
-            $section->register($this->prefix);
-        }
+        if (isset($this->sections)) {
+            foreach ($this->sections as $section) {
+                $section->register($this->prefix);
+            }
+        }            
     }
 
     /**------------------------------------
@@ -442,8 +460,6 @@ class wpCSL_settings__slplus {
         // List the packages
         //
         if (isset($this->parent->license->packages) && ($this->parent->license->packages > 0)) {
-            $content .='<tr><td colspan="2" class="optionpack_topline">'.
-            __('The following optional add-ons are available',WPCSL__slplus__VERSION).':</td></tr>';
             $content .= '<tr valign="top"><td class="optionpack" colspan="2">';
             foreach ($this->parent->license->packages as $package) {
                 $content .= '<div class="optionpack_box" id="pack_'.$package->sku.'">';
@@ -491,7 +507,8 @@ class wpCSL_settings__slplus {
                     $package->parent->check_license_key(
                         $package->sku,
                         true,
-                        ($this->has_packages ? $package->license_key : '')
+                        ($this->has_packages ? $package->license_key : ''),
+                        true // Force a server check
                     )
                 );
 
@@ -711,10 +728,10 @@ class wpCSL_settings__slplus {
 
 /****************************************************************************
  **
- ** class: wpCSL_settings_section__slplus
+ ** class: wpCSL_settings_section__SLPLUS
  **
  **/
-class wpCSL_settings_section__slplus {
+class wpCSL_settings_section__SLPLUS {
 
     /**------------------------------------
      **/
@@ -733,7 +750,7 @@ class wpCSL_settings_section__slplus {
      **
      **/
     function add_item($params) {
-        $this->items[] = new wpCSL_settings_item__slplus(
+        $this->items[] = new wpCSL_settings_item__SLPLUS(
             array_merge(
                 $params,
                 array('plugin_url' => $this->plugin_url,
@@ -797,13 +814,13 @@ class wpCSL_settings_section__slplus {
 
 /****************************************************************************
  **
- ** class: wpCSL_settings_item__slplus
+ ** class: wpCSL_settings_item__SLPLUS
  **
  ** Settings Page : Items Class
  ** This class manages individual settings on the admin panel settings page.
  **
  **/
-class wpCSL_settings_item__slplus {
+class wpCSL_settings_item__SLPLUS {
 
     /**------------------------------------
      **/

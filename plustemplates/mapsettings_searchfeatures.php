@@ -1,4 +1,6 @@
 <?php
+	global $slplus_plugin;
+	
     echo CreateCheckboxDiv(
         '_hide_radius_selections',
         __('Hide radius selection',SLPLUS_PREFIX),
@@ -10,6 +12,14 @@
         __('Hide address entry box',SLPLUS_PREFIX),
         __('Hides the address entry box from the user.', SLPLUS_PREFIX)
         );
+	
+	if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
+		echo CreateCheckboxDiv(
+			'_show_search_by_name',
+			__('Show the search by name box', SLPLUS_PREFIX),
+			__('Shows the name search entry box to the user.', SLPLUS_PREFIX)
+			);
+	}
     
     echo CreateCheckboxDiv(
         '_disable_search',
@@ -20,7 +30,6 @@
     //----------------------------------------------------------------------
     // Pro Pack Enabled
     //
-    global $slplus_plugin;
     if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {                
 ?>
 

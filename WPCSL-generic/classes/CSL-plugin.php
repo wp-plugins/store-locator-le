@@ -8,7 +8,7 @@
 * share a code libary and reduce code redundancy.
 * 
 ************************************************************************/
-define('WPCSL__slplus__VERSION', '1.8');
+define('WPCSL__SLPLUS__VERSION', '1.9');
 
 // (LC) 
 // These helper files should only be loaded if needed by the plugin
@@ -71,7 +71,7 @@ require_once('CSL-themes_class.php');
 *       not licensed but we still need the license class to manage add-ons.
 *
 */
-class wpCSL_plugin__slplus {
+class wpCSL_plugin__SLPLUS {
 
     /**-------------------------------------
      **/
@@ -87,16 +87,41 @@ class wpCSL_plugin__slplus {
         $this->sku              = '';
         $this->uses_money       = true;
         $this->has_packages     = false;
+        $this->display_settings = true;
         $this->display_settings_collapsed = true;
         $this->show_locale      = true;
         $this->broadcast_url    = 'http://www.cybersprocket.com/signage/index.php';
         $this->shortcode_was_rendered = false;
-
+        $this->current_admin_page = '';
+        $this->prefix           = '';
+        
+        // Set current admin page
+        //
+        if ( isset($_GET['page']) ) {
+            $plugin_page = stripslashes($_GET['page']);
+            $plugin_page = plugin_basename($plugin_page);
+            $this->current_admin_page = $plugin_page;
+        }
+                
         // Do the setting override or initial settings.
         //
         foreach ($params as $name => $value) {
             $this->$name = $value;
         }
+
+
+        // Our Admin Page : true if we are on the admin page for this plugin
+        // or we are processing the update action sent from this page
+        //        
+        $this->isOurAdminPage = ($this->current_admin_page == $this->prefix.'-options');
+        if (!$this->isOurAdminPage) {
+            $this->isOurAdminPage = 
+                 isset($_REQUEST['action']) && 
+                 ($_REQUEST['action'] === 'update') &&
+                 isset($_REQUEST['option_page']) && 
+                 (substr($_REQUEST['option_page'], 0, strlen($this->prefix)) === $this->prefix)
+                 ;
+        }        
         
         // Debugging Flag
         $this->debugging = (get_option($this->prefix.'-debugging') == 'on');
@@ -270,10 +295,10 @@ class wpCSL_plugin__slplus {
             case 'none':
                 break;
 
-            case 'wpCSL_helper__slplus':
+            case 'wpCSL_helper__SLPLUS':
             case 'default':
             default:
-                $this->helper = new wpCSL_helper__slplus();
+                $this->helper = new wpCSL_helper__SLPLUS();
 
         }
     }    
@@ -286,11 +311,11 @@ class wpCSL_plugin__slplus {
             case 'none':
                 break;
 
-            case 'wpCSL_notifications__slplus':
+            case 'wpCSL_notifications__SLPLUS':
             case 'default':
             default:
                 $this->notifications = 
-                    new wpCSL_notifications__slplus($this->notifications_config);
+                    new wpCSL_notifications__SLPLUS($this->notifications_config);
         }
     }
     
@@ -303,10 +328,10 @@ class wpCSL_plugin__slplus {
             case 'none':
                 break;
 
-            case 'wpCSL_products__slplus':
+            case 'wpCSL_products__SLPLUS':
             case 'default':
             default:
-                $this->products = new wpCSL_products__slplus($this->products_config);
+                $this->products = new wpCSL_products__SLPLUS($this->products_config);
 
         }
     }
@@ -321,10 +346,10 @@ class wpCSL_plugin__slplus {
             case 'none':
                 break;
 
-            case 'wpCSL_settings__slplus':
+            case 'wpCSL_settings__SLPLUS':
             case 'default':
             default:
-                $this->settings = new wpCSL_settings__slplus($this->settings_config);
+                $this->settings = new wpCSL_settings__SLPLUS($this->settings_config);
 
         }
     }
@@ -338,10 +363,10 @@ class wpCSL_plugin__slplus {
             case 'none':
                 break;
 
-            case 'wpCSL_products__slplus':
+            case 'wpCSL_products__SLPLUS':
             case 'default':
             default:
-                $this->themes = new wpCSL_themes__slplus($this->themes_config);
+                $this->themes = new wpCSL_themes__SLPLUS($this->themes_config);
 
         }
     }    
@@ -355,11 +380,11 @@ class wpCSL_plugin__slplus {
             case 'none':
                 break;
 
-            case 'wpCSL_license__slplus':
+            case 'wpCSL_license__SLPLUS':
             case 'default':
             default:
                 if ($this->has_packages || !$this->no_license) {
-                    $this->license = new wpCSL_license__slplus($this->license_config);
+                    $this->license = new wpCSL_license__SLPLUS($this->license_config);
                 }
 
         }
@@ -373,10 +398,10 @@ class wpCSL_plugin__slplus {
             case 'none':
                 break;
 
-            case 'wpCSL_cache__slplus':
+            case 'wpCSL_cache__SLPLUS':
             case 'default':
             default:
-                $this->cache = new wpCSL_cache__slplus($this->cache_config);
+                $this->cache = new wpCSL_cache__SLPLUS($this->cache_config);
 
         }
     }
@@ -572,7 +597,7 @@ class wpCSL_plugin__slplus {
         //
         } else {
             if (($this->debugging) && ($this->driver_type != 'none')) {
-                print __('DEBUG: No driver found.',WPCSL__slplus__VERSION);
+                print __('DEBUG: No driver found.',WPCSL__SLPLUS__VERSION);
             }
         }
     }
@@ -584,15 +609,15 @@ class wpCSL_plugin__slplus {
 
         if ($file == $this->basefile) {
             if (isset($this->support_url)) {
-                $links[] = '<a href="'.$this->support_url.'" title="'.__('Support',WPCSL__slplus__VERSION) . '">'.
-                            __('Support',WPCSL__slplus__VERSION) . '</a>';
+                $links[] = '<a href="'.$this->support_url.'" title="'.__('Support',WPCSL__SLPLUS__VERSION) . '">'.
+                            __('Support',WPCSL__SLPLUS__VERSION) . '</a>';
             }
             if (isset($this->purchase_url)) {
-                $links[] = '<a href="'.$this->purchase_url.'" title="'.__('Purchase',WPCSL__slplus__VERSION) . '">'.
-                            __('Buy Now',WPCSL__slplus__VERSION) . '</a>';
+                $links[] = '<a href="'.$this->purchase_url.'" title="'.__('Purchase',WPCSL__SLPLUS__VERSION) . '">'.
+                            __('Buy Now',WPCSL__SLPLUS__VERSION) . '</a>';
             }
             $links[] = '<a href="options-general.php?page='.$this->prefix.'-options" title="'.
-                            __('Settings',WPCSL__slplus__VERSION) . '">'.__('Settings',WPCSL__slplus__VERSION) . '</a>';
+                            __('Settings',WPCSL__SLPLUS__VERSION) . '">'.__('Settings',WPCSL__SLPLUS__VERSION) . '</a>';
         }
         return $links;
     }
@@ -605,7 +630,7 @@ class wpCSL_plugin__slplus {
      **
      **/
     function admin_init() {
-        $this->add_display_settings();
+        if ($this->display_settings) { $this->add_display_settings(); }
         $this->settings->register();
         $this->checks();
     }
@@ -669,7 +694,7 @@ class wpCSL_plugin__slplus {
             //
             } else {
                 if ($this->debugging) {
-                    print __('DEBUG: could not locate driver:',WPCSL__slplus__VERSION) . 
+                    print __('DEBUG: could not locate driver:',WPCSL__SLPLUS__VERSION) . 
                         $this->plugin_path . 'Custom/Drivers/'. $this->driver_name .'.php' .
                         "<br/>\n";                                        
                 }
@@ -721,7 +746,7 @@ class wpCSL_plugin__slplus {
      **/
     function add_display_settings() {      
         $this->settings->add_section(array(
-                'name' => __('Display Settings',WPCSL__slplus__VERSION),
+                'name' => __('Display Settings',WPCSL__SLPLUS__VERSION),
                 'description' => '',
                 'start_collapsed' => $this->display_settings_collapsed
             )
@@ -754,7 +779,7 @@ class wpCSL_plugin__slplus {
                         'list', 
                         false, 
                         __('Sets the locale for PHP program processing, affects time and currency processing. '.
-                            'If you change this, save settings and then select money format.',WPCSL__slplus__VERSION),
+                            'If you change this, save settings and then select money format.',WPCSL__SLPLUS__VERSION),
                         $locale_custom
                     );
                 }
@@ -765,7 +790,7 @@ class wpCSL_plugin__slplus {
                         'locale', 
                         null, 
                         false, 
-                        __('Your PHP settings have disabled exec(), your locale list cannot be determined.',WPCSL__slplus__VERSION),
+                        __('Your PHP settings have disabled exec(), your locale list cannot be determined.',WPCSL__SLPLUS__VERSION),
                         '&nbsp;'
                     );
             }
@@ -783,7 +808,7 @@ class wpCSL_plugin__slplus {
                     'money_format', 
                     'list', 
                     false, 
-                    __('This is based on your current locale, which is set to ',WPCSL__slplus__VERSION).
+                    __('This is based on your current locale, which is set to ',WPCSL__SLPLUS__VERSION).
                         '<code>'. setlocale(LC_MONETARY, 0) .'</code>',
                     array(
                         money_format('%!i', 1234.56)            => '%!i',
@@ -853,12 +878,12 @@ class wpCSL_plugin__slplus {
             //
             if ($this->debugging) {
                 if (is_array($atts)) {
-                    print __('DEBUG: Shortcode called with attributes:',WPCSL__slplus__VERSION) . "<br/>\n";
+                    print __('DEBUG: Shortcode called with attributes:',WPCSL__SLPLUS__VERSION) . "<br/>\n";
                     foreach ($atts as $name=>$value) {
                         print $name.':'.$value."<br/>\n";
                     }
                 } else {
-                    print __('DEBUG: Shortcode called with no attributes.',WPCSL__slplus__VERSION) . "<br/>\n";
+                    print __('DEBUG: Shortcode called with no attributes.',WPCSL__SLPLUS__VERSION) . "<br/>\n";
                 }
             }            
             
@@ -907,7 +932,7 @@ class wpCSL_plugin__slplus {
         // Not OK TO Show
         } else {
             if ($this->debugging) {
-                $content = __('DEBUG: Not OK To Show',WPCSL__slplus__VERSION);
+                $content = __('DEBUG: Not OK To Show',WPCSL__SLPLUS__VERSION);
             }
         }
         return $content;
@@ -975,7 +1000,7 @@ class wpCSL_plugin__slplus {
         // No products, show an error message as the output
         //
         } else {
-            $content= __('No products found',WPCSL__slplus__VERSION);
+            $content= __('No products found',WPCSL__SLPLUS__VERSION);
         }
 
         return $content;            

@@ -10,7 +10,7 @@ function add_this_addy($fields,$values,$theaddress) {
 	global $wpdb;
 	$fields=substr($fields, 0, strlen($fields)-1);
 	$values=substr($values, 0, strlen($values)-1);	
-	$wpdb->query("INSERT into ". $wpdb->prefix . "store_locator ($fields) VALUES ($values)");
+	$wpdb->query("INSERT into ". $wpdb->prefix . "store_locator ($fields) VALUES ($values);");
 	do_geocoding($theaddress);
 	
 }
@@ -92,7 +92,7 @@ if ( isset($_POST['sl_store']) && $_POST['sl_store'] && $notpca ) {
                         if (($handle = fopen($updir.'/'.$_FILES['csvfile']['name'], "r")) !== FALSE) {
                             $fldNames = array('sl_store','sl_address','sl_address2','sl_city','sl_state',
                                             'sl_zip','sl_country','sl_tags','sl_description','sl_url',
-                                            'sl_hours','sl_phone','sl_email');
+                                            'sl_hours','sl_phone','sl_email','sl_image');
                             $maxcols = count($fldNames);
                             while (($data = fgetcsv($handle)) !== FALSE) {
                                 $num = count($data);

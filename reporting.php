@@ -39,8 +39,7 @@ function DetailDataSection($theQuery, $SectionHeader, $columnHeaders, $columnDat
                             
     $thisSectionDesc .=  '</tr>' .
                     '</thead>' .
-                    '<tbody>'
-                    ;
+                    '<tbody>';
 
     $slpReportRowClass = 'rowon';                    
     foreach ($thisDataset as $thisDatapoint) {
@@ -448,7 +447,7 @@ if ($slpRepTotalQueries > 0) {
             }
         );
 </script>    
-<?    
+<?php    
 }
 
 

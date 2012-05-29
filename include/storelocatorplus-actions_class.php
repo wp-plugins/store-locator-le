@@ -89,7 +89,7 @@ if (! class_exists('SLPlus_Actions')) {
                 'text', 
                 false,
                 'Your Google API Key.  You will need to ' .
-                '<a href="http://code.google.com/apis/maps/signup.html" target="newinfo">'.
+                '<a href="http://code.google.com/apis/console/" target="newinfo">'.
                 'go to Google</a> to get your Google Maps API Key.'
             );
         
@@ -174,7 +174,7 @@ if (! class_exists('SLPlus_Actions')) {
             //--------------------------------
             // Store Pages Is Licensed
             //
-            if ($slplus_plugin->license->packages['Store Pages']->isenabled_after_forcing_recheck()) {
+            if ($slplus_plugin->license->packages['Store Pages']->isenabled) {
 
                 // Register Store Pages Custom Type
                 register_post_type( 'store_page',
@@ -228,26 +228,38 @@ if (! class_exists('SLPlus_Actions')) {
                 //------------------------
                 // Register our scripts for later enqueue when needed
                 //
-                wp_register_script('slplus_functions',SLPLUS_PLUGINURL.'/core/js/functions.js');
-                wp_register_script(
-                        'google_maps',
-                        "http://$google_map_domain/maps?file=api&amp;v=2&amp;key=$api_key&amp;sensor=false{$sl_map_character_encoding}"                        
-                        );
-                wp_register_script(
-                        'slplus_map',
-                        SLPLUS_PLUGINURL.'/core/js/store-locator-map.js',
-                        array('google_maps','jquery')
-                        ); 
+                //wp_register_script('slplus_functions',SLPLUS_PLUGINURL.'/core/js/functions.js');
+				if (isset($api_key))
+				{
+					wp_register_script(
+							'google_maps',
+							"http://$google_map_domain/maps/api/js?v=3.9&amp;key=$api_key&amp;sensor=false" //todo:character encoding ???
+							//"http://$google_map_domain/maps?file=api&amp;v=2&amp;key=$api_key&amp;sensor=false{$sl_map_character_encoding}"                        
+							);
+				}
+				else {
+					wp_register_script(
+						'google_maps',
+						"http://$google_map_domain/maps/api/js?v=3.9&amp;sensor=false"
+					);
+				}
+                //wp_register_script(
+                //        'slplus_map',
+                //        SLPLUS_PLUGINURL.'/core/js/store-locator-map.js',
+                //        array('google_maps','jquery')
+                //        ); 
+						
+				wp_register_script('csl_script', SLPLUS_PLUGINURL.'/core/js/csl.js', array('jquery'));
                 
                 // Setup Email Form Script If Selected
                 //                
-                if (get_option(SLPLUS_PREFIX.'_email_form')==1) {
-                    wp_register_script(
-                            'slplus_emailform',
-                            SLPLUS_PLUGINURL.'/core/js/store-locator-emailform.js',
-                            array('google_maps','slplus_map')
-                            );                       
-                }                            
+                //if (get_option(SLPLUS_PREFIX.'_email_form')==1) {
+                //    wp_register_script(
+                //            'slplus_emailform',
+                //            SLPLUS_PLUGINURL.'/core/js/store-locator-emailform.js',
+                 //           array('google_maps','slplus_map')
+                 //           );                       
+                //}                            
             }                        
         }     
         
@@ -265,13 +277,14 @@ if (! class_exists('SLPlus_Actions')) {
                 
                 // Register Load JavaScript
                 //
-                wp_enqueue_script('slplus_functions');
+                //wp_enqueue_script('slplus_functions');
                 wp_enqueue_script('google_maps');                
-                wp_enqueue_script('slplus_map');
+                //wp_enqueue_script('slplus_map');
+				wp_enqueue_script('csl_script');
                 
-                if (get_option(SLPLUS_PREFIX.'_email_form')==1) {
-                    wp_enqueue_script('slplus_emailform');
-                }
+               // if (get_option(SLPLUS_PREFIX.'_email_form')==1) {
+                //    wp_enqueue_script('slplus_emailform');
+               // }
                 
                 // Enqueue the style sheet
                 //
@@ -280,6 +293,7 @@ if (! class_exists('SLPlus_Actions')) {
                 // Force our scripts to load for badly behaved themes
                 //
                 wp_print_footer_scripts();
+				/*
 ?>                
                 <script type='text/javascript'>
                     jQuery(window).load(function() {
@@ -304,10 +318,10 @@ if (! class_exists('SLPlus_Actions')) {
                         }
                     );                
                 </script>
-<?php                       
+<?php                       */
             }             
-        }            
-    }
+		}            
+	}
 }        
      
 

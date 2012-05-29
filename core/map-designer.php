@@ -111,6 +111,7 @@ if (!$_POST) {
     update_option('sl_map_type', $_POST['sl_map_type']);
     update_option('sl_num_initial_displayed', $_POST['sl_num_initial_displayed']);    
     update_option('sl_distance_unit', $_POST['sl_distance_unit']);
+	update_option('sl_name_label', $_POST['sl_name_label']);
 
     if (function_exists('execute_and_output_plustemplate')) {
         update_option('sl_starting_image', $_POST['sl_starting_image']);
@@ -142,7 +143,7 @@ if (!$_POST) {
 
     $_POST['sl_map_overview_control'] = isset($_POST['sl_map_overview_control'])?1:0;  
     update_option('sl_map_overview_control',$_POST['sl_map_overview_control']);
-    
+	
     $BoxesToHit = array(
         '_show_tag_search',
         '_show_tag_any',
@@ -155,7 +156,8 @@ if (!$_POST) {
         '_disable_maptypecontrol',
         '_hide_radius_selections',
         '_hide_address_entry',
-        '_disable_search'
+        '_disable_search',
+		'_show_search_by_name'
         );
     foreach ($BoxesToHit as $JustAnotherBox) {        
         SaveCheckBoxToDB($JustAnotherBox);
@@ -233,10 +235,10 @@ $city_checked	    = (get_option('sl_use_city_search')             ==1)?' checked
 $checked3	        = (get_option('sl_remove_credits')              ==1)?' checked ':'';
 
 $map_type_options=(isset($map_type_options)?$map_type_options:'');
-$map_type["".__("Normal", SLPLUS_PREFIX).""]="G_NORMAL_MAP";
-$map_type["".__("Satellite", SLPLUS_PREFIX).""]="G_SATELLITE_MAP";
-$map_type["".__("Hybrid", SLPLUS_PREFIX).""]="G_HYBRID_MAP";
-$map_type["".__("Physical", SLPLUS_PREFIX).""]="G_PHYSICAL_MAP";
+$map_type["".__("Normal", SLPLUS_PREFIX).""]="roadmap";
+$map_type["".__("Satellite", SLPLUS_PREFIX).""]="satellite";
+$map_type["".__("Hybrid", SLPLUS_PREFIX).""]="hybrid";
+$map_type["".__("Physical", SLPLUS_PREFIX).""]="terrain";
 
 
 $zl[]=0;$zl[]=1;$zl[]=2;$zl[]=3;$zl[]=4;$zl[]=5;$zl[]=6;$zl[]=7;$zl[]=8;
