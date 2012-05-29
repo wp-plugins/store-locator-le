@@ -2,10 +2,10 @@
   global $search_label, $width, $height, $width_units, $height_units, $hide,
       $sl_radius, $sl_radius_label, $r_options, $button_style,
       $sl_instruction_message, $cs_options, $slplus_state_options, $country_options, 
-      $prefix, $fnvars, $slplus_plugin;
+      $prefix, $fnvars, $slplus_plugin, $slplus_name_label;
 ?>
 <div id='sl_div'>
-  <form onsubmit='searchLocations(); return false;' id='searchForm' action=''>
+  <form onsubmit='cslmap.searchLocations(); return false;' id='searchForm' action=''>
     <table  id='search_table' border='0' cellpadding='3px' class='sl_header'><tr>
 	<td valign='top'>
 	    <div id='address_search'>
@@ -57,72 +57,84 @@
                 <?php echo $country_options?>
                 </select>
             </div>
-            <?php } ?>
+            <?php } 
 
-            
-            <?php
             //------------------------------------------------
             // Show Tag Search Is Enabled
             //
-            if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {                                    
-                if (get_option(SLPLUS_PREFIX.'_show_tag_search') ==1) {                
+            if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
+                if (get_option(SLPLUS_PREFIX.'_show_tag_search') ==1) {
             ?>
-            <div id='search_by_tag' class='search_item' <?php if (isset($fnvars['only_with_tag'])) { print "style='display:none;'"; }?>>   
-                <label for='tag_to_search_for'><?php 
-                	print get_option($prefix.'_search_tag_label');                
-                	?></label>
-                <?php       
-                    // Tag selections
-                    //
-                    if (isset($fnvars['tags_for_pulldown'])) {
-                        $tag_selections = $fnvars['tags_for_pulldown'];
-                    }
-                    else {
-                        $tag_selections = get_option($prefix.'_tag_search_selections');
-                    }
+					<div id='search_by_tag' class='search_item' <?php if (isset($fnvars['only_with_tag'])) { print "style='display:none;'"; }?>>   
+						<label for='tag_to_search_for'><?php 
+							print get_option($prefix.'_search_tag_label');                
+							?></label>
+						<?php       
+							// Tag selections
+							//
+							if (isset($fnvars['tags_for_pulldown'])) {
+								$tag_selections = $fnvars['tags_for_pulldown'];
+							}
+							else {
+								$tag_selections = get_option($prefix.'_tag_search_selections');
+							}
                     
-                    // Tag selections
-                    //
-                    if (isset($fnvars['only_with_tag'])) {
-                        $tag_selections = '';
-                    }
+							// Tag selections
+							//
+							if (isset($fnvars['only_with_tag'])) {
+								$tag_selections = '';
+							}
                     
-                    // No pre-selected tags, use input box
-                    //
-                    if ($tag_selections == '') {
-                        print "<input type='". (isset($fnvars['only_with_tag']) ? 'hidden' : 'text') . "' ". 
-                                "id='tag_to_search_for' size='50' " .
-                                "value='" . (isset($fnvars['only_with_tag']) ? $fnvars['only_with_tag'] : '') . "' ".                                
-                                "/>";
+							// No pre-selected tags, use input box
+							//
+							if ($tag_selections == '') {
+								print "<input type='". (isset($fnvars['only_with_tag']) ? 'hidden' : 'text') . "' ". 
+										"id='tag_to_search_for' size='50' " .
+										"value='" . (isset($fnvars['only_with_tag']) ? $fnvars['only_with_tag'] : '') . "' ".                                
+										"/>";
                         
-                    // Pulldown for pre-selected list
-                    //
-                    } else {
-                        print "<select id='tag_to_search_for'>";
+							// Pulldown for pre-selected list
+							//
+							} 
+							else {
+								print "<select id='tag_to_search_for' >";
                         
-                        // Show Any Option (blank value)
-                        //
-                        if (get_option($prefix.'_show_tag_any')==1) {
-                            print "<option value=''>".
+								// Show Any Option (blank value)
+								//
+								if (get_option($prefix.'_show_tag_any')==1) {
+									print "<option value=''>".
                                         __('Any',SLPLUS_PREFIX).
                                         '</option>';
-                        }
+								}
                         
-                        $tag_selections = explode(",", $tag_selections);
-                        foreach ($tag_selections as $selection) {
-                            $clean_selection = preg_replace('/\((.*)\)/','$1',$selection);
-                            print "<option value='$clean_selection' ";
-                            print (ereg("\(.*\)", $selection))? " selected='selected' " : '';
-                            print ">$clean_selection</option>";                            
-                        }
-                        print "</select>";
-                    }                        
-                ?>
-            </div>	   
-	   <?php     }
-	        }
-	   ?>
-	   
+								$tag_selections = explode(",", $tag_selections);
+								foreach ($tag_selections as $selection) {
+									$clean_selection = preg_replace('/\((.*)\)/','$1',$selection);
+									print "<option value='$clean_selection' ";
+									print (ereg("\(.*\)", $selection))? " selected='selected' " : '';
+									print ">$clean_selection</option>";                            
+								}
+								print "</select>";
+							}
+						?>
+						</div>
+				<?php
+				}
+	        
+				// ----------------------------------------------
+				// We are showing the name search
+				//
+				if (get_option(SLPLUS_PREFIX.'_show_search_by_name') == 1) {
+					?>
+					<div id='name_search_div' class='search_item'>
+						<label for='nameSearch'><?php echo $slplus_name_label?></label>
+						<input type='text' id='nameSearch' size='50' />
+					</div>
+					<?php
+				}
+			}
+			?>
+			
             <?php
             //------------------------------------------------
             // We are not hiding the address input

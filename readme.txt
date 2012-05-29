@@ -3,12 +3,12 @@ Plugin Name: Google Maps via Store Locator Plus
 Contributors: cybersprocket
 Donate link: http://www.storelocatorplus.com/
 Tags: google maps, store finder, store locator, store locater, google, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus, bing map, bing, yahoo maps, yahoo, mapping, retail
-Requires at least: 3.3
+Requires at least: 3.3.2
 Tested up to: 3.3.2
-Stable tag: 2.7.1
+Stable tag: 3.0
 
-Store Locator Plus works with Google Maps to put a store location search on your site.  
-Tweak the look and feel with the custom settings. 
+Store Locator Plus works with Google Maps to put a store location search on your site.
+Tweak the look and feel with the custom settings.
 
 == Description ==
 
@@ -58,14 +58,14 @@ Give us a chance to <a href="http://www.cybersprocket.com/contact-us/">address y
 = Special Requests =
 
 We do accept feature requests for all of our plugins, free ones included. The most requested features will make it into the next version.
-    
+
 <strong>If you need a special feature NOW, <a href="http://www.cybersprocket.com/contact-us/">contact us</a>!</strong> We offer expedited feature development. Most features can be implemented in less than a week for $200!
 
 = Looking For Customized WordPress Plugins? =
 
-If you are looking for custom WordPress development for your own plugins, give 
-us a call.   Not only can we offer competitive rates but we can also leverage 
-our existing framework for WordPress applications which reduces development time 
+If you are looking for custom WordPress development for your own plugins, give
+us a call.   Not only can we offer competitive rates but we can also leverage
+our existing framework for WordPress applications which reduces development time
 and costs.
 
 Learn more at: http://www.cybersprocket.com/services/wordpress-developers/
@@ -75,6 +75,7 @@ Learn more at: http://www.cybersprocket.com/services/wordpress-developers/
 The plugin has an optional Pro Pack available that adds advanced features to the Store Locator Plus product.
 Some of the added features include:
 
+* **NEW!** Search by store name - Looking for a specific store? Search by name and pull it up instantly.
 * CSV Bulk Uploads - using the CSV bulk loader
 * Extended Map Settings - Control more details about how the map looks, disable the scale, the zoom, and more.
 * Extended Manage Location Features - more controls for managing locations.
@@ -86,9 +87,9 @@ Learn More about these features at the [Store Locator Plus website](http://www.s
 
 = Upgrades =
 
-We will offer upgrade versions from time-to-time when special new features are added to the product.  
+We will offer upgrade versions from time-to-time when special new features are added to the product.
 If you do not purchase the upgrade you will still receive bug fixes and minor feature additions, however
-some of the newest features may not be available to you.   
+some of the newest features may not be available to you.
 
 The main product will always remain fully functional and free.  If you'd like to have some of the latest
 "bells & whistles" purchasing the upgrades is a great way to help support us and encourage us to add even
@@ -97,7 +98,7 @@ more items the next time around.
 = Related Links =
 
 * [Store Locator Plus](http://www.storelocatorplus.com/)
-* [Other Cyber Sprocket Plugins](http://wordpress.org/extend/plugins/profile/cybersprocket/) 
+* [Other Cyber Sprocket Plugins](http://wordpress.org/extend/plugins/profile/cybersprocket/)
 * [Custom WordPress Development](http://www.cybersprocket.com/services/wordpress-developers/)
 * [Our Facebook Page](http://www.facebook.com/cyber.sprocket.labs)
 
@@ -111,7 +112,7 @@ more items the next time around.
 
 1. Upload the `store-locator-plus` folder to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Sign up for a Google Maps API Key for your domain at http://code.google.com/apis/maps/signup.html
+3. Sign up for a Google Maps API Key for your domain at http://code.google.com/apis/console/
 4. Add your locations through the 'Add Locations' page in the Store Locator admin panel
 5. Place the code '[STORE-LOCATOR]' (case-sensitive) in the body of a page or a post to display your store locator
 
@@ -134,13 +135,12 @@ Users that opt not to purchase the Pro Pack can still customize the look by edit
 
 Thanks to [Nicolas Mollet](http://mapicons.nicolasmollet.com/) for some of the great icons.
 
-
 == Frequently Asked Questions ==
 
 = What are the terms of the license? =
 
 The license is based on GPL.  You get the code, feel free to modify it as you
-wish.  We prefer that our customers pay us because they like what we do and 
+wish.  We prefer that our customers pay us because they like what we do and
 want to support our efforts to bring useful software to market.  Learn more
 on our [CSL License Terms page](http://redmine.cybersprocket.com/projects/commercial-products/wiki/Cyber_Sprocket_Labs_Licensing_Terms "CSL License Terms page").
 
@@ -167,13 +167,14 @@ As of June, 2011 this includes:
 
 = What is the Pro Pack? =
 
-The Pro Pack is a paid add-on for the main Store Locator Plus product.  
-When you purchase the Pro Pack the system will automatically install a variety of new features in the base product.  
-The features that are added by the Pro Pack change on a regular basis.  
+The Pro Pack is a paid add-on for the main Store Locator Plus product.
+When you purchase the Pro Pack the system will automatically install a variety of new features in the base product.
+The features that are added by the Pro Pack change on a regular basis.
 Please see the [Store Locator Plus website](http://www.storelocatorplus.com) for the latest feature list.
 
 Some of the features in the Pro Pack include:
 
+* Ability to search by location name
 * A searched-locations report.
 * Ability to input addresses in bulk via a CSV upload.
 * Ability to associate tags with locations and filter search results by those tags.
@@ -183,7 +184,7 @@ Some of the features in the Pro Pack include:
 = What are Store Pages? =
 
 Store Pages are a new WordPress page type that are created from the location data you have entered in your Store Locator Plus locations database.
-Store Pages have their own categories and can be managed separately from the main WordPress site pages.  
+Store Pages have their own categories and can be managed separately from the main WordPress site pages.
 Store Pages content is fully accessible from your standard WordPress search and menu interface, providing a great way to get SEO value from your location data.
 
 Store Pages is a paid add-on for the free Store Locator Plus product. When you purchase the Store Pages add-on new features will be added to the base product.
@@ -210,17 +211,24 @@ More screenshots are available via the [Store Locator Plus website](http://www.s
 
 == Upgrade Notice ==
 
-This version of the Store Locator Plus requires WordPress version 3.3 or higher.   
-Only in WordPress version 3.3 or higher can we provide the enhanced performance provided by loading the JavaScript and CSS files on pages that have a Store Locator Plus shortcode.
-
-If you are using the legacy ./custom-css implementation of CSS files you will need to upgrade to the [Pro Pack with themes](http://redmine.cybersprocket.com/projects/mc-closeststore/wiki/Custom_Themes).
-The theming system uses the built-in CSS management system of WordPress allowing for more efficient loading of CSS files only as needed.
-
-The legacy customization setup is going away.   You should migrate any legacy icons or stylesheets to the new themes location.   Icons should go in the main ./core/images/icons directory.   If you have open-source or commercial license approved icons you want to have included in the next release, please  [contact us](http://www.cybersprocket.com/contact-us/).
-
-[Version 2.7 Release Notes](http://redmine.cybersprocket.com/projects/mc-closeststore/versions/490)
+Now uses the Google Maps API V3! Pro Pack includes new search by name functionality! **Make sure you enable V3 API key before upgrading**: [API Console](https://code.google.com/apis/console/).
 
 == Changelog ==
+
+= 3.0 (May 2012) =
+
+* [Pro Pack 3.0] You can now enable search by store name.
+* [Pro Pack 3.0] Fixes to tag search.
+* [Store Pages] Links now display on localhost.
+* Updated to Google Maps V3.
+* Custom icons now support custom shadows.
+* Removed symlinked directories for servers that do not support them.
+* Significant Javascript rewrite to support Google Maps API V3.
+* API Key no longer required.
+* Removed symlinks
+* Fixed icons for gmaps V3 support
+* Server side geocodes updated to V3
+* *Dramatically* increased the time to load a map page for users experiencing an extreme lag.
 
 = 2.7.1 (May 17th, 2012 =
 
@@ -252,7 +260,7 @@ The legacy customization setup is going away.   You should migrate any legacy ic
 * [Pro Pack] Hidden Results Theme, hide the text results under the map.
 * [Pro Pack] Hidden Map Theme, hide the map.
 * Stop map "double-zoom" when "show initial locations" is set.
-* Half-dozen new icons added to the built-in icon set. 
+* Half-dozen new icons added to the built-in icon set.
 * Icon selector now finds all jpg,png,gif images in the ./core/images/icons folder.
 * Fix initial missing shadow icons.
 * Fix automatic icon image sizing.
@@ -293,7 +301,7 @@ The legacy customization setup is going away.   You should migrate any legacy ic
 ** Feature #7233: Clean up action bar header.
 ** Feature #7235: Update expand/normal view interface.
 ** Feature #7236: Manage locations: Stylize the page length setting.
-** Feature #7237: Manage locations: use icon sprites v. text for edit/delete. 
+** Feature #7237: Manage locations: use icon sprites v. text for edit/delete.
 
 
 = 2.2.5 (December 26th, 2011) =
@@ -302,7 +310,7 @@ The legacy customization setup is going away.   You should migrate any legacy ic
 * Retain ability to search for addresses with UTF8 characters like ü in für.
 * Added extended debugging messages to address search.
 
-= 2.2.4 (December 2011) = 
+= 2.2.4 (December 2011) =
 
 * Store Locator Plus and LE are now merged, allowing for direct-from-WordPress upgrades.
 * General performance improvements via reduced memory usage while running searches.
@@ -422,11 +430,11 @@ The legacy customization setup is going away.   You should migrate any legacy ic
 
 = 1.6.5 (February 15th 2011) =
 
-* Allows purchased license key to be saved after the DB key holding the purchase flag has been mangled. 
+* Allows purchased license key to be saved after the DB key holding the purchase flag has been mangled.
 
 = 1.6.4 (February 11th 2011) =
 
-* Set the SLPLUS CSS for images to have visibility & display to !important. 
+* Set the SLPLUS CSS for images to have visibility & display to !important.
 * Some themes & plugins force javascript images to be hidden, causing the map not to display.
 
 
@@ -467,7 +475,7 @@ The legacy customization setup is going away.   You should migrate any legacy ic
 * Manage/view locations form cleaned up
 * Make search work with address 2 field
 * Make map and search results output show address 2 field
-* Revamp manage locations header 
+* Revamp manage locations header
 * More warnings in the main codebase have been fixed
 * Removed Store Locator Plugin addons support, addons support causing problems.
 

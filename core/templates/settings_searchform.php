@@ -66,6 +66,16 @@
                 );
             ?>             
         </div>
+		
+		<div class='form_entry'>
+			<label for='sl_name_label'><?php _e("Name Input", SLPLUS_PREFIX); ?>:</label>
+			<input name='sl_name_label' value='<?php echo get_option('sl_name_label'); ?>'>
+			<?php
+				echo slp_createhelpdiv('sl_name_label',
+				__("Label for name search form address entry.", SLPLUS_PREFIX)
+				);
+			?>
+		</div>
         
         <?php
         if (function_exists('execute_and_output_plustemplate')) {

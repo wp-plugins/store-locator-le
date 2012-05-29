@@ -2,8 +2,8 @@
 /*
 Plugin Name: Google Maps via Store Locator Plus
 Plugin URI: http://www.storelocatorplus.com/
-Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Gooogle Maps.  This is a highly customizable, easily expandable, enterprise-class location management system. 
-Version: 2.7.1
+Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Gooogle Maps.  This is a highly customizable, easily expandable, enterprise-class location management system.
+Version: 3.0
 Author: Cyber Sprocket Labs
 Author URI: http://www.cybersprocket.com
 License: GPL3
@@ -32,7 +32,7 @@ global $sl_upload_path,$slpath;
 $sl_upload_path='';
 $sl_path='';
 
-// Drive Path Defines 
+// Drive Path Defines
 //
 if (defined('SLPLUS_PLUGINDIR') === false) {
     define('SLPLUS_PLUGINDIR', plugin_dir_path(__FILE__));
@@ -75,10 +75,11 @@ if (defined('SLPLUS_PREFIX') === false) {
 
 // Include our needed files
 //
-include_once(SLPLUS_PLUGINDIR . '/include/config.php'   );
-include_once(SLPLUS_PLUGINDIR . 'plus.php'              );
-include_once(SLPLUS_COREDIR   . 'csl_helpers.php'       );
-include_once(SLPLUS_COREDIR   . 'functions.sl.php'      );
+include_once(SLPLUS_PLUGINDIR . '/include/config.php'	);
+include_once(SLPLUS_PLUGINDIR . 'plus.php'						);
+include_once(SLPLUS_COREDIR   . 'csl_helpers.php'			);
+include_once(SLPLUS_COREDIR   . 'functions.sl.php'			);
+include_once(SLPLUS_COREDIR   . 'csl-ajax-search.php'	);
 require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-actions_class.php');
 
 // Activation Action (install/upgrade)
@@ -95,11 +96,18 @@ add_action('shutdown'           ,array('SLPlus_Actions','shutdown')             
 //
 add_action('admin_menu'         , 'csl_slplus_add_options_page'                 );
 add_action('admin_init'         ,array('SLPlus_Actions','admin_init'),10        );
-add_action('admin_print_scripts', 'add_admin_javascript'                        );
 add_action('admin_print_styles' , 'setup_ADMIN_stylesheet_for_slplus'           );
 add_action('admin_head'         , 'slpreport_downloads'                         );
 
+// Ajax search
+//
+add_action('wp_ajax_csl_ajax_search', 'csl_ajax_search');
+add_action('wp_ajax_nopriv_csl_ajax_search', 'csl_ajax_search');
 
+// Ajax Load
+//
+add_action('wp_ajax_csl_ajax_onload', 'csl_ajax_onload');
+add_action('wp_ajax_nopriv_csl_ajax_onload', 'csl_ajax_onload');
 
 // Short Codes
 //

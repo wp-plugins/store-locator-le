@@ -36,17 +36,9 @@ print get_string_from_phpexec(SLPLUS_COREDIR.'/templates/navbar.php');
 print '</div>';            
 
 // Check Google API Key
-// Not present : show message
+// Not present : who cares
 //
 $slak=$slplus_plugin->driver_args['api_key'];
-if (!$slak) {
-	print '<a href="'.admin_url().'options-general.php?page=csl-slplus-options">';
-	_e('Google API Key needs to be set to activate this feature.', SLPLUS_PREFIX);
-	print '</a>';
-
-// Got key - show forms and listing
-//
-} else {
     
     // Initialize Variables
     //
@@ -283,7 +275,7 @@ if (!$slak) {
             if ($where == '') { $where = 'WHERE '; }
             $where .= ' sl_latitude IS NULL or sl_longitude IS NULL';
         }
-    }        
+    }
 
     //for search links
     $numMembers=$wpdb->get_results(
@@ -486,7 +478,7 @@ if ($numMembers2!=0) {include(SLPLUS_COREDIR.'/search-links.php');}
 
 print "</form>";
 	
-}
+
 print "</div>";
 
 /*****************************

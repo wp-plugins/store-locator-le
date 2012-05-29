@@ -8,13 +8,6 @@ on the search form, and other details via the admin panel Store Locator Plus
 settings panel.   This is also where you'll add or modify location data.
 <br/>
 <br/>
-<strong>Can't Add Locations?</strong><br/>
-Before you can add locations you must enter the Google Maps API Key on the
-Store Locator Plus settings page.  Once you have done that you will see a
-new admin panel menu "SLP Locations" that will allow you to add and edit the
-locations.
-<br/>
-<br/>
 <strong>Need More Assistance?</strong><br/><br/>
 For help setting up and using this plugin, please visit the 
 <strong><a href="http://redmine.cybersprocket.com/projects/mc-closeststore/wiki" target="newinfo">

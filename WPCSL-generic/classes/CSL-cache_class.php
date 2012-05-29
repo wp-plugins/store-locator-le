@@ -1,6 +1,6 @@
 <?php
 
-class wpCSL_cache__slplus {
+class wpCSL_cache__SLPLUS {
 
     var $retain_time;
     var $crt_name;

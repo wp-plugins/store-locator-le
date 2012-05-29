@@ -7,7 +7,7 @@
 *
 ************************************************************************/
 
-class wpCSL_themes__slplus {
+class wpCSL_themes__SLPLUS {
     
 
 
@@ -56,7 +56,7 @@ class wpCSL_themes__slplus {
                     sprintf(
                         __('The theme directory:<br/>%s<br/>is missing. ' .
                             'Create it to enable themes and get rid of this message.',
-                            WPCSL__slplus__VERSION
+                            WPCSL__SLPLUS__VERSION
                             ),                        
                         $this->css_dir
                         )
@@ -114,15 +114,15 @@ class wpCSL_themes__slplus {
         }  
                             
         $settingsObj->add_item(
-            __('Display Settings',WPCSL__slplus__VERSION), 
-            __('Select A Theme',WPCSL__slplus__VERSION),   
+            __('Display Settings',WPCSL__SLPLUS__VERSION), 
+            __('Select A Theme',WPCSL__SLPLUS__VERSION),   
             'theme',    
             'list', 
             false, 
             __('How should the plugin UI elements look?  Check the <a href="'.
                 $this->support_url.
                 '" target="Cyber Sprocket">documentation</a> for more info.',
-                WPCSL__slplus__VERSION),
+                WPCSL__SLPLUS__VERSION),
             $themeArray
         );        
     }    
