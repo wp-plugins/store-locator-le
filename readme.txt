@@ -5,7 +5,7 @@ Donate link: http://www.storelocatorplus.com/
 Tags: google maps, store finder, store locator, store locater, google, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus, bing map, bing, yahoo maps, yahoo, mapping, retail
 Requires at least: 3.3.2
 Tested up to: 3.3.2
-Stable tag: 3.0
+Stable tag: 3.0.1
 
 Store Locator Plus works with Google Maps to put a store location search on your site.
 Tweak the look and feel with the custom settings.
@@ -33,22 +33,6 @@ Advanced customization is available via the settings interface in the admin pane
 * Bulk upload your locations via the CSV loader.
 * Location search tracking and reporting, find out what your visitors are looking for.
 * Popup email form.
-
-= Our Philosophy =
-
-Like all of our plugins, we strive to create code the runs efficiently and without bugs. We feel well-written plugins are few and far between. While there are plenty of plugins that look nice, far too many of those plugins, including the "cool shiny ones" have way to many hidden problems. We have found that over 90% of the plugins available on the WordPress plugin directory generate dozens, if not hundreds, of warnings and errors when we turn off the "hide all the problems" settings in PHP.
-
-These hidden problems impact memory usage, fill up disk space, and reduce performance via the typical default logging settings on most web hosts. While you may not see the errors on your WordPress site, they are still being tracked. The more errors, the more disk I/O, the slower the app.
-
-During our 20+ years of software development, we have also found that leaving "innocuous" warnings in place tends to lead to trouble further down the road. Warnings today often become errors tomorrow. Many programming languages, PHP included, continue to tighten security and close loopholes that are typically found living near all those warning messages. Some warnings are also telling you to "change this now, it will be gone tomorrow". Eventually tomorrow will come.
-
-While our plugins may not be the prettiest on the block, we do try to make sure that all the hidden stuff you don't see is designed as well as it can be. To sum it all up, we like to write plugins that last. We hope you appreciate our work.
-
-= New! Store Pages =
-
-You can have a WordPress page for each store location on your map turning your location data into SEO friendly content.  Store Pages are a special page type that is fully integrated with WordPress,  but you manage them through Store Locator Plus.  Store Pages also have their own taxonomy (category system) so you can manage Store Page categories without affecting the rest of your site.
-
-[more information](http://storelocatorplus.com/premium-add-ons/store-pages/)
 
 = Rate Us =
 
@@ -101,6 +85,22 @@ more items the next time around.
 * [Other Cyber Sprocket Plugins](http://wordpress.org/extend/plugins/profile/cybersprocket/)
 * [Custom WordPress Development](http://www.cybersprocket.com/services/wordpress-developers/)
 * [Our Facebook Page](http://www.facebook.com/cyber.sprocket.labs)
+
+= Our Philosophy =
+
+Like all of our plugins, we strive to create code the runs efficiently and without bugs. We feel well-written plugins are few and far between. While there are plenty of plugins that look nice, far too many of those plugins, including the "cool shiny ones" have way to many hidden problems. We have found that over 90% of the plugins available on the WordPress plugin directory generate dozens, if not hundreds, of warnings and errors when we turn off the "hide all the problems" settings in PHP.
+
+These hidden problems impact memory usage, fill up disk space, and reduce performance via the typical default logging settings on most web hosts. While you may not see the errors on your WordPress site, they are still being tracked. The more errors, the more disk I/O, the slower the app.
+
+During our 20+ years of software development, we have also found that leaving "innocuous" warnings in place tends to lead to trouble further down the road. Warnings today often become errors tomorrow. Many programming languages, PHP included, continue to tighten security and close loopholes that are typically found living near all those warning messages. Some warnings are also telling you to "change this now, it will be gone tomorrow". Eventually tomorrow will come.
+
+While our plugins may not be the prettiest on the block, we do try to make sure that all the hidden stuff you don't see is designed as well as it can be. To sum it all up, we like to write plugins that last. We hope you appreciate our work.
+
+= New! Store Pages =
+
+You can have a WordPress page for each store location on your map turning your location data into SEO friendly content.  Store Pages are a special page type that is fully integrated with WordPress,  but you manage them through Store Locator Plus.  Store Pages also have their own taxonomy (category system) so you can manage Store Page categories without affecting the rest of your site.
+
+[more information](http://storelocatorplus.com/premium-add-ons/store-pages/)
 
 == Installation ==
 
@@ -215,7 +215,11 @@ Now uses the Google Maps API V3! Pro Pack includes new search by name functional
 
 == Changelog ==
 
-= 3.0 (May 2012) =
+= 3.0.1 (May 31st, 2012) =
+
+* Included function to check for auto-updates
+
+= 3.0 (May 29th, 2012) =
 
 * [Pro Pack 3.0] You can now enable search by store name.
 * [Pro Pack 3.0] Fixes to tag search.
