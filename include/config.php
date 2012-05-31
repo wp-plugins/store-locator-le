@@ -11,6 +11,10 @@ if (defined('SLPLUS_PLUGINDIR')) {
         require_once(SLPLUS_PLUGINDIR.'WPCSL-generic/classes/CSL-plugin.php');
     }
     
+    if (class_exists('SLPlus_Activation') == false) {
+        require_once(SLPLUS_PLUGINDIR.'include/storelocatorplus-activation_class.php');
+    }
+    
     /**
      * This section defines the settings for the admin menu.
      */ 
@@ -34,6 +38,9 @@ if (defined('SLPLUS_PLUGINDIR')) {
             'css_prefix'            => SLPLUS_PREFIX,
             'name'                  => 'Store Locator Plus',
             'sku'                   => 'SLPLUS',
+            
+            'on_update' => array(SLPlus_Activate, update),
+            'version' => '3.0.1',
             
             'url'                   => 'http://www.storelocatorplus.com/',            
             'support_url'            => 'http://storelocatorplus.com/faq/',

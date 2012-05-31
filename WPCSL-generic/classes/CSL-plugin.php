@@ -8,7 +8,7 @@
 * share a code libary and reduce code redundancy.
 * 
 ************************************************************************/
-define('WPCSL__SLPLUS__VERSION', '1.9');
+define('WPCSL__SLPLUS__VERSION', '1.9.1');
 
 // (LC) 
 // These helper files should only be loaded if needed by the plugin
@@ -109,6 +109,14 @@ class wpCSL_plugin__SLPLUS {
             $this->$name = $value;
         }
 
+        // Check to see if we are doing an update
+        //
+        if (isset($this->on_update)) {
+            if ($this->version != get_option($this->prefix."-installed_base_version")) {
+                call_user_func_array($this->on_update, array($this, get_option($this->prefix."-installed_base_version")));
+                update_option($this->prefix.'-installed_base_version', $this->version);
+            }
+        }
 
         // Our Admin Page : true if we are on the admin page for this plugin
         // or we are processing the update action sent from this page
