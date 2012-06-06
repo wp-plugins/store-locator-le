@@ -454,6 +454,65 @@ var csl = {
 				this.loadedOnce = true;
 			}
   	  	}
+        
+        /***************************
+  	  	 * function: __buildMap
+  	  	 * usage:
+  	  	 * 		Builds the map with the specified center
+  	  	 * parameters:
+  	  	 * 		center:
+		 *			the specified center or homepoint
+  	  	 * returns: none
+  	  	 */
+        this.__buildMap = function(center) {
+            if (this.gmap == null)
+            {
+                this.options = {
+                    mapTypeControl: this.mapTypeControl,
+                    mapTypeId: this.mapType,
+                    overviewMapControl: this.overviewControl,
+                    scrollwheel: !this.disableScroll,
+                    center: center,
+                    zoom: parseInt(this.zoom),
+                    scaleControl: this.mapScaleControl,
+                    overviewMapControl: this.overviewControl,
+                    overviewMapControlOptions: { opened: this.overviewControl }
+                };
+                this.debugSearch(this.options);
+                this.gmap = new google.maps.Map(document.getElementById('map'), this.options);
+                this.debugSearch(this.gmap);
+                //this forces any bad css from themes to fix the "gray bar" issue by setting the css max-width to none
+                var _this = this;
+                google.maps.event.addListener(this.gmap, 'bounds_changed', function() {
+                    _this.__waitForTileLoad.call(_this);
+                });
+              
+                this.debugSearch(this.usingSensor);
+                if (this.usingSensor) {
+                    this.homePoint = center;
+                    this.addMarkerAtCenter();
+                }
+                
+                //load all the markers
+                if (this.load_locations == '1') {
+                    if (this.saneValue('addressInput', null) == null || this.saneValue('addressInput', null) == '') {
+                        this.forceAll = true;
+                    
+                        this.loadMarkers(null, null, this.saneValue('tag_to_search_for', null));
+                    }
+                    else {
+                        this.homePoint = center;
+                        this.addMarkerAtCenter();
+                        var tag_to_search_for = this.saneValue('tag_to_search_for', '');
+                        var radius = this.saneValue('radiusSelect');
+                        this.loadMarkers(center, radius, tag_to_search_for);
+                    }
+                }
+                else {
+                    this.load_locations = '0';
+                }
+            }
+        }
   	  	
   	  	/***************************
   	  	 * function: __geocodeResult
@@ -497,8 +556,8 @@ var csl = {
                     if (this.load_locations == '1') {
 					    if (this.saneValue('addressInput', null) == null || this.saneValue('addressInput', null) == '') {
 						    this.forceAll = true;
-						
-						    this.loadMarkers();
+
+						    this.loadMarkers(null, null, this.saneValue('tag_to_search_for', ''));
 					    }
 					    else {
 						    this.homePoint = results[0].geometry.location;
@@ -796,6 +855,21 @@ var csl = {
             return url;
         }
 		
+        this.__createAddress = function(aMarker) {
+            var address = aMarker.address;
+			if (aMarker.address == '') { aMarker.address = ""; } else address += ', ';
+			address += aMarker.address2;
+			if (aMarker.address2 == '') { aMarker.address2 = ""; } else address += ', ';
+			address += aMarker.city;
+			if (aMarker.city == '') { aMarker.city = ""; } else address += ', ';
+			address += aMarker.state;
+			if (aMarker.state == '') { aMarker.state = ""; } else address += ', ';
+			address += aMarker.zip;
+			if (aMarker.zip == '') { aMarker.zip = ""; }
+            
+            return address;
+        }
+        
 		/***************************
   	  	 * function: createMarkerContent
   	  	 * usage:
@@ -844,23 +918,14 @@ var csl = {
 				html+="<br/><span class='location_detail_label'>Phone:</span> "+aMarker.phone;
 			}
 
-			var address = aMarker.address;
-			if (aMarker.address == '') { aMarker.address = ""; } else address += ', ';
-			address += aMarker.address2;
-			if (aMarker.address2 == '') { aMarker.address2 = ""; } else address += ', ';
-			address += aMarker.city;
-			if (aMarker.city == '') { aMarker.city = ""; } else address += ', ';
-			address += aMarker.state;
-			if (aMarker.state == '') { aMarker.state = ""; } else address += ', ';
-			address += aMarker.zip;
-			if (aMarker.zip == '') { aMarker.zip = ""; }
+			var address = this.__createAddress(aMarker);
 			
 			if (slplus.show_tags) {
 				if (jQuery.trim(aMarker.tags) != '') {
 					html += '<br/>'+aMarker.tags;
 				}
 			}
-			var complete_html = '<div id="sl_info_bubble"><!--tr><td--><strong>' + aMarker.name + '</strong><br>' + address + '<br/> <a href="http://' + slplus.map_domain + '/maps?saddr=' + /*todo: searched address goes here*/ encodeURIComponent(this.address) + '&daddr=' + encodeURIComponent(aMarker.street + ', ' + aMarker.street2 + ', ' + aMarker.city + ', ' + aMarker.state + ', ' + aMarker.zip) + '" target="_blank" class="storelocatorlink">Directions</a> ' + html + '<br/><!--/td></tr--></div>';
+			var complete_html = '<div id="sl_info_bubble"><!--tr><td--><strong>' + aMarker.name + '</strong><br>' + address + '<br/> <a href="http://' + slplus.map_domain + '/maps?saddr=' + /*todo: searched address goes here*/ encodeURIComponent(this.address) + '&daddr=' + encodeURIComponent(address) + '" target="_blank" class="storelocatorlink">Directions</a> ' + html + '<br/><!--/td></tr--></div>';
 			
 			return complete_html;
 		}
@@ -1058,6 +1123,17 @@ var csl = {
             if (jQuery.trim(city_state_zip) != '') {
                 city_state_zip += '<br/>';
             }
+            
+            var address = aMarker.address;
+			if (aMarker.address == '') { aMarker.address = ""; } else address += ', ';
+			address += aMarker.address2;
+			if (aMarker.address2 == '') { aMarker.address2 = ""; } else address += ', ';
+			address += aMarker.city;
+			if (aMarker.city == '') { aMarker.city = ""; } else address += ', ';
+			address += aMarker.state;
+			if (aMarker.state == '') { aMarker.state = ""; } else address += ', ';
+			address += aMarker.zip;
+			if (aMarker.zip == '') { aMarker.zip = ""; }
 			
 			var html =  '<center><table width="96%" cellpadding="4px" cellspacing="0" class="searchResultsTable">' +
 					'<tr>' +
@@ -1075,7 +1151,7 @@ var csl = {
                         elink +
                         '<a href="http://' + slplus.map_domain + 
                         '/maps?saddr=' + encodeURIComponent(this.address) + 
-                        '&daddr=' + encodeURIComponent(aMarker.address) + 
+                        '&daddr=' + encodeURIComponent(address) + 
                         '" target="_blank" class="storelocatorlink">Directions</a>'+
                         tagInfo +
                         '</td>' +
@@ -1111,7 +1187,8 @@ function InitializeTheMap() {
  * When the document has been loaded...
  *
  */
-jQuery(document).ready(function(){
-	InitializeTheMap();
+jQuery(document).ready(function () {
+    jQuery('#addressInput2').change(function () { aI = document.getElementById("searchForm").addressInput; if (this.value != "") { oldvalue = aI.value; aI.value = this.value; } else { aI.value = oldvalue; } });
+    InitializeTheMap();
 });
 
