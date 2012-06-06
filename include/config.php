@@ -40,11 +40,12 @@ if (defined('SLPLUS_PLUGINDIR')) {
             'sku'                   => 'SLPLUS',
             
             'on_update' => array(SLPlus_Activate, update),
-            'version' => '3.0.1',
+            'version' => '3.0.2',
             
             'url'                   => 'http://www.storelocatorplus.com/',            
             'support_url'            => 'http://storelocatorplus.com/faq/',
             'purchase_url'           => 'http://storelocatorplus.com/download/',
+            'rate_url'              => 'http://wordpress.org/extend/plugins/store-locator-le/',
             
             'basefile'              => SLPLUS_BASENAME,
             'plugin_path'           => SLPLUS_PLUGINDIR,
@@ -141,7 +142,8 @@ function configure_slplus_storepages() {
                                        'come back to this page to enter the license key to activate the new features.',
                 'sku'               => 'SLP-PAGES',
                 'paypal_button_id'  => '3V2SSFKB3R6XE',
-                'paypal_upgrade_button_id' => '3V2SSFKB3R6XE'
+                'paypal_upgrade_button_id' => '3V2SSFKB3R6XE',
+                'isa_child'                    => false
             )
         );
     
