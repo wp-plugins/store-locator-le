@@ -11,6 +11,10 @@ if (defined('SLPLUS_PLUGINDIR')) {
         require_once(SLPLUS_PLUGINDIR.'WPCSL-generic/classes/CSL-plugin.php');
     }
     
+    if (class_exists('SLPlus_Activation') == false) {
+        require_once(SLPLUS_PLUGINDIR.'include/storelocatorplus-activation_class.php');
+    }
+    
     /**
      * This section defines the settings for the admin menu.
      */ 
@@ -35,9 +39,13 @@ if (defined('SLPLUS_PLUGINDIR')) {
             'name'                  => 'Store Locator Plus',
             'sku'                   => 'SLPLUS',
             
+            'on_update' => array(SLPlus_Activate, update),
+            'version' => '3.0.2',
+            
             'url'                   => 'http://www.storelocatorplus.com/',            
             'support_url'            => 'http://storelocatorplus.com/faq/',
             'purchase_url'           => 'http://storelocatorplus.com/download/',
+            'rate_url'              => 'http://wordpress.org/extend/plugins/store-locator-le/',
             
             'basefile'              => SLPLUS_BASENAME,
             'plugin_path'           => SLPLUS_PLUGINDIR,
@@ -134,7 +142,8 @@ function configure_slplus_storepages() {
                                        'come back to this page to enter the license key to activate the new features.',
                 'sku'               => 'SLP-PAGES',
                 'paypal_button_id'  => '3V2SSFKB3R6XE',
-                'paypal_upgrade_button_id' => '3V2SSFKB3R6XE'
+                'paypal_upgrade_button_id' => '3V2SSFKB3R6XE',
+                'isa_child'                    => false
             )
         );
     

@@ -51,8 +51,8 @@ function doAction(theAction,thePrompt) {
         <div id="tag_block" class='orangebox'>
             <div id="tag_actions">
                 <ul>
-                    <li class='like-a-button'><a href="#" name="tag_selected"    onclick="doAction('add_tag','<?php echo __('Tag selected?',SLPLUS_PREFIX);?>');"   ><?php echo __('Tag Selected', SLPLUS_PREFIX);?></a></li>
-                    <li class='like-a-button'><a href="#" name="untag_selected"  onclick="doAction('remove_tag','<?php echo __('Remove tag from selected?',SLPLUS_PREFIX);?>');"><?php echo __('Untag Selected', SLPLUS_PREFIX);?></a></li>
+                    <a href="#" name="tag_selected"    onclick="doAction('add_tag','<?php echo __('Tag selected?',SLPLUS_PREFIX);?>');"   ><li class='like-a-button'><?php echo __('Tag Selected', SLPLUS_PREFIX);?></li></a>
+                    <a href="#" name="untag_selected"  onclick="doAction('remove_tag','<?php echo __('Remove tag from selected?',SLPLUS_PREFIX);?>');"><li class='like-a-button'><?php echo __('Untag Selected', SLPLUS_PREFIX);?></li></a>
                 </ul>
             </div>
             <div id="tagentry">
