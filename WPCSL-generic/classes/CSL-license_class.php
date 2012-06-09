@@ -242,7 +242,7 @@ class wpCSL_license__SLPLUS {
         if (!isset($params['name']) || !isset($params['sku'])) return;
 
         // Default to being a child
-        $this->isa_child = true;
+        //$this->isa_child = true;
 
         // Setup the new package only if it was not setup before
         //
@@ -316,15 +316,15 @@ class wpCSL_license_package__SLPLUS {
         // required settings.
         if (!$this->isenabled) {
 
-            $this->parent->check_license_key($this->sku, $this->isa_child, get_option($this->lk_option_name));
+            $this->parent->check_license_key($this->sku, false, get_option($this->lk_option_name));
             $this->isenabled = get_option($this->enabled_option_name);
             $this->active_version =  get_option($this->prefix.'-'.$this->sku.'-latest-version-numeric');             
         }
 
         // Attempt to register the parent if we have one
-        if ($this->isa_child) {
+        //if ($this->isa_child) {
             $this->parent->check_license_key($this->sku, true);
-        }
+        //}
 
         return $this->isenabled;
     }
