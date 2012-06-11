@@ -46,10 +46,61 @@ header( 'Expires: 0');
 if (isset($_POST['all']) && ($_POST['all'] == 'true')) {
     $query = preg_replace('/\s+LIMIT \d+(\s+|$)/','',$query);    
 }
+
+$slpQueryTable     = $wpdb->prefix . 'slp_rep_query';
+$slpResultsTable   = $wpdb->prefix . 'slp_rep_query_results';
+$slpLocationsTable = $wpdb->prefix . 'store_locator';
+
+$expr = "/,(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))/";
+$parts = preg_split($expr, trim(html_entity_decode($query, ENT_QUOTES | ENT_HTML5)));
+$parts = preg_replace("/^\"(.*)\"$/","$1",$parts);
+
+if ($parts[0] == 'addr') {
+    $slpReportStartDate = $parts[1];
+    $slpReportEndDate = $parts[2];
+    $slpReportLimit = $parts[3];
+    
+$query = sprintf(
+    "SELECT slp_repq_address, count(*)  as QueryCount FROM %s " .
+        "WHERE slp_repq_time > '%s' AND " .
+        "      slp_repq_time <= '%s' " .
+        "GROUP BY slp_repq_address ".
+        "ORDER BY QueryCount DESC " .
+        "LIMIT %s"
+        ,
+    $slpQueryTable,
+    $slpReportStartDate,
+    $slpReportEndDate,
+    $slpReportLimit
+    );
+} else if ($parts[0] == 'top') {
+    $slpReportStartDate = $parts[1];
+    $slpReportEndDate = $parts[2];
+    $slpReportLimit = $parts[3];
+
+    $query = sprintf(
+    "SELECT sl_store,sl_city,sl_state, sl_zip, sl_tags, count(*) as ResultCount " . 
+        "FROM %s res ".
+            "LEFT JOIN %s sl ". 
+                "ON (res.sl_id = sl.sl_id) ".  
+            "LEFT JOIN %s qry ". 
+                "ON (res.slp_repq_id = qry.slp_repq_id) ".  
+            "WHERE slp_repq_time > '%s' AND slp_repq_time <= '%s' ".
+        "GROUP BY sl_store,sl_city,sl_state,sl_zip,sl_tags ".
+        "ORDER BY ResultCount DESC ".
+        "LIMIT %s"
+        ,
+    $slpResultsTable,
+    $slpLocationsTable,
+    $slpQueryTable,
+    $slpReportStartDate,
+    $slpReportEndDate,
+    $slpReportLimit
+    );
+}
 $query = stripslashes(htmlspecialchars_decode($query,ENT_QUOTES));
-
-print $query."\n";
-
+$query = $wpdb->prepare($query);
+//echo $query;
 // Run the query & output the data in a CSV
 $thisDataset = $wpdb->get_results($query,ARRAY_N);
 
@@ -111,8 +162,8 @@ foreach ($thisDataset as $key => $row) {
 // This exactly mimics the jQuery sorts that manage our tables on the HTML
 // page.
 //
-eval('array_multisort('.$amsstring.');');
 
+//array_multisort($amsstring);
 // Output the sorted CSV strings
 // This simply iterates through our newly sorted array of records we
 // got from the DB and writes them out in CSV format for download.

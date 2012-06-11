@@ -2,7 +2,7 @@
 
 /****************************************************************************
  **
- ** class: wpCSL_settings__SLPLUS
+ ** class: wpCSL_settings__slplus
  **
  ** The main settings class.
  **
@@ -16,7 +16,7 @@
  **     get_broadcast   
  **     get_item            : Return the value of a WordPress option that was saved via the settings interface.
  **/
-class wpCSL_settings__SLPLUS {
+class wpCSL_settings__slplus {
 
     /**------------------------------------
      ** method: __construct
@@ -29,7 +29,7 @@ class wpCSL_settings__SLPLUS {
         //
         $this->render_csl_blocks = true;        // Display the CSL info blocks
         $this->form_action = 'options.php';     // The form action for this page
-        $this->save_text =__('Save Changes',WPCSL__SLPLUS__VERSION);
+        $this->save_text =__('Save Changes',WPCSL__slplus__VERSION);
         $this->css_prefix = '';  
         $this->has_packages = false;
         
@@ -121,7 +121,7 @@ class wpCSL_settings__SLPLUS {
                                  <div style="clear:left;">
                                    <div style="width:150px; float:left; text-align: right;
                                        padding-right: 6px;">WPCSL Version:</div>
-                                   <div style="float: left;">' . WPCSL__SLPLUS__VERSION . '
+                                   <div style="float: left;">' . WPCSL__slplus__VERSION . '
                                    </div>
                                  </div>
                                  <div style="clear:left;">
@@ -241,7 +241,7 @@ class wpCSL_settings__SLPLUS {
      **/
     function add_section($params) {
         if (!isset($this->sections[$params['name']])) {
-            $this->sections[$params['name']] = new wpCSL_settings_section__SLPLUS(
+            $this->sections[$params['name']] = new wpCSL_settings_section__slplus(
                 array_merge(
                     $params,
                     array('plugin_url' => $this->plugin_url,
@@ -258,10 +258,14 @@ class wpCSL_settings__SLPLUS {
      **
      ** Return the value of a WordPress option that was saved via the settings interface.
      **/
-    function get_item($name) {
+    function get_item($name, $default = null) {
         $option_name = $this->prefix . '-' . $name;
-        if (!isset($this->$option_name)) {
-            $this->$option_name = get_option($option_name);             
+        if (!isset($this->$option_name)) {            
+            $this->$option_name =
+                ($default == null) ?
+                    get_option($option_name) :
+                    get_option($option_name,$default)
+                    ;
         }
         return $this->$option_name;
     }
@@ -281,11 +285,12 @@ class wpCSL_settings__SLPLUS {
      **    description (default: null) - this is what shows via the expand/collapse setting
      **    custom (default: null, name/value pair if list
      **    value (default: null), the value to use if not using get_option
+     **    disabled (default: false), show the input but keep it disabled
      **
      **/
     function add_item($section, $display_name, $name, $type = 'text',
             $required = false, $description = null, $custom = null,
-            $value = null
+            $value = null, $disabled = false
             ) {
 
         $name = $this->prefix .'-'.$name;
@@ -296,7 +301,7 @@ class wpCSL_settings__SLPLUS {
                 $this->notifications->add_notice(
                     3,
                     sprintf(
-                       __('Program Error: section <em>%s</em> not defined.',WPCSL__SLPLUS__VERSION),
+                       __('Program Error: section <em>%s</em> not defined.',WPCSL__slplus__VERSION),
                        $section
                        )
                 );
@@ -313,7 +318,8 @@ class wpCSL_settings__SLPLUS {
                 'required' => $required,
                 'description' => $description,
                 'custom' => $custom,
-                'value' => $value
+                'value' => $value,
+                'disabled' => $disabled
             )
         );
 
@@ -506,7 +512,7 @@ class wpCSL_settings__SLPLUS {
                     
                     $package->parent->check_license_key(
                         $package->sku,
-                        true,
+                        $package->isa_child,
                         ($this->has_packages ? $package->license_key : ''),
                         true // Force a server check
                     )
@@ -728,10 +734,10 @@ class wpCSL_settings__SLPLUS {
 
 /****************************************************************************
  **
- ** class: wpCSL_settings_section__SLPLUS
+ ** class: wpCSL_settings_section__slplus
  **
  **/
-class wpCSL_settings_section__SLPLUS {
+class wpCSL_settings_section__slplus {
 
     /**------------------------------------
      **/
@@ -750,7 +756,7 @@ class wpCSL_settings_section__SLPLUS {
      **
      **/
     function add_item($params) {
-        $this->items[] = new wpCSL_settings_item__SLPLUS(
+        $this->items[] = new wpCSL_settings_item__slplus(
             array_merge(
                 $params,
                 array('plugin_url' => $this->plugin_url,
@@ -814,13 +820,13 @@ class wpCSL_settings_section__SLPLUS {
 
 /****************************************************************************
  **
- ** class: wpCSL_settings_item__SLPLUS
+ ** class: wpCSL_settings_item__slplus
  **
  ** Settings Page : Items Class
  ** This class manages individual settings on the admin panel settings page.
  **
  **/
-class wpCSL_settings_item__SLPLUS {
+class wpCSL_settings_item__slplus {
 
     /**------------------------------------
      **/
@@ -847,21 +853,27 @@ class wpCSL_settings_item__SLPLUS {
         }
         $showThis = htmlspecialchars($showThis);
         
-        echo '<div class="'.$this->css_prefix.'-input">';
+        echo '<div class="'.$this->css_prefix.'-input'.($this->disabled?'-disabled':'').'">';
         
         switch ($this->type) {
             case 'textarea':
-                echo "<textarea name=\"{$this->name}\" cols=\"50\" rows=\"5\">".
-                    $showThis ."</textarea>";
+                echo '<textarea name="'.$this->name.'" '.
+                    'cols="50" '.
+                    'rows="5" '.
+                    ($this->disabled?'disabled="disabled" ':'').
+                    '>'.$showThis .'</textarea>';
                 break;
 
             case 'text':
-                echo "<input type=\"text\" name=\"{$this->name}\" value=\"". $showThis ."\" />";
+                echo '<input type="text" name="'.$this->name.'" '.
+                    ($this->disabled?'disabled="disabled" ':'').                
+                    'value="'. $showThis .'" />';
                 break;
 
             case "checkbox":
-                echo "<input type=\"checkbox\" name=\"{$this->name}\"".
-                    (($showThis) ? ' checked' : '').">";
+                echo '<input type="checkbox" name="'.$this->name.'" '.
+                    ($this->disabled?'disabled="disabled" ':'').                
+                    ($showThis?' checked' : '').'>"';
                 break;
 
             case "list":
@@ -928,7 +940,7 @@ class wpCSL_settings_item__SLPLUS {
     /**------------------------------------
      **/
     function header() {
-        echo "<tr><th class='input_label' scope='row'>" .
+        echo "<tr><th class='input_label".($this->disabled?'-disabled':'')."' scope='row'>" .
         "<a name='" .
         strtolower(strtr($this->display_name, ' ', '_')).
             "'></a>{$this->display_name}".

@@ -3,7 +3,7 @@
 Plugin Name: Google Maps via Store Locator Plus
 Plugin URI: http://www.storelocatorplus.com/
 Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Gooogle Maps.  This is a highly customizable, easily expandable, enterprise-class location management system.
-Version: 3.0.4
+Version: 3.0.5
 Author: Cyber Sprocket Labs
 Author URI: http://www.cybersprocket.com
 License: GPL3
@@ -83,6 +83,12 @@ include_once(SLPLUS_COREDIR   . 'csl-ajax-search.php'	);
 require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-actions_class.php');
 require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-activation_class.php');
 
+require_once(SLPLUS_PLUGINDIR . '/include/mobile-listener.php');
+
+// Activation Action (install/upgrade)
+//
+register_activation_hook( __FILE__, 'activate_slplus');
+
 // Regular Actions
 //
 add_action('init'               ,array('SLPlus_Actions','init')                 );
@@ -99,7 +105,14 @@ add_action('admin_head'         , 'slpreport_downloads'                         
 // Ajax search
 //
 add_action('wp_ajax_csl_ajax_search', 'csl_ajax_search');
+
 add_action('wp_ajax_nopriv_csl_ajax_search', 'csl_ajax_search');
+add_action('wp_ajax_nopriv_csl_get_closest_location', array('csl_mobile_listener', 'GetClosestLocation'));
+
+// Mobile Listener
+//
+add_action('wp_ajax_csl_get_locations', array('csl_mobile_listener', 'GetLocations'));
+add_action('wp_ajax_nopriv_csl_get_locations', array('csl_mobile_listener', 'GetLocations'));
 
 // Ajax Load
 //

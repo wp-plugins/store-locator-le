@@ -9,7 +9,7 @@
 *
 ************************************************************************/
 
-class wpCSL_products__SLPLUS {
+class wpCSL_products__slplus {
     
 
 

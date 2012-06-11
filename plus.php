@@ -272,13 +272,13 @@ function slpreport_downloads() {
              
             // Export Results Button Click
             //
-            $("#export_results").click(
+            jQuery("#export_results").click(
                 function(e) {
                     jQuery('<form action="<?php echo SLPLUS_PLUGINURL; ?>/downloadcsv.php" method="post">'+
                             '<input type="hidden" name="filename" value="topresults">' +
-                            '<input type="hidden" name="query" value="' + $("[name=topresults]").val() + '">' +
+                            '<input type="hidden" name="query" value="' + jQuery("[name=topresults]").val() + '">' +
                             '<input type="hidden" name="sort"  value="' + trtts[0].config.sortList.toString() + '">' +                                
-                            '<input type="hidden" name="all"   value="' + $("[name=export_all]").is(':checked') + '">' + 
+                            '<input type="hidden" name="all"   value="' + jQuery("[name=export_all]").is(':checked') + '">' + 
                             '</form>'
                             ).appendTo('body').submit().remove();                    
                 }
@@ -286,13 +286,13 @@ function slpreport_downloads() {
             
             // Export Searches Button Click
             //
-            $("#export_searches").click(
+            jQuery("#export_searches").click(
                 function(e) {
                     jQuery('<form action="<?php echo SLPLUS_PLUGINURL; ?>/downloadcsv.php" method="post">'+
                             '<input type="hidden" name="filename" value="topsearches">' +
-                            '<input type="hidden" name="query" value="' + $("[name=topsearches]").val() + '">' + 
+                            '<input type="hidden" name="query" value="' + jQuery("[name=topsearches]").val() + '">' + 
                             '<input type="hidden" name="sort"  value="' + tstts[0].config.sortList.toString() + '">' +                                                            
-                            '<input type="hidden" name="all"   value="' + $("[name=export_all]").is(':checked') + '">' + 
+                            '<input type="hidden" name="all"   value="' + jQuery("[name=export_all]").is(':checked') + '">' + 
                             '</form>'
                             ).appendTo('body').submit().remove();                    
                 }

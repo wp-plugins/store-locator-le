@@ -8,7 +8,7 @@
 * share a code libary and reduce code redundancy.
 * 
 ************************************************************************/
-define('WPCSL__SLPLUS__VERSION', '1.9.2');
+define('WPCSL__slplus__VERSION', '1.9.2');
 
 // (LC) 
 // These helper files should only be loaded if needed by the plugin
@@ -71,7 +71,7 @@ require_once('CSL-themes_class.php');
 *       not licensed but we still need the license class to manage add-ons.
 *
 */
-class wpCSL_plugin__SLPLUS {
+class wpCSL_plugin__slplus {
 
     /**-------------------------------------
      **/
@@ -303,10 +303,10 @@ class wpCSL_plugin__SLPLUS {
             case 'none':
                 break;
 
-            case 'wpCSL_helper__SLPLUS':
+            case 'wpCSL_helper__slplus':
             case 'default':
             default:
-                $this->helper = new wpCSL_helper__SLPLUS();
+                $this->helper = new wpCSL_helper__slplus();
 
         }
     }    
@@ -319,11 +319,11 @@ class wpCSL_plugin__SLPLUS {
             case 'none':
                 break;
 
-            case 'wpCSL_notifications__SLPLUS':
+            case 'wpCSL_notifications__slplus':
             case 'default':
             default:
                 $this->notifications = 
-                    new wpCSL_notifications__SLPLUS($this->notifications_config);
+                    new wpCSL_notifications__slplus($this->notifications_config);
         }
     }
     
@@ -336,10 +336,10 @@ class wpCSL_plugin__SLPLUS {
             case 'none':
                 break;
 
-            case 'wpCSL_products__SLPLUS':
+            case 'wpCSL_products__slplus':
             case 'default':
             default:
-                $this->products = new wpCSL_products__SLPLUS($this->products_config);
+                $this->products = new wpCSL_products__slplus($this->products_config);
 
         }
     }
@@ -354,10 +354,10 @@ class wpCSL_plugin__SLPLUS {
             case 'none':
                 break;
 
-            case 'wpCSL_settings__SLPLUS':
+            case 'wpCSL_settings__slplus':
             case 'default':
             default:
-                $this->settings = new wpCSL_settings__SLPLUS($this->settings_config);
+                $this->settings = new wpCSL_settings__slplus($this->settings_config);
 
         }
     }
@@ -371,10 +371,10 @@ class wpCSL_plugin__SLPLUS {
             case 'none':
                 break;
 
-            case 'wpCSL_products__SLPLUS':
+            case 'wpCSL_products__slplus':
             case 'default':
             default:
-                $this->themes = new wpCSL_themes__SLPLUS($this->themes_config);
+                $this->themes = new wpCSL_themes__slplus($this->themes_config);
 
         }
     }    
@@ -388,11 +388,11 @@ class wpCSL_plugin__SLPLUS {
             case 'none':
                 break;
 
-            case 'wpCSL_license__SLPLUS':
+            case 'wpCSL_license__slplus':
             case 'default':
             default:
                 if ($this->has_packages || !$this->no_license) {
-                    $this->license = new wpCSL_license__SLPLUS($this->license_config);
+                    $this->license = new wpCSL_license__slplus($this->license_config);
                 }
 
         }
@@ -406,10 +406,10 @@ class wpCSL_plugin__SLPLUS {
             case 'none':
                 break;
 
-            case 'wpCSL_cache__SLPLUS':
+            case 'wpCSL_cache__slplus':
             case 'default':
             default:
-                $this->cache = new wpCSL_cache__SLPLUS($this->cache_config);
+                $this->cache = new wpCSL_cache__slplus($this->cache_config);
 
         }
     }
@@ -605,7 +605,7 @@ class wpCSL_plugin__SLPLUS {
         //
         } else {
             if (($this->debugging) && ($this->driver_type != 'none')) {
-                print __('DEBUG: No driver found.',WPCSL__SLPLUS__VERSION);
+                print __('DEBUG: No driver found.',WPCSL__slplus__VERSION);
             }
         }
     }
@@ -617,15 +617,15 @@ class wpCSL_plugin__SLPLUS {
 
         if ($file == $this->basefile) {
             if (isset($this->support_url)) {
-                $links[] = '<a href="'.$this->support_url.'" title="'.__('Support',WPCSL__SLPLUS__VERSION) . '">'.
-                            __('Support',WPCSL__SLPLUS__VERSION) . '</a>';
+                $links[] = '<a href="'.$this->support_url.'" title="'.__('Support',WPCSL__slplus__VERSION) . '">'.
+                            __('Support',WPCSL__slplus__VERSION) . '</a>';
             }
             if (isset($this->purchase_url)) {
-                $links[] = '<a href="'.$this->purchase_url.'" title="'.__('Purchase',WPCSL__SLPLUS__VERSION) . '">'.
-                            __('Buy Now',WPCSL__SLPLUS__VERSION) . '</a>';
+                $links[] = '<a href="'.$this->purchase_url.'" title="'.__('Purchase',WPCSL__slplus__VERSION) . '">'.
+                            __('Buy Now',WPCSL__slplus__VERSION) . '</a>';
             }
             $links[] = '<a href="options-general.php?page='.$this->prefix.'-options" title="'.
-                            __('Settings',WPCSL__SLPLUS__VERSION) . '">'.__('Settings',WPCSL__SLPLUS__VERSION) . '</a>';
+                            __('Settings',WPCSL__slplus__VERSION) . '">'.__('Settings',WPCSL__slplus__VERSION) . '</a>';
         }
         return $links;
     }
@@ -702,7 +702,7 @@ class wpCSL_plugin__SLPLUS {
             //
             } else {
                 if ($this->debugging) {
-                    print __('DEBUG: could not locate driver:',WPCSL__SLPLUS__VERSION) . 
+                    print __('DEBUG: could not locate driver:',WPCSL__slplus__VERSION) . 
                         $this->plugin_path . 'Custom/Drivers/'. $this->driver_name .'.php' .
                         "<br/>\n";                                        
                 }
@@ -754,7 +754,7 @@ class wpCSL_plugin__SLPLUS {
      **/
     function add_display_settings() {      
         $this->settings->add_section(array(
-                'name' => __('Display Settings',WPCSL__SLPLUS__VERSION),
+                'name' => __('Display Settings',WPCSL__slplus__VERSION),
                 'description' => '',
                 'start_collapsed' => $this->display_settings_collapsed
             )
@@ -787,7 +787,7 @@ class wpCSL_plugin__SLPLUS {
                         'list', 
                         false, 
                         __('Sets the locale for PHP program processing, affects time and currency processing. '.
-                            'If you change this, save settings and then select money format.',WPCSL__SLPLUS__VERSION),
+                            'If you change this, save settings and then select money format.',WPCSL__slplus__VERSION),
                         $locale_custom
                     );
                 }
@@ -798,7 +798,7 @@ class wpCSL_plugin__SLPLUS {
                         'locale', 
                         null, 
                         false, 
-                        __('Your PHP settings have disabled exec(), your locale list cannot be determined.',WPCSL__SLPLUS__VERSION),
+                        __('Your PHP settings have disabled exec(), your locale list cannot be determined.',WPCSL__slplus__VERSION),
                         '&nbsp;'
                     );
             }
@@ -816,7 +816,7 @@ class wpCSL_plugin__SLPLUS {
                     'money_format', 
                     'list', 
                     false, 
-                    __('This is based on your current locale, which is set to ',WPCSL__SLPLUS__VERSION).
+                    __('This is based on your current locale, which is set to ',WPCSL__slplus__VERSION).
                         '<code>'. setlocale(LC_MONETARY, 0) .'</code>',
                     array(
                         money_format('%!i', 1234.56)            => '%!i',
@@ -905,12 +905,12 @@ class wpCSL_plugin__SLPLUS {
             //
             if ($this->debugging) {
                 if (is_array($atts)) {
-                    print __('DEBUG: Shortcode called with attributes:',WPCSL__SLPLUS__VERSION) . "<br/>\n";
+                    print __('DEBUG: Shortcode called with attributes:',WPCSL__slplus__VERSION) . "<br/>\n";
                     foreach ($atts as $name=>$value) {
                         print $name.':'.$value."<br/>\n";
                     }
                 } else {
-                    print __('DEBUG: Shortcode called with no attributes.',WPCSL__SLPLUS__VERSION) . "<br/>\n";
+                    print __('DEBUG: Shortcode called with no attributes.',WPCSL__slplus__VERSION) . "<br/>\n";
                 }
             }            
             
@@ -959,7 +959,7 @@ class wpCSL_plugin__SLPLUS {
         // Not OK TO Show
         } else {
             if ($this->debugging) {
-                $content = __('DEBUG: Not OK To Show',WPCSL__SLPLUS__VERSION);
+                $content = __('DEBUG: Not OK To Show',WPCSL__slplus__VERSION);
             }
         }
         return $content;
@@ -1027,7 +1027,7 @@ class wpCSL_plugin__SLPLUS {
         // No products, show an error message as the output
         //
         } else {
-            $content= __('No products found',WPCSL__SLPLUS__VERSION);
+            $content= __('No products found',WPCSL__slplus__VERSION);
         }
 
         return $content;            
