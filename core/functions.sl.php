@@ -626,6 +626,7 @@ function slplus_dbupdater($sql,$table_name) {
         'map_end_icon'      => $slplus_end_icon,
         'map_end_sizew'     => $slplus_end_size[0],
         'map_end_sizeh'     => $slplus_end_size[1],
+        'use_sensor'            => (get_option(SLPLUS_PREFIX."_use_location_sensor")==1),
         'map_scalectrl'     => (get_option(SLPLUS_PREFIX.'_disable_scalecontrol')==0),
         'map_type'          => get_option('sl_map_type','roadmap'),
         'map_typectrl'      => (get_option(SLPLUS_PREFIX.'_disable_maptypecontrol')==0),
@@ -639,7 +640,7 @@ function slplus_dbupdater($sql,$table_name) {
         'zoom_tweak'        => get_option('sl_zoom_tweak',1),
         );
     wp_localize_script('csl_script','slplus',$scriptData);
-	wp_localize_script('csl_script','csl_ajax',array('ajaxurl' => admin_url('admin-ajax.php')));
+	wp_localize_script('csl_script','csl_ajax',array('ajaxurl' => admin_url('admin-ajax.php'), 'nonce' => wp_create_nonce('em')));
     
     // Set our flag for later processing
     // of JavaScript files

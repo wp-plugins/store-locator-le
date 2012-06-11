@@ -1,7 +1,5 @@
 <?php
 
-$DebugOutput = (basename($_SERVER['SCRIPT_FILENAME']) == 'load_wp_config.php');
-
 /*
  * function: InstallType
  *
@@ -99,8 +97,6 @@ while ((list(, $thisPath) = each($PathsToTry)) && ($installtype == '')) {
     // Check for an install at the given path
     //
     $installtype = InstallType($thisPath);
-    
-    if ($DebugOutput) { print "Path: $thisPath type is *$installtype*<br/>"; }
     
     // If we have a valid install, load the config
     //

@@ -8,7 +8,7 @@
 *
 ************************************************************************/
 
-class wpCSL_helper__SLPLUS {
+class wpCSL_helper__slplus {
 
     /**************************************
      ** method: get_string_from_phpexec()
