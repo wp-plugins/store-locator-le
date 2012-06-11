@@ -18,11 +18,11 @@ global $slplus_plugin, $wpdb;
  ** Create a standard details section with a data table based on a MySQL Query
  **
  **/
-function DetailDataSection($theQuery, $SectionHeader, $columnHeaders, $columnDataLines, $Qryname) {
+function DetailDataSection($tag, $theQuery, $SectionHeader, $columnHeaders, $columnDataLines, $Qryname) {
     global $wpdb;
     $thisDataset = $wpdb->get_results($theQuery);
     $thisQryname = strtolower(preg_replace('/\s/','_',$Qryname));
-    $thisQryvalue= htmlspecialchars($theQuery,ENT_QUOTES,'UTF-8');
+    $thisQryvalue= htmlspecialchars($tag,ENT_QUOTES,'UTF-8');
     
     $thisSectionDesc = 
         '<div id="rb_details" class="reportblock">' .
@@ -327,7 +327,7 @@ $slpDataLines = array(
         array('columnName' => 'slp_repq_address', 'columnClass'=> ''            ),
         array('columnName' => 'QueryCount',       'columnClass'=> 'alignright'  ),
     );
-$slpSectionDescription .= DetailDataSection(
+$slpSectionDescription .= DetailDataSection("addr,$slpReportStartDate,$slpReportEndDate,$slpReportLimit",
                 $slpReportQuery, $slpSectionHeader, 
                 $slpColumnHeaders, $slpDataLines, 
                 __('topsearches',SLPLUS_PREFIX)
@@ -382,7 +382,7 @@ $slpDataLines = array(
         array('columnName' => 'sl_tags',    'columnClass'=> ''            ),
         array('columnName' => 'ResultCount','columnClass'=> 'alignright'  ),
     );
-$slpSectionDescription .= DetailDataSection(
+$slpSectionDescription .= DetailDataSection("top,$slpReportStartDate,$slpReportEndDate,$slpReportLimit",
                 $slpReportQuery, $slpSectionHeader, 
                 $slpColumnHeaders, $slpDataLines,
                 __('topresults',SLPLUS_PREFIX)

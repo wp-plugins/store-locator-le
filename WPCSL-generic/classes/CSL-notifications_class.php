@@ -1,6 +1,6 @@
 <?php
 
-class wpCSL_notifications__SLPLUS {
+class wpCSL_notifications__slplus {
 
     function __construct($params) {
         foreach ($params as $name => $value) {
@@ -9,7 +9,7 @@ class wpCSL_notifications__SLPLUS {
     }
 
     function add_notice($level = 1, $content, $link = null) {
-        $this->notices[] = new wpCSL_notifications_notice__SLPLUS(
+        $this->notices[] = new wpCSL_notifications_notice__slplus(
             array(
                 'level' => $level,
                 'content' => $content,
@@ -40,7 +40,7 @@ class wpCSL_notifications__SLPLUS {
                 $notice_output .= "<div id='{$this->prefix}_notice' class='updated fade'
                     style='background-color: rgb(255, ".$color.", 25);'>\n";
                 $notice_output .= sprintf(
-                    __('<p><strong><a href="%s">%s</a> needs attention: </strong>',WPCSL__SLPLUS__VERSION),
+                    __('<p><strong><a href="%s">%s</a> needs attention: </strong>',WPCSL__slplus__VERSION),
                     $this->url, 
                     $this->name
                 );
@@ -62,7 +62,7 @@ class wpCSL_notifications__SLPLUS {
     }
 }
 
-class wpCSL_notifications_notice__SLPLUS {
+class wpCSL_notifications_notice__slplus {
 
     function __construct($params) {
         foreach($params as $name => $value) {

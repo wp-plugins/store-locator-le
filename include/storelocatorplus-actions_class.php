@@ -44,7 +44,7 @@ if (! class_exists('SLPlus_Actions')) {
 
             // Add admin helpers
             //
-            require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-adminui_class.php');            
+            require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-adminui_class.php');
             
             //-------------------------
             // Navbar Section
@@ -243,23 +243,9 @@ if (! class_exists('SLPlus_Actions')) {
 						"http://$google_map_domain/maps/api/js?v=3.9&amp;sensor=false"
 					);
 				}
-                //wp_register_script(
-                //        'slplus_map',
-                //        SLPLUS_PLUGINURL.'/core/js/store-locator-map.js',
-                //        array('google_maps','jquery')
-                //        ); 
 						
 				wp_register_script('csl_script', SLPLUS_PLUGINURL.'/core/js/csl.js', array('jquery'));
-                
-                // Setup Email Form Script If Selected
-                //                
-                //if (get_option(SLPLUS_PREFIX.'_email_form')==1) {
-                //    wp_register_script(
-                //            'slplus_emailform',
-                //            SLPLUS_PLUGINURL.'/core/js/store-locator-emailform.js',
-                 //           array('google_maps','slplus_map')
-                 //           );                       
-                //}                            
+                      
             }                        
         }     
         
@@ -282,10 +268,6 @@ if (! class_exists('SLPlus_Actions')) {
                 //wp_enqueue_script('slplus_map');
 				wp_enqueue_script('csl_script');
                 
-               // if (get_option(SLPLUS_PREFIX.'_email_form')==1) {
-                //    wp_enqueue_script('slplus_emailform');
-               // }
-                
                 // Enqueue the style sheet
                 //
                 setup_stylesheet_for_slplus();                
@@ -293,32 +275,6 @@ if (! class_exists('SLPlus_Actions')) {
                 // Force our scripts to load for badly behaved themes
                 //
                 wp_print_footer_scripts();
-				/*
-?>                
-                <script type='text/javascript'>
-                    jQuery(window).load(function() {
-                            allScripts=document.getElementsByTagName('script');
-                            
-                            // Check our scripts were enqueued
-                            //
-                            if (allScripts.length-1 < 4) {
-                                alert('<?php echo __('SLPLUS: The theme or a plugin is preventing trailing JavaScript from loading.',SLPLUS_PREFIX); ?>');
-                                
-                            // Check the Google Maps was loaded
-                            //
-                            } else if (typeof GLatLng == 'undefined' ) {        
-                                alert('<?php echo __('SLPLUS: Google Map Interface did not load.\n\nCheck your Google API key and make sure you have API V2 enabled.',SLPLUS_PREFIX); ?>');
-                        
-                            // Yup, set our sl_load to prepopulate map data
-                            //
-                            } else if (document.getElementById("map")){
-                                setTimeout("sl_load()",1000);
-                                
-                            }
-                        }
-                    );                
-                </script>
-<?php                       */
             }             
 		}            
 	}

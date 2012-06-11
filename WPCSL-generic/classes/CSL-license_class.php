@@ -9,7 +9,7 @@
 *
 ************************************************************************/
 
-class wpCSL_license__SLPLUS {    
+class wpCSL_license__slplus {    
 
     /**------------------------------------
      ** CONSTRUCTOR
@@ -30,6 +30,24 @@ class wpCSL_license__SLPLUS {
     }
 
     /**------------------------------------
+     ** method: getOption()
+     **
+     ** Gets an option from the database
+     **/
+     function getOption($option, $default = false) {
+            return get_option($option, $default);
+     }
+
+     /**------------------------------------
+     ** method: updateOption()
+     **
+     ** Gets an option from the database
+     **/
+     function updateOption($option, $val) {
+        update_option($option, $val);
+     }
+
+    /**------------------------------------
      ** method: check_license_key()
      **
      ** Currently only checks for an existing license key (PayPal
@@ -47,7 +65,7 @@ class wpCSL_license__SLPLUS {
         // but licensed packages
         //
         if ($usethis_license == '') {
-            $usethis_license = get_option($this->prefix . '-license_key');
+            $usethis_license = $this->getOption($this->prefix . '-license_key');
         }
 
         // Don't check to see if the license is valid if there is no supplied license key
@@ -58,11 +76,11 @@ class wpCSL_license__SLPLUS {
         // Save the current date and retrieve the last time we checked
         // with the server.
         if (!$isa_package) {
-            $last_lookup = get_option($this->prefix.'-last_lookup');
-            update_option($this->prefix.'-last_lookup', time());
+            $last_lookup = $this->getOption($this->prefix.'-last_lookup');
+            $this->updateOption($this->prefix.'-last_lookup', time());
         } else {
-            $last_lookup = get_option($this->prefix.'-'.$theSKU.'-last_lookup');
-            update_option($this->prefix.'-'.$theSKU.'-last_lookup', time());
+            $last_lookup = $this->getOption($this->prefix.'-'.$theSKU.'-last_lookup');
+            $this->updateOption($this->prefix.'-'.$theSKU.'-last_lookup', time());
         }
 
         // Only check every 3 days.
@@ -81,7 +99,7 @@ class wpCSL_license__SLPLUS {
         $query_string = http_build_query(
             array(
                 'id' => $usethis_license,
-                'siteurl' => get_option('siteurl'),
+                'siteurl' => $this->getOption('siteurl'),
                 'sku' => $theSKU,
                 'checkpackage' => $isa_package ? 'true' : 'false',
                 'advanced' => 'true'
@@ -120,29 +138,29 @@ class wpCSL_license__SLPLUS {
                 // Licensed
                 // main product
                 if (!$isa_package) { 
-                    update_option($this->prefix.'-purchased',true); 
+                    $this->updateOption($this->prefix.'-purchased',true); 
             
                 // add on package
                 } else {
-                    update_option($this->prefix.'-'.$theSKU.'-isenabled',true);
+                    $this->updateOption($this->prefix.'-'.$theSKU.'-isenabled',true);
                     
                     // Local version info for this package is empty, set it
                     //
-                    if (get_option($this->prefix.'-'.$theSKU.'-version') == '') {                        
-                            update_option($this->prefix.'-'.$theSKU.'-version',$response->latest_version);
-                            update_option($this->prefix.'-'.$theSKU.'-version-numeric',$response->latest_version_numeric);
+                    if ($this->getOption($this->prefix.'-'.$theSKU.'-version') == '') {                        
+                            $this->updateOption($this->prefix.'-'.$theSKU.'-version',$response->latest_version);
+                            $this->updateOption($this->prefix.'-'.$theSKU.'-version-numeric',$response->latest_version_numeric);
                             
                     // Local version is not empty,                         
                     // Make sure we never downgrade the user's version
                     //
-                    } else if ($response->effective_version_numeric > (int)get_option($this->prefix.'-'.$theSKU.'-version-numeric')) {
-                            update_option($this->prefix.'-'.$theSKU.'-version',$response->effective_version);
-                            update_option($this->prefix.'-'.$theSKU.'-version-numeric',$response->effective_version_numeric);
+                    } else if ($response->effective_version_numeric > (int)$this->getOption($this->prefix.'-'.$theSKU.'-version-numeric')) {
+                            $this->updateOption($this->prefix.'-'.$theSKU.'-version',$response->effective_version);
+                            $this->updateOption($this->prefix.'-'.$theSKU.'-version-numeric',$response->effective_version_numeric);
                     }             
                 }
 
-                update_option($this->prefix.'-'.$theSKU.'-latest-version',$response->latest_version);
-                update_option($this->prefix.'-'.$theSKU.'-latest-version-numeric',$response->latest_version_numeric);
+                $this->updateOption($this->prefix.'-'.$theSKU.'-latest-version',$response->latest_version);
+                $this->updateOption($this->prefix.'-'.$theSKU.'-latest-version-numeric',$response->latest_version_numeric);
                 return true;
             }
         }
@@ -150,11 +168,11 @@ class wpCSL_license__SLPLUS {
         // Handle possible server disconnect
         if (is_null($response)) {
             if (!$isa_package) {
-                return get_option($this->prefix.'-purchased',false);
+                return $this->getOption($this->prefix.'-purchased',false);
 
                 // add on package
             } else {
-                return get_option($this->prefix.'-'.$theSKU.'-isenabled',false);
+                return $this->getOption($this->prefix.'-'.$theSKU.'-isenabled',false);
             }
         }
 
@@ -163,11 +181,11 @@ class wpCSL_license__SLPLUS {
         // main product
         if (!$final_result) {
             if (!$isa_package) {
-                update_option($this->prefix.'-purchased',false);
+                $this->updateOption($this->prefix.'-purchased',false);
 
                 // add on package
             } else {
-                update_option($this->prefix.'-'.$theSKU.'-isenabled',false);
+                $this->updateOption($this->prefix.'-'.$theSKU.'-isenabled',false);
             }
         }
 
@@ -188,18 +206,18 @@ class wpCSL_license__SLPLUS {
             return true;
         }
         
-        if (get_option($this->prefix.'-purchased') != '1') {
-            if (get_option($this->prefix.'-license_key') != '') {
-                update_option($this->prefix.'-purchased', $this->check_license_key());
+        if ($this->getOption($this->prefix.'-purchased') != '1') {
+            if ($this->getOption($this->prefix.'-license_key') != '') {
+                $this->updateOption($this->prefix.'-purchased', $this->check_license_key());
             }
 
-            if (get_option($this->prefix.'-purchased') != '1') {
+            if ($this->getOption($this->prefix.'-purchased') != '1') {
                 if (isset($this->notifications)) {
                     $this->notifications->add_notice(
                         2,
                         __("You have not provided a valid license key for this plugin. " .
                             "Until you do so, it will only display content for Admin users." 
-                            ,WPCSL__SLPLUS__VERSION
+                            ,WPCSL__slplus__VERSION
                             ),
                         "options-general.php?page={$this->prefix}-options#product_settings"
                     );
@@ -247,7 +265,7 @@ class wpCSL_license__SLPLUS {
         // Setup the new package only if it was not setup before
         //
         if (!isset($this->packages[$params['name']])) {
-            $this->packages[$params['name']] = new wpCSL_license_package__SLPLUS(
+            $this->packages[$params['name']] = new wpCSL_license_package__slplus(
                 array_merge(
                     $params,
                     array(
@@ -264,13 +282,31 @@ class wpCSL_license__SLPLUS {
 
 /****************************************************************************
  **
- ** class: wpCSL_license_package__SLPLUS
+ ** class: wpCSL_license_package__slplus
  **
  **/
-class wpCSL_license_package__SLPLUS {
+class wpCSL_license_package__slplus {
 
     public $active_version = 0;
     public $force_enabled = false;
+
+    /**------------------------------------
+     ** method: getOption()
+     **
+     ** Gets an option from the database
+     **/
+     function getOption($option, $default = false) {
+        return get_option($option, $default);
+     }
+
+     /**------------------------------------
+     ** method: updateOption()
+     **
+     ** Gets an option from the database
+     **/
+     function updateOption($option, $val) {
+        update_option($option, $val);
+     }
     
     /**------------------------------------
      **/
@@ -288,15 +324,15 @@ class wpCSL_license_package__SLPLUS {
         // set this package to the pre-saved enabled/disabled setting from wp_options
         // which will return false if never set before
         //
-        $this->isenabled = ($this->force_enabled || get_option($this->enabled_option_name));        
+        $this->isenabled = ($this->force_enabled || $this->getOption($this->enabled_option_name));        
         
         // Set our license key property
         //
-        $this->license_key = get_option($this->lk_option_name);
+        $this->license_key = $this->getOption($this->lk_option_name);
         
         // Set our active version (what we are licensed for)
         //
-        $this->active_version =  (isset($this->force_version)?$this->force_version:get_option($this->prefix.'-'.$this->sku.'-latest-version-numeric')); 
+        $this->active_version =  (isset($this->force_version)?$this->force_version:$this->getOption($this->prefix.'-'.$this->sku.'-latest-version-numeric')); 
     }
     
     
@@ -315,10 +351,10 @@ class wpCSL_license_package__SLPLUS {
         // siblings (second param) in order to properly set all of the
         // required settings.
         if (!$this->isenabled) {
-
-            $this->parent->check_license_key($this->sku, false, get_option($this->lk_option_name));
-            $this->isenabled = get_option($this->enabled_option_name);
-            $this->active_version =  get_option($this->prefix.'-'.$this->sku.'-latest-version-numeric');             
+            $this->parent->check_license_key($this->sku, false, $this->getOption($this->lk_option_name));
+            //$this->parent->check_license_key($this->sku, $this->isa_child, $this->getOption($this->lk_option_name));
+            $this->isenabled = $this->getOption($this->enabled_option_name);
+            $this->active_version =  $this->getOption($this->prefix.'-'.$this->sku.'-latest-version-numeric');             
         }
 
         // Attempt to register the parent if we have one

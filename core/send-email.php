@@ -5,7 +5,7 @@
 
 error_reporting(0);
 include('load_wp_config.php');
-
+if (!wp_verify_nonce($_REQUEST['valid'],'em')) die();
 $message_headers = 
     "From: \"{$_GET['email_name']}\" <{$_GET['email_from']}>\n" . 
     "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n";
