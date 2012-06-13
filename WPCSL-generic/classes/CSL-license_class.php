@@ -30,24 +30,6 @@ class wpCSL_license__slplus {
     }
 
     /**------------------------------------
-     ** method: getOption()
-     **
-     ** Gets an option from the database
-     **/
-     function getOption($option, $default = false) {
-            return get_option($option, $default);
-     }
-
-     /**------------------------------------
-     ** method: updateOption()
-     **
-     ** Gets an option from the database
-     **/
-     function updateOption($option, $val) {
-        update_option($option, $val);
-     }
-
-    /**------------------------------------
      ** method: check_license_key()
      **
      ** Currently only checks for an existing license key (PayPal
@@ -65,7 +47,7 @@ class wpCSL_license__slplus {
         // but licensed packages
         //
         if ($usethis_license == '') {
-            $usethis_license = $this->getOption($this->prefix . '-license_key');
+            $usethis_license = get_option($this->prefix . '-license_key');
         }
 
         // Don't check to see if the license is valid if there is no supplied license key
@@ -76,18 +58,18 @@ class wpCSL_license__slplus {
         // Save the current date and retrieve the last time we checked
         // with the server.
         if (!$isa_package) {
-            $last_lookup = $this->getOption($this->prefix.'-last_lookup');
-            $this->updateOption($this->prefix.'-last_lookup', time());
+            $last_lookup = get_option($this->prefix.'-last_lookup');
+            update_option($this->prefix.'-last_lookup', time());
         } else {
-            $last_lookup = $this->getOption($this->prefix.'-'.$theSKU.'-last_lookup');
-            $this->updateOption($this->prefix.'-'.$theSKU.'-last_lookup', time());
+            $last_lookup = get_option($this->prefix.'-'.$theSKU.'-last_lookup');
+            update_option($this->prefix.'-'.$theSKU.'-last_lookup', time());
         }
 
         // Only check every 3 days.
         $date_differential = (3 * 24 * 60 * 60);
 
         if (!$force && ($last_lookup + $date_differential) > time() ) {
-            return false;
+            return $this->AmIEnabled($isa_package, $theSKU);
         }
 
         // HTTP Handler is not set fail the license check
@@ -99,7 +81,7 @@ class wpCSL_license__slplus {
         $query_string = http_build_query(
             array(
                 'id' => $usethis_license,
-                'siteurl' => $this->getOption('siteurl'),
+                'siteurl' => get_option('siteurl'),
                 'sku' => $theSKU,
                 'checkpackage' => $isa_package ? 'true' : 'false',
                 'advanced' => 'true'
@@ -138,42 +120,36 @@ class wpCSL_license__slplus {
                 // Licensed
                 // main product
                 if (!$isa_package) { 
-                    $this->updateOption($this->prefix.'-purchased',true); 
+                    update_option($this->prefix.'-purchased',true); 
             
                 // add on package
                 } else {
-                    $this->updateOption($this->prefix.'-'.$theSKU.'-isenabled',true);
+                    update_option($this->prefix.'-'.$theSKU.'-isenabled',true);
                     
                     // Local version info for this package is empty, set it
                     //
-                    if ($this->getOption($this->prefix.'-'.$theSKU.'-version') == '') {                        
-                            $this->updateOption($this->prefix.'-'.$theSKU.'-version',$response->latest_version);
-                            $this->updateOption($this->prefix.'-'.$theSKU.'-version-numeric',$response->latest_version_numeric);
+                    if (get_option($this->prefix.'-'.$theSKU.'-version') == '') {                        
+                            update_option($this->prefix.'-'.$theSKU.'-version',$response->latest_version);
+                            update_option($this->prefix.'-'.$theSKU.'-version-numeric',$response->latest_version_numeric);
                             
                     // Local version is not empty,                         
                     // Make sure we never downgrade the user's version
                     //
-                    } else if ($response->effective_version_numeric > (int)$this->getOption($this->prefix.'-'.$theSKU.'-version-numeric')) {
-                            $this->updateOption($this->prefix.'-'.$theSKU.'-version',$response->effective_version);
-                            $this->updateOption($this->prefix.'-'.$theSKU.'-version-numeric',$response->effective_version_numeric);
+                    } else if ($response->effective_version_numeric > (int)get_option($this->prefix.'-'.$theSKU.'-version-numeric')) {
+                            update_option($this->prefix.'-'.$theSKU.'-version',$response->effective_version);
+                            update_option($this->prefix.'-'.$theSKU.'-version-numeric',$response->effective_version_numeric);
                     }             
                 }
 
-                $this->updateOption($this->prefix.'-'.$theSKU.'-latest-version',$response->latest_version);
-                $this->updateOption($this->prefix.'-'.$theSKU.'-latest-version-numeric',$response->latest_version_numeric);
+                update_option($this->prefix.'-'.$theSKU.'-latest-version',$response->latest_version);
+                update_option($this->prefix.'-'.$theSKU.'-latest-version-numeric',$response->latest_version_numeric);
                 return true;
             }
         }
 
         // Handle possible server disconnect
         if (is_null($response)) {
-            if (!$isa_package) {
-                return $this->getOption($this->prefix.'-purchased',false);
-
-                // add on package
-            } else {
-                return $this->getOption($this->prefix.'-'.$theSKU.'-isenabled',false);
-            }
+            return $this->AmIEnabled($isa_package, $theSKU);
         }
 
         //.............
@@ -181,15 +157,31 @@ class wpCSL_license__slplus {
         // main product
         if (!$final_result) {
             if (!$isa_package) {
-                $this->updateOption($this->prefix.'-purchased',false);
+                update_option($this->prefix.'-purchased',false);
 
                 // add on package
             } else {
-                $this->updateOption($this->prefix.'-'.$theSKU.'-isenabled',false);
+                update_option($this->prefix.'-'.$theSKU.'-isenabled',false);
             }
         }
 
         return false;
+    }
+
+    /**------------------------------------
+     ** method: AmIEnabled
+     ** Parameters: $isa_package = is it a package or the main product
+     **             $theSKU = the sku of the product
+     ** Returns: True if enabled/purchased, false if not
+     **/
+    function AmIEnabled($isa_package, $theSKU) {
+        if (!$isa_package) {
+                return get_option($this->prefix.'-purchased',false);
+
+                // add on package
+            } else {
+                return get_option($this->prefix.'-'.$theSKU.'-isenabled',false);
+            }
     }
 
     /**------------------------------------
@@ -206,12 +198,12 @@ class wpCSL_license__slplus {
             return true;
         }
         
-        if ($this->getOption($this->prefix.'-purchased') != '1') {
-            if ($this->getOption($this->prefix.'-license_key') != '') {
-                $this->updateOption($this->prefix.'-purchased', $this->check_license_key());
+        if (get_option($this->prefix.'-purchased') != '1') {
+            if (get_option($this->prefix.'-license_key') != '') {
+                update_option($this->prefix.'-purchased', $this->check_license_key());
             }
 
-            if ($this->getOption($this->prefix.'-purchased') != '1') {
+            if (get_option($this->prefix.'-purchased') != '1') {
                 if (isset($this->notifications)) {
                     $this->notifications->add_notice(
                         2,
@@ -234,7 +226,7 @@ class wpCSL_license__slplus {
      **/
     function initialize_options() {
         register_setting($this->prefix.'-settings', $this->prefix.'-license_key');
-        register_setting($this->prefix.'-Settings', $this->prefix.'-purchased');
+        register_setting($this->prefix.'-settings', $this->prefix.'-purchased');
         
         if ($this->has_packages) {
             foreach ($this->packages as $aPackage) {
@@ -258,9 +250,6 @@ class wpCSL_license__slplus {
         // If we don't have a package name or SKU get outta here
         //
         if (!isset($params['name']) || !isset($params['sku'])) return;
-
-        // Default to being a child
-        //$this->isa_child = true;
 
         // Setup the new package only if it was not setup before
         //
@@ -289,24 +278,6 @@ class wpCSL_license_package__slplus {
 
     public $active_version = 0;
     public $force_enabled = false;
-
-    /**------------------------------------
-     ** method: getOption()
-     **
-     ** Gets an option from the database
-     **/
-     function getOption($option, $default = false) {
-        return get_option($option, $default);
-     }
-
-     /**------------------------------------
-     ** method: updateOption()
-     **
-     ** Gets an option from the database
-     **/
-     function updateOption($option, $val) {
-        update_option($option, $val);
-     }
     
     /**------------------------------------
      **/
@@ -324,15 +295,15 @@ class wpCSL_license_package__slplus {
         // set this package to the pre-saved enabled/disabled setting from wp_options
         // which will return false if never set before
         //
-        $this->isenabled = ($this->force_enabled || $this->getOption($this->enabled_option_name));        
+        $this->isenabled = ($this->force_enabled || get_option($this->enabled_option_name));        
         
         // Set our license key property
         //
-        $this->license_key = $this->getOption($this->lk_option_name);
+        $this->license_key = get_option($this->lk_option_name);
         
         // Set our active version (what we are licensed for)
         //
-        $this->active_version =  (isset($this->force_version)?$this->force_version:$this->getOption($this->prefix.'-'.$this->sku.'-latest-version-numeric')); 
+        $this->active_version =  (isset($this->force_version)?$this->force_version:get_option($this->prefix.'-'.$this->sku.'-latest-version-numeric')); 
     }
     
     
@@ -351,16 +322,14 @@ class wpCSL_license_package__slplus {
         // siblings (second param) in order to properly set all of the
         // required settings.
         if (!$this->isenabled) {
-            $this->parent->check_license_key($this->sku, false, $this->getOption($this->lk_option_name));
-            //$this->parent->check_license_key($this->sku, $this->isa_child, $this->getOption($this->lk_option_name));
-            $this->isenabled = $this->getOption($this->enabled_option_name);
-            $this->active_version =  $this->getOption($this->prefix.'-'.$this->sku.'-latest-version-numeric');             
+
+            $this->parent->check_license_key($this->sku, false, get_option($this->lk_option_name));
+            $this->isenabled = get_option($this->enabled_option_name);
+            $this->active_version =  get_option($this->prefix.'-'.$this->sku.'-latest-version-numeric');             
         }
 
         // Attempt to register the parent if we have one
-        //if ($this->isa_child) {
-            $this->parent->check_license_key($this->sku, true);
-        //}
+        $this->parent->check_license_key($this->sku, true);
 
         return $this->isenabled;
     }

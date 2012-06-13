@@ -123,7 +123,7 @@ if (! class_exists('SLPlus_Actions')) {
             // Store Pages
             //
             $slp_rep_desc = __('These settings affect how the Store Pages add-on behaves. ', SLPLUS_PREFIX);
-            if (!$slplus_plugin->license->packages['Store Pages']->isenabled) {
+            if (!$slplus_plugin->license->AmIEnabled(true, "SLP-PAGES")) {
                 $slp_rep_desc .= '<br/><br/>'.
                     __('This is a <a href="http://www.storelocatorplus.com/">Store Pages</a>'.
                     ' feature.  It provides a way to auto-create individual WordPress pages' .
@@ -136,7 +136,7 @@ if (! class_exists('SLPlus_Actions')) {
                     'description' => $slp_rep_desc
                 )
             );         
-            if ($slplus_plugin->license->packages['Store Pages']->isenabled) {            
+            if ($slplus_plugin->license->AmIEnabled(true, "SLP-PAGES")) {            
                 slplus_add_pages_settings();
             }                
             
@@ -144,7 +144,7 @@ if (! class_exists('SLPlus_Actions')) {
             // Pro Pack: Reporting
             // 
             $slp_rep_desc = __('These settings affect how the reporting system behaves. ', SLPLUS_PREFIX);
-            if (!$slplus_plugin->license->packages['Pro Pack']->isenabled) {
+            if (!$slplus_plugin->license->AmIEnabled(true, "SLPLUS")) {
                 $slp_rep_desc .= '<br/><br/>'.
                     __('This is a <a href="http://www.storelocatorplus.com/">Pro Pack</a>'.
                     ' feature.  It provides a way to generate reports on what locations' .
@@ -157,7 +157,7 @@ if (! class_exists('SLPlus_Actions')) {
                     'description' => $slp_rep_desc
                 )
             );
-            if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
+            if ($slplus_plugin->license->AmIEnabled(true, "SLPLUS")) {
                 slplus_add_report_settings();
             }                
         }

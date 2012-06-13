@@ -40,7 +40,7 @@ if (defined('SLPLUS_PLUGINDIR')) {
             'sku'                   => 'SLPLUS',
 
             'on_update' => array(SLPlus_Activate, update),
-            'version' => '3.0.5',
+            'version' => '3.0.7',
 
             'url'                   => 'http://www.storelocatorplus.com/',            
             'support_url'            => 'http://storelocatorplus.com/faq/',
@@ -137,13 +137,12 @@ function configure_slplus_storepages() {
     $slplus_plugin->license->add_licensed_package(
             array(
                 'name'              => 'Store Pages',
-                'help_text'         => 'Create inidividual WordPress pages from your locations data. Great for SEO.  ' .
+                'help_text'         => 'Create individual WordPress pages from your locations data. Great for SEO.  ' .
                                        'See the <a href="'.$slplus_plugin->purchase_url.'" target="Cyber Sprocket">product page</a> for details.  If you purchased this add-on ' .
                                        'come back to this page to enter the license key to activate the new features.',
                 'sku'               => 'SLP-PAGES',
                 'paypal_button_id'  => '3V2SSFKB3R6XE',
-                'paypal_upgrade_button_id' => '3V2SSFKB3R6XE',
-                'isa_child'                    => false
+                'paypal_upgrade_button_id' => '3V2SSFKB3R6XE'
             )
         );
     
