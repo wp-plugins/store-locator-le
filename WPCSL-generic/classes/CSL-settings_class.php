@@ -512,7 +512,7 @@ class wpCSL_settings__slplus {
                     
                     $package->parent->check_license_key(
                         $package->sku,
-                        $package->isa_child,
+                        true,
                         ($this->has_packages ? $package->license_key : ''),
                         true // Force a server check
                     )

@@ -17,7 +17,7 @@
     //--------------------------------
     // Pro Version : Show Reports Tab
     //
-    if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {      
+    if ($slplus_plugin->license->AmIEnabled(true, "SLPLUS")) {      
         print '<a href="'.SLPLUS_PLUSPAGE.'reporting.php"><li class="like-a-button">Reports</li></a>';
     }
     ?>    
