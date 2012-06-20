@@ -313,8 +313,7 @@ class wpCSL_license_package__slplus {
      ** Initialize the admin option settings.
      **/
     function initialize_options_for_admin() {
-        register_setting($this->prefix.'-settings', $this->enabled_option_name);                        
-        register_setting($this->prefix.'-settings', $this->lk_option_name);        
+        register_setting($this->prefix.'-settings', $this->lk_option_name);
     }
     
     function isenabled_after_forcing_recheck() {

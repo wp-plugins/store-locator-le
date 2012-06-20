@@ -3,16 +3,16 @@ Plugin Name: Google Maps via Store Locator Plus
 Contributors: cybersprocket
 Donate link: http://www.storelocatorplus.com/
 Tags: google maps, store finder, store locator, store locater, google, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus, bing map, bing, yahoo maps, yahoo, mapping, retail
-Requires at least: 3.3.2
-Tested up to: 3.3.2
-Stable tag: 3.0.7
+Requires at least: 3.3
+Tested up to: 3.4
+Stable tag: 3.0.8
 
-Store Locator Plus works with Google Maps to put a store location search on your site.
-Tweak the look and feel with the custom settings.
+Store Locator Plus works with Google Maps v3 to put a store location search on your site.
+The most active store locator plugin.
 
 == Description ==
 
-Whether you have a thousands of locations or just a handful, you can do it all from within the WordPress admin panel. No programming required. Set up an interactive Google map for your customers with a single shortcode. Categorize your stores and customize the map. You can export the results. This is a simple, quick, and easy plugin.
+Whether you have a thousands of locations or just a handful, you can do it all from within the WordPress admin panel. No programming required, no monthly fee to ask questions in the forum and an active development team supporting you. Set up an interactive Google map for your customers with a single shortcode. Categorize your stores and customize the map. You can export the results. This is a simple, quick, and easy plugin.
 
 Store Locator Plus is an advanced system for managing multiple physical locations via a fully integrated WordPress solution. You can add details such as a store description, hours, a website address, an email address, and tags for each location and then display those locations easily on any page using a shortcode. The location search form and Google Map will automatically be displayed.
 
@@ -33,6 +33,7 @@ Advanced customization is available via the settings interface in the admin pane
 * Bulk upload your locations via the CSV loader.
 * Location search tracking and reporting, find out what your visitors are looking for.
 * Popup email form.
+* Use your own themes and icons to customize how your map looks
 
 = Rate Us =
 
@@ -59,7 +60,7 @@ Learn more at: http://www.cybersprocket.com/services/wordpress-developers/
 The plugin has an optional Pro Pack available that adds advanced features to the Store Locator Plus product.
 Some of the added features include:
 
-* **NEW!** Search by store name - Looking for a specific store? Search by name and pull it up instantly.
+* **NEW!**  Search by store name - Looking for a specific store? Search by name and pull it up instantly.
 * CSV Bulk Uploads - using the CSV bulk loader
 * Extended Map Settings - Control more details about how the map looks, disable the scale, the zoom, and more.
 * Extended Manage Location Features - more controls for managing locations.
@@ -107,6 +108,7 @@ You can have a WordPress page for each store location on your map turning your l
 = Requirements =
 
 * PHP 5.1+
+* Wordpress: 3.3.2+
 
 = Main Plugin =
 
@@ -139,7 +141,7 @@ Thanks to [Nicolas Mollet](http://mapicons.nicolasmollet.com/) for some of the g
 
 = What are the terms of the license? =
 
-The license is based on GPL.  You get the code, feel free to modify it as you
+The license is GPL.  You get the code, feel free to modify it as you
 wish.  We prefer that our customers pay us because they like what we do and
 want to support our efforts to bring useful software to market.  Learn more
 on our [CSL License Terms page](http://redmine.cybersprocket.com/projects/commercial-products/wiki/Cyber_Sprocket_Labs_Licensing_Terms "CSL License Terms page").
@@ -156,7 +158,7 @@ If you create a translation file please send it to us and we'll include it in th
 
 = What browsers are supported? =
 
-All major browsers should work, however Cyber Sprocket Labs only officially supports the current and prior releases of Internet Explorer, Firefox, Chrome, and Safari.
+All major browsers should work, however Cyber Sprocket Labs only officially supports the current and the most recent prior release of Internet Explorer, Firefox, Chrome, and Safari.
 
 As of June, 2011 this includes:
 
@@ -198,22 +200,30 @@ We renamed it the Pro Pack.  Your Plus Pack license will work for the Pro Pack.
 == Screenshots ==
 
 1. Location Details
-2. Basic Address Search
+2. Tag filter pulldown
 3. All Options Search
-4. Tag Filter, Pulldown (any with zip)
-5. Tag Filter, PUlldown (green with zip)
-6. Admin Map Settings
-7. Admin Add Locations
-8. Admin Manage Locations
-9. Simple Box SLP Theme
+4. Tag Filtered by location search
+5. Admin Map Settings
+6. Admin Add Locations
+7. Admin Manage Locations
 
 More screenshots are available via the [Store Locator Plus website](http://www.storelocatorplus.com/).
 
 == Upgrade Notice ==
 
-Now uses the Google Maps API V3! Pro Pack includes new search by name functionality! **Make sure you enable V3 API key before upgrading**: [API Console](https://code.google.com/apis/console/).
+Make sure you enable V3 API key before upgrading see: https://code.google.com/apis/console/
 
 == Changelog ==
+
+= 3.0.8 (June 19th 2012) =
+
+* [Store Pages] Able to turn on and off the links to store pages
+* Fixed an issue where the map wouldn't be compatible with ie7 and ie8
+* Fixed an issue where on some installs jQuery wouldn't parse json
+* Added a countdown to the "please rate us"
+* Fixed the random "> at the end of checkboxes
+* Searching with extended character set works
+* Removed extraneous line breaks causing certain filters to break inline javascript
 
 = 3.0.7 (June 12th 2012) =
 

@@ -873,7 +873,7 @@ class wpCSL_settings_item__slplus {
             case "checkbox":
                 echo '<input type="checkbox" name="'.$this->name.'" '.
                     ($this->disabled?'disabled="disabled" ':'').                
-                    ($showThis?' checked' : '').'>"';
+                    ($showThis?' checked' : '').'>';
                 break;
 
             case "list":

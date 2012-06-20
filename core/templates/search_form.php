@@ -18,8 +18,7 @@
             if ($cs_options != '') { 
             ?>
             <div id='addy_in_city'>
-                <select id='addressInput2' 
-                    onchange='aI=document.getElementById("searchForm").addressInput;if(this.value!=""){oldvalue=aI.value;aI.value=this.value;}else{aI.value=oldvalue;}'>
+                <select id='addressInput2' onchange='aI=document.getElementById("searchForm").addressInput;if(this.value!=""){oldvalue=aI.value;aI.value=this.value;}else{aI.value=oldvalue;}'>
                     <option value=''>--Search By City--</option>
                     <?php echo $cs_options?>
                 </select>
@@ -37,8 +36,7 @@
                 <label for='addressInputState'><?php 
                 	print get_option($prefix.'_state_pd_label');                
                 	?></label>
-                <select id='addressInputState' 
-                    onchange='aI=document.getElementById("searchForm").addressInput;if(this.value!=""){oldvalue=aI.value;aI.value=this.value;}else{aI.value=oldvalue;}'>
+                <select id='addressInputState' onchange='aI=document.getElementById("searchForm").addressInput;if(this.value!=""){oldvalue=aI.value;aI.value=this.value;}else{aI.value=oldvalue;}'>
                     <option value=''>--Search By State--</option>
                     <?php echo $slplus_state_options?>
                 </select>
