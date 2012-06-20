@@ -40,12 +40,13 @@ if (defined('SLPLUS_PLUGINDIR')) {
             'sku'                   => 'SLPLUS',
 
             'on_update' => array(SLPlus_Activate, update),
-            'version' => '3.0.7',
+            'version' => '3.0.8',
 
             'url'                   => 'http://www.storelocatorplus.com/',            
             'support_url'            => 'http://storelocatorplus.com/faq/',
             'purchase_url'           => 'http://storelocatorplus.com/download/',
             'rate_url'              => 'http://wordpress.org/extend/plugins/store-locator-le/',
+            'forum_url'             => 'http://redmine.cybersprocket.com/projects/commercial-products/boards/33',
             
             'basefile'              => SLPLUS_BASENAME,
             'plugin_path'           => SLPLUS_PLUGINDIR,

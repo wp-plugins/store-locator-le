@@ -88,7 +88,7 @@ class wpCSL_plugin__slplus {
         $this->uses_money       = true;
         $this->has_packages     = false;
         $this->display_settings = true;
-        $this->display_settings_collapsed = true;
+        $this->display_settings_collapsed = false;
         $this->show_locale      = true;
         $this->broadcast_url    = 'http://www.cybersprocket.com/signage/index.php';
         $this->shortcode_was_rendered = false;
@@ -828,7 +828,27 @@ class wpCSL_plugin__slplus {
         }
         
        if (isset($this->rate_url)){
-        
+
+        	$time = time(); 
+            $destruct_time =($time+(3*24*60*60));
+            
+            //-use this to force the notification for 72 hours checked or not
+            //update_option($this->prefix."-notice-countdown", $destruct_time);
+            
+            $destruct_time = get_option($this->prefix."-notice-countdown", $destruct_time);
+            // have we already expired a timer
+            if ($destruct_time === false) {
+                return;
+            }
+            
+            if ($destruct_time === true) {
+                //if you want something special to happen to people that did not check
+                // the check box to turn this off, here's the place to do it...
+                return;
+            }
+            
+            $hours_remaining = ceil(($destruct_time - $time) / 60 / 60);
+            
         	$this->settings->add_item(
         		'Display Settings',
         		'Turn off notification', 
@@ -837,15 +857,43 @@ class wpCSL_plugin__slplus {
         		false, 
         		__('This will disable the notification asking you to rate our product.',WPCSL__slplus__VERSION)
         		);
-        	if($this->settings->get_item(thisbox)==false){
-        		$this->notifications->add_notice(
-        			4,
-        			sprintf(
-        				__('We have worked hard on this plugin and need your ratings to continue to do so. Please visit us <a href="http://wordpress.org/extend/plugins/store-locator-le">here</a> and let us know if you like our product. Disable this message in the Display settings.',WPCSL__slplus__VERSION)
-        				)
+        	
+            //if the checkbox is not checked
+            if($this->settings->get_item('thisbox')==false){
+                //and there is still time left on the timer
+                if ($time < $destruct_time){
+                    //add our notice
+                    $this->notifications->add_notice(
+                        9,
+                        sprintf(
+                            __('Help us earn a grant so we can make plugins like '.$this->name.' better! Go to 
+                            <a href="http://www.missionsmallbusiness.com" target="_blank">http://www.missionsmallbusiness.com</a>.  
+                            Search "Cyber Sprocket" and click Vote. Done.  </br> Turn off this message in 
+                            <a href="'.admin_url().'/options-general.php?page='.$this->prefix.'-options#display_settings">Display Settings.</a> 
+                            Is something not right? <a href="'.$this->forum_url.'" target="_blank">Let us know.</a>
+                            This message will self destruct in: '.$hours_remaining.' hours',WPCSL__slplus__VERSION)
+                            )
+                        
         			);
+                    }
         		}
+            //checkbox was hit, so update to false
+            else {
+                update_option($this->prefix."-notice-countdown", false);
+            }
+            
+            //is the timer up?
+            if ($time >= $destruct_time) {
+                //if the checkbox has been hit, then set to false
+                if ($this->settings->get_item(thisbox)==true) {
+                    update_option($this->prefix."-notice-countdown", false);
+                }
+                //if not then set it to true
+                else {
+                    update_option($this->prefix."-notice-countdown", true);
+                }
         	}
+        }
     }
 
     /**-------------------------------------

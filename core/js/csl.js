@@ -63,6 +63,11 @@ var csl = {
 		this.send = function(action, callback) {
 			jQuery.post(csl_ajax.ajaxurl, action,
 			function (response) {
+			    try {
+			        response = JSON.parse(response);
+			    }
+			    catch (ex) {
+			    }
 				callback(response);
 			});
 		}
@@ -319,24 +324,7 @@ var csl = {
 		 */ 
 		this.escapeExtended = function(string)
 		{
-			string = string.replace(/\r\n/g,"\n");
-			var utftext = "";
- 
-			for (var n = 0; n < string.length; n++) {
- 
-				var c = string.charCodeAt(n);
- 
-				if (c < 128) {
-					utftext += string.charAt(n);
-				}
-				else
-				{
-					utftext += escape(string.charAt(n));
-				}
- 
-			}
- 
-			return utftext; 
+			return string; 
 		}
 	},
   	  
@@ -924,9 +912,10 @@ var csl = {
 		}
 		
 		this.debugSearch = function(toLog) {
-			if (slplus.debug_mode == 1)
-			{
-				console.log(toLog);
+			if (slplus.debug_mode == 1) {
+                if (console) {
+				    console.log(toLog);
+                }
 			}
 		}
 		

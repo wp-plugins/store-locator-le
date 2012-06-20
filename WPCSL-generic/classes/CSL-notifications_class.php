@@ -36,9 +36,53 @@ class wpCSL_notifications__slplus {
         $notice_output = '';
         foreach ($levels as $key => $value) {
             if (!$simple) {
-                $color = round((($key-1)*(255/$difference)));
-                $notice_output .= "<div id='{$this->prefix}_notice' class='updated fade'
-                    style='background-color: rgb(255, ".$color.", 25);'>\n";
+                $color = round($difference);
+                switch ($difference) {
+                case 1:
+                    $notice_output .= "<div id='{$this->prefix}_notice' class='updated fade'
+                    style='background-color: rgb(255, 60, 60);'>\n";
+                    break;
+                case 1:
+                    $notice_output .= "<div id='{$this->prefix}_notice' class='updated fade'
+                    style='background-color: rgb(255, 102, 0);'>\n";
+                    break;
+                case 4:
+                    $notice_output .= "<div id='{$this->prefix}_notice' class='updated fade'
+                    style='background-color: rgb(255, 204, 0);'>\n";
+                    break;
+                case 3:
+                    $notice_output .= "<div id='{$this->prefix}_notice' class='updated fade'
+                    style='background-color: rgb(255, 165, 104);'>\n";
+                    break;    
+                case 2:
+                    $notice_output .= "<div id='{$this->prefix}_notice' class='updated fade'
+                    style='background-color: rgb(255, 165, 0);'>\n";
+                    break;
+                case 5:
+                    $notice_output .= "<div id='{$this->prefix}_notice' class='updated fade'
+                    style='background-color: rgb(255, 201, 202);'>\n";
+                    break;
+                case 6:
+                    $notice_output .= "<div id='{$this->prefix}_notice' class='updated fade'
+                    style='background-color: rgb(224, 255, 255);'>\n";
+                    break;
+                case 7:
+                    $notice_output .= "<div id='{$this->prefix}_notice' class='updated fade'
+                    style='background-color: rgb(144, 238, 144);'>\n";
+                    break;
+                case 9:
+                    $notice_output .= "<div id='{$this->prefix}_notice' class='updated fade'
+                    style='background-color: rgb(250, 250, 210);'>\n";
+                    break;
+                case 8:
+                    $notice_output .= "<div id='{$this->prefix}_notice' class='updated fade'
+                    style='background-color: rgb(245, 222, 179);'>\n";
+                    break;
+                default:
+                    $notice_output .= "<div id='{$this->prefix}_notice' class='updated fade'
+                    style='background-color: rgb(245, 245, 220);'>\n";
+                    break;
+                }
                 $notice_output .= sprintf(
                     __('<p><strong><a href="%s">%s</a> needs attention: </strong>',WPCSL__slplus__VERSION),
                     $this->url, 
