@@ -2,7 +2,9 @@
   global $search_label, $width, $height, $width_units, $height_units, $hide,
       $sl_radius, $sl_radius_label, $r_options, $button_style,
       $sl_instruction_message, $cs_options, $slplus_state_options, $country_options, 
-      $prefix, $fnvars, $slplus_plugin, $slplus_name_label;
+      $fnvars, $slplus_plugin, $slplus_name_label;
+
+      $prefix = $slplus_plugin->prefix;
 ?>
 <div id='sl_div'>
   <form onsubmit='cslmap.searchLocations(); return false;' id='searchForm' action=''>
