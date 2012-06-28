@@ -847,7 +847,19 @@ class wpCSL_plugin__slplus {
                 return;
             }
             
-            $hours_remaining = ceil(($destruct_time - $time) / 60 / 60);
+            $hours_remaining = '';
+
+            $suffix = array('d' => 86400, 'h' => 3600, 'm' => 60,);
+
+            $remainder = abs($destruct_time - $time);
+
+            foreach($suffix as $key => $val) {
+                $$key = floor($remainder/$val);
+                $remainder -= ($$key*$val);
+                $hours_remaining .= ($$key==0) ? '' : $$key . "$key ";
+            }
+
+            $hours_remaining .= $remainder . 's ';
             
         	$this->settings->add_item(
         		'Display Settings',
@@ -871,7 +883,7 @@ class wpCSL_plugin__slplus {
                             Search "Cyber Sprocket" and click Vote. Done.  </br> Turn off this message in 
                             <a href="'.admin_url().'/options-general.php?page='.$this->prefix.'-options#display_settings">Display Settings.</a> 
                             Is something not right? <a href="'.$this->forum_url.'" target="_blank">Let us know.</a>
-                            This message will self destruct in: '.$hours_remaining.' hours',WPCSL__slplus__VERSION)
+                            This message will self destruct in: '.$hours_remaining.'',WPCSL__slplus__VERSION)
                             )
                         
         			);
@@ -886,13 +898,15 @@ class wpCSL_plugin__slplus {
             if ($time >= $destruct_time) {
                 //if the checkbox has been hit, then set to false
                 if ($this->settings->get_item(thisbox)==true) {
-                    update_option($this->prefix."-notice-countdown", false);
+                    $destruct_time = false;
                 }
                 //if not then set it to true
                 else {
-                    update_option($this->prefix."-notice-countdown", true);
+                    $destruct_time = true;
                 }
         	}
+
+            update_option($this->prefix."-notice-countdown", $destruct_time);
         }
     }
 
