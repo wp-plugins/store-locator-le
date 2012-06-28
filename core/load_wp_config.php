@@ -8,7 +8,7 @@
  * 'standard' : the config and settings file are in the given path
  * 'secured'  : the config file is one directory up, the settings is here
  * ''         : config and/or settings file is missing
- * 
+ * This does nothing
  */
 function InstallType($path) {
     $upPath = dirname($path);
