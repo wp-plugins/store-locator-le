@@ -837,17 +837,20 @@ var csl = {
         }
 		
         this.__createAddress = function(aMarker) {
-            var address = aMarker.address;
-			if (aMarker.address == '') { aMarker.address = ""; } else address += ', ';
-			address += aMarker.address2;
-			if (aMarker.address2 == '') { aMarker.address2 = ""; } else address += ', ';
-			address += aMarker.city;
-			if (aMarker.city == '') { aMarker.city = ""; } else address += ', ';
-			address += aMarker.state;
-			if (aMarker.state == '') { aMarker.state = ""; } else address += ', ';
-			address += aMarker.zip;
-			if (aMarker.zip == '') { aMarker.zip = ""; }
-            
+
+            var address = '';
+            if (aMarker.address != '') {
+                address += aMarker.address;
+            }
+
+            if (aMarker.address2 != '') { address += ", " + aMarker.address2; }
+
+            if (aMarker.city != '') { address += ", " + aMarker.city; }
+
+            if (aMarker.state != '') { address += ", " + aMarker.state; }
+
+            if (aMarker.zip != '') { address += ", " + aMarker.zip; }
+
             return address;
         }
         
@@ -1089,7 +1092,7 @@ var csl = {
             var city_state_zip = '';
             if (jQuery.trim(city) != '') {
                 city_state_zip += city;
-                if (jQuery.trim(state) != '') {
+                if (jQuery.trim(state) != '' || jQuery.trim(zip) != '') {
                     city_state_zip += ', ';
                 }
             }
@@ -1105,17 +1108,8 @@ var csl = {
             if (jQuery.trim(city_state_zip) != '') {
                 city_state_zip += '<br/>';
             }
-            
-            var address = aMarker.address;
-			if (aMarker.address == '') { aMarker.address = ""; } else address += ', ';
-			address += aMarker.address2;
-			if (aMarker.address2 == '') { aMarker.address2 = ""; } else address += ', ';
-			address += aMarker.city;
-			if (aMarker.city == '') { aMarker.city = ""; } else address += ', ';
-			address += aMarker.state;
-			if (aMarker.state == '') { aMarker.state = ""; } else address += ', ';
-			address += aMarker.zip;
-			if (aMarker.zip == '') { aMarker.zip = ""; }
+
+            var address = this.__createAddress(aMarker);
 			
 			var html =  '<center><table width="96%" cellpadding="4px" cellspacing="0" class="searchResultsTable">' +
 					'<tr>' +

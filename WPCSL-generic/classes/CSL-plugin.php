@@ -8,7 +8,7 @@
 * share a code libary and reduce code redundancy.
 * 
 ************************************************************************/
-define('WPCSL__slplus__VERSION', '1.9.2');
+define('WPCSL__slplus__VERSION', '2.0.11');
 
 // (LC) 
 // These helper files should only be loaded if needed by the plugin
@@ -111,10 +111,20 @@ class wpCSL_plugin__slplus {
 
         // Check to see if we are doing an update
         //
-        if (isset($this->on_update)) {
+        if (isset($this->version)) {
             if ($this->version != get_option($this->prefix."-installed_base_version")) {
-                call_user_func_array($this->on_update, array($this, get_option($this->prefix."-installed_base_version")));
+                if (isset($this->on_update)) {
+                    call_user_func_array($this->on_update, array($this, get_option($this->prefix."-installed_base_version")));
+                }
                 update_option($this->prefix.'-installed_base_version', $this->version);
+
+                $destruct_time = get_option($this->prefix."-notice-countdown");
+
+                // We're doing an update, so check to see if they didn't check the check box,
+                // and if they didn't... well, show it to them again
+                if ($destruct_time) {
+                    delete_option($this->prefix."-notice-countdown");
+                }
             }
         }
 
@@ -844,6 +854,7 @@ class wpCSL_plugin__slplus {
             if ($destruct_time === true) {
                 //if you want something special to happen to people that did not check
                 // the check box to turn this off, here's the place to do it...
+
                 return;
             }
             
@@ -863,7 +874,7 @@ class wpCSL_plugin__slplus {
             
         	$this->settings->add_item(
         		'Display Settings',
-        		'Turn off notification', 
+        		'Turn off rate notification', 
         		'thisbox', 
         		'checkbox', 
         		false, 
@@ -878,9 +889,9 @@ class wpCSL_plugin__slplus {
                     $this->notifications->add_notice(
                         9,
                         sprintf(
-                            __('Help us earn a grant so we can make plugins like '.$this->name.' better! Go to 
-                            <a href="http://www.missionsmallbusiness.com" target="_blank">http://www.missionsmallbusiness.com</a>.  
-                            Search "Cyber Sprocket" and click Vote. Done.  </br> Turn off this message in 
+                            __('Let us know how awesome '.$this->name.' is! Go to 
+                            <a href="'.$this->rate_url.'" target="_blank">the plugin page</a>.  
+                            and rate the plugin.  </br> Turn off this message in 
                             <a href="'.admin_url().'/options-general.php?page='.$this->prefix.'-options#display_settings">Display Settings.</a> 
                             Is something not right? <a href="'.$this->forum_url.'" target="_blank">Let us know.</a>
                             This message will self destruct in: '.$hours_remaining.'',WPCSL__slplus__VERSION)
