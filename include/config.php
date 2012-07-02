@@ -40,7 +40,7 @@ if (defined('SLPLUS_PLUGINDIR')) {
             'sku'                   => 'SLPLUS',
 
             'on_update' => array(SLPlus_Activate, update),
-            'version' => '3.0.8',
+            'version' => '3.0.92',
 
             'url'                   => 'http://www.storelocatorplus.com/',            
             'support_url'            => 'http://storelocatorplus.com/faq/',
