@@ -157,7 +157,8 @@ if (!$_POST) {
         '_hide_radius_selections',
         '_hide_address_entry',
         '_disable_search',
-		'_show_search_by_name'
+		'_show_search_by_name',
+        '_use_location_sensor'
         );
     foreach ($BoxesToHit as $JustAnotherBox) {        
         SaveCheckBoxToDB($JustAnotherBox);

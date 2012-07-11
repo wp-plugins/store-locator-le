@@ -107,7 +107,6 @@
         __('Turn the map type selector off.', SLPLUS_PREFIX)
         );
 
-
     // Pro Pack Version 2.4
     //
     if ($slplus_plugin->license->packages['Pro Pack']->active_version >= 2004000) {
