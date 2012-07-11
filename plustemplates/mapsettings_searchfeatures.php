@@ -70,6 +70,13 @@
         __('Tag Input',SLPLUS_PREFIX),
         __('Show the tag entry box on the search form.', SLPLUS_PREFIX)
         );        
+      
+    echo CreateCheckboxDiv(
+        '_use_location_sensor',
+        __('Use location sensor', SLPLUS_PREFIX),
+        __('This turns on the location sensor for your customers so they can easily get accurate results')
+    );
+        
 ?>
 
 <div class='form_entry'>

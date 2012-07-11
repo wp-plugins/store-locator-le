@@ -5,7 +5,7 @@ Donate link: http://www.storelocatorplus.com/
 Tags: google maps, store finder, store locator, store locater, google, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus, bing map, bing, yahoo maps, yahoo, mapping, retail
 Requires at least: 3.3
 Tested up to: 3.4.1
-Stable tag: 3.0.92
+Stable tag: 3.1
 
 Store Locator Plus works with Google Maps v3 to put a store location search on your site.
 The most active store locator plugin.
@@ -213,9 +213,14 @@ More screenshots are available via the [Store Locator Plus website](http://www.s
 
 == Upgrade Notice ==
 
-Make sure you enable V3 API key before upgrading see: https://code.google.com/apis/console/
+Update to allow the use of the location sensor, and compatability issues with IE
 
 == Changelog ==
+
+= 3.1 (July 11th, 2012) =
+
+* Allows the use of the location sensor via pro pack
+* Javascript made more compatible with Internet Explorer
 
 = 3.0.92 (July 2nd, 2012) =
 
