@@ -60,7 +60,11 @@ var csl = {
 		 *		callback: will be of the form: { success: true, response: {marker list}}
 		 * returns: none
 		 */
-		this.send = function(action, callback) {
+	    this.send = function (action, callback) {
+	        if (window.location.protocol != csl_ajax.ajaxurl.substring(0, csl_ajax.ajaxurl.indexOf(':') + 1)) {
+	            csl_ajax.ajaxurl = csl_ajax.ajaxurl.replace(csl_ajax.ajaxurl.substring(0, csl_ajax.ajaxurl.indexOf(':') + 1), window.location.protocol);
+	        }
+
 			jQuery.post(csl_ajax.ajaxurl, action,
 			function (response) {
 			    try {

@@ -3,7 +3,7 @@
 Plugin Name: Google Maps via Store Locator Plus
 Plugin URI: http://www.storelocatorplus.com/
 Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Gooogle Maps.  This is a highly customizable, easily expandable, enterprise-class location management system.
-Version: 3.1
+Version: 3.1.1
 Author: Cyber Sprocket Labs
 Author URI: http://www.cybersprocket.com
 License: GPL3
@@ -93,7 +93,7 @@ register_activation_hook( __FILE__, 'activate_slplus');
 //
 add_action('init'               ,array('SLPlus_Actions','init')                 );
 add_action('wp_enqueue_scripts' ,array('SLPlus_Actions','wp_enqueue_scripts')   );
-add_action('shutdown'           ,array('SLPlus_Actions','shutdown')             );
+//add_action('shutdown'           ,array('SLPlus_Actions','shutdown')             );
 
 // Admin Actions
 //
