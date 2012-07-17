@@ -5,6 +5,9 @@
       $fnvars, $slplus_plugin, $slplus_name_label;
 
       $prefix = $slplus_plugin->prefix;
+
+      // todo: change the name of this function please!
+      SLPlus_Actions::shutdown();
 ?>
 <div id='sl_div'>
   <form onsubmit='cslmap.searchLocations(); return false;' id='searchForm' action=''>

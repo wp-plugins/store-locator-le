@@ -274,7 +274,7 @@ if (! class_exists('SLPlus_Actions')) {
                            
                 // Force our scripts to load for badly behaved themes
                 //
-                wp_print_footer_scripts();
+                //wp_print_footer_scripts();
             }             
 		}            
 	}
