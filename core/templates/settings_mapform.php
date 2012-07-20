@@ -1,7 +1,7 @@
 <?php 
-    global $map_type_options, $sl_num_initial_displayed, $the_domain, $char_enc,
-            $zoom, $zoom_adj, $height,$height_units,$width,$width_units,
-            $icon_notification_msg,$checked3,$icon,$icon2,$icon_str,$icon2_str;    
+    global $sl_map_type_options, $sl_num_initial_displayed, $sl_the_domain, $sl_char_enc,
+            $sl_zoom, $sl_zoom_adj, $sl_height,$sl_height_units,$sl_width,$sl_width_units,
+            $cl_icon_notification_msg,$checked3,$cl_icon,$cl_icon2,$cl_icon_str,$cl_icon2_str;    
 ?>
 <div id='map_settings'>
     <div class='section_column'>   
@@ -9,7 +9,7 @@
             <h2><?php _e('Features', SLPLUS_PREFIX); ?></h2>
             <div class='form_entry'>
                 <label for='sl_map_type'><?php _e('Default Map Type', SLPLUS_PREFIX);?>:</label>
-                <select name='sl_map_type'><?php echo $map_type_options;?></select>
+                <select name='sl_map_type'><?php echo $sl_map_type_options;?></select>
             </div>            
             <div class='form_entry'>
                 <label for='sl_map_overview_control'><?php _e('Show Map Inset Box', SLPLUS_PREFIX);?>:</label>    
@@ -79,7 +79,7 @@
             
             <div class='form_entry'>
                 <label for='zoom_level'><?php _e("Zoom Level", SLPLUS_PREFIX);?>:</label>
-                <?php echo $zoom; ?>
+                <?php echo $sl_zoom; ?>
                 <?php
                 echo slp_createhelpdiv('zoom_level',
                     __('19=street level, 0=world view. This is the initial zoom level of the map '.
@@ -94,7 +94,7 @@
 
             <div class='form_entry'>
                 <label for='zoom_tweak'><?php _e("Zoom  Adjustment", SLPLUS_PREFIX);?>:</label>
-                <?php echo $zoom_adj; ?>
+                <?php echo $sl_zoom_adj; ?>
                 <?php
                 echo slp_createhelpdiv('zoom_tweak',
                     __('For the "auto-zoom" when results are shown the map will zoom to show all the returned locations, '.
@@ -108,14 +108,14 @@
             
             <div class='form_entry'>
                 <label for='height'><?php _e("Map Height", SLPLUS_PREFIX);?>:</label>
-                <input name='height' value='<?php echo $height;?>' class='small'>&nbsp;
-                <?php print choose_units($height_units, "height_units"); ?>
+                <input name='height' value='<?php echo $sl_height;?>' class='small'>&nbsp;
+                <?php print choose_units($sl_height_units, "height_units"); ?>
             </div>
             
             <div class='form_entry'>
                 <label for='height'><?php _e("Map Width", SLPLUS_PREFIX);?>:</label>
-                <input name='width' value='<?php echo $width;?>'  class='small'>&nbsp;
-                <?php print choose_units($width_units, "width_units"); ?>
+                <input name='width' value='<?php echo $sl_width;?>'  class='small'>&nbsp;
+                <?php print choose_units($sl_width_units, "width_units"); ?>
             </div>
         </div>
     </div>
@@ -123,7 +123,7 @@
     <div class='section_column'>       
         <div class='map_designer_settings'>
             <h2><?php _e('Icons', SLPLUS_PREFIX);?></h2>    
-            <?php echo $icon_notification_msg;?>
+            <?php echo $cl_icon_notification_msg;?>
             
             <div class='form_entry'>
                 <label for='sl_remove_credits'><?php _e('Remove Credits', SLPLUS_PREFIX);?></label>
@@ -132,16 +132,16 @@
     
             <div class='form_entry'>
                 <label for='icon'><?php _e('Home Icon', SLPLUS_PREFIX);?></label>
-                <input name='icon' dir='rtl' size='45' value='<?php echo $icon;?>' onchange="document.getElementById('prev').src=this.value">
-                    &nbsp;&nbsp;<img id='prev' src='<?php echo $icon;?>' align='top'><br/>
-                <div style='margin-left: 150px;'><?php echo $icon_str;?></div>        
+                <input name='icon' dir='rtl' size='45' value='<?php echo $cl_icon;?>' onchange="document.getElementById('prev').src=this.value">
+                    &nbsp;&nbsp;<img id='prev' src='<?php echo $cl_icon;?>' align='top'><br/>
+                <div style='margin-left: 150px;'><?php echo $cl_icon_str;?></div>        
             </div>
     
             <div class='form_entry'>
                 <label for='icon2'><?php _e('Destination Icon', SLPLUS_PREFIX);?></label>
-                <input name='icon2' dir='rtl' size='45' value='<?php echo $icon2;?>' onchange="document.getElementById('prev2').src=this.value">
-                    &nbsp;&nbsp;<img id='prev2' src='<?php echo $icon2;?>'align='top'><br/>
-                <div style='margin-left: 150px;'><?php echo $icon2_str;?></div>
+                <input name='icon2' dir='rtl' size='45' value='<?php echo $cl_icon2;?>' onchange="document.getElementById('prev2').src=this.value">
+                    &nbsp;&nbsp;<img id='prev2' src='<?php echo $cl_icon2;?>'align='top'><br/>
+                <div style='margin-left: 150px;'><?php echo $cl_icon2_str;?></div>
             </div>
         </div>
     </div>
@@ -154,9 +154,9 @@
                 <label for='google_map_domain'><?php _e("Select Your Location", SLPLUS_PREFIX);?></label>
                 <select name='google_map_domain'>
                 <?php
-                    foreach ($the_domain as $key=>$value) {
-                        $selected=(get_option('sl_google_map_domain')==$value)?" selected " : "";
-                        print "<option value='$key:$value' $selected>$key ($value)</option>\n";
+                    foreach ($sl_the_domain as $key=>$sl_value) {
+                        $selected=(get_option('sl_google_map_domain')==$sl_value)?" selected " : "";
+                        print "<option value='$key:$sl_value' $selected>$key ($sl_value)</option>\n";
                     }
                 ?>
                 </select>
@@ -166,9 +166,9 @@
                 <label for='sl_map_character_encoding'><?php _e('Select Character Encoding', SLPLUS_PREFIX);?></label>
                 <select name='sl_map_character_encoding'>
                 <?php
-                    foreach ($char_enc as $key=>$value) {
-                        $selected=(get_option('sl_map_character_encoding')==$value)?" selected " : "";
-                        print "<option value='$value' $selected>$key</option>\n";                        
+                    foreach ($sl_char_enc as $key=>$sl_value) {
+                        $selected=(get_option('sl_map_character_encoding')==$sl_value)?" selected " : "";
+                        print "<option value='$sl_value' $selected>$key</option>\n";                        
                     }
                 ?>
                 </select>

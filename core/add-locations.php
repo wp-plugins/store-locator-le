@@ -6,11 +6,11 @@
  ***************************************************************************/
 
  
-function add_this_addy($fields,$values,$theaddress) {
+function add_this_addy($fields,$sl_values,$theaddress) {
 	global $wpdb;
 	$fields=substr($fields, 0, strlen($fields)-1);
-	$values=substr($values, 0, strlen($values)-1);	
-	$wpdb->query("INSERT into ". $wpdb->prefix . "store_locator ($fields) VALUES ($values);");
+	$sl_values=substr($sl_values, 0, strlen($sl_values)-1);	
+	$wpdb->query("INSERT into ". $wpdb->prefix . "store_locator ($fields) VALUES ($sl_values);");
 	do_geocoding($theaddress);
 	
 }
@@ -44,19 +44,19 @@ print '</div>';
 $notpca = isset($_GET['mode']) ? ($_GET['mode']!="pca") : true;
 if ( isset($_POST['sl_store']) && $_POST['sl_store'] && $notpca ) {
     $fieldList = '';
-    $valueList = '';
-	foreach ($_POST as $key=>$value) {
+    $sl_valueList = '';
+	foreach ($_POST as $key=>$sl_value) {
 		if (ereg("sl_", $key)) {
 			$fieldList.="$key,";
-			$value=comma($value);
-			$valueList.="\"".stripslashes($value)."\",";
+			$sl_value=comma($sl_value);
+			$sl_valueList.="\"".stripslashes($sl_value)."\",";
 		}
 	}
 
 	$this_addy = $_POST['sl_address'].', '.
 		      $_POST['sl_city'].', '.$_POST['sl_state'].' '.
 		      $_POST['sl_zip'];
-	add_this_addy($fieldList,$valueList,$this_addy);
+	add_this_addy($fieldList,$sl_valueList,$this_addy);
 	print "<div class='updated fade'>".
             $_POST['sl_store'] ." " .
             __("Added Succesfully",SLPLUS_PREFIX) . '.</div>';
@@ -98,17 +98,17 @@ if ( isset($_POST['sl_store']) && $_POST['sl_store'] && $notpca ) {
                                 $num = count($data);
                                 if ($num <= $maxcols) {
                                     $fieldList = '';
-                                    $valueList = '';
+                                    $sl_valueList = '';
                                     $this_addy = '';
                                     for ($fldno=0; $fldno < $num; $fldno++) {
                                         $fieldList.=$fldNames[$fldno].',';
-                                        $valueList.="\"".stripslashes(comma($data[$fldno]))."\",";
+                                        $sl_valueList.="\"".stripslashes(comma($data[$fldno]))."\",";
                                         if (($fldno>=1) && ($fldno<=6)) {
                                             $this_addy .= $data[$fldno] . ', ';
                                         }
                                     }
                                     $this_addy = substr($this_addy, 0, strlen($this_addy)-2);
-                                    add_this_addy($fieldList,$valueList,$this_addy);
+                                    add_this_addy($fieldList,$sl_valueList,$this_addy);
                                     sleep(0.5);
                                     $reccount++;
                                 } else {

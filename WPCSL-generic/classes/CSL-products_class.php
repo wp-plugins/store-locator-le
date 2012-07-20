@@ -25,8 +25,8 @@ class wpCSL_products__slplus {
         //
         $this->columns = 1;                 // How many columns/row in our display output.
         
-        foreach ($params as $name => $value) {
-            $this->$name = $value;
+        foreach ($params as $name => $sl_value) {
+            $this->$name = $sl_value;
         }
     }
     

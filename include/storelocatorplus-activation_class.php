@@ -13,8 +13,8 @@ if (! class_exists('SLPlus_Activate')) {
         function __construct($params = null) {
             // Do the setting override or initial settings.
             //
-            foreach ($params as $name => $value) {
-                $this->$name = $value;
+            foreach ($params as $name => $sl_value) {
+                $this->$name = $sl_value;
             }
         } 
         

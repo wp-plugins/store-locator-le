@@ -1,7 +1,7 @@
 <?php
-  global $search_label, $width, $height, $width_units, $height_units, $hide,
+  global $sl_search_label, $sl_width, $sl_height, $sl_width_units, $sl_height_units, $sl_hide,
       $sl_radius, $sl_radius_label, $r_options, $button_style,
-      $sl_instruction_message, $cs_options, $slplus_state_options, $country_options, 
+      $sl_instruction_message, $cs_options, $slplus_state_options, $sl_country_options, 
       $fnvars, $slplus_plugin, $slplus_name_label;
 
       $prefix = $slplus_plugin->prefix;
@@ -52,12 +52,12 @@
             //------------------------------------------------
             // Show Country Pulldown Is Enabled
             //
-            if ($country_options != '') { 
+            if ($sl_country_options != '') { 
             ?>
             <div id='addy_in_country'>
                 <select id='addressInput3' onchange='aI=document.getElementById("searchForm").addressInput;if(this.value!=""){oldvalue=aI.value;aI.value=this.value;}else{aI.value=oldvalue;}'>
                 <option value=''>--Search By Country--</option>
-                <?php echo $country_options?>
+                <?php echo $sl_country_options?>
                 </select>
             </div>
             <?php } 
@@ -145,7 +145,7 @@
             if (get_option(SLPLUS_PREFIX.'_hide_address_entry') == 0) {                
             ?>    	   
             <div id='addy_in_address' class='search_item'>
-                <label for="addressInput"><?php echo $search_label?></label>
+                <label for="addressInput"><?php echo $sl_search_label?></label>
                 <input type='text' id='addressInput' size='50' />
            </div>
            <?php
@@ -197,7 +197,7 @@
 $sl_starting_image=get_option('sl_starting_image');
 if ($sl_starting_image != '') {    
 ?>
-            <div id='map_box_image' style='width:<?php echo $width?><?php echo $width_units?>; height:<?php echo $height?><?php echo $height_units?>'>      
+            <div id='map_box_image' style='width:<?php echo $sl_width?><?php echo $sl_width_units?>; height:<?php echo $sl_height?><?php echo $sl_height_units?>'>      
                 <img src='<?php 
                         if (preg_match('/^http/',$sl_starting_image) <= 0) {
                             echo SLPLUS_PLUGINURL;
@@ -209,8 +209,8 @@ if ($sl_starting_image != '') {
 <?php
 }
 ?>
-                <div id='map' style='width:<?php echo $width?><?php echo $width_units?>; height:<?php echo $height?><?php echo $height_units?>'></div>
-                <table cellpadding='0px' class='sl_footer' width='<?php echo $width?><?php echo $width_units?>;' <?php echo $hide?>>
+                <div id='map' style='width:<?php echo $sl_width?><?php echo $sl_width_units?>; height:<?php echo $sl_height?><?php echo $sl_height_units?>'></div>
+                <table cellpadding='0px' class='sl_footer' width='<?php echo $sl_width?><?php echo $sl_width_units?>;' <?php echo $sl_hide?>>
                 <tr>
                     <td class='sl_footer_left_column'>
                         <a href='http://www.cybersprocket.com/products/store-locator-plus/' target='_blank'>Store Locator Plus</a>
@@ -231,7 +231,7 @@ if ($sl_starting_image != '') {
       </tr>
 	  <tr id='cm_mapTR'>
         <td width='' valign='top' id='map_sidebar_td'>
-            <div id='map_sidebar' style='width:<?php echo $width?><?php echo $width_units?>;'>
+            <div id='map_sidebar' style='width:<?php echo $sl_width?><?php echo $sl_width_units?>;'>
                 <div class='text_below_map'><?php echo $sl_instruction_message?></div>
             </div>
         </td>

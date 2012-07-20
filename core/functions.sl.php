@@ -46,9 +46,9 @@ function move_upload_directories() {
 /*-----------------*/
 
 function initialize_variables() {
-    global $height, $width, $width_units, $height_units, $radii;
-    global $icon, $icon2, $google_map_domain, $google_map_country, $theme, $sl_base, $sl_upload_base, $location_table_view;
-    global $search_label, $zoom_level, $zoom_tweak, $sl_use_city_search, $sl_use_name_search, $sl_default_map;
+    global $sl_height, $sl_width, $sl_width_units, $sl_height_units, $sl_radii;
+    global $cl_icon, $cl_icon2, $sl_google_map_domain, $sl_google_map_country, $sl_theme, $sl_base, $sl_upload_base, $sl_location_table_view;
+    global $sl_search_label, $sl_zoom_level, $sl_zoom_tweak, $sl_use_city_search, $sl_use_name_search, $sl_default_map;
     global $sl_radius_label, $sl_website_label, $sl_num_initial_displayed, $sl_load_locations_default;
     global $sl_distance_unit, $sl_map_overview_control, $sl_admin_locations_per_page, $sl_instruction_message;
     global $sl_map_character_encoding, $sl_use_country_search, $slplus_show_state_pd, $slplus_name_label;
@@ -128,83 +128,83 @@ function initialize_variables() {
         $slplus_show_state_pd="1";
         add_option('slplus_show_state_pd', $slplus_show_state_pd);
         }
-    $zoom_level=get_option('sl_zoom_level');
-    if (empty($zoom_level)) {
-        $zoom_level="4";
-        add_option('sl_zoom_level', $zoom_level);
+    $sl_zoom_level=get_option('sl_zoom_level');
+    if (empty($sl_zoom_level)) {
+        $sl_zoom_level="4";
+        add_option('sl_zoom_level', $sl_zoom_level);
         }
-    $zoom_tweak=get_option('sl_zoom_tweak');
-    if (empty($zoom_tweak)) {
-        $zoom_tweak="1";
-        add_option('sl_zoom_tweak', $zoom_tweak);
+    $sl_zoom_tweak=get_option('sl_zoom_tweak');
+    if (empty($sl_zoom_tweak)) {
+        $sl_zoom_tweak="1";
+        add_option('sl_zoom_tweak', $sl_zoom_tweak);
         }
-    $search_label=get_option('sl_search_label');
-    if (empty($search_label)) {
-        $search_label="Address";
-        add_option('sl_search_label', $search_label);
+    $sl_search_label=get_option('sl_search_label');
+    if (empty($sl_search_label)) {
+        $sl_search_label="Address";
+        add_option('sl_search_label', $sl_search_label);
         }
 	if (empty($slplus_name_label)) {
 		$$slplus_name_label = "Store to search for";
 		add_option('sl_name_label', $slplus_name_label);
 	}
-    $location_table_view=get_option('sl_location_table_view');
-    if (empty($location_table_view)) {
-        $location_table_view="Normal";
-        add_option('sl_location_table_view', $location_table_view);
+    $sl_location_table_view=get_option('sl_location_table_view');
+    if (empty($sl_location_table_view)) {
+        $sl_location_table_view="Normal";
+        add_option('sl_location_table_view', $sl_location_table_view);
         }
-    $theme=get_option('sl_map_theme');
-    if (empty($theme)) {
-        $theme="";
-        add_option('sl_map_theme', $theme);
+    $sl_theme=get_option('sl_map_theme');
+    if (empty($sl_theme)) {
+        $sl_theme="";
+        add_option('sl_map_theme', $sl_theme);
         }
-    $google_map_country=get_option('sl_google_map_country');
-    if (empty($google_map_country)) {
-        $google_map_country="United States";
-        add_option('sl_google_map_country', $google_map_country);
+    $sl_google_map_country=get_option('sl_google_map_country');
+    if (empty($sl_google_map_country)) {
+        $sl_google_map_country="United States";
+        add_option('sl_google_map_country', $sl_google_map_country);
     }
-    $google_map_domain=get_option('sl_google_map_domain');
-    if (empty($google_map_domain)) {
-        $google_map_domain="maps.google.com";
-        add_option('sl_google_map_domain', $google_map_domain);
+    $sl_google_map_domain=get_option('sl_google_map_domain');
+    if (empty($sl_google_map_domain)) {
+        $sl_google_map_domain="maps.google.com";
+        add_option('sl_google_map_domain', $sl_google_map_domain);
     }
-    $icon2=get_option('sl_map_end_icon');
-    if (empty($icon2)) {
+    $cl_icon2=get_option('sl_map_end_icon');
+    if (empty($cl_icon2)) {
         add_option('sl_map_end_icon', SLPLUS_COREURL . 'images/icons/marker.png');
-        $icon2=get_option('sl_map_end_icon');
+        $cl_icon2=get_option('sl_map_end_icon');
     }
-    $icon=get_option('sl_map_home_icon');
-    if (empty($icon)) {
+    $cl_icon=get_option('sl_map_home_icon');
+    if (empty($cl_icon)) {
         add_option('sl_map_home_icon', SLPLUS_COREURL . 'images/icons/arrow.png');
-        $icon=get_option('sl_map_home_icon');
+        $cl_icon=get_option('sl_map_home_icon');
     }
-    $height=get_option('sl_map_height');
-    if (empty($height)) {
+    $sl_height=get_option('sl_map_height');
+    if (empty($sl_height)) {
         add_option('sl_map_height', '350');
-        $height=get_option('sl_map_height');
+        $sl_height=get_option('sl_map_height');
         }
     
-    $height_units=get_option('sl_map_height_units');
-    if (empty($height_units)) {
+    $sl_height_units=get_option('sl_map_height_units');
+    if (empty($sl_height_units)) {
         add_option('sl_map_height_units', "px");
-        $height_units=get_option('sl_map_height_units');
+        $sl_height_units=get_option('sl_map_height_units');
         }	
     
-    $width=get_option('sl_map_width');
-    if (empty($width)) {
+    $sl_width=get_option('sl_map_width');
+    if (empty($sl_width)) {
         add_option('sl_map_width', "100");
-        $width=get_option('sl_map_width');
+        $sl_width=get_option('sl_map_width');
         }
     
-    $width_units=get_option('sl_map_width_units');
-    if (empty($width_units)) {
+    $sl_width_units=get_option('sl_map_width_units');
+    if (empty($sl_width_units)) {
         add_option('sl_map_width_units', "%");
-        $width_units=get_option('sl_map_width_units');
+        $sl_width_units=get_option('sl_map_width_units');
         }	
     
-    $radii=get_option('sl_map_radii');
-    if (empty($radii)) {
+    $sl_radii=get_option('sl_map_radii');
+    if (empty($sl_radii)) {
         add_option('sl_map_radii', "10,25,50,100,(200),500");
-        $radii=get_option('sl_map_radii');
+        $sl_radii=get_option('sl_map_radii');
         }
 }
 
@@ -480,10 +480,10 @@ function slplus_dbupdater($sql,$table_name) {
     //
     global  $sl_dir, $sl_base, $sl_upload_base, $sl_path, $sl_upload_path, $text_domain, $wpdb,
 	    $slplus_plugin, $prefix,	        
-	    $search_label, $width, $height, $width_units, $height_units, $hide,
+	    $sl_search_label, $sl_width, $sl_height, $sl_width_units, $sl_height_units, $sl_hide,
 	    $sl_radius, $sl_radius_label, $r_options, $button_style,
 	    $sl_instruction_message, $cs_options, $slplus_name_label,
-	    $country_options, $slplus_state_options, $fnvars;	 	    
+	    $sl_country_options, $slplus_state_options, $fnvars;	 	    
     $fnvars = array();
 
     //----------------------
@@ -494,39 +494,39 @@ function slplus_dbupdater($sql,$table_name) {
         slplus_shortcode_atts($attributes);
     }
                    
-    $height         = get_option('sl_map_height','500');    
-    $height_units   = get_option('sl_map_height_units','px');    
-    $search_label   = get_option('sl_search_label',__('Address',SLPLUS_PREFIX));
+    $sl_height         = get_option('sl_map_height','500');    
+    $sl_height_units   = get_option('sl_map_height_units','px');    
+    $sl_search_label   = get_option('sl_search_label',__('Address',SLPLUS_PREFIX));
     $unit_display   = get_option('sl_distance_unit','mi');    
-    $width          = get_option('sl_map_width','100');        
-    $width_units    = get_option('sl_map_width_units','%');
+    $sl_width          = get_option('sl_map_width','100');        
+    $sl_width_units    = get_option('sl_map_width_units','%');
 	$slplus_name_label = get_option('sl_name_label');
     
-    $radii          = get_option('sl_map_radii','1,5,10,(25),50,100,200,500');
-    $r_array        = explode(",", $radii);
+    $sl_radii          = get_option('sl_map_radii','1,5,10,(25),50,100,200,500');
+    $r_array        = explode(",", $sl_radii);
     
     $sl_instruction_message = get_option('sl_instruction_message',__('Enter Your Address or Zip Code Above.',SLPLUS_PREFIX));
     
     
     $r_options      =(isset($r_options)         ?$r_options      :'');
     $cs_options     =(isset($cs_options)        ?$cs_options     :'');
-    $country_options=(isset($country_options)   ?$country_options:'');
+    $sl_country_options=(isset($sl_country_options)   ?$sl_country_options:'');
     $slplus_state_options=(isset($slplus_state_options)   ?$slplus_state_options:'');
 
-    foreach ($r_array as $value) {
-        $s=(ereg("\(.*\)", $value))? " selected='selected' " : "" ;
+    foreach ($r_array as $sl_value) {
+        $s=(ereg("\(.*\)", $sl_value))? " selected='selected' " : "" ;
         
         // Hiding Radius?
         if (get_option(SLPLUS_PREFIX.'_hide_radius_selections') == 1) {
             if ($s == " selected='selected' ") {
-                $value=ereg_replace("[^0-9]", "", $value);
-                $r_options = "<input type='hidden' id='radiusSelect' name='radiusSelect' value='$value'>";
+                $sl_value=ereg_replace("[^0-9]", "", $sl_value);
+                $r_options = "<input type='hidden' id='radiusSelect' name='radiusSelect' value='$sl_value'>";
             }
             
         // Not hiding radius, build pulldown.
         } else {
-            $value=ereg_replace("[^0-9]", "", $value);
-            $r_options.="<option value='$value' $s>$value $unit_display</option>";
+            $sl_value=ereg_replace("[^0-9]", "", $sl_value);
+            $r_options.="<option value='$sl_value' $s>$sl_value $unit_display</option>";
         }
     }
         
@@ -545,8 +545,8 @@ function slplus_dbupdater($sql,$table_name) {
             ARRAY_A);
     
         if ($cs_array) {
-            foreach($cs_array as $value) {
-        $cs_options.="<option value='$value[city_state]'>$value[city_state]</option>";
+            foreach($cs_array as $sl_value) {
+        $cs_options.="<option value='$sl_value[city_state]'>$sl_value[city_state]</option>";
             }
         }
     }
@@ -555,30 +555,30 @@ function slplus_dbupdater($sql,$table_name) {
     // Create Country Pulldown
     //    
     if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {                    
-        $country_options = slplus_create_country_pd();    
+        $sl_country_options = slplus_create_country_pd();    
         $slplus_state_options = slplus_create_state_pd();
     } else {
-        $country_options = '';    
+        $sl_country_options = '';    
         $slplus_state_options = '';
     }
         
-    $theme_base=$sl_upload_base."/images";
-    $theme_path=$sl_upload_path."/images";
-    if (!file_exists($theme_path."/search_button.png")) {
-        $theme_base=$sl_base."/images";
-        $theme_path=$sl_path."/images";
+    $sl_theme_base=$sl_upload_base."/images";
+    $sl_theme_path=$sl_upload_path."/images";
+    if (!file_exists($sl_theme_path."/search_button.png")) {
+        $sl_theme_base=$sl_base."/images";
+        $sl_theme_path=$sl_path."/images";
     }
-    $sub_img=$theme_base."/search_button.png";
-    $mousedown=(file_exists($theme_path."/search_button_down.png"))? 
-        "onmousedown=\"this.src='$theme_base/search_button_down.png'\" onmouseup=\"this.src='$theme_base/search_button.png'\"" : 
+    $sub_img=$sl_theme_base."/search_button.png";
+    $mousedown=(file_exists($sl_theme_path."/search_button_down.png"))? 
+        "onmousedown=\"this.src='$sl_theme_base/search_button_down.png'\" onmouseup=\"this.src='$sl_theme_base/search_button.png'\"" : 
         "";
-    $mouseover=(file_exists($theme_path."/search_button_over.png"))? 
-        "onmouseover=\"this.src='$theme_base/search_button_over.png'\" onmouseout=\"this.src='$theme_base/search_button.png'\"" : 
+    $mouseover=(file_exists($sl_theme_path."/search_button_over.png"))? 
+        "onmouseover=\"this.src='$sl_theme_base/search_button_over.png'\" onmouseout=\"this.src='$sl_theme_base/search_button.png'\"" : 
         "";
-    $button_style=(file_exists($theme_path."/search_button.png"))? 
+    $button_style=(file_exists($sl_theme_path."/search_button.png"))? 
         "type='image' src='$sub_img' $mousedown $mouseover" : 
         "type='submit'";
-    $hide=(get_option('sl_remove_credits')==1)? 
+    $sl_hide=(get_option('sl_remove_credits')==1)? 
         "style='display:none;'" : 
         "";
 

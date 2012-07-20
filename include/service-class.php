@@ -17,8 +17,8 @@ if (! class_exists('slp_service_class')) {
              * The Constructor
              */
             function __construct($params) {
-                foreach ($params as $name => $value) {            
-                    $this->$name = $value;
+                foreach ($params as $name => $sl_value) {            
+                    $this->$name = $sl_value;
                 }         
                 
                 $this->service = SLPLUS_PLUGINDIR . "/include/mobile.php";

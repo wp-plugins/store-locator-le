@@ -35,8 +35,8 @@ class wpCSL_settings__slplus {
         
         // Passed Params
         //        
-        foreach ($params as $name => $value) {
-            $this->$name = $value;
+        foreach ($params as $name => $sl_value) {
+            $this->$name = $sl_value;
         }
 
         // Only do this if we are on admin panel
@@ -290,7 +290,7 @@ class wpCSL_settings__slplus {
      **/
     function add_item($section, $display_name, $name, $type = 'text',
             $required = false, $description = null, $custom = null,
-            $value = null, $disabled = false
+            $sl_value = null, $disabled = false
             ) {
 
         $name = $this->prefix .'-'.$name;
@@ -318,7 +318,7 @@ class wpCSL_settings__slplus {
                 'required' => $required,
                 'description' => $description,
                 'custom' => $custom,
-                'value' => $value,
+                'value' => $sl_value,
                 'disabled' => $disabled
             )
         );
@@ -743,8 +743,8 @@ class wpCSL_settings_section__slplus {
      **/
     function __construct($params) {
         $this->headerbar = true;        
-        foreach ($params as $name => $value) {
-            $this->$name = $value;
+        foreach ($params as $name => $sl_value) {
+            $this->$name = $sl_value;
         }
         
         if (!isset($this->auto)) $this->auto = true;
@@ -831,8 +831,8 @@ class wpCSL_settings_item__slplus {
     /**------------------------------------
      **/
     function __construct($params) {
-        foreach ($params as $name => $value) {
-            $this->$name = $value;
+        foreach ($params as $name => $sl_value) {
+            $this->$name = $sl_value;
         }
     }
 
@@ -922,13 +922,13 @@ class wpCSL_settings_item__slplus {
     function create_option_list() {
         $output_list = array("<select class='csl_select' name=\"{$this->name}\">\n");
 
-        foreach ($this->custom as $key => $value) {
-            if (get_option($this->name) === $value) {
-                $output_list[] = "<option class='csl_option' value=\"$value\" " .
+        foreach ($this->custom as $key => $sl_value) {
+            if (get_option($this->name) === $sl_value) {
+                $output_list[] = "<option class='csl_option' value=\"$sl_value\" " .
                     "selected=\"selected\">$key</option>\n";
             }
             else {
-                $output_list[] = "<option class='csl_option'  value=\"$value\">$key</option>\n";
+                $output_list[] = "<option class='csl_option'  value=\"$sl_value\">$key</option>\n";
             }
         }
 

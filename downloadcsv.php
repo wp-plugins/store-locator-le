@@ -125,14 +125,14 @@ $thisSort = explode(',',$_POST['sort']);
 $sob = 'sort';
 $amsstring='';
 $sortarrayindex = 0;
-foreach($thisSort as $value) {
+foreach($thisSort as $sl_value) {
     if ($sob == 'sort') {
-        $sort[] = $value;
+        $sort[] = $sl_value;
         $amsstring .= '$s[' . $sortarrayindex++ . '], ';
         $sob='order';        
     } else {
-        $order[] = $value;
-        $amsstring .= ($value == 0) ? 'SORT_ASC, ' : 'SORT_DESC, ';
+        $order[] = $sl_value;
+        $amsstring .= ($sl_value == 0) ? 'SORT_ASC, ' : 'SORT_DESC, ';
         $sob='sort';
     }
 }

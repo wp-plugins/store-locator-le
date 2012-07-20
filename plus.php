@@ -189,10 +189,10 @@ function slplus_create_country_pd() {
             // If we have country data show it in the pulldown
             //
             if ($cs_array) {
-                foreach($cs_array as $value) {
+                foreach($cs_array as $sl_value) {
                   $myOptions.=
-                    "<option value='$value[country]'>" .
-                    $value['country']."</option>";
+                    "<option value='$sl_value[country]'>" .
+                    $sl_value['country']."</option>";
                 }
             }
         }    
@@ -236,10 +236,10 @@ function slplus_create_state_pd() {
             // If we have country data show it in the pulldown
             //
             if ($cs_array) {
-                foreach($cs_array as $value) {
+                foreach($cs_array as $sl_value) {
                   $myOptions.=
-                    "<option value='$value[state]'>" .
-                    $value['state']."</option>";
+                    "<option value='$sl_value[state]'>" .
+                    $sl_value['state']."</option>";
                 }
             }
         }    
