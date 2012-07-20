@@ -5,7 +5,7 @@
  ** The action bar for the manage locations page.
  ***************************************************************************/
  
- global $slplus_plugin, $hidden;
+ global $slplus_plugin, $sl_hidden;
 
  if (get_option('sl_location_table_view') == 'Expanded') {
      $altViewText = __('Switch to normal view?',SLPLUS_PREFIX);
@@ -65,7 +65,7 @@ function doAction(theAction,thePrompt) {
     <div id="search_block" class='searchlocations orangebox'>
             <p class="centerbutton"><input class='like-a-button' type='submit' value='<?php print __("Search Locations", SLPLUS_PREFIX); ?>'></p>
             <input id='search-q' value='<?php print (isset($_REQUEST['q'])?$_REQUEST['q']:''); ?>' name='q'>
-            <?php print $hidden; ?>
+            <?php print $sl_hidden; ?>
     </div>  
     <div id="list_options" class='orangebox'>
         <p class="centerbutton"><a class='like-a-button' href='#' onclick="doAction('changeview','<?php echo $altViewText; ?>');"><?php echo $viewText; ?></a></p>
@@ -75,9 +75,9 @@ function doAction(theAction,thePrompt) {
 <?php           
     $pagelen = get_option('sl_admin_locations_per_page');
     $opt_arr=array(10,25,50,100,200,300,400,500,1000,2000,4000,5000,10000);
-    foreach ($opt_arr as $value) {
-        $selected=($pagelen==$value)? " selected " : "";
-        print "<option value='$value' $selected>$value</option>";
+    foreach ($opt_arr as $sl_value) {
+        $selected=($pagelen==$sl_value)? " selected " : "";
+        print "<option value='$sl_value' $selected>$sl_value</option>";
     }
 ?>    
         </select>

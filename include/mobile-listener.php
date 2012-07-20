@@ -15,8 +15,8 @@ if (! class_exists('csl_mobile_listener')) {
              * The Constructor
              */
             function __construct($params) {
-                foreach ($params as $name => $value) {            
-                    $this->$name = $value;
+                foreach ($params as $name => $sl_value) {            
+                    $this->$name = $sl_value;
                 }
 
                 $this->DoHeaders();

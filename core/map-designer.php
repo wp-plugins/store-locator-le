@@ -18,9 +18,9 @@
 function choose_units($unit, $input_name) {   
 	$unit_arr     = array('%','px','em','pt');
 	$select_field = "<select name='$input_name'>";	
-	foreach ($unit_arr as $value) {
-		$selected=($value=="$unit")? " selected='selected' " : "" ;
-        $select_field.="\n<option value='$value' $selected>$value</option>";
+	foreach ($unit_arr as $sl_value) {
+		$selected=($sl_value=="$unit")? " selected='selected' " : "" ;
+        $select_field.="\n<option value='$sl_value' $selected>$sl_value</option>";
 	}
 	$select_field.="</select>";
 	return $select_field;
@@ -171,7 +171,7 @@ if (!$_POST) {
 //
 initialize_variables();
 
-$the_domain = array(    
+$sl_the_domain = array(    
     "United States"=>"maps.google.com",
     "Argentina"=>"maps.google.com.ar",
     "Australia"=>"maps.google.com.au",
@@ -208,34 +208,34 @@ $the_domain = array(
     "United Kingdom"=>"maps.google.co.uk",
     );
 
-$char_enc["Default (UTF-8)"]="utf-8";
-$char_enc["Western European (ISO-8859-1)"]="iso-8859-1";
-$char_enc["Western/Central European (ISO-8859-2)"]="iso-8859-2";
-$char_enc["Western/Southern European (ISO-8859-3)"]="iso-8859-3";
-$char_enc["Western European/Baltic Countries (ISO-8859-4)"]="iso-8859-4";
-$char_enc["Russian (Cyrillic)"]="iso-8859-5";
-$char_enc["Arabic (ISO-8859-6)"]="iso-8859-6";
-$char_enc["Greek (ISO-8859-7)"]="iso-8859-7";
-$char_enc["Hebrew (ISO-8859-8)"]="iso-8859-8";
-$char_enc["Western European w/amended Turkish (ISO-8859-9)"]="iso-8859-9";
-$char_enc["Western European w/Nordic characters (ISO-8859-10)"]="iso-8859-10";
-$char_enc["Thai (ISO-8859-11)"]="iso-8859-11";
-$char_enc["Baltic languages & Polish (ISO-8859-13)"]="iso-8859-13";
-$char_enc["Celtic languages (ISO-8859-14)"]="iso-8859-14";
-$char_enc["Japanese (Shift JIS)"]="shift_jis";
-$char_enc["Simplified Chinese (China)(GB 2312)"]="gb2312";
-$char_enc["Traditional Chinese (Taiwan)(Big 5)"]="big5";
-$char_enc["Hong Kong (HKSCS)"]="hkscs";
-$char_enc["Korea (EUS-KR)"]="eus-kr";
+$sl_char_enc["Default (UTF-8)"]="utf-8";
+$sl_char_enc["Western European (ISO-8859-1)"]="iso-8859-1";
+$sl_char_enc["Western/Central European (ISO-8859-2)"]="iso-8859-2";
+$sl_char_enc["Western/Southern European (ISO-8859-3)"]="iso-8859-3";
+$sl_char_enc["Western European/Baltic Countries (ISO-8859-4)"]="iso-8859-4";
+$sl_char_enc["Russian (Cyrillic)"]="iso-8859-5";
+$sl_char_enc["Arabic (ISO-8859-6)"]="iso-8859-6";
+$sl_char_enc["Greek (ISO-8859-7)"]="iso-8859-7";
+$sl_char_enc["Hebrew (ISO-8859-8)"]="iso-8859-8";
+$sl_char_enc["Western European w/amended Turkish (ISO-8859-9)"]="iso-8859-9";
+$sl_char_enc["Western European w/Nordic characters (ISO-8859-10)"]="iso-8859-10";
+$sl_char_enc["Thai (ISO-8859-11)"]="iso-8859-11";
+$sl_char_enc["Baltic languages & Polish (ISO-8859-13)"]="iso-8859-13";
+$sl_char_enc["Celtic languages (ISO-8859-14)"]="iso-8859-14";
+$sl_char_enc["Japanese (Shift JIS)"]="shift_jis";
+$sl_char_enc["Simplified Chinese (China)(GB 2312)"]="gb2312";
+$sl_char_enc["Traditional Chinese (Taiwan)(Big 5)"]="big5";
+$sl_char_enc["Hong Kong (HKSCS)"]="hkscs";
+$sl_char_enc["Korea (EUS-KR)"]="eus-kr";
 
 
 //-- Set Checkboxes
 //
 $checked2   	    = (isset($checked2)  ?$checked2  :'');
-$city_checked	    = (get_option('sl_use_city_search')             ==1)?' checked ':'';
+$sl_city_checked	    = (get_option('sl_use_city_search')             ==1)?' checked ':'';
 $checked3	        = (get_option('sl_remove_credits')              ==1)?' checked ':'';
 
-$map_type_options=(isset($map_type_options)?$map_type_options:'');
+$sl_map_type_options=(isset($sl_map_type_options)?$sl_map_type_options:'');
 $map_type["".__("Normal", SLPLUS_PREFIX).""]="roadmap";
 $map_type["".__("Satellite", SLPLUS_PREFIX).""]="satellite";
 $map_type["".__("Hybrid", SLPLUS_PREFIX).""]="hybrid";
@@ -251,47 +251,47 @@ $zl[]=17;$zl[]=18;$zl[]=19;
 //
 $slp_current_setting = get_option('sl_zoom_level');
 if ($slp_current_setting == '') { $slp_current_setting = 4; }
-$zoom="<select name='zoom_level'>";
-foreach ($zl as $value) {
-	$zoom.="<option value='$value' ";
-	if ($slp_current_setting==$value){ $zoom.=" selected ";}
-	$zoom.=">$value</option>";
+$sl_zoom="<select name='zoom_level'>";
+foreach ($zl as $sl_value) {
+	$sl_zoom.="<option value='$sl_value' ";
+	if ($slp_current_setting==$sl_value){ $sl_zoom.=" selected ";}
+	$sl_zoom.=">$sl_value</option>";
 }
-$zoom.="</select>";
+$sl_zoom.="</select>";
 
 // Zoom Adjustment
 //
 $slp_current_setting = get_option('sl_zoom_tweak');
 if ($slp_current_setting == '') { $slp_current_setting = 4; }
-$zoom_adj="<select name='zoom_tweak'>";
-foreach ($zl as $value) {
-	$zoom_adj.="<option value='$value' ";
-	if ($slp_current_setting==$value){ $zoom_adj.=" selected ";}
-	$zoom_adj.=">$value</option>";
+$sl_zoom_adj="<select name='zoom_tweak'>";
+foreach ($zl as $sl_value) {
+	$sl_zoom_adj.="<option value='$sl_value' ";
+	if ($slp_current_setting==$sl_value){ $sl_zoom_adj.=" selected ";}
+	$sl_zoom_adj.=">$sl_value</option>";
 }
-$zoom_adj.="</select>";
+$sl_zoom_adj.="</select>";
 
 // Map Type
 //
 $slp_current_setting = get_option('sl_map_type');
-foreach($map_type as $key=>$value) {
-	$selected2=($slp_current_setting==$value)? " selected " : "";
-	$map_type_options.="<option value='$value' $selected2>$key</option>\n";
+foreach($map_type as $key=>$sl_value) {
+	$selected2=($slp_current_setting==$sl_value)? " selected " : "";
+	$sl_map_type_options.="<option value='$sl_value' $selected2>$key</option>\n";
 }
 
 //---- ICONS ----
 
-$icon_str   =(isset($icon_str)  ?$icon_str  :'');
-$icon2_str  =(isset($icon2_str) ?$icon2_str :'');
-$icon_dir=opendir(SLPLUS_ICONDIR);
+$cl_icon_str   =(isset($cl_icon_str)  ?$cl_icon_str  :'');
+$cl_icon2_str  =(isset($cl_icon2_str) ?$cl_icon2_str :'');
+$cl_icon_dir=opendir(SLPLUS_ICONDIR);
 
 // List icons
-while (false !== ($an_icon=readdir($icon_dir))) {
+while (false !== ($an_icon=readdir($cl_icon_dir))) {
 	if (
 	    (preg_match('/\.(png|gif|jpg)/i', $an_icon) > 0) && 
 	    (preg_match('/shadow\.(png|gif|jpg)/i', $an_icon) <= 0) 
 	    ) {
-		$icon_str.=
+		$cl_icon_str.=
 		"<img style='cursor:pointer; padding:2px; margin: 0px 2px;' 
 		     src='".SLPLUS_ICONURL.$an_icon."'
 		     onclick='document.forms[0].icon.value=this.src;document.getElementById(\"prev\").src=this.src;'
@@ -302,10 +302,10 @@ while (false !== ($an_icon=readdir($icon_dir))) {
 }
 // Custom icon directory?
 if (is_dir($sl_upload_path."/custom-icons/")) {
-	$icon_upload_dir=opendir($sl_upload_path."/custom-icons/");
-	while (false !== ($an_icon=readdir($icon_upload_dir))) {
+	$cl_icon_upload_dir=opendir($sl_upload_path."/custom-icons/");
+	while (false !== ($an_icon=readdir($cl_icon_upload_dir))) {
 		if (!ereg("^\.{1,2}$", $an_icon) && !ereg("shadow", $an_icon) && !ereg("\.db", $an_icon)) {
-			$icon_str.=
+			$cl_icon_str.=
 			"<img style='cursor:pointer; padding:2px; margin: 0px 2px;' 
 			src='$sl_upload_base/custom-icons/$an_icon' 
 			onclick='document.forms[\"mapDesigner\"].icon.value=this.src;document.getElementById(\"prev\").src=this.src;' 
@@ -316,12 +316,12 @@ if (is_dir($sl_upload_path."/custom-icons/")) {
 	}
 }
 
-$icon2_str = preg_replace('/\.icon\.value/','.icon2.value',$icon_str);
-$icon2_str = preg_replace('/getElementById\("prev"\)/','getElementById("prev2")',$icon2_str);
+$cl_icon2_str = preg_replace('/\.icon\.value/','.icon2.value',$cl_icon_str);
+$cl_icon2_str = preg_replace('/getElementById\("prev"\)/','getElementById("prev2")',$cl_icon2_str);
 
 // Icon is the old path, notify them to re-select
 //
-$icon_notification_msg=
+$cl_icon_notification_msg=
 (
     ( !ereg("/core/images/icons/", get_option('sl_map_home_icon')) 
         && 

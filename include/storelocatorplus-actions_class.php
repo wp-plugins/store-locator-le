@@ -220,7 +220,7 @@ if (! class_exists('SLPlus_Actions')) {
             
             if (isset($slplus_plugin) && $slplus_plugin->ok_to_show()) {            
                 $api_key=$slplus_plugin->driver_args['api_key'];
-                $google_map_domain=(get_option('sl_google_map_domain')!="")? 
+                $sl_google_map_domain=(get_option('sl_google_map_domain')!="")? 
                         get_option('sl_google_map_domain') : 
                         "maps.google.com";                
                 $sl_map_character_encoding='&oe='.get_option('sl_map_character_encoding','utf8');    
@@ -233,14 +233,14 @@ if (! class_exists('SLPlus_Actions')) {
 				{
 					wp_register_script(
 							'google_maps',
-							"http://$google_map_domain/maps/api/js?v=3.9&amp;key=$api_key&amp;sensor=false" //todo:character encoding ???
-							//"http://$google_map_domain/maps?file=api&amp;v=2&amp;key=$api_key&amp;sensor=false{$sl_map_character_encoding}"                        
+							"http://$sl_google_map_domain/maps/api/js?v=3.9&amp;key=$api_key&amp;sensor=false" //todo:character encoding ???
+							//"http://$sl_google_map_domain/maps?file=api&amp;v=2&amp;key=$api_key&amp;sensor=false{$sl_map_character_encoding}"                        
 							);
 				}
 				else {
 					wp_register_script(
 						'google_maps',
-						"http://$google_map_domain/maps/api/js?v=3.9&amp;sensor=false"
+						"http://$sl_google_map_domain/maps/api/js?v=3.9&amp;sensor=false"
 					);
 				}
 						
