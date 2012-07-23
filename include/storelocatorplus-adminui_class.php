@@ -120,7 +120,7 @@ if (! class_exists('SLPlus_AdminUI')) {
              if ($store['sl_state']         !='') { $content .= $store['sl_state']; }
              if ($store['sl_zip']           !='') { $content .= " ".$store['sl_zip']."\n"; }
              if ($store['sl_country']       !='') { $content .= " ".$store['sl_country']."\n"; }
-             if ($store['sl_description']   !='') { $content .= "<h1>Description</h1>\n<p>".$store['sl_description']."</p>\n"; }
+             if ($store['sl_description']   !='') { $content .= "<h1>Description</h1>\n<p>". html_entity_decode($store['sl_description']) ."</p>\n"; }
              
              $slpContactInfo = '';
              if ($store['sl_phone'] !='') { $slpContactInfo .= __('Phone: ',SLPLUS_PREFIX).$store['sl_phone'] . "\n"; }
