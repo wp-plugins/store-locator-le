@@ -237,7 +237,7 @@ if (! class_exists('csl_mobile_listener')) {
 				            'zip' => esc_attr($row['sl_zip']),
 				            'lat' => $row['sl_latitude'],
 				            'lng' => $row['sl_longitude'],
-				            'description' => esc_attr($row['sl_description']),
+				            'description' => html_entity_decode($row['sl_description']),
 				            'url' => esc_attr($row['sl_url']),
 				            'sl_pages_url' => esc_attr($row['sl_pages_url']),
 				            'email' => esc_attr($row['sl_email']),
