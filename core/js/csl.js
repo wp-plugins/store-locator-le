@@ -1184,7 +1184,5 @@ function InitializeTheMap() {
  * When the document has been loaded...
  *
  */
-jQuery(document).ready(function(){
-	InitializeTheMap();
-});
+jQuery('#document').ready(InitializeTheMap());
 
