@@ -322,7 +322,7 @@ var csl = {
 		/**************************************
 		 * function: escapeExtended()
 		 *
-		 * Escape any extended characters, such as ü in für.
+		 * Escape any extended characters, such as ï¿½ in fï¿½r.
 		 * Standard US ASCII characters (< char #128) are unchanged
 		 *
 		 */ 
@@ -905,6 +905,9 @@ var csl = {
 			if (aMarker.phone != '') {
 				html+="<br/><span class='location_detail_label'>Phone:</span> "+aMarker.phone;
 			}
+			if (aMarker.fax != '') {
+				html+="<br/><span class='location_detail_label'>Fax:</span> "+aMarker.fax;
+			}
 
 			var address = this.__createAddress(aMarker);
 			
@@ -1117,6 +1120,16 @@ var csl = {
             if (jQuery.trim(city_state_zip) != '') {
                 city_state_zip += '<br/>';
             }
+            if (jQuery.trim(aMarker.phone) != '') {
+                thePhone = '<br/>phone: ' + aMarker.phone;
+            } else {
+                thePhone = ''
+            }
+            if (jQuery.trim(aMarker.fax) != '') {
+                theFax = '<br/>fax: ' + aMarker.fax;
+            } else {
+                theFax = ''
+            }
 
             var address = this.__createAddress(aMarker);
 			
@@ -1129,7 +1142,8 @@ var csl = {
                         street +  
                         street2 + 
                         city_state_zip +
-                        aMarker.phone +
+                        thePhone +
+                        theFax +
                     '</td>' +
                     '<td class="results_row_right_column">' + 
                         link + 

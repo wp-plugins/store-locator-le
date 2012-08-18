@@ -96,6 +96,7 @@ function csl_ajax_onload() {
 			'email' => esc_attr($row['sl_email']),
 			'hours' => esc_attr($row['sl_hours']),
 			'phone' => esc_attr($row['sl_phone']),
+			'fax'   => esc_attr($row['sl_fax']),
 			'image' => esc_attr($row['sl_image']),
 			'distance' => $row['sl_distance'],
 			'tags' => ($slplus_show_tags) ? esc_attr($row['sl_tags']) : ''
@@ -234,6 +235,7 @@ function csl_ajax_search() {
 				'email' => esc_attr($row['sl_email']),
 				'hours' => esc_attr($row['sl_hours']),
 				'phone' => esc_attr($row['sl_phone']),
+				'fax' => esc_attr($row['sl_fax']),
 				'image' => esc_attr($row['sl_image']),
 				'distance' => $row['sl_distance'],
 				'tags' => ($slplus_show_tags) ? esc_attr($row['sl_tags']) : ''

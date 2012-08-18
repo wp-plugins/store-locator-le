@@ -21,8 +21,8 @@ class wpCSL_license__slplus {
 
         // Set by incoming parameters
         //
-        foreach ($params as $name => $sl_value) {
-            $this->$name = $sl_value;
+        foreach ($params as $name => $value) {
+            $this->$name = $value;
         }
         
         // Override incoming parameters
@@ -282,8 +282,8 @@ class wpCSL_license_package__slplus {
     /**------------------------------------
      **/
     function __construct($params) {
-        foreach ($params as $name => $sl_value) {
-            $this->$name = $sl_value;
+        foreach ($params as $name => $value) {
+            $this->$name = $value;
         }
         
         // Register these settings

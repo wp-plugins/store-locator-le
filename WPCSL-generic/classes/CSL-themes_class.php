@@ -24,8 +24,8 @@ class wpCSL_themes__slplus {
         $this->columns = 1;                 // How many columns/row in our display output.
         $this->css_dir = 'css/';
         
-        foreach ($params as $name => $sl_value) {            
-            $this->$name = $sl_value;
+        foreach ($params as $name => $value) {            
+            $this->$name = $value;
         }
 
         // Remember the base directory path, then
@@ -68,9 +68,9 @@ class wpCSL_themes__slplus {
         // The Themes
         // No themes? Force the default at least
         //
-        $sl_themeArray = get_option($this->prefix.'-theme_array');
-        if (count($sl_themeArray, COUNT_RECURSIVE) < 2) {
-            $sl_themeArray = array('Default' => 'default');
+        $themeArray = get_option($this->prefix.'-theme_array');
+        if (count($themeArray, COUNT_RECURSIVE) < 2) {
+            $themeArray = array('Default' => 'default');
         } 
     
         // Check for theme files
@@ -89,7 +89,7 @@ class wpCSL_themes__slplus {
                     //
                     if ($thisFileModTime > $lastNewThemeDate) {
                         $newEntry = $this->GetThemeInfo($this->css_dir.$file);
-                        $sl_themeArray = array_merge($sl_themeArray, array($newEntry['label'] => $newEntry['file']));                                        
+                        $themeArray = array_merge($themeArray, array($newEntry['label'] => $newEntry['file']));                                        
                         update_option($this->prefix.'-theme_lastupdated', $thisFileModTime);
                     }
                 }
@@ -101,8 +101,8 @@ class wpCSL_themes__slplus {
         //
         $resetDefault = false;
         
-        if ((count($sl_themeArray, COUNT_RECURSIVE) > 1) && isset($sl_themeArray['Default'])){        
-            unset($sl_themeArray['Default']);
+        if ((count($themeArray, COUNT_RECURSIVE) > 1) && isset($themeArray['Default'])){        
+            unset($themeArray['Default']);
             $resetDefault = true;
         }
         
@@ -110,7 +110,7 @@ class wpCSL_themes__slplus {
         // We added at least one new theme
         //
         if ((count($newEntry, COUNT_RECURSIVE) > 1) || $resetDefault) {
-            update_option($this->prefix.'-theme_array',$sl_themeArray);
+            update_option($this->prefix.'-theme_array',$themeArray);
         }  
                             
         $settingsObj->add_item(
@@ -123,7 +123,7 @@ class wpCSL_themes__slplus {
                 $this->support_url.
                 '" target="Cyber Sprocket">documentation</a> for more info.',
                 WPCSL__slplus__VERSION),
-            $sl_themeArray
+            $themeArray
         );        
     }    
     
@@ -156,8 +156,8 @@ class wpCSL_themes__slplus {
      ** Configure the plugin theme drivers based on the theme file meta data.
      **
      **/
-     function configure_theme($sl_themeFile) {
-        $newEntry = $this->GetThemeInfo($this->css_dir.$sl_themeFile);
+     function configure_theme($themeFile) {
+        $newEntry = $this->GetThemeInfo($this->css_dir.$themeFile);
         $this->products->columns = $newEntry['columns'];
      }
      
@@ -173,37 +173,37 @@ class wpCSL_themes__slplus {
      **     themeFile    string  - if set use this theme v. the database setting
      **
      **/
-    function assign_user_stylesheet($sl_themeFile = '') {
+    function assign_user_stylesheet($themeFile = '') {
         
         // If themefile not passed, fetch from db
         //
-        if ($sl_themeFile == '') {
-            $sl_themeFile = get_option($this->prefix.'-theme','default') . '.css';
+        if ($themeFile == '') {
+            $themeFile = get_option($this->prefix.'-theme','default') . '.css';
             
         } else {
             // append .css if left off
-            if ((strlen($sl_themeFile) < 4) || substr_compare($sl_themeFile, '.css', -strlen('.css'), strlen('.css')) != 0) {         
-                $sl_themeFile .= '.css';
+            if ((strlen($themeFile) < 4) || substr_compare($themeFile, '.css', -strlen('.css'), strlen('.css')) != 0) {         
+                $themeFile .= '.css';
             }
         }
         
         
         // go to default if theme file is missing
         //
-        if ( !file_exists($this->css_dir.$sl_themeFile)) {
-            $sl_themeFile = 'default.css';
+        if ( !file_exists($this->css_dir.$themeFile)) {
+            $themeFile = 'default.css';
         }
 
         // If the theme file exists (after forcing default if necessary)
         // queue it up
         //        
-        if ( file_exists($this->css_dir.$sl_themeFile)) {
+        if ( file_exists($this->css_dir.$themeFile)) {
             wp_deregister_style($this->prefix.'_user_header_css');             
             wp_dequeue_style($this->prefix.'_user_header_css');                
             if ($this->parent->shortcode_was_rendered) {            
-                wp_enqueue_style($this->prefix.'_user_header_css', $this->css_url .$sl_themeFile);
+                wp_enqueue_style($this->prefix.'_user_header_css', $this->css_url .$themeFile);
             }            
-            $this->configure_theme($sl_themeFile);
+            $this->configure_theme($themeFile);
         }
     }     
 }

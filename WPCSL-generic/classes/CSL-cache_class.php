@@ -6,8 +6,8 @@ class wpCSL_cache__slplus {
     var $crt_name;
 
     function __construct($params) {
-        foreach ($params as $name => $sl_value) {
-            $this->$name = $sl_value;
+        foreach ($params as $name => $value) {
+            $this->$name = $value;
         }
         $this->crt_name = $this->prefix . '-cache_retain_time';
 
