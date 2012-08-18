@@ -72,6 +72,7 @@ if (! class_exists('SLPlus_Activate')) {
                     sl_url varchar(255) NULL,
                     sl_hours varchar(255) NULL,
                     sl_phone varchar(255) NULL,
+                    sl_fax varchar(255) NULL,
                     sl_image varchar(255) NULL,
                     sl_private varchar(1) NULL,
                     sl_neat_title varchar(255) NULL,
@@ -90,6 +91,7 @@ if (! class_exists('SLPlus_Activate')) {
             // If we updated an existing DB, do some mods to the data
             //
             if ($this->dbupdater($sql,$table_name) === 'updated') {
+                global $sl_installed_ver;
                 
                 // We are upgrading from something less than 2.0
                 //

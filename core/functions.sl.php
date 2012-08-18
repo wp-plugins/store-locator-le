@@ -319,7 +319,7 @@ function activate_slplus() {
     // Data Updates
     //
     global $sl_db_version, $sl_installed_ver;
-	$sl_db_version='2.7';     //***** CHANGE THIS ON EVERY STRUCT CHANGE
+	$sl_db_version='3.1';     //***** CHANGE THIS ON EVERY STRUCT CHANGE
     $sl_installed_ver = get_option( SLPLUS_PREFIX."-db_version" );
 
 	install_main_table();
@@ -380,6 +380,7 @@ function install_main_table() {
 			sl_url varchar(255) NULL,
 			sl_hours varchar(255) NULL,
 			sl_phone varchar(255) NULL,
+			sl_fax varchar(255) NULL,
 			sl_image varchar(255) NULL,
 			sl_private varchar(1) NULL,
 			sl_neat_title varchar(255) NULL,

@@ -3,8 +3,8 @@
 class wpCSL_notifications__slplus {
 
     function __construct($params) {
-        foreach ($params as $name => $sl_value) {
-            $this->$name = $sl_value;
+        foreach ($params as $name => $value) {
+            $this->$name = $value;
         }
     }
 
@@ -34,7 +34,7 @@ class wpCSL_notifications__slplus {
         $difference = max(array_keys($levels));
 
         $notice_output = '';
-        foreach ($levels as $key => $sl_value) {
+        foreach ($levels as $key => $value) {
             if (!$simple) {
                 $color = round($difference);
                 switch ($difference) {
@@ -90,7 +90,7 @@ class wpCSL_notifications__slplus {
                 );
                 $notice_output .= "<ul>\n";
             }
-            foreach ($sl_value as $notice) {
+            foreach ($value as $notice) {
                 if (!$simple) { $notice_output .= '<li>'; }
                 $notice_output .= $notice->display();
                 if (!$simple) { $notice_output .= '</li>'; }
@@ -109,8 +109,8 @@ class wpCSL_notifications__slplus {
 class wpCSL_notifications_notice__slplus {
 
     function __construct($params) {
-        foreach($params as $name => $sl_value) {
-            $this->$name = $sl_value;
+        foreach($params as $name => $value) {
+            $this->$name = $value;
         }
     }
 
