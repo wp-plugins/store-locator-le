@@ -115,7 +115,7 @@ function install_reporting_tables() {
 function slplus_add_report_settings() {
     global $slplus_plugin;
     
-    if ($slplus_plugin->license->AmIEnabled(true, "SLPLUS")) {    
+    if ($slplus_plugin->license->AmIEnabled(true, "SLPLUS-PRO")) {
         $slplus_plugin->settings->add_item(
             'Reporting', 
             __('Enable reporting', SLPLUS_PREFIX), 
@@ -137,7 +137,7 @@ function slplus_add_report_settings() {
 function slplus_add_pages_settings() {
     global $slplus_plugin;
     
-    if ($slplus_plugin->license->AmIEnabled(true, "SLP-PAGES")) {
+    if ($slplus_plugin->license->AmIEnabled(true, "SLPLUS-PAGES")) {
         $slplus_plugin->settings->add_item(
             'Store Pages', 
             __('Pages Replace Websites', SLPLUS_PREFIX), 
