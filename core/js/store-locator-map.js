@@ -128,6 +128,7 @@ function sl_load_locations(map,lat,lng) {
                 var email = markers[i].getAttribute('email');
                 var hours = markers[i].getAttribute('hours');
                 var phone = markers[i].getAttribute('phone');
+                var fax = markers[i].getAttribute('fax');
                 var image = markers[i].getAttribute('image');
                 var maplat = markers[i].getAttribute('lat');
                 var maplong = markers[i].getAttribute('lng');
@@ -136,12 +137,12 @@ function sl_load_locations(map,lat,lng) {
                     parseFloat(maplong)
                     );
                 var tags = markers[i].getAttribute('tags');
-                var marker = createMarker(point, name, address, "", description, url, email, hours, phone, image,tags);
+                var marker = createMarker(point, name, address, "", description, url, email, hours, phone, fax, image,tags);
                                     
                 map.addOverlay(marker);
     
                 if (!slplus.disable_dir) {
-                    var sidebarEntry = createSidebarEntry(marker, name, address, distance, '', url, email, phone,tags);
+                    var sidebarEntry = createSidebarEntry(marker, name, address, distance, '', url, email, phone, fax, tags);
                     sidebar.appendChild(sidebarEntry);
                 }
                                     
@@ -320,6 +321,7 @@ function searchLocationsNear(center, homeAddress) {
                 var email = markers[i].getAttribute('email');
                 var hours = markers[i].getAttribute('hours');
                 var phone = markers[i].getAttribute('phone');
+                var fax = markers[i].getAttribute('fax');
                 var image = markers[i].getAttribute('image');                
                 var point = new GLatLng(
                     parseFloat(markers[i].getAttribute('lat')),                
@@ -327,8 +329,8 @@ function searchLocationsNear(center, homeAddress) {
                     );
                 var tags = markers[i].getAttribute('tags');                
 
-                var marker = createMarker(point, name, address, homeAddress, description, url, email, hours, phone, image,tags); 
-                var sidebarEntry = createSidebarEntry(marker, name, address, distance, homeAddress, url, email, phone,tags);
+                var marker = createMarker(point, name, address, homeAddress, description, url, email, hours, phone, fax, image,tags); 
+                var sidebarEntry = createSidebarEntry(marker, name, address, distance, homeAddress, url, email, phone, fax, tags);
                 
                 map.addOverlay(marker);
                 sidebar.appendChild(sidebarEntry);
@@ -346,7 +348,7 @@ function searchLocationsNear(center, homeAddress) {
 
 /**************************************
  */
-function createMarker(point, name, address, homeAddress, description, url, email, hours, phone, image,tags) { 
+function createMarker(point, name, address, homeAddress, description, url, email, hours, phone, fax, image,tags) { 
   markerOpts = { icon:theIcon };
   var marker = new GMarker(point, markerOpts);
   
@@ -373,6 +375,7 @@ function createMarker(point, name, address, homeAddress, description, url, email
   if (description!="") {more_html+="<br/>"+description+"";} else {description=""}
   if (hours!="") {more_html+="<br/><span class='location_detail_label'>Hours:</span> "+hours;} else {hours=""}
   if (phone!="") {more_html+="<br/><span class='location_detail_label'>Phone:</span> "+phone;} else {phone=""}
+  if (fax!="") {more_html+="<br/><span class='location_detail_label'>Fax:</span> "+phone;} else {fax=""}
   
     var street    = address.split(',')[0]; 
         if (street.split(' ').join('')!=""){
@@ -418,7 +421,7 @@ var bgcol="white";
 
 /**************************************
  */
-function createSidebarEntry(marker, name, address, distance, homeAddress, url, email, phone,tags) { 
+function createSidebarEntry(marker, name, address, distance, homeAddress, url, email, phone, fax, tags) { 
     document.getElementById('map_sidebar_td').style.display='block';
       var div = document.createElement('div');
       var street = address.split(',')[0]; 
@@ -470,6 +473,7 @@ function createSidebarEntry(marker, name, address, distance, homeAddress, url, e
                         street2 + 
                         city + state_zip +
                         phone +
+                        fax +
                     '</td>' +
                     '<td class="results_row_right_column">' + 
                         link + 

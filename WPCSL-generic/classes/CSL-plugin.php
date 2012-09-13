@@ -90,7 +90,7 @@ class wpCSL_plugin__slplus {
         $this->display_settings = true;
         $this->display_settings_collapsed = false;
         $this->show_locale      = true;
-        $this->broadcast_url    = 'http://www.cybersprocket.com/signage/index.php';
+        $this->broadcast_url    = 'http://www.charlestonsw.com/signage/index.php';
         $this->shortcode_was_rendered = false;
         $this->current_admin_page = '';
         $this->prefix           = '';
@@ -105,8 +105,8 @@ class wpCSL_plugin__slplus {
                 
         // Do the setting override or initial settings.
         //
-        foreach ($params as $name => $sl_value) {
-            $this->$name = $sl_value;
+        foreach ($params as $name => $value) {
+            $this->$name = $value;
         }
 
         // Check to see if we are doing an update
@@ -291,10 +291,10 @@ class wpCSL_plugin__slplus {
      ** Our own version of the php5.2 array_fill_keys
      ** So we can hopefully stay with php5.1 compatability
      **/
-    function csl_array_fill_keys($target,$sl_value='') {
+    function csl_array_fill_keys($target,$value='') {
         if(is_array($target)) {
             foreach($target as $key => $val) {
-                $filledArray[$val] = is_array($sl_value) ? $sl_value[$key] : $sl_value;
+                $filledArray[$val] = is_array($value) ? $value[$key] : $value;
             }
         }
         return $filledArray;
@@ -908,7 +908,7 @@ class wpCSL_plugin__slplus {
             //is the timer up?
             if ($time >= $destruct_time) {
                 //if the checkbox has been hit, then set to false
-                if ($this->settings->get_item(thisbox)==true) {
+                if ($this->settings->get_item('thisbox')==true) {
                     $destruct_time = false;
                 }
                 //if not then set it to true
@@ -979,8 +979,8 @@ class wpCSL_plugin__slplus {
             if ($this->debugging) {
                 if (is_array($atts)) {
                     print __('DEBUG: Shortcode called with attributes:',WPCSL__slplus__VERSION) . "<br/>\n";
-                    foreach ($atts as $name=>$sl_value) {
-                        print $name.':'.$sl_value."<br/>\n";
+                    foreach ($atts as $name=>$value) {
+                        print $name.':'.$value."<br/>\n";
                     }
                 } else {
                     print __('DEBUG: Shortcode called with no attributes.',WPCSL__slplus__VERSION) . "<br/>\n";
@@ -1145,13 +1145,13 @@ class wpCSL_plugin__slplus {
      **/
     function apply_driver_defaults(&$defaults) {
         $results = array();
-        foreach ($defaults as $key => $sl_value) {
-            if (is_array($sl_value)) {
-                $results[$key] = $this->apply_driver_defaults($sl_value);
+        foreach ($defaults as $key => $value) {
+            if (is_array($value)) {
+                $results[$key] = $this->apply_driver_defaults($value);
             }
             else {
-                if (get_option($this->prefix .'-'.$sl_value)) {
-                    $results[$sl_value] = get_option($this->prefix .'-'.$sl_value);
+                if (get_option($this->prefix .'-'.$value)) {
+                    $results[$value] = get_option($this->prefix .'-'.$value);
                 }
             }
         }

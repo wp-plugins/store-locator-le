@@ -82,6 +82,7 @@ while ($row = @mysql_fetch_assoc($result)){
   echo 'email="' . esc_attr($row['sl_email']) . '" ';
   echo 'hours="' . esc_attr($row['sl_hours']) . '" ';
   echo 'phone="' . esc_attr($row['sl_phone']) . '" ';
+  echo 'fax="' . esc_attr($row['sl_fax']) . '" ';
   echo 'image="' . esc_attr($row['sl_image']) . '" ';
   if ($slplus_show_tags) {  
       echo 'tags="'  . esc_attr($row['sl_tags']) . '" ';

@@ -115,9 +115,20 @@ function install_reporting_tables() {
 function slplus_add_report_settings() {
     global $slplus_plugin;
     
-    if ($slplus_plugin->license->AmIEnabled(true, "SLPLUS")) {    
+    if ($slplus_plugin->license->AmIEnabled(true, "SLPLUS-PRO")) {    
         $slplus_plugin->settings->add_item(
-            'Reporting', 
+            'Pro Pack',
+            __('Force Load JavaScript', SLPLUS_PREFIX),
+            'force_load_js',
+            'checkbox',
+            false,
+            __('Force the JavaScript for Store Locator Plus to load on every page. ' .
+            'This can slow down your site, but is compatible with more themes and plugins.', SLPLUS_PREFIX),
+            null,
+            $slplus_plugin->settings->get_item('force_load_js',true)
+        );
+        $slplus_plugin->settings->add_item(
+            'Pro Pack',
             __('Enable reporting', SLPLUS_PREFIX), 
             'reporting_enabled', 
             'checkbox', 
@@ -137,7 +148,7 @@ function slplus_add_report_settings() {
 function slplus_add_pages_settings() {
     global $slplus_plugin;
     
-    if ($slplus_plugin->license->AmIEnabled(true, "SLP-PAGES")) {
+    if ($slplus_plugin->license->AmIEnabled(true, "SLPLUS-PAGES")) {
         $slplus_plugin->settings->add_item(
             'Store Pages', 
             __('Pages Replace Websites', SLPLUS_PREFIX), 
@@ -325,10 +336,8 @@ function slplus_shortcode_atts($attributes) {
             array(
                 'tags_for_pulldown'=> null, 
                 'only_with_tag'    => null,
+                'theme'            => null,
                 );        
-        if ($slplus_plugin->license->packages['Pro Pack']->active_version >= 2007000) {
-            array_merge($slpAtts,array('theme' => null));
-        }
         shortcode_atts($slpAtts,$attributes);
     }
 }

@@ -171,6 +171,7 @@ $this->ex('<?php
 				\'email\' => ($row[\'sl_email\']),
 				\'hours\' => ($row[\'sl_hours\']),
 				\'phone\' => ($row[\'sl_phone\']),
+				\'fax\' => ($row[\'sl_fax\']),
 				\'image\' => ($row[\'sl_image\']),
 				\'distance\' => $row[\'sl_distance\'],
 				\'tags\' => ($row[\'sl_tags\'])
