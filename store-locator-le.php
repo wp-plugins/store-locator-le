@@ -1,14 +1,14 @@
 <?php
 /*
 Plugin Name: Google Maps via Store Locator Plus
-Plugin URI: http://www.cybersprocket.com/products/store-locator-plus/
+Plugin URI: http://www.charlestonsw.com/products/store-locator-plus/
 Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Gooogle Maps.  This is a highly customizable, easily expandable, enterprise-class location management system.
-Version: 3.1.5
-Author: Cyber Sprocket Labs
-Author URI: http://www.cybersprocket.com
+Version: 3.2
+Author: Charleston Software Associates
+Author URI: http://www.charlestonsw.com
 License: GPL3
 
-Copyright 2012  Cyber Sprocket Labs (info@cybersprocket.com)
+Copyright 2012  Charleston Software Associates (info@charlestonsw.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -76,9 +76,9 @@ if (defined('SLPLUS_PREFIX') === false) {
 // Include our needed files
 //
 include_once(SLPLUS_PLUGINDIR . '/include/config.php'	);
-include_once(SLPLUS_PLUGINDIR . 'plus.php'						);
-include_once(SLPLUS_COREDIR   . 'csl_helpers.php'			);
-include_once(SLPLUS_COREDIR   . 'functions.sl.php'			);
+include_once(SLPLUS_PLUGINDIR . 'plus.php'		);
+include_once(SLPLUS_COREDIR   . 'csl_helpers.php'	);
+include_once(SLPLUS_COREDIR   . 'functions.sl.php'	);
 include_once(SLPLUS_COREDIR   . 'csl-ajax-search.php'	);
 require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-actions_class.php');
 require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-activation_class.php');
@@ -93,7 +93,8 @@ register_activation_hook( __FILE__, 'activate_slplus');
 //
 add_action('init'               ,array('SLPlus_Actions','init')                 );
 add_action('wp_enqueue_scripts' ,array('SLPlus_Actions','wp_enqueue_scripts')   );
-//add_action('shutdown'           ,array('SLPlus_Actions','shutdown')             );
+add_action('wp_footer'          ,array('SLPlus_Actions','wp_footer')            );
+add_action('shutdown'           ,array('SLPlus_Actions','shutdown')             ); 
 
 // Admin Actions
 //
@@ -127,4 +128,4 @@ add_shortcode('slplus','store_locator_shortcode');
 
 // Text Domains
 //
-load_plugin_textdomain(SLPLUS_PREFIX, false, SLPLUS_BASENAME . '/core/languages/');
+load_plugin_textdomain(SLPLUS_PREFIX, false, SLPLUS_COREDIR . 'languages/');

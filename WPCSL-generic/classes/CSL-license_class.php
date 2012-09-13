@@ -91,8 +91,7 @@ class wpCSL_license__slplus {
         // Places we check the license
         //
         $csl_urls = array(
-            'http://cybersprocket.com/paypal/valid_transaction.php?',
-            'http://license.cybersprocket.com/paypal/valid_transaction.php?',
+            'http://www.charlestonsw.com/paypal/valid_transaction.php?',
             );
 
         // Check each server until all fail or ONE passes
@@ -103,6 +102,7 @@ class wpCSL_license__slplus {
                             $csl_url . $query_string,
                             array('timeout' => 10)
                             );
+            
             if ($this->parent->http_result_is_ok($result) ) {
                 $response = json_decode($result['body']);
             }
@@ -154,17 +154,6 @@ class wpCSL_license__slplus {
 
         //.............
         // Not licensed
-        // main product
-        if (!$final_result) {
-            if (!$isa_package) {
-                update_option($this->prefix.'-purchased',false);
-
-                // add on package
-            } else {
-                update_option($this->prefix.'-'.$theSKU.'-isenabled',false);
-            }
-        }
-
         return false;
     }
 

@@ -73,7 +73,7 @@ function setup_stylesheet_for_slplus() {
     
     // Pro Pack - Use Themes System
     //
-    if ($slplus_plugin->license->AmIEnabled(true, "SLPLUS")) {
+    if ($slplus_plugin->license->AmIEnabled(true, "SLPLUS-PRO")) {
         $slplus_plugin->themes->assign_user_stylesheet(isset($fnvars['theme'])?$fnvars['theme']:'');
     } else {
         wp_deregister_style(SLPLUS_PREFIX.'_user_header_css');             

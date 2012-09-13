@@ -90,7 +90,7 @@ class wpCSL_plugin__slplus {
         $this->display_settings = true;
         $this->display_settings_collapsed = false;
         $this->show_locale      = true;
-        $this->broadcast_url    = 'http://www.cybersprocket.com/signage/index.php';
+        $this->broadcast_url    = 'http://www.charlestonsw.com/signage/index.php';
         $this->shortcode_was_rendered = false;
         $this->current_admin_page = '';
         $this->prefix           = '';
@@ -908,7 +908,7 @@ class wpCSL_plugin__slplus {
             //is the timer up?
             if ($time >= $destruct_time) {
                 //if the checkbox has been hit, then set to false
-                if ($this->settings->get_item(thisbox)==true) {
+                if ($this->settings->get_item('thisbox')==true) {
                     $destruct_time = false;
                 }
                 //if not then set it to true

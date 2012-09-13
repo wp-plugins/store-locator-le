@@ -446,36 +446,41 @@ var csl = {
   	  	 * returns: none
   	  	 */
   	  	this.__init = function() {
-			this.address = slplus.map_country;
-  	  	  	this.zoom = slplus.zoom_level;
-  	  	  	this.mapType = slplus.map_type;
-			this.disableScroll = !!slplus.disable_scroll;
-			this.debugMode = !!slplus.debug_mode;
-			this.disableDir = !!slplus.disable_dir;
-			this.distanceUnit = slplus.distance_unit;
-			this.load_locations = !!slplus.load_locations;
-			this.mapCountry = slplus.map_country;
-			this.mapDomain = slplus.map_domain;
-			this.mapHomeIconUrl = slplus.map_home_icon;
-			this.mapHomeIconWidth = slplus.map_home_icon_sizew;
-			this.mapHomeIconHeight = slplus.map_home_icon_sizeh;
-			this.mapEndIconUrl = slplus.map_end_icon;
-			this.mapEndIconWidth = slplus.map_end_sizew;
-			this.mapEndIconHeight = slplus.map_end_sizeh;
-			this.mapScaleControl = !!slplus.map_scalectrl;
-			this.mapTypeControl = !!slplus.map_typectrl;
-			this.showTags = slplus.show_tags;
-			this.overviewControl = !!(parseInt(slplus.overview_ctrl));
-			this.useEmailForm = !!slplus.use_email_form;
-			this.usePagesLink = !!slplus.use_pages_link;
-			this.useSameWindow = !!slplus.use_same_window;
-			this.websiteLabel = slplus.website_label;
-			this.zoomLevel = slplus.zoom_level;
-  	  	  	this.disableDefaultUI = false;
-			
-			if (!this.disableDir) {
-				this.loadedOnce = true;
-			}
+                        
+            if (typeof slplus != 'undefined') {
+                this.address = slplus.map_country;
+                this.zoom = slplus.zoom_level;
+                this.mapType = slplus.map_type;
+                this.disableScroll = !!slplus.disable_scroll;
+                this.debugMode = !!slplus.debug_mode;
+                this.disableDir = !!slplus.disable_dir;
+                this.distanceUnit = slplus.distance_unit;
+                this.load_locations = !!slplus.load_locations;
+                this.mapCountry = slplus.map_country;
+                this.mapDomain = slplus.map_domain;
+                this.mapHomeIconUrl = slplus.map_home_icon;
+                this.mapHomeIconWidth = slplus.map_home_icon_sizew;
+                this.mapHomeIconHeight = slplus.map_home_icon_sizeh;
+                this.mapEndIconUrl = slplus.map_end_icon;
+                this.mapEndIconWidth = slplus.map_end_sizew;
+                this.mapEndIconHeight = slplus.map_end_sizeh;
+                this.mapScaleControl = !!slplus.map_scalectrl;
+                this.mapTypeControl = !!slplus.map_typectrl;
+                this.showTags = slplus.show_tags;
+                this.overviewControl = !!(parseInt(slplus.overview_ctrl));
+                this.useEmailForm = !!slplus.use_email_form;
+                this.usePagesLink = !!slplus.use_pages_link;
+                this.useSameWindow = !!slplus.use_same_window;
+                this.websiteLabel = slplus.website_label;
+                this.zoomLevel = slplus.zoom_level;
+                this.disableDefaultUI = false;
+
+                if (!this.disableDir) {
+                    this.loadedOnce = true;
+                }
+            } else {
+                alert('Store Locator Plus script not loaded properly.');
+            }
   	  	}
         
         /***************************
@@ -1134,7 +1139,7 @@ var csl = {
             var address = this.__createAddress(aMarker);
 			
 			var html =  '<center><table width="96%" cellpadding="4px" cellspacing="0" class="searchResultsTable">' +
-					'<tr>' +
+					'<tr class="slp_results_row">' +
                     '<td class="results_row_left_column">' +
                         '<span class="location_name">' + aMarker.name + '</span><br>' + 
                         parseFloat(aMarker.distance).toFixed(1) + ' ' + slplus.distance_unit + '</td>' +

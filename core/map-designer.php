@@ -118,8 +118,8 @@ if (!$_POST) {
         update_option(SLPLUS_PREFIX.'_search_tag_label',        $_POST[SLPLUS_PREFIX.'_search_tag_label']);
         update_option(SLPLUS_PREFIX.'_tag_search_selections',   $_POST[SLPLUS_PREFIX.'_tag_search_selections']);
         update_option(SLPLUS_PREFIX.'_state_pd_label',          $_POST[SLPLUS_PREFIX.'_state_pd_label']);
-        update_option(SLPLUS_PREFIX.'_map_center',              $_POST[SLPLUS_PREFIX.'_map_center']);        
-        update_option(SLPLUS_PREFIX.'_maxreturned',             $_POST[SLPLUS_PREFIX.'_maxreturned']);
+        if (isset($_POST[SLPLUS_PREFIX.'_map_center']   )) { update_option(SLPLUS_PREFIX.'_map_center',              $_POST[SLPLUS_PREFIX.'_map_center']);  }
+        if (isset( $_POST[SLPLUS_PREFIX.'_maxreturned'] )) { update_option(SLPLUS_PREFIX.'_maxreturned',             $_POST[SLPLUS_PREFIX.'_maxreturned']); }
     }    
     
     # Checkbox settings - can set to issset and save that because the
