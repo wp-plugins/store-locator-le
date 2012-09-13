@@ -115,7 +115,7 @@ function install_reporting_tables() {
 function slplus_add_report_settings() {
     global $slplus_plugin;
     
-    if ($slplus_plugin->license->AmIEnabled(true, "SLPLUS")) {    
+    if ($slplus_plugin->license->AmIEnabled(true,"SLPLUS-PRO")) {
         $slplus_plugin->settings->add_item(
             'Reporting', 
             __('Enable reporting', SLPLUS_PREFIX), 
