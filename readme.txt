@@ -1,14 +1,14 @@
 === Google Maps via Store Locator Plus ===
 Plugin Name: Google Maps via Store Locator Plus
 Contributors: charlestonsw
-Donate link: http://www.charlestonsw.com/products/store-locator-plus/
+Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
 Tags: google maps, store finder, store locator, store locater, google, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus, bing map, bing, yahoo maps, yahoo, mapping, retail
 Requires at least: 3.3
 Tested up to: 3.4.2
-Stable tag: 3.2
+Stable tag: 3.3
 
 Store Locator Plus works with Google Maps v3 to put a store location search on your site.
-The most active store locator plugin.
+The most active store locator plugin with monthly patches and updates!
 
 == Description ==
 
@@ -21,7 +21,6 @@ Advanced customization is available via the settings interface in the admin pane
 = Features =
 
 * You can use it for a variety of countries, as supported by Google Maps.
-* The Store Pages add-on allows you to connect each of your locations with a Wordpress page -- so you can add hours, images and more!
 * Supports international languages and character sets.
 * Allows you to use unique map icons or your own custom map icons.
 * Change default map settings via the admin panel including:
@@ -30,54 +29,38 @@ Advanced customization is available via the settings interface in the admin pane
 * Starting zoom level
 * You can use miles or kilometers
 * Pulldown list of cities and/or countries on search form can be toggled on/off.
-* Bulk upload your locations via the CSV loader.
 * Location search tracking and reporting, find out what your visitors are looking for.
 * Popup email form.
-* Use your own themes and icons to customize how your map looks
 
 = Rate Us =
 
 Please [rate us](http://wordpress.org/extend/plugins/store-locator-le/)!
 Give us a chance to <a href="http://www.charlestonsw.com/contact-us/">address your concerns</a> if we didn't earn 5 stars.
 
+= Premium Add-Ons =
+
+We now offer premium add-on packages for our basic Store Locator Plus plugin.
+
+* [Pro Pack](http://www.charlestonsw.com/product/store-locator-plus) : More control over the map, search form, loading locations.
+* [Store Pages](http://www.charlestonsw.com/product/store-locator-plus-store-pages) : Create SEO friendly WordPress pages for your store locations.
+* [Enhanced Search](http://www.charlestonsw.com/product/store-locator-plus-enhanced-search) : Get even more control over the basic search form and even more when the Pro Pack is installed.
+
+If you are a plugin developer you will be interested in our new "Roll Your Own" program where you can create SLP based premium (or free) add-ons of your own.   Create something great and list it on our site!
+
 = Special Requests =
 
 We do accept feature requests for all of our plugins, free ones included. The most requested features will make it into the next version.
 
-<strong>If you need a special feature NOW, <a href="http://www.charlestonsw.com/contact-us/">contact us</a>!</strong> We offer expedited feature development. Our custom development rates start at $500/day.
+If you need something NOW, or are looking for something beyond a basic "tweak" of the plugin, please check out our
+[Customization Service](http://www.charlestonsw.com/product/customization/).  Rates start at $500/day.
 
-= Looking For Customized WordPress Plugins? =
+= Upgrades and Patches =
 
-If you are looking for custom WordPress development for your own plugins, give
-us a call.   Not only can we offer competitive rates but we can also leverage
-our existing framework for WordPress applications which reduces development time
-and costs.
-
-Learn more at: http://www.charlestonsw.com/
-
-= Premium Add-Ons Available =
-
-We current offer a Pro Pack and a Store Pages premium add-on.  More add-ons are one the way. You can learn more about the add-ons at these web pages:
-
-* [Pro Pack](http://www.charlestonsw.com/product/store-locator-plus/)
-* [Store Pages](http://www.charlestonsw.com/product/store-locator-plus-store-pages/)
-
-Learn More about these features at the [Store Locator Plus website](http://www.charlestonsw.com/product/store-locator-plus/)
-
-= Upgrades =
-
-We will offer upgrade versions from time-to-time when special new features are added to the product.
-If you do not purchase the upgrade you will still receive bug fixes and minor feature additions, however
-some of the newest features may not be available to you.
+We try to release at least one upgrade/patch every month.
 
 The main product will always remain fully functional and free.  If you'd like to have some of the latest
-"bells & whistles" purchasing the upgrades is a great way to help support us and encourage us to add even
+"bells & whistles" purchasing one of our premium add-ons is a great way to help support us and encourage us to add even
 more items the next time around.
-
-= Related Links =
-
-* [Store Locator Plus](http://www.charlestonsw.com/product/store-locator-plus/)
-* [Other CSA Plugins](http://profiles.wordpress.org/charlestonsw/)
 
 = Our Philosophy =
 
@@ -88,12 +71,6 @@ These hidden problems impact memory usage, fill up disk space, and reduce perfor
 During our 20+ years of software development, we have also found that leaving "innocuous" warnings in place tends to lead to trouble further down the road. Warnings today often become errors tomorrow. Many programming languages, PHP included, continue to tighten security and close loopholes that are typically found living near all those warning messages. Some warnings are also telling you to "change this now, it will be gone tomorrow". Eventually tomorrow will come.
 
 While our plugins may not be the prettiest on the block, we do try to make sure that all the hidden stuff you don't see is designed as well as it can be. To sum it all up, we like to write plugins that last. We hope you appreciate our work.
-
-= New! Store Pages =
-
-You can have a WordPress page for each store location on your map turning your location data into SEO friendly content.  Store Pages are a special page type that is fully integrated with WordPress,  but you manage them through Store Locator Plus.  Store Pages also have their own taxonomy (category system) so you can manage Store Page categories without affecting the rest of your site.
-
-[more information](http://www.charlestonsw.com/product/store-locator-plus-store-pages/)
 
 == Installation ==
 
@@ -131,17 +108,32 @@ Thanks to [Nicolas Mollet](http://mapicons.nicolasmollet.com/) for some of the g
 
 == Frequently Asked Questions ==
 
-= What happened to Cyber Sprocket? =
+= What is included in the plugin? =
 
-Cyber Sprocket Labs was primarily a software consulting firm that did WordPress plugins as a part-time endeavor.   They have closed the business as of September 2012.
+The plugin includes all the functions and features necessary to add multiple locations to a store finder tool on your website.
+List 1 location or 1,000, customize the search interface and results form, and more.
+All basic functionality needed for a fully functional plugin is included.
+Basic upgrades are free and available directly from the WordPress plugin repository.
+
+= What are the premium add-ons? =
+
+In response to feature requests from our customers, we had created a series of premium add-on packages for Store Locator Plus.
+These features extend the functionality of the plugin beyond the basic service and features and can be purchased ala-carte.
+This gives those customers who want more out of the plugin the extra features they desire while keeping the main plugin as
+efficient as possible for everyone else.   It also provides a great way to support future development while getting a
+"little something extra" when contributing to our efforts.
+
+Currently we offer the following premium add-on packages:
+
+* [Pro Pack](http://www.charlestonsw.com/product/store-locator-plus) : More control over the map, search form, loading locations.
+* [Store Pages](http://www.charlestonsw.com/product/store-locator-plus-store-pages) : Create SEO friendly WordPress pages for your store locations.
+* [Enhanced Search](http://www.charlestonsw.com/product/store-locator-plus-enhanced-search) : Get even more control over the basic search form and even more when the Pro Pack is installed.
 
 = Who is Charleston Software Associates? =
 
-We have taken over the support, maintenance and updates of Cyber Sprocket's WordPress plugins.  We ONLY do mobile apps and WordPress plugins.
+Currently it is one guy hacking code in a home office.   I ONLY do mobile apps and WordPress plugins for a living.
 
-= How does this impact my CSL license? =
-
-We will continue to honor all the CSL licenses.  However there may be some bumps in the road as we transition away from a licensing-centric to a pure-play add-on system over the coming months.  
+= Have a license issue? =
 
 If you have any problems with your license or validating a product please contact us via our web form at http://www.charlestonsw.com/ and we will resolve your licensing issues.
 
@@ -166,38 +158,12 @@ If you create a translation file please send it to us and we'll include it in th
 
 All major browsers should work, however CSA only officially supports the current and the most recent prior release of Internet Explorer, Firefox, Chrome, and Safari.
 
-As of June, 2011 this includes:
+As of September, 2012 this includes:
 
-* Internet Explorer (IE) 8/9
-* Firefox 4/5
-* Chrome 11/12
-* Safari 4/5
-
-= What is the Pro Pack? =
-
-The Pro Pack is a paid add-on for the main Store Locator Plus product.
-When you purchase the Pro Pack the system will automatically install a variety of new features in the base product.
-The features that are added by the Pro Pack change on a regular basis.
-Please see the [Store Locator Plus website](http://www.charlestonsw.com/product/store-locator-plus/) for the latest feature list.
-
-Some of the features in the Pro Pack include:
-
-* Ability to search by location name
-* A searched-locations report.
-* Ability to input addresses in bulk via a CSV upload.
-* Ability to associate tags with locations and filter search results by those tags.
-* Additional search form elements.
-* The CSS Themes system.
-
-= What are Store Pages? =
-
-Store Pages are a new WordPress page type that are created from the location data you have entered in your Store Locator Plus locations database.
-Store Pages have their own categories and can be managed separately from the main WordPress site pages.
-Store Pages content is fully accessible from your standard WordPress search and menu interface, providing a great way to get SEO value from your location data.
-
-Store Pages is a paid add-on for the free Store Locator Plus product. When you purchase the Store Pages add-on new features will be added to the base product.
-
-Please see the [Store Locator Plus website](http://www.charlestonsw.com/product/store-locator-plus/) for the latest feature list.
+* Internet Explorer (IE) 9
+* Firefox 15
+* Chrome 21
+* Safari 5
 
 == Screenshots ==
 
@@ -219,14 +185,11 @@ We update about once per month or more frequently as needed.
 
 Visit the [Store Locator Plus Release Notes](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/) at our website.
 
-= Latest Release: 3.2 (September 5th, 2012) =
+= Latest Release: 3.3 (September 21st, 2012) =
 
-* Geocoding process updates.
-* Add a force load JavaScript for sites with less friendly themes (not processing shutdown or footer scripts)
-* Revised JavaScript load order is more aggressive.
-* Fix path name to language files, was causing some installs to break on security warning.
-* Theme system tweaking.
-* Transition from Cyber Sprocket to CSA.
-
+* Patch for Store Pages add-on not replacing web links properly
+* [Action Hooks for Customized and Third Party add-ons](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/add-on-packs-roll-your-own/)
+* Move screen shots to assets to lessen size  of zip install
+* Remove obsolete JavaScript files
 
 

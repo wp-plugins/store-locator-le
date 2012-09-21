@@ -46,7 +46,7 @@ function move_upload_directories() {
 /*-----------------*/
 
 function initialize_variables() {
-    global $sl_height, $sl_width, $sl_width_units, $sl_height_units, $sl_radii;
+    global $sl_height, $sl_width, $sl_width_units, $sl_height_units;
     global $cl_icon, $cl_icon2, $sl_google_map_domain, $sl_google_map_country, $sl_theme, $sl_base, $sl_upload_base, $sl_location_table_view;
     global $sl_search_label, $sl_zoom_level, $sl_zoom_tweak, $sl_use_city_search, $sl_use_name_search, $sl_default_map;
     global $sl_radius_label, $sl_website_label, $sl_num_initial_displayed, $sl_load_locations_default;
@@ -200,12 +200,6 @@ function initialize_variables() {
         add_option('sl_map_width_units', "%");
         $sl_width_units=get_option('sl_map_width_units');
         }	
-    
-    $sl_radii=get_option('sl_map_radii');
-    if (empty($sl_radii)) {
-        add_option('sl_map_radii', "10,25,50,100,(200),500");
-        $sl_radii=get_option('sl_map_radii');
-        }
 }
 
 
@@ -255,8 +249,19 @@ function do_geocoding($address,$sl_id='') {
         } else {
              $raw_json = file_get_contents($request_url);
         }
-        $json = json_decode($raw_json);
-        $status = $json->{'status'};
+
+        // If raw_json exists, parse it
+        //
+        if (isset($raw_json)) {
+            $json = json_decode($raw_json);
+            $status = $json->{'status'};
+            
+        // no raw json
+        //
+        } else {
+            $json = '';
+            $status = '';
+        }
         
         // Geocode completed successfully
         //
@@ -569,9 +574,7 @@ function slplus_dbupdater($sql,$table_name) {
     $sl_width          = get_option('sl_map_width','100');        
     $sl_width_units    = get_option('sl_map_width_units','%');
 	$slplus_name_label = get_option('sl_name_label');
-    
-    $sl_radii          = get_option('sl_map_radii','1,5,10,(25),50,100,200,500');
-    $r_array        = explode(",", $sl_radii);
+    $r_array        = explode(",",get_option('sl_map_radii','1,5,10,(25),50,100,200,500'));
     
     $sl_instruction_message = get_option('sl_instruction_message',__('Enter Your Address or Zip Code Above.',SLPLUS_PREFIX));
     
@@ -655,7 +658,6 @@ function slplus_dbupdater($sql,$table_name) {
     $columns += (get_option('sl_use_country_search')!=1) ? 1 : 0; 	    
     $columns += (get_option('slplus_show_state_pd')!=1) ? 1 : 0; 	    
     $sl_radius_label=get_option('sl_radius_label');
-    $file = SLPLUS_COREDIR . 'templates/search_form.php';
 
     // Prep fnvars for passing to our template
     //
@@ -681,7 +683,11 @@ function slplus_dbupdater($sql,$table_name) {
         define('SLPLUS_SHORTCODE_RENDERED',true);
     }
 
-    return get_string_from_phpexec($file); 
+    // Search / Map Actions
+    //
+    add_action('slp_render_search_form',array('SLPlus_UI','slp_render_search_form'));
+
+    return get_string_from_phpexec(SLPLUS_COREDIR . 'templates/search_and_map.php');
 }
 
 

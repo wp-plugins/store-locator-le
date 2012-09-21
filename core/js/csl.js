@@ -666,6 +666,7 @@ var csl = {
   	  	 * returns: none
   	  	 */
 		this.putMarkers = function(markerList, animation) {
+
 			this.markers = [];
 			if (this.loadedOnce) {
 				var sidebar = document.getElementById('map_sidebar');
@@ -735,15 +736,15 @@ var csl = {
 				this.gmap.panTo(this.homePoint);
                 var sidebar = document.getElementById('map_sidebar');
 				sidebar.innerHTML = '<div class="no_results_found"><h2>No results found.</h2></div>';
-			}
+                jQuery('#map_sidebar').trigger('contentchanged');
+			} else {
+                jQuery('#map_sidebar').trigger('contentchanged');
+            }
 			
 			if (bounds != null) {
 				this.debugSearch('rebounded');
 				this.bounds = bounds;
-				//if (this.homePoint) { 
-				//	this.gmap.panTo(this.homePoint); }
 				this.gmap.fitBounds(this.bounds);
-				//this.gmap.panTo(this.bounds.getCenter());
 			}
 		}
 		
@@ -829,7 +830,7 @@ var csl = {
         this.__getMarkerUrl = function(aMarker) {
             var url = '';
             //add an http to the url
-            if (aMarker.sl_pages_url != '') {
+            if ((slplus.use_pages_links) && (aMarker.sl_pages_url != '')) {
                 url = aMarker.sl_pages_url;
             }
             else if (aMarker.url != '') {
@@ -1137,31 +1138,41 @@ var csl = {
             }
 
             var address = this.__createAddress(aMarker);
-			
-			var html =  '<center><table width="96%" cellpadding="4px" cellspacing="0" class="searchResultsTable">' +
-					'<tr class="slp_results_row">' +
-                    '<td class="results_row_left_column">' +
-                        '<span class="location_name">' + aMarker.name + '</span><br>' + 
-                        parseFloat(aMarker.distance).toFixed(1) + ' ' + slplus.distance_unit + '</td>' +
-                    '<td class="results_row_center_column">' + 
-                        street +  
-                        street2 + 
-                        city_state_zip +
-                        thePhone +
-                        theFax +
-                    '</td>' +
-                    '<td class="results_row_right_column">' + 
-                        link + 
-                        elink +
-                        '<a href="http://' + slplus.map_domain + 
-                        '/maps?saddr=' + encodeURIComponent(this.address) + 
-                        '&daddr=' + encodeURIComponent(address) + 
-                        '" target="_blank" class="storelocatorlink">Directions</a>'+
-                        tagInfo +
-                        '</td>' +
-                        '</tr></table></center>';
-			div.innerHTML = html;
+
+
+            // JavaScript version of sprintf
+            //
+            String.prototype.format = function() {
+             var args = arguments;
+             return this.replace(/{(\d+)}/g, function(match, number) { 
+               return typeof args[number] != 'undefined'
+                 ? args[number]
+                 : match
+               ;
+             });
+           };
+
+         // Create the results table
+         //
+ 		 div.innerHTML = slplus.results_string.format(
+                        aMarker.name,
+                        parseFloat(aMarker.distance).toFixed(1),
+                        slplus.distance_unit,
+                        street,
+                        street2,
+                        city_state_zip,
+                        thePhone,
+                        theFax,
+                        link,
+                        elink,
+                        slplus.map_domain,
+                        encodeURIComponent(this.address),
+                        encodeURIComponent(address),
+                        tagInfo
+                      )
+                      ;
 			div.className = 'results_entry';
+            div.id = 'slp_results_entry_'+aMarker.id;
 
 			return div;
 		}

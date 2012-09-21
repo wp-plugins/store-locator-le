@@ -55,3 +55,10 @@ tr.slp_map_search_results a:hover {
     background-color: #F2F2F2;
 }
 
+span.slp_checkbox_entry {
+    padding-right: 12px;
+}
+
+span.slp_checkbox_entry input[type="checkbox"] {
+    vertical-align: text-bottom;
+}

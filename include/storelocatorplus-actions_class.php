@@ -274,6 +274,23 @@ if (! class_exists('SLPlus_Actions')) {
             $slplus_end_size =(function_exists('getimagesize') && file_exists($slplus_end_icon_file)) ?
                 getimagesize($slplus_end_icon_file)  :
                 array(0 => 20, 1 => 34);
+
+            // Results Output String In JavaScript Format
+            //
+            $results_string = '<center>' .
+                    '<table width="96%" cellpadding="4px" cellspacing="0" class="searchResultsTable">'  .
+                        '<tr class="slp_results_row">'  .
+                            '<td class="results_row_left_column"><span class="location_name">{0}</span><br>{1} {2}</td>'  .
+                            '<td class="results_row_center_column">{3}{4}{5}{6}{7}</td>'  .
+                            '<td class="results_row_right_column">{8}{9}'  .
+                                '<a href="http://{10}' .
+                                '/maps?saddr={11}'  .
+                                '&daddr={12}'  .
+                                '" target="_blank" class="storelocatorlink">Directions</a>{13}</td>'  .
+                            '</tr>'  .
+                        '</table>'  .
+                        '</center>';
+
             // Lets get some variables into our script
             //
             $scriptData = array(
@@ -291,10 +308,11 @@ if (! class_exists('SLPlus_Actions')) {
                 'map_end_icon'      => $slplus_end_icon,
                 'map_end_sizew'     => $slplus_end_size[0],
                 'map_end_sizeh'     => $slplus_end_size[1],
-                'use_sensor'            => (get_option(SLPLUS_PREFIX."_use_location_sensor")==1),
+                'use_sensor'        => (get_option(SLPLUS_PREFIX."_use_location_sensor")==1),
                 'map_scalectrl'     => (get_option(SLPLUS_PREFIX.'_disable_scalecontrol')==0),
                 'map_type'          => get_option('sl_map_type','roadmap'),
                 'map_typectrl'      => (get_option(SLPLUS_PREFIX.'_disable_maptypecontrol')==0),
+                'results_string'    => apply_filters('slp_javascript_results_string',$results_string),
                 'show_tags'         => (get_option(SLPLUS_PREFIX.'_show_tags')==1),
                 'overview_ctrl'     => get_option('sl_map_overview_control',0),
                 'use_email_form'    => (get_option(SLPLUS_PREFIX.'_email_form')==1),

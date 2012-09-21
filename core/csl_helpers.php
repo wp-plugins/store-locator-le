@@ -53,8 +53,8 @@ function execute_and_output_template($file) {
  **  $msg (string, required) - the message to display
  **/
 function slp_createhelpdiv($divname,$msg) {
-    return "<a onclick=\"swapVisibility('".SLPLUS_PREFIX."-help$divname');\" href=\"javascript:;\">".
-        "<img class='helpicon' border='0' title='More info' alt='More info' src='".SLPLUS_COREURL."images/help-icon-18x20.png'>".
+    return "<a class='moreinfo_clicker' onclick=\"swapVisibility('".SLPLUS_PREFIX."-help$divname');\" href=\"javascript:;\">".
+        '<div class="'.SLPLUS_PREFIX.'-moreicon" title="click for more info"><br/></div>'.
         "</a>".
         "<div id='".SLPLUS_PREFIX."-help$divname' class='input_note' style='display: none;'>".
             $msg. 

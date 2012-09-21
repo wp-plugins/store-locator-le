@@ -45,7 +45,7 @@ function custom_upload_mimes ( $existing_mimes=array() ) {
  **  $file (string, required) - name of the file in the plugin/templates dir
  **/
 function execute_and_output_plustemplate($file) {
-    $file = SLPLUS_PLUGINDIR.'/plustemplates/'.$file;
+    $file = SLPLUS_COREDIR.'templates/'.$file;
     print get_string_from_phpexec($file);
 }
 

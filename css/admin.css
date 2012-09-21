@@ -73,7 +73,7 @@ div.csl-slplus-input {
 div.csl-slplus-moreicon {
     background: url("../core/images/General_icons16.png") 
         no-repeat scroll 
-        -17px 0px 
+        -15px 0px
         transparent; 
     height:20px;
     width: 20px;
@@ -85,6 +85,9 @@ div.csl-slplus-moreicon {
 div.csl-slplus-moretext {
     display: none;
     clear: both;    
+}
+a.moreinfo_clicker {
+    text-decoration: none;
 }
 
 
@@ -337,6 +340,9 @@ input#bulk_file {
 .form_entry {
     clear:both;
 }
+div.section_column .form_entry {
+    min-width: 464px;
+}
 
 .section_description H3 {
 	margin: 0px;
@@ -561,6 +567,14 @@ td.optionpack {
     margin-top: 3px;
 }
 
+
+div.section_column_content {
+    padding: 0px 6px;
+}
+
+p.slp_admin_info {
+    clear: both;
+}
 
 #poststuff #rb_details h2, #poststuff .section_column h2 {
     margin-bottom: 3px;  

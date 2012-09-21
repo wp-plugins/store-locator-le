@@ -37,12 +37,6 @@
              // Pro Pack
              //            
             if (function_exists('execute_and_output_plustemplate')) {
-                
-                     //--------------------------------
-                     // Pro Pack v2.4+ Only
-                     //
-                     global $slplus_plugin;
-                     if ($slplus_plugin->license->packages['Pro Pack']->active_version >= 2004000) {                    
             ?>                
                         <div class='form_entry'>
                             <label for='<?php echo SLPLUS_PREFIX.'_maxreturned'; ?>'><? _e("Return at most", SLPLUS_PREFIX); ?></label>
@@ -61,11 +55,6 @@
                             ?>                 
                         </div>
             <?php
-                }
-                
-                //--------------------------------
-                // Pro Pack Any Version
-                //
                 execute_and_output_plustemplate('mapsettings_mapfeatures.php');
             }    
             ?>
@@ -76,35 +65,26 @@
     <div class='section_column'>       
         <div class='map_designer_settings'>
             <h2><?php _e('Dimensions', SLPLUS_PREFIX);?></h2>
-            
-            <div class='form_entry'>
-                <label for='zoom_level'><?php _e("Zoom Level", SLPLUS_PREFIX);?>:</label>
-                <?php echo $sl_zoom; ?>
-                <?php
-                echo slp_createhelpdiv('zoom_level',
-                    __('19=street level, 0=world view. This is the initial zoom level of the map '.
-                       ' if you do not check off "Immediately show locations.".  It is also the ' .
-                       ' zoom level that will be used if a single location is returned by the search.' . 
-                       ' All searches will automatically zoom in to a level that shows all of the matches on the map.', 
-                       SLPLUS_PREFIX)
-                    );
-                ?>                 
-                
-            </div>
 
-            <div class='form_entry'>
-                <label for='zoom_tweak'><?php _e("Zoom  Adjustment", SLPLUS_PREFIX);?>:</label>
-                <?php echo $sl_zoom_adj; ?>
-                <?php
-                echo slp_createhelpdiv('zoom_tweak',
-                    __('For the "auto-zoom" when results are shown the map will zoom to show all the returned locations, '.
-                        'this setting allows you to determine how tight to zoom in. The higher the number the further out the zoom gets.', 
-                       SLPLUS_PREFIX)
-                    );
-                ?>                 
-                
-            </div>
+            <?php
+                echo CreatePulldownDiv(
+                        'sl_zoom_level',
+                        array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19),
+                        $label=__('Zoom Level', SLPLUS_PREFIX),
+                        $msg=__('Initial zoom level of the map if "immediately show locations" is NOT selected or if only a single location is found.  0 = world view, 19 = house view.', SLPLUS_PREFIX),
+                        $prefix='',
+                        $default=4
+                        );
 
+                echo CreatePulldownDiv(
+                        'sl_zoom_tweak',
+                        array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19),
+                        $label=__('Zoom Adjustment', SLPLUS_PREFIX),
+                        $msg=__('Changes how tight auto-zoom bounds the locations shown.  Lower numbers are closer to the lcoations.', SLPLUS_PREFIX),
+                        $prefix='',
+                        $default=4
+                        );
+            ?>
             
             <div class='form_entry'>
                 <label for='height'><?php _e("Map Height", SLPLUS_PREFIX);?>:</label>
