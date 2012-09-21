@@ -50,6 +50,9 @@ global $text_domain, $sl_upload_path, $slplus_plugin;
             
             <label for='sl_phone'><?php _e("Phone", $text_domain);?></label>
             <input name='sl_phone'><br/>
+
+            <label for='sl_fax'><?php _e("Fax", $text_domain);?></label>
+            <input name='sl_fax'><br/>
             
             <label for='sl_image'><?php _e("Image URL (shown with location)", $text_domain);?></label>
             <input name='sl_image'><br/>

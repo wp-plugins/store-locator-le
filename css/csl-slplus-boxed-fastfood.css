@@ -345,3 +345,10 @@ div#map_sidebar .results_entry TABLE {
 
 /* Results Scrollbar */
 
+span.slp_checkbox_entry {
+    padding-right: 12px;
+}
+
+span.slp_checkbox_entry input[type="checkbox"] {
+    vertical-align: text-bottom;
+}

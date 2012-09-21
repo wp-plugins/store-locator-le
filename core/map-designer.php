@@ -9,6 +9,8 @@
 // Supporting Functions
 //===========================================================================
 
+global $slplus_plugin;
+
 /**************************************
  ** function: choose_units
  **
@@ -26,6 +28,20 @@ function choose_units($unit, $input_name) {
 	return $select_field;
 }
 
+/**
+ * function: SavePostToOptionsTable
+ */
+function SavePostToOptionsTable($optionname,$default=null) {
+    if ($default != null) {
+        if (!isset($_POST[$optionname])) {
+            $_POST[$optionname] = $default;
+        }
+    }
+    if (isset($_POST[$optionname])) {
+        update_option($optionname,$_POST[$optionname]);
+    }
+}
+
 /**************************************
  ** function: SaveCheckboxToDB
  **
@@ -35,10 +51,10 @@ function choose_units($unit, $input_name) {
  **  $boxname (string, required) - the name of the checkbox (db option name)
  **  $prefix (string, optional) - defaults to SLPLUS_PREFIX, can be '' 
  **/
-function SaveCheckboxToDB($boxname,$prefix = SLPLUS_PREFIX) {
-    $whichbox = $prefix.$boxname; 
+function SaveCheckboxToDB($boxname,$prefix = SLPLUS_PREFIX, $separator='-') {
+    $whichbox = $prefix.$separator.$boxname;
     $_POST[$whichbox] = isset($_POST[$whichbox])?1:0;  
-    update_option($whichbox,$_POST[$whichbox]); 
+    SavePostToOptionsTable($whichbox,0);
 }
 
 /**************************************
@@ -56,31 +72,74 @@ function CreateCheckboxDiv($boxname,$label='',$msg='',$prefix=SLPLUS_PREFIX) {
     $whichbox = $prefix.$boxname; 
     return 
         "<div class='form_entry'>".
+            "<div class='".SLPLUS_PREFIX."-input'>" .
             "<label  for='$whichbox'>$label:</label>".
             "<input name='$whichbox' value='1' type='checkbox' ".((get_option($whichbox) ==1)?' checked':'').">".
-            slp_createhelpdiv($boxname,$msg).
+            "</div>".
+            slp_createhelpdiv($boxname,$msg) .
         "</div>"
         ;
 }
 
 
+/**
+ * function: CreateInputDiv
+ */
+function CreateInputDiv($boxname,$label='',$msg='',$prefix=SLPLUS_PREFIX, $default='') {
+    $whichbox = $prefix.$boxname;
+    return
+        "<div class='form_entry'>" .
+            "<div class='".SLPLUS_PREFIX."-input'>" .
+                "<label for='$whichbox'>$label:</label>".
+                "<input  name='$whichbox' value='".get_option($whichbox,$default)."'>".
+            "</div>".
+            slp_createhelpdiv($boxname,$msg).
+         "</div>"
+        ;
+
+}
+
+/**
+ * function: CreatePulldownDiv
+ */
+function CreatePulldownDiv($boxname,$values,$label='',$msg='',$prefix=SLPLUS_PREFIX, $default='') {
+    $whichbox = $prefix.$boxname;
+    $selected = get_option($whichbox,$default);
+
+    $content =
+            "<div class='form_entry'>".
+                "<div class='".SLPLUS_PREFIX."-input'>" .
+                    "<label for='$whichbox'>$label:</label>" .
+                    "<select name='$whichbox'>"
+            ;
+
+    foreach ($values as $value){
+        $content.="<option value='$value' ".(($value == $selected)?'selected':'').">".
+                  $value.
+                "</option>";
+    }
+
+    $content.=      "</select>".
+                "</div>".
+                slp_createhelpdiv($boxname,$msg).
+            "</div>"
+            ;
+
+    return $content;
+}
+
 
 //===========================================================================
 // Main Processing
 //===========================================================================
-$update_msg ='';
-
 if (!$_POST) {
     move_upload_directories();
+    $update_msg ='';
     
 } else {
-    if (isset($_POST['sl_language'])) { 
-    	    update_option('sl_language', $_POST['sl_language']);
-    }
     $sl_google_map_arr=explode(":", $_POST['google_map_domain']);
     update_option('sl_google_map_country', $sl_google_map_arr[0]);
     update_option('sl_google_map_domain', $sl_google_map_arr[1]);
-    update_option('sl_map_character_encoding', $_POST['sl_map_character_encoding']);
     
     $_POST['height']=ereg_replace("[^0-9]", "", $_POST['height']);
     $_POST['width']=ereg_replace("[^0-9]", "", $_POST['width']);
@@ -99,71 +158,78 @@ if (!$_POST) {
     update_option('sl_map_width_units', $_POST['width_units']);
     update_option('sl_map_width', $_POST['width']);
     
-    update_option('sl_map_radii', $_POST['radii']);
     update_option('sl_map_home_icon', $_POST['icon']);
     update_option('sl_map_end_icon', $_POST['icon2']);
-    update_option('sl_search_label', $_POST['search_label']);
-    update_option('sl_radius_label', $_POST['sl_radius_label']);
-    update_option('sl_website_label', $_POST['sl_website_label']);
-    update_option('sl_instruction_message', $_POST['sl_instruction_message']);
-    update_option('sl_zoom_level', $_POST['zoom_level']);
-    update_option('sl_zoom_tweak', $_POST['zoom_tweak']);
-    update_option('sl_map_type', $_POST['sl_map_type']);
-    update_option('sl_num_initial_displayed', $_POST['sl_num_initial_displayed']);    
-    update_option('sl_distance_unit', $_POST['sl_distance_unit']);
-	update_option('sl_name_label', $_POST['sl_name_label']);
 
-    if (function_exists('execute_and_output_plustemplate')) {
-        update_option('sl_starting_image', $_POST['sl_starting_image']);
-        update_option(SLPLUS_PREFIX.'_search_tag_label',        $_POST[SLPLUS_PREFIX.'_search_tag_label']);
-        update_option(SLPLUS_PREFIX.'_tag_search_selections',   $_POST[SLPLUS_PREFIX.'_tag_search_selections']);
-        update_option(SLPLUS_PREFIX.'_state_pd_label',          $_POST[SLPLUS_PREFIX.'_state_pd_label']);
-        update_option(SLPLUS_PREFIX.'_map_center',              $_POST[SLPLUS_PREFIX.'_map_center']);        
-        update_option(SLPLUS_PREFIX.'_maxreturned',             $_POST[SLPLUS_PREFIX.'_maxreturned']);
-    }    
-    
-    # Checkbox settings - can set to issset and save that because the
-    # post variable is only set if it is checked, if not checked it is
-    # false (0).
-    #
-    $_POST['sl_use_city_search']=isset($_POST['sl_use_city_search'])?1:0;
-    update_option('sl_use_city_search',$_POST['sl_use_city_search']);
-            
-    $_POST['slplus_show_state_pd']=isset($_POST['slplus_show_state_pd'])?1:0;
-    update_option('slplus_show_state_pd',$_POST['slplus_show_state_pd']);
-    
-    $_POST['sl_use_country_search']=isset($_POST['sl_use_country_search'])?1:0;
-    update_option('sl_use_country_search',$_POST['sl_use_country_search']);
-       
-    $_POST['sl_remove_credits']=isset($_POST['sl_remove_credits'])?1:0; 
-    update_option('sl_remove_credits',$_POST['sl_remove_credits']);
-    
-    $_POST['sl_load_locations_default']=isset($_POST['sl_load_locations_default'])?1:0;
-    update_option('sl_load_locations_default',$_POST['sl_load_locations_default']);
 
-    $_POST['sl_map_overview_control'] = isset($_POST['sl_map_overview_control'])?1:0;  
-    update_option('sl_map_overview_control',$_POST['sl_map_overview_control']);
-	
+    // Text boxes
+    //
     $BoxesToHit = array(
-        '_show_tag_search',
-        '_show_tag_any',
-        '_email_form',
-        '_show_tags',
-        '_disable_scrollwheel',
-        '_disable_initialdirectory',
-        '_disable_largemapcontrol3d',
-        '_disable_scalecontrol',
-        '_disable_maptypecontrol',
-        '_hide_radius_selections',
-        '_hide_address_entry',
-        '_disable_search',
-		'_show_search_by_name',
-        '_use_location_sensor'
+        'sl_language'                           ,
+        'sl_map_character_encoding'             ,
+        'sl_map_radii'                          ,
+        'sl_instruction_message'                ,
+        'sl_zoom_level'                         ,
+        'sl_zoom_tweak'                         ,
+        'sl_map_type'                           ,
+        'sl_num_initial_displayed'              ,
+        'sl_distance_unit'                      ,
+        'sl_name_label'                         ,
+        'sl_radius_label'                       ,
+        'sl_search_label'                       ,
+        'sl_website_label'                      ,
+        
+        'sl_starting_image'                     ,
+        SLPLUS_PREFIX.'_tag_search_selections'  ,
+        SLPLUS_PREFIX.'_map_center'             ,
+        SLPLUS_PREFIX.'_maxreturned'            ,
+        
+        SLPLUS_PREFIX.'_search_tag_label'       ,
+        SLPLUS_PREFIX.'_state_pd_label'         ,
+
         );
-    foreach ($BoxesToHit as $JustAnotherBox) {        
-        SaveCheckBoxToDB($JustAnotherBox);
+    foreach ($BoxesToHit as $JustAnotherBox) {
+        SavePostToOptionsTable($JustAnotherBox);
+    }
+
+
+    // Checkboxes with custom names
+    //
+    $BoxesToHit = array(
+        'sl_use_city_search',
+        'sl_use_country_search',
+        'sl_load_locations_default',
+        'sl_map_overview_control',
+        'sl_remove_credits',
+        'slplus_show_state_pd',
+        );
+    foreach ($BoxesToHit as $JustAnotherBox) {
+        SaveCheckBoxToDB($JustAnotherBox, '','');
     }
        
+    // Checkboxes with normal names
+    //
+    $BoxesToHit = array(
+        'show_tag_search',
+        'show_tag_any',
+        'email_form',
+        'show_tags',
+        'disable_scrollwheel',
+        'disable_initialdirectory',
+        'disable_largemapcontrol3d',
+        'disable_scalecontrol',
+        'disable_maptypecontrol',
+        'hide_radius_selections',
+        'hide_address_entry',
+        'disable_search',
+		'show_search_by_name',
+        'use_location_sensor'
+        );
+    foreach ($BoxesToHit as $JustAnotherBox) {        
+        SaveCheckBoxToDB($JustAnotherBox, SLPLUS_PREFIX, '_');
+    }
+
+    do_action('slp_save_map_settings');       
     $update_msg = "<div class='highlight'>".__("Successful Update", SLPLUS_PREFIX).'</div>';
 }
 
@@ -232,44 +298,14 @@ $sl_char_enc["Korea (EUS-KR)"]="eus-kr";
 //-- Set Checkboxes
 //
 $checked2   	    = (isset($checked2)  ?$checked2  :'');
-$sl_city_checked	    = (get_option('sl_use_city_search')             ==1)?' checked ':'';
-$checked3	        = (get_option('sl_remove_credits')              ==1)?' checked ':'';
+$sl_city_checked	= (get_option('sl_use_city_search',0) ==1)?' checked ':'';
+$checked3	        = (get_option('sl_remove_credits',0)  ==1)?' checked ':'';
 
 $sl_map_type_options=(isset($sl_map_type_options)?$sl_map_type_options:'');
 $map_type["".__("Normal", SLPLUS_PREFIX).""]="roadmap";
 $map_type["".__("Satellite", SLPLUS_PREFIX).""]="satellite";
 $map_type["".__("Hybrid", SLPLUS_PREFIX).""]="hybrid";
 $map_type["".__("Physical", SLPLUS_PREFIX).""]="terrain";
-
-
-$zl[]=0;$zl[]=1;$zl[]=2;$zl[]=3;$zl[]=4;$zl[]=5;$zl[]=6;$zl[]=7;$zl[]=8;
-$zl[]=9;$zl[]=10;$zl[]=11;$zl[]=12;$zl[]=13;$zl[]=14;$zl[]=15;$zl[]=16;
-$zl[]=17;$zl[]=18;$zl[]=19;
-
-
-// Zoom Level
-//
-$slp_current_setting = get_option('sl_zoom_level');
-if ($slp_current_setting == '') { $slp_current_setting = 4; }
-$sl_zoom="<select name='zoom_level'>";
-foreach ($zl as $sl_value) {
-	$sl_zoom.="<option value='$sl_value' ";
-	if ($slp_current_setting==$sl_value){ $sl_zoom.=" selected ";}
-	$sl_zoom.=">$sl_value</option>";
-}
-$sl_zoom.="</select>";
-
-// Zoom Adjustment
-//
-$slp_current_setting = get_option('sl_zoom_tweak');
-if ($slp_current_setting == '') { $slp_current_setting = 4; }
-$sl_zoom_adj="<select name='zoom_tweak'>";
-foreach ($zl as $sl_value) {
-	$sl_zoom_adj.="<option value='$sl_value' ";
-	if ($slp_current_setting==$sl_value){ $sl_zoom_adj.=" selected ";}
-	$sl_zoom_adj.=">$sl_value</option>";
-}
-$sl_zoom_adj.="</select>";
 
 // Map Type
 //
@@ -370,58 +406,16 @@ $slpMapSettings->add_section(
     )
 );
 
-
 //------------------------------------
 // Create The Search Form Settings Panel
-//  
-$slpDescription = get_string_from_phpexec(SLPLUS_COREDIR.'/templates/settings_searchform.php');
-$slpMapSettings->add_section(
-    array(
-            'name'          => __('Search Form',SLPLUS_PREFIX),
-            'description'   => $slpDescription,
-            'auto'          => true
-        )
- );
-   
-//------------------------------------
-// Create The Map Settings Panel
-//  
-$slpDescription = get_string_from_phpexec(SLPLUS_COREDIR.'/templates/settings_mapform.php');
-$slpMapSettings->add_section(
-    array(
-            'name'          => __('Map',SLPLUS_PREFIX),
-            'description'   => $slpDescription,
-            'auto'          => true
-        )
- );
-    
-
-//------------------------------------
-// Info Panel
 //
-$slpDescription = 
-    "Product Information: <a href='$slplus_plugin->url' target='cybersprocket'>$slplus_plugin->url</a><br/>";
-if ($slplus_plugin->debugging) {
-$slpDescription .= 
-        "Basename:  ".SLPLUS_BASENAME    ."<br/>" .
-        "Core Directory:   ".SLPLUS_COREDIR     ."<br/>" .
-        "Plugin Directory: ".SLPLUS_PLUGINDIR   ."<br/>" .
-        "Core URL: ".SLPLUS_COREURL   ."<br/>" .
-        "Plugin URL: ".SLPLUS_PLUGINURL   ."<br/>" .
-        "Admin Page: ".SLPLUS_ADMINPAGE   ."<br/>" .
-        ""
-        ;    
-}        
-$slpMapSettings->add_section(
-    array(
-            'name'          => __('Plugin Info',SLPLUS_PREFIX),
-            'description'   => $slpDescription,
-            'auto'          => true
-        )
- );
+add_action('slp_build_map_settings_panels',array('SLPlus_AdminUI','slp_add_search_form_settings_panel'),1);
+add_action('slp_build_map_settings_panels',array('SLPlus_AdminUI','slp_add_map_settings_panel'),2);
+
     
 //------------------------------------
 // Render It 
 //
 print $update_msg;
+do_action('slp_build_map_settings_panels');
 $slpMapSettings->render_settings_page();    

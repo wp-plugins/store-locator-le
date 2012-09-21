@@ -6,8 +6,6 @@
  **
  ** The main settings class.
  **
- ** see: http://redmine.cybersprocket.com/projects/wpmod/wiki/Class_wpCSL_settings
- **
  ** Methods:
  **
  **     __construct         : Overload of the default class instantiation.
@@ -35,13 +33,13 @@ class wpCSL_settings__slplus {
         
         // Passed Params
         //        
-        foreach ($params as $name => $sl_value) {
-            $this->$name = $sl_value;
+        foreach ($params as $name => $value) {
+            $this->$name = $value;
         }
 
         // Only do this if we are on admin panel
         //
-        if (is_admin() && $this->parent->isOurAdminPage) {
+        if (isset($this->parent) && (is_admin() && $this->parent->isOurAdminPage)) {
             
             // Only show the license section if the plugin settings
             // wants a license module
@@ -91,9 +89,9 @@ class wpCSL_settings__slplus {
                                    <div style="width:150px; float:left; text-align: right;
                                        padding-right: 6px;">CSL IP Addresses:</div>
                                    <div style="float: left;">' . 
-                                        gethostbyname('cybersprocket.com') . 
+                                        gethostbyname('charlestonsw.com') . 
                                         ' and ' .  
-                                        gethostbyname('license.cybersprocket.com') . 
+                                        gethostbyname('license.charlestonsw.com') . 
                                     '</div>
                                  </div>                                
                                    
@@ -209,25 +207,15 @@ class wpCSL_settings__slplus {
          return
                         '
                         <div class="cybersprocket-cslbox">
-                        <div class="cybersprocket-csllogo">
-                        <a href="http://www.cybersprocket.com/" target="cslinfo"><img src="'. $this->plugin_url .'/images/CSL_banner_logo.png"/></a>
-                         </div>
                          <div class="cybersprocket-cslinfo">
-                         <h4>This plugin has been brought to you by <a href="http://www.cybersprocket.com"
-                                target="_new">Cyber Sprocket Labs</a></h4>
-                         <p>Cyber Sprocket Labs is a custom software development company.  
-                            We develop desktop, mobile, and web applications for clients large and small  
+                         <h4>This plugin has been brought to you by <a href="http://www.charlestonsw.com"
+                                target="_new">Charleston Software Associates</a></h4>
+                         <p>We develop desktop, mobile, and web applications for clients large and small  
                             from all around the world. We hope our plugin brings you closer to the perfect site.
                             If there is anything we can do to improve our work or if you wish to hire us to customize
                             this plugin please call our Charleston South Carolina headquarters or 
                             <a href="http://www.cybersprocket.com/contact-us/" target="cyber-sprocket-labs">email us</a>
-                            and let us know.<br/>
-                            <br>
-                            <strong>Cyber Sprocket Is...</strong><br/>
-                            Lobby Jones and a bunch of coders.<br/>
-                            <br/>
-                            <strong>For more information:</strong><br/>
-                            <a href="http://www.cybersprocket.com" target="cyber-sprocket-labs">Please visit our website at www.cybersprocket.com</a>.<br/>
+                            and let us know.
                          </p>
                          </div>
                          </div>
@@ -290,7 +278,7 @@ class wpCSL_settings__slplus {
      **/
     function add_item($section, $display_name, $name, $type = 'text',
             $required = false, $description = null, $custom = null,
-            $sl_value = null, $disabled = false
+            $value = null, $disabled = false
             ) {
 
         $name = $this->prefix .'-'.$name;
@@ -318,7 +306,7 @@ class wpCSL_settings__slplus {
                 'required' => $required,
                 'description' => $description,
                 'custom' => $custom,
-                'value' => $sl_value,
+                'value' => $value,
                 'disabled' => $disabled
             )
         );
@@ -374,13 +362,21 @@ class wpCSL_settings__slplus {
             }
         }        
 
+        // Show the plugin environment and info section on every plugin
+        //
+        if ($this->render_csl_blocks) {
+            $this->sections['Plugin Info']->display();
+        }
+
         // Only render license section if plugin settings
         // asks for it
-        if ($this->has_packages || !$this->no_license) {
-            $this->sections[$this->license_section_title]->header();
-            $this->show_plugin_settings();
-            $this->sections[$this->license_section_title]->footer();
-        }
+        if (isset($this->license_section_title) && (isset($this->sections[$this->license_section_title]))) {
+            if ($this->has_packages || !$this->no_license) {
+                $this->sections[$this->license_section_title]->header();
+                $this->show_plugin_settings();
+                $this->sections[$this->license_section_title]->footer();
+            }
+        }            
 
         // Draw each settings section as defined in the plugin config file
         //
@@ -394,7 +390,6 @@ class wpCSL_settings__slplus {
         //
         if ($this->render_csl_blocks) {
             $this->sections['Plugin Environment']->display();
-            $this->sections['Plugin Info']->display();
         }
         $this->render_javascript();
         $this->footer();
@@ -407,8 +402,10 @@ class wpCSL_settings__slplus {
      ** should probably be moved over to the licensing submodule
      **/
     function show_plugin_settings() {
+       $theLicenseKey = get_option($this->prefix.'-license_key');
+
        $license_ok =(  (get_option($this->prefix.'-purchased') == '1')   &&
-                      (get_option($this->prefix.'-license_key') != '')            	    	    
+                      ($theLicenseKey != '')
                           );     
         
         // If has_packages is true that means we have an unlicensed product
@@ -422,16 +419,20 @@ class wpCSL_settings__slplus {
                 ((!$license_ok) ?
                     "name=\"{$this->prefix}-license_key\"" :
                     '') .
-                " value=\"". get_option($this->prefix.'-license_key') .
+                " value=\"". $theLicenseKey .
                 "\"". ($license_ok?'disabled' :'') .
                 " />";
     
             if ($license_ok) {
-                $content .= "<input type=\"hidden\" name=\"{$this->prefix}-license_key\" value=\"".
-                    get_option($this->prefix.'-license_key')."\"/>";
-                $content .= '<span><img src="'. $this->plugin_url .
-                    '/images/check_green.png" border="0" style="padding-left: 5px;" ' .
-                    'alt="License validated!" title="License validated!"></span>';
+                $content .=
+                    '<p class="slp_license_info">'.$theLicenseKey.'</p>'        .
+                    '<input type="hidden" name="'.$this->prefix.'-license_key" '.
+                        'value="'.$theLicenseKey.'"/>'                          .
+                    '<span><img src="'. $this->plugin_url                       .
+                              '/images/check_green.png" border="0" '            .
+                              'style="padding-left: 5px;" '                     .
+                              'alt="License validated!" '                       .
+                              'title="License validated!"></span>'              ;
             }
             
             $content .= (!$license_ok) ?
@@ -539,10 +540,14 @@ class wpCSL_settings__slplus {
                 $packString = $package->name . ' is enabled!';
 
                 $content .=
-                    '<div><img src="'. $this->plugin_url .
+                    '<div class="csl_info_package_license">'.
+                    (($package->sku!='')?'SKU: '.$package->sku.'<br/>':'').
+                    (($package->license_key!='')?'License Key: '.$package->license_key.'<br/>':'').
+                    '<img src="'. $this->plugin_url .
                     '/images/check_green.png" border="0" style="padding-left: 5px;" ' .
                     'alt="'.$packString.'" title="'.$packString.'">' .
-                    'Version ' . $installed_version .'</div>'.
+                    (($installed_version != '')?'Version: ' . $installed_version : '') .
+                    '</div>'.
                     '<input type="hidden" '.
                             'name="'.$package->lk_option_name.'" '.
                             ' value="'.$package->license_key.'" '.
@@ -743,8 +748,8 @@ class wpCSL_settings_section__slplus {
      **/
     function __construct($params) {
         $this->headerbar = true;        
-        foreach ($params as $name => $sl_value) {
-            $this->$name = $sl_value;
+        foreach ($params as $name => $value) {
+            $this->$name = $value;
         }
         
         if (!isset($this->auto)) $this->auto = true;
@@ -831,8 +836,8 @@ class wpCSL_settings_item__slplus {
     /**------------------------------------
      **/
     function __construct($params) {
-        foreach ($params as $name => $sl_value) {
-            $this->$name = $sl_value;
+        foreach ($params as $name => $value) {
+            $this->$name = $value;
         }
     }
 
@@ -922,13 +927,13 @@ class wpCSL_settings_item__slplus {
     function create_option_list() {
         $output_list = array("<select class='csl_select' name=\"{$this->name}\">\n");
 
-        foreach ($this->custom as $key => $sl_value) {
-            if (get_option($this->name) === $sl_value) {
-                $output_list[] = "<option class='csl_option' value=\"$sl_value\" " .
+        foreach ($this->custom as $key => $value) {
+            if (get_option($this->name) === $value) {
+                $output_list[] = "<option class='csl_option' value=\"$value\" " .
                     "selected=\"selected\">$key</option>\n";
             }
             else {
-                $output_list[] = "<option class='csl_option'  value=\"$sl_value\">$key</option>\n";
+                $output_list[] = "<option class='csl_option'  value=\"$value\">$key</option>\n";
             }
         }
 

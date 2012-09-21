@@ -27,6 +27,7 @@ function doAction(theAction,thePrompt) {
 }
 </script>
 <form name='locationForm' method='post'>
+    <input name='act' type='hidden'>
 <div id="action_buttons">
     <div id="action_bar_header"><h3><?php print __('Location Actions',SLPLUS_PREFIX); ?></h3></div>
     <div id="other_actions"  class='orangebox'>

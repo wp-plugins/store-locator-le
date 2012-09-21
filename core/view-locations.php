@@ -108,18 +108,67 @@ $slak=$slplus_plugin->driver_args['api_key'];
         if ($_REQUEST['act']=="delete") {
             if ($_POST) {extract($_POST);}
             if (isset($sl_id)) {
+
+                // use this to delete 100 at a time
+                //
+                $delQueries = array();
+
                 if (is_array($sl_id)==1) {
                     $id_string="";
+                    $idCount = 0;
                     foreach ($sl_id as $sl_value) {
+                        $idCount++;
                         $id_string.="$sl_value,";
+
+                        // Got 100?  Push a delete string on the stack
+                        //
+                        if ($idCount == 100) {
+                            $idCount = 0;
+                            $id_string=substr($id_string, 0, strlen($id_string)-1);
+                            array_push($delQueries,"DELETE FROM ".$wpdb->prefix."store_locator WHERE sl_id IN ($id_string)");
+                            $id_string='';
+                        }
                     }
+
+                    // Clean up any stragglers
+                    //
                     $id_string=substr($id_string, 0, strlen($id_string)-1);
+
+                // Single Item Delete
+                //
                 } else {
                     $id_string=$sl_id;
                 }
+
+                // push the last one on the stack
+                //
+                if ($id_string != ''){
+                    array_push($delQueries,"DELETE FROM ".$wpdb->prefix."store_locator WHERE sl_id IN ($id_string)");
+                }
                 
-                if ($id_string != '') {
-                    $wpdb->query("DELETE FROM ".$wpdb->prefix."store_locator WHERE sl_id IN ($id_string)");
+                // Run deletions
+                //
+                foreach ($delQueries as $delQuery) {
+                    $delete_result = $wpdb->query($delQuery);
+                    if ($delete_result == 0) {
+                        $errorMessage .= __("Could not delete the locations.  ", SLPLUS_PREFIX);
+                        $theDBError = htmlspecialchars(mysql_error($wpdb->dbh),ENT_QUOTES);
+                        if ($theDBError != '') {
+                            $errorMessage .= sprintf(
+                                                    __("Error: %s.", SLPLUS_PREFIX),
+                                                    $theDBError
+                                                    );
+                        } elseif ($delete_result === 0) {
+                            $errorMessage .=  __("It appears the delete was for no records.", SLPLUS_PREFIX);
+                        } else {
+                            $errorMessage .=  __("No error logged.", SLPLUS_PREFIX);
+                            $errorMessage .= "<br/>\n" . __('Query: ', SLPLUS_PREFIX);
+                            $errorMessage .= print_r($wpdb->last_query,true);
+                            $errorMessage .= "<br/>\n" . "Results: " . gettype($delete_result) . ' '. $delete_result;
+                        }
+
+                    }
+
                 }
             }
             
@@ -337,6 +386,7 @@ if (get_option('sl_location_table_view')!="Normal") {
         slpCreateColumnHeader($slpCleanURL,'sl_email'       ,__('Email'        ,SLPLUS_PREFIX),$opt,$dir) .
         slpCreateColumnHeader($slpCleanURL,'sl_hours'       ,__('Hours'        ,SLPLUS_PREFIX),$opt,$dir) .
         slpCreateColumnHeader($slpCleanURL,'sl_phone'       ,__('Phone'        ,SLPLUS_PREFIX),$opt,$dir) .
+        slpCreateColumnHeader($slpCleanURL,'sl_fax'         ,__('Fax'          ,SLPLUS_PREFIX),$opt,$dir) .
         slpCreateColumnHeader($slpCleanURL,'sl_image'       ,__('Image'        ,SLPLUS_PREFIX),$opt,$dir)
         ;    
 }
@@ -384,11 +434,12 @@ if ($locales=$wpdb->get_results("SELECT * FROM " . $wpdb->prefix .
                     </td><td>
                         <b>".__("Additional Information", SLPLUS_PREFIX)."</b><br>
                         <textarea name='description-$locID' rows='5' cols='17'>$sl_value[sl_description]</textarea>&nbsp;<small>".__("Description", SLPLUS_PREFIX)."</small><br>
-                        <input name='tags-$locID' value='$sl_value[sl_tags]'>&nbsp;<small>".__("Tags (seperate with commas)", SLPLUS_PREFIX)."</small><br>		
-                        <input name='url-$locID' value='$sl_value[sl_url]'>&nbsp;<small>".__("URL", SLPLUS_PREFIX)."</small><br>
+                        <input name='tags-$locID' value='$sl_value[sl_tags]'>&nbsp;<small>"  .__("Tags (seperate with commas)", SLPLUS_PREFIX)."</small><br>		
+                        <input name='url-$locID'  value='$sl_value[sl_url]'>&nbsp;<small>"   .__("URL", SLPLUS_PREFIX)."</small><br>
                         <input name='email-$locID' value='$sl_value[sl_email]'>&nbsp;<small>".__("Email", SLPLUS_PREFIX)."</small><br>
                         <input name='hours-$locID' value='$sl_value[sl_hours]'>&nbsp;<small>".__("Hours", SLPLUS_PREFIX)."</small><br>
                         <input name='phone-$locID' value='$sl_value[sl_phone]'>&nbsp;<small>".__("Phone", SLPLUS_PREFIX)."</small><br>
+                        <input name='fax-$locID'   value='$sl_value[sl_fax]'>&nbsp;<small>"  .__("Fax", SLPLUS_PREFIX)."</small><br>
                         <input name='image-$locID' value='$sl_value[sl_image]'>&nbsp;<small>".__("Image URL (shown with location)", SLPLUS_PREFIX)."</small><br><br>
                     </td>
                         </tr>
@@ -457,6 +508,7 @@ if ($locales=$wpdb->get_results("SELECT * FROM " . $wpdb->prefix .
                     print "<td>$sl_value[sl_email]</td>
                             <td>$sl_value[sl_hours]</td>
                             <td>$sl_value[sl_phone]</td>
+                            <td>$sl_value[sl_fax]</td>
                             <td>$sl_value[sl_image]</td>";
                 }                
                 print "<td>".$sl_value['sl_latitude']."</td>";
@@ -473,7 +525,7 @@ if ($locales=$wpdb->get_results("SELECT * FROM " . $wpdb->prefix .
             __("Add Locations", SLPLUS_PREFIX)."</a></td></tr>";
 	}
 	print "</table>
-	<input name='act' type='hidden'><br>";
+	<br>";
 if ($numMembers2!=0) {include(SLPLUS_COREDIR.'/search-links.php');}
 
 print "</form>";

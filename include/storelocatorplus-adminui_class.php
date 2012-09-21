@@ -124,6 +124,7 @@ if (! class_exists('SLPlus_AdminUI')) {
              
              $slpContactInfo = '';
              if ($store['sl_phone'] !='') { $slpContactInfo .= __('Phone: ',SLPLUS_PREFIX).$store['sl_phone'] . "\n"; }
+             if ($store['sl_fax'] !='') { $slpContactInfo .= __('Fax: ',SLPLUS_PREFIX).$store['sl_fax'] . "\n"; }
              if ($store['sl_email'] !='') { $slpContactInfo .= '<a href="mailto:'.$store['sl_email'].'">'.$store['sl_email']."</a>\n"; }
              if ($store['sl_url']   !='') { $slpContactInfo .= '<a href="'.$store['sl_url'].'">'.$store['sl_url']."</a>\n"; }
              if ($slpContactInfo    != '') { 
@@ -132,6 +133,45 @@ if (! class_exists('SLPlus_AdminUI')) {
 
              return $content;             
          }
+
+         /**
+          * method: slp_add_search_form_settings_panel
+          *
+          * Add the search form panel to the map settings page on the admin UI.
+          */
+         function slp_add_search_form_settings_panel() {
+            global $slpMapSettings;
+            $slpDescription = get_string_from_phpexec(SLPLUS_COREDIR.'/templates/settings_searchform.php');
+            $slpMapSettings->add_section(
+                array(
+                        'name'          => __('Search Form',SLPLUS_PREFIX),
+                        'description'   => $slpDescription,
+                        'auto'          => true
+                    )
+             );
+         }
+
+         /**
+          * method: slp_add_map_settings_panel
+          *
+          * Add the map panel to the map settings page on the admin UI.
+          */
+         function slp_add_map_settings_panel() {
+            global $slpMapSettings;
+            $slpDescription = get_string_from_phpexec(SLPLUS_COREDIR.'/templates/settings_mapform.php');
+            $slpMapSettings->add_section(
+                array(
+                        'name'          => __('Map',SLPLUS_PREFIX),
+                        'description'   => $slpDescription,
+                        'auto'          => true
+                    )
+             );
+
+         }
+
+
+
+
     }
 }        
      
