@@ -4,23 +4,40 @@
  **
  ** The top Store Locator Settings navigation bar.
  ***************************************************************************/
- 
- global $slplus_plugin;
-?>
-<script src="<?php echo SLPLUS_COREURL;?>js/functions.js"></script>
-<ul>
-    <a href="<?php echo SLPLUS_ADMINPAGE;?>view-locations.php"><li class='like-a-button'>Locations: Manage</li></a>
-    <a href="<?php echo SLPLUS_ADMINPAGE;?>add-locations.php"><li class='like-a-button'>Locations: Add</li></a>
-    <a href="<?php echo SLPLUS_ADMINPAGE;?>map-designer.php"><li class='like-a-button'>Settings: Map</li></a>
-    <a href="<?php echo admin_url(); ?>options-general.php?page=csl-slplus-options"><li class='like-a-button'>Settings: General</li></a>    
-    <?php 
-    //--------------------------------
-    // Pro Version : Show Reports Tab
+
+// Put all SLP sidebar nav items in main navbar
+//
+global $submenu, $slplus_plugin;
+$content =
+    '<script src="'.SLPLUS_COREURL.'js/functions.js"></script>'.
+    '<ul>';
+
+// Loop through all SLP sidebar menu items on admin page
+//
+foreach ($submenu[$slplus_plugin->prefix] as $slp_menu_item) {
+
+    //--------------------------------------------
+    // Check for Pro Pack, if not enabled skip:
+    //  - Show Reports Tab
     //
-    if ($slplus_plugin->license->AmIEnabled(true, "SLPLUS-PRO")) {      
-        print '<a href="'.SLPLUS_PLUSPAGE.'reporting.php"><li class="like-a-button">Reports</li></a>';
+    if (
+            (!$slplus_plugin->license->packages['Pro Pack']->isenabled) &&
+            ($slp_menu_item[0] == __('Reports',SLPLUS_PREFIX))
+        ){
+        continue;
     }
-    ?>    
-</ul>
+
+    // Create top menu item
+    //
+    $content .= apply_filters(
+            'slp_navbar_item_tweak',
+            '<a href="'.menu_page_url( $slp_menu_item[2], false ).'">'.
+                "<li class='like-a-button'>$slp_menu_item[0]</li>".
+            '</a>'
+            );
+}
+$content .= apply_filters('slp_navbar_item','');
+$content .='</ul>';
+echo apply_filters('slp_navbar',$content);
 
 

@@ -482,7 +482,7 @@ if ($locales=$wpdb->get_results("SELECT * FROM " . $wpdb->prefix .
                 // Show the create page button
                 //
                 if ($slplus_plugin->license->packages['Store Pages']->isenabled) {
-                    call_user_func_array(array('SLPlus_AdminUI','slpRenderCreatePageButton'),array($locID,($sl_value['sl_pages_on'] != '1' ? $sl_value['sl_linked_postid'] : null)));
+                    call_user_func_array(array('SLPlus_AdminUI','slpRenderCreatePageButton'),array($locID,$sl_value['sl_linked_postid']));
                 }
 
         print "</th>

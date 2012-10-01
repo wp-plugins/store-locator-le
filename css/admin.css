@@ -67,7 +67,11 @@ div.geocode_error {
 
 div.csl-slplus-input {
     float: left;
-} 
+}
+div.csl-slplus-input textarea {
+    width: 252px;
+    border: solid 1px #666666;
+}
  
 /* More Info Box */
 div.csl-slplus-moreicon {
@@ -341,7 +345,7 @@ input#bulk_file {
     clear:both;
 }
 div.section_column .form_entry {
-    min-width: 464px;
+    min-width: 475px;
 }
 
 .section_description H3 {
@@ -353,12 +357,15 @@ div.section_column .form_entry {
 }
 
 .section_description label {
-    width: 180px;
+    width: 185px;
     float: left;
     text-align: right;
     margin: 0px 3px 0px 6px;
     display: block;
     clear: left;
+}
+.section_description label.disabled {
+    color: #CCC;
 }
 
 .section_description INPUT {

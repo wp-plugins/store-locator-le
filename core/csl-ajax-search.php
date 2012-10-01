@@ -200,7 +200,7 @@ function csl_ajax_search() {
 		// Reporting
 		// Insert the query into the query DB
 		// 
-		if (get_option(SLPLUS_PREFIX.'-reporting_enabled') === 'on') {
+		if (get_option(SLPLUS_PREFIX.'-reporting_enabled','off') === 'on') {
 			$qry = sprintf(                                              
 					"INSERT INTO ${dbPrefix}slp_rep_query ". 
 							   "(slp_repq_query,slp_repq_tags,slp_repq_address,slp_repq_radius) ". 
@@ -233,7 +233,7 @@ function csl_ajax_search() {
 				'lng' => $row['sl_longitude'],
 				'description' => html_entity_decode($row['sl_description']),
 				'url' => esc_attr($row['sl_url']),
-				'sl_pages_url' => (($row['sl_pages_on'] == 1) ? esc_attr($row['sl_pages_url']) : ''),
+				'sl_pages_url' => esc_attr($row['sl_pages_url']),
 				'email' => esc_attr($row['sl_email']),
 				'hours' => esc_attr($row['sl_hours']),
 				'phone' => esc_attr($row['sl_phone']),

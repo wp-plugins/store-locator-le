@@ -128,16 +128,13 @@ function initialize_variables() {
         $slplus_show_state_pd="1";
         add_option('slplus_show_state_pd', $slplus_show_state_pd);
         }
-    $sl_zoom_level=get_option('sl_zoom_level');
-    if (empty($sl_zoom_level)) {
-        $sl_zoom_level="4";
-        add_option('sl_zoom_level', $sl_zoom_level);
-        }
-    $sl_zoom_tweak=get_option('sl_zoom_tweak');
-    if (empty($sl_zoom_tweak)) {
-        $sl_zoom_tweak="1";
-        add_option('sl_zoom_tweak', $sl_zoom_tweak);
-        }
+
+    $sl_zoom_level=get_option('sl_zoom_level','4');
+    add_option('sl_zoom_level', $sl_zoom_level);
+    
+    $sl_zoom_tweak=get_option('sl_zoom_tweak','1');
+    add_option('sl_zoom_tweak', $sl_zoom_tweak);
+
     $sl_search_label=get_option('sl_search_label');
     if (empty($sl_search_label)) {
         $sl_search_label="Address";
@@ -710,65 +707,6 @@ function SetMapCenter() {
     }
     return esc_attr(get_option('sl_google_map_country','United States'));    
 }
-
-/**************************************
- ** function: csl_slplus_add_options_page()
- **
- ** Add the Store Locator panel to the admin sidebar.
- **
- **/
-function csl_slplus_add_options_page() {
-	global $slplus_plugin;
-	
-	if ( 
-	    (!function_exists('add_slplus_roles_and_caps') || current_user_can('manage_slp'))
-	    )
-	{
-        add_menu_page(
-            __($slplus_plugin->name, SLPLUS_PREFIX),  
-            __($slplus_plugin->name, SLPLUS_PREFIX), 
-            'administrator', 
-            SLPLUS_COREDIR.'add-locations.php'
-            );	
-		add_submenu_page(
-    	    SLPLUS_COREDIR.'add-locations.php',
-		    __("Add Locations", SLPLUS_PREFIX), 
-		    __("Add Locations", SLPLUS_PREFIX), 
-		    'administrator', 
-		    SLPLUS_COREDIR.'add-locations.php'
-		    );
-		add_submenu_page(
-    	    SLPLUS_COREDIR.'add-locations.php',
-		    __("Manage Locations", SLPLUS_PREFIX), 
-		    __("Manage Locations", SLPLUS_PREFIX), 
-		    'administrator', 
-		    SLPLUS_COREDIR.'view-locations.php'
-		    );
-		add_submenu_page(
-    	    SLPLUS_COREDIR.'add-locations.php',
-		    __("Map Settings", SLPLUS_PREFIX), 
-		    __("Map Settings", SLPLUS_PREFIX), 
-		    'administrator', 
-		    SLPLUS_COREDIR.'map-designer.php'
-		    );
-		
-		// Pro Pack Reporting
-		//
-		if ($slplus_plugin->license->packages['Pro Pack']->isenabled) { 		
-            if (function_exists('slplus_add_report_settings')) {
-                add_submenu_page(
-                    SLPLUS_COREDIR.'add-locations.php',
-                    __("Reports", SLPLUS_PREFIX), 
-                    __("Reports", SLPLUS_PREFIX), 
-                    'administrator', 
-                    SLPLUS_PLUGINDIR.'reporting.php'
-                    );		    
-            }
-        }   
-	}
-
-}
-
 
 /*-------------------------------------------------------------*/
 function comma($a) {

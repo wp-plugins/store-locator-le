@@ -3,12 +3,12 @@
 *
 * file: CSL-plugin.php
 *
-* The main Cyber Sprocket library for communicating effectively with 
+* The main library for communicating effectively with 
 * WordPress.   This class manages the related helper classes so we can 
 * share a code libary and reduce code redundancy.
 * 
 ************************************************************************/
-define('WPCSL__slplus__VERSION', '2.0.11');
+define('WPCSL__slplus__VERSION', '2.0.12');
 
 // (LC) 
 // These helper files should only be loaded if needed by the plugin
@@ -61,15 +61,17 @@ require_once('CSL-themes_class.php');
 *     * 'prefix' :: A string used to prefix all of the Wordpress
 *       settings for the plugin.
 *
-*     * 'support_url' :; The URL for the support page at Cyber Sprocket Labs
+*     * 'support_url' :; The URL for the support page at WordPress
 *
 *     * 'purchase_url' :: The URL for purchasing the plugin
 *
-*     * 'url' :: The URL for the product page at Cyber Sprocket Labs.
+*     * 'url' :: The URL for the product page for purchases.
 *
 *     * 'has_packages' :: defaults to false, if true that means the main product is
 *       not licensed but we still need the license class to manage add-ons.
 *
+ *    * 'admin_slugs' :: and array (or single string) of valid admin page slugs for this plugin.
+ *
 */
 class wpCSL_plugin__slplus {
 
@@ -132,6 +134,7 @@ class wpCSL_plugin__slplus {
         // or we are processing the update action sent from this page
         //        
         $this->isOurAdminPage = ($this->current_admin_page == $this->prefix.'-options');
+
         if (!$this->isOurAdminPage) {
             $this->isOurAdminPage = 
                  isset($_REQUEST['action']) && 
@@ -139,8 +142,27 @@ class wpCSL_plugin__slplus {
                  isset($_REQUEST['option_page']) && 
                  (substr($_REQUEST['option_page'], 0, strlen($this->prefix)) === $this->prefix)
                  ;
-        }        
-        
+        }
+
+
+        // This test allows for direct calling of the options page from an
+        // admin page call direct from the sidebar using a class/method
+        // operation.
+        //
+        // To use: pass an array of strings that are valid admin page slugs for
+        // this plugin.  You can also pass a single string, we catch that too.
+        //
+        if ((!$this->isOurAdminPage) && isset($this->admin_slugs)) {
+           if (is_array($this->admin_slugs)) {
+               foreach ($this->admin_slugs as $admin_slug) {
+                $this->isOurAdminPage = ($this->current_admin_page === $admin_slug);
+                if ($this->isOurAdminPage) { break; }
+               }
+           } else {
+               $this->isOurAdminPage = ($this->current_admin_page === $this->admin_slugs);
+           }
+        }
+
         // Debugging Flag
         $this->debugging = (get_option($this->prefix.'-debugging') == 'on');
         

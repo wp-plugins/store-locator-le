@@ -3,7 +3,7 @@
 Plugin Name: Google Maps via Store Locator Plus
 Plugin URI: http://www.charlestonsw.com/products/store-locator-plus/
 Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Gooogle Maps.  This is a highly customizable, easily expandable, enterprise-class location management system.
-Version: 3.3
+Version: 3.4
 Author: Charleston Software Associates
 Author URI: http://www.charlestonsw.com
 License: GPL3
@@ -83,8 +83,9 @@ include_once(SLPLUS_COREDIR   . 'csl-ajax-search.php'	);
 require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-actions_class.php');
 require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-activation_class.php');
 require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-ui_class.php');
-
 require_once(SLPLUS_PLUGINDIR . '/include/mobile-listener.php');
+// note: adminUI class is only required & invoked if needed... see slp-actions_class.php
+
 
 // Activation Action (install/upgrade)
 //
@@ -99,7 +100,7 @@ add_action('shutdown'           ,array('SLPlus_Actions','shutdown')             
 
 // Admin Actions
 //
-add_action('admin_menu'         , 'csl_slplus_add_options_page'                 );
+add_action('admin_menu'         ,array('SLPlus_Actions','admin_menu')           );
 add_action('admin_init'         ,array('SLPlus_Actions','admin_init'),10        );
 add_action('admin_print_styles' , 'setup_ADMIN_stylesheet_for_slplus'           );
 add_action('admin_head'         , 'slpreport_downloads'                         );

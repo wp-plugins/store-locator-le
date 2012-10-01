@@ -214,7 +214,7 @@ class wpCSL_settings__slplus {
                             from all around the world. We hope our plugin brings you closer to the perfect site.
                             If there is anything we can do to improve our work or if you wish to hire us to customize
                             this plugin please call our Charleston South Carolina headquarters or 
-                            <a href="http://www.cybersprocket.com/contact-us/" target="cyber-sprocket-labs">email us</a>
+                            <a href="http://www.charlestonsw.com/mindset/contact-us/" target="csa">email us</a>
                             and let us know.
                          </p>
                          </div>
@@ -611,8 +611,8 @@ class wpCSL_settings__slplus {
         if ($helptext == '') {
             $helptext = 'Your license key is emailed within minutes of your purchase.<br/>'. 
                   'If you do not receive your license check your spam '.
-                     'folder then <a href="http://www.cybersprocket.com/contact-us/" '.
-                     'target="Cyber Sprocket">Contact us</a>.';
+                     'folder then <a href="http://www.charlestonsw.com/mindsetcontact-us/" '.
+                     'target="csa">Contact us</a>.';
         }
         
         // PayPal Form String

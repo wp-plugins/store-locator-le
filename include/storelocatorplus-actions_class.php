@@ -22,7 +22,7 @@ if (! class_exists('SLPlus_Actions')) {
         /*************************************
          * The Constructor
          */
-        function __construct($params) {
+        function __construct($params=null) {
         } 
         
         /**************************************
@@ -45,6 +45,8 @@ if (! class_exists('SLPlus_Actions')) {
             // Add admin helpers
             //
             require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-adminui_class.php');
+            $slplus_plugin->AdminUI = new SLPlus_AdminUI();     // Lets invoke this and make it an object
+
             
             //-------------------------
             // Navbar Section
@@ -161,6 +163,113 @@ if (! class_exists('SLPlus_Actions')) {
                 slplus_add_report_settings();
             }                
         }
+
+
+        /**************************************
+         * method: admin_menu()
+         *
+         * Add the Store Locator panel to the admin sidebar.
+         *
+         */
+        function admin_menu() {
+            if (
+                (!function_exists('add_slplus_roles_and_caps') || current_user_can('manage_slp'))
+                )
+            {
+
+                global $slplus_plugin;
+                
+                // The main hook for the menu
+                //
+                add_menu_page(
+                    $slplus_plugin->name,
+                    $slplus_plugin->name,
+                    'administrator',
+                    $slplus_plugin->prefix,
+                    array('SLPlus_AdminUI','renderPage_GeneralSettings'),
+                    SLPLUS_COREURL . 'images/icon_from_jpg_16x16.png'
+                    );
+
+                // Default menu items
+                //
+                $menuItems = array(
+                    array(
+                        'label'             => __('General Settings',SLPLUS_PREFIX),
+                        'slug'              => 'slp_general_settings',
+                        'class'             => 'SLPlus_AdminUI',
+                        'function'          => 'renderPage_GeneralSettings'
+                    ),
+                    array(
+                        'label'             => __('Add Locations',SLPLUS_PREFIX),
+                        'slug'              => 'slp_add_locations',
+                        'class'             => 'SLPlus_AdminUI',
+                        'function'          => 'renderPage_AddLocations'
+                    ),
+                    array(
+                        'label' => __('Manage Locations',SLPLUS_PREFIX),
+                        'url'   => SLPLUS_COREDIR.'view-locations.php'
+                    ),
+                    array(
+                        'label' => __('Map Settings',SLPLUS_PREFIX),
+                        'url'   => SLPLUS_COREDIR.'map-designer.php'
+                    )
+                );
+
+                // Pro Pack menu items
+                //
+                if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
+                    $menuItems = array_merge(
+                                $menuItems,
+                                array(
+                                    array(
+                                    'label' => __('Reports',SLPLUS_PREFIX),
+                                    'url'   => SLPLUS_PLUGINDIR.'reporting.php'
+                                    )
+                                )
+                            );
+                }
+
+                // Third party plugin add-ons
+                //
+                $menuItems = apply_filters('slp_menu_items', $menuItems);
+
+                // Attach Menu Items To Sidebar and Top Nav
+                //
+                foreach ($menuItems as $menuItem) {
+
+                    // Sidebar connect...
+                    //
+
+                    // Using class names (or objects)
+                    //
+                    if (isset($menuItem['class'])) {
+                        add_submenu_page(
+                            $slplus_plugin->prefix,
+                            $menuItem['label'],
+                            $menuItem['label'],
+                            'administrator',
+                            $menuItem['slug'],
+                            array($menuItem['class'],$menuItem['function'])
+                            );
+
+                    // Full URL or plain function mame
+                    //
+                    } else {
+                        add_submenu_page(
+                            $slplus_plugin->prefix,
+                            $menuItem['label'],
+                            $menuItem['label'],
+                            'administrator',
+                            $menuItem['url']
+                            );
+                    }
+                }
+
+                // Remove the duplicate menu entry
+                //
+                remove_submenu_page($slplus_plugin->prefix, $slplus_plugin->prefix);
+            }
+        }
         
         /**************************************
          ** method: init()
@@ -202,8 +311,8 @@ if (! class_exists('SLPlus_Actions')) {
                             'hierarchical'  => true,
                             'labels'        => 
                                 array(
-                                        'menu_name' => __('Stores',SLPLUS_PREFIX),
-                                        'name'      => __('Store Attributes',SLPLUS_PREFIX),
+                                        'menu_name' => __('Categories',SLPLUS_PREFIX),
+                                        'name'      => __('Categories',SLPLUS_PREFIX),
                                      )
                             )
                     );                
@@ -238,16 +347,17 @@ if (! class_exists('SLPlus_Actions')) {
             //wp_register_script('slplus_functions',SLPLUS_PLUGINURL.'/core/js/functions.js');
             if (isset($api_key))
             {
+                 //todo:character encoding ???
+                //"http://$sl_google_map_domain/maps?file=api&amp;v=2&amp;key=$api_key&amp;sensor=false{$sl_map_character_encoding}"
                 wp_enqueue_script(
                         'google_maps',
-                        "http://$sl_google_map_domain/maps/api/js?v=3.9&amp;key=$api_key&amp;sensor=false" //todo:character encoding ???
-                        //"http://$sl_google_map_domain/maps?file=api&amp;v=2&amp;key=$api_key&amp;sensor=false{$sl_map_character_encoding}"
+                        'http://'.$sl_google_map_domain.'/maps/api/js?v=3.9&key='.$api_key.'&sensor=false'
                         );
             }
             else {
                 wp_enqueue_script(
                     'google_maps',
-                    "http://$sl_google_map_domain/maps/api/js?v=3.9&amp;sensor=false"
+                    'http://'.$sl_google_map_domain.'/maps/api/js?v=3.9&sensor=false'
                 );
             }
 
@@ -308,7 +418,7 @@ if (! class_exists('SLPlus_Actions')) {
                 'map_end_icon'      => $slplus_end_icon,
                 'map_end_sizew'     => $slplus_end_size[0],
                 'map_end_sizeh'     => $slplus_end_size[1],
-                'use_sensor'        => (get_option(SLPLUS_PREFIX."_use_location_sensor")==1),
+                'use_sensor'        => (get_option(SLPLUS_PREFIX."_use_location_sensor",0)==1),
                 'map_scalectrl'     => (get_option(SLPLUS_PREFIX.'_disable_scalecontrol')==0),
                 'map_type'          => get_option('sl_map_type','roadmap'),
                 'map_typectrl'      => (get_option(SLPLUS_PREFIX.'_disable_maptypecontrol')==0),
@@ -316,11 +426,11 @@ if (! class_exists('SLPlus_Actions')) {
                 'show_tags'         => (get_option(SLPLUS_PREFIX.'_show_tags')==1),
                 'overview_ctrl'     => get_option('sl_map_overview_control',0),
                 'use_email_form'    => (get_option(SLPLUS_PREFIX.'_email_form')==1),
-                'use_pages_links'   => ($slplus_plugin->settings->get_item('use_pages_links')=='on'),
+                'use_pages_links'   => ($slplus_plugin->settings->get_item('use_pages_links','off')=='on'),
                 'use_same_window'   => ($slplus_plugin->settings->get_item('use_same_window')=='on'),
                 'website_label'     => esc_attr(get_option('sl_website_label','Website')),
-                'zoom_level'        => get_option('sl_zoom_level',4),
-                'zoom_tweak'        => get_option('sl_zoom_tweak',1),
+                'zoom_level'        => get_option('sl_zoom_level',12),
+                'zoom_tweak'        => get_option('sl_zoom_tweak',1)
                 );
             wp_localize_script('csl_script','slplus',$scriptData);
             wp_localize_script('csl_script','csl_ajax',array('ajaxurl' => admin_url('admin-ajax.php'), 'nonce' => wp_create_nonce('em')));

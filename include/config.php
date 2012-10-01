@@ -38,6 +38,7 @@ if (defined('SLPLUS_PLUGINDIR')) {
             'css_prefix'            => SLPLUS_PREFIX,
             'name'                  => 'Store Locator Plus',
             'sku'                   => 'SLPLUS',
+            'admin_slugs'           => array('slp_general_settings'),
 
             'on_update' => array('SLPlus_Activate', 'update'),
             'version' => '3.2',

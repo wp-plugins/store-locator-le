@@ -35,66 +35,78 @@ echo CreateInputDiv(
         // Pro Pack Enabled
         //
         global $slplus_plugin;
-        if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
-            echo CreateCheckboxDiv(
-                '_hide_radius_selections',
-                __('Hide radius selection',SLPLUS_PREFIX),
-                __('Hides the radius selection from the user, the default radius will be used.', SLPLUS_PREFIX)
-                );
-
-            echo CreateCheckboxDiv(
-                '_show_search_by_name',
-                __('Show search by name box', SLPLUS_PREFIX),
-                __('Shows the name search entry box to the user.', SLPLUS_PREFIX)
-                );
-
-            echo CreateCheckboxDiv(
-                '_hide_address_entry',
-                __('Hide address entry box',SLPLUS_PREFIX),
-                __('Hides the address entry box from the user.', SLPLUS_PREFIX)
-                );
-
-            echo CreateCheckboxDiv(
-                '_use_location_sensor',
-                __('Use location sensor', SLPLUS_PREFIX),
-                __('This turns on the location sensor for your customers so they can easily get accurate results')
+        $ppFeatureMsg = (!$slplus_plugin->license->packages['Pro Pack']->isenabled ?
+                            sprintf(
+                                    __(' This is a <a href="%s" target="csa">Pro Pack</a> feature.', SLPLUS_PREFIX),
+                                    $slplus_plugin->purchase_url
+                                    ) :
+                            ''
+                         );
+        echo CreateCheckboxDiv(
+            '_hide_radius_selections',
+            __('Hide radius selection',SLPLUS_PREFIX),
+            __('Hides the radius selection from the user, the default radius will be used.', SLPLUS_PREFIX) . $ppFeatureMsg,
+            SLPLUS_PREFIX,
+            !$slplus_plugin->license->packages['Pro Pack']->isenabled
             );
 
-            echo CreateCheckboxDiv(
-                    'sl_use_city_search',
-                    __('Show City Pulldown',SLPLUS_PREFIX),
-                    __('Displays the city pulldown on the search form. It is built from the unique city names in your location list.',SLPLUS_PREFIX),
-                    ''
-                    );
+        echo CreateCheckboxDiv(
+            '_show_search_by_name',
+            __('Show search by name box', SLPLUS_PREFIX),
+            __('Shows the name search entry box to the user.', SLPLUS_PREFIX) . $ppFeatureMsg,
+            SLPLUS_PREFIX,
+            !$slplus_plugin->license->packages['Pro Pack']->isenabled
 
-            echo CreateCheckboxDiv(
-                'sl_use_country_search',
-                __('Show Country Pulldown',SLPLUS_PREFIX),
-                __('Displays the country pulldown on the search form. It is built from the unique country names in your location list.',SLPLUS_PREFIX),
-                ''
+            );
+
+        echo CreateCheckboxDiv(
+            '_hide_address_entry',
+            __('Hide address entry box',SLPLUS_PREFIX),
+            __('Hides the address entry box from the user.', SLPLUS_PREFIX) . $ppFeatureMsg,
+            SLPLUS_PREFIX,
+            !$slplus_plugin->license->packages['Pro Pack']->isenabled
+            );
+
+        echo CreateCheckboxDiv(
+            '_use_location_sensor',
+            __('Use location sensor', SLPLUS_PREFIX),
+            __('This turns on the location sensor for your customers so they can easily get accurate results', SLPLUS_PREFIX) . $ppFeatureMsg,
+            SLPLUS_PREFIX,
+            !$slplus_plugin->license->packages['Pro Pack']->isenabled
+        );
+
+        echo CreateCheckboxDiv(
+                'sl_use_city_search',
+                __('Show City Pulldown',SLPLUS_PREFIX),
+                __('Displays the city pulldown on the search form. It is built from the unique city names in your location list.',SLPLUS_PREFIX) . $ppFeatureMsg,
+                '',
+                !$slplus_plugin->license->packages['Pro Pack']->isenabled
                 );
 
-            echo CreateCheckboxDiv(
-                'slplus_show_state_pd',
-                __('Show State Pulldown',SLPLUS_PREFIX),
-                __('Displays the state pulldown on the search form. It is built from the unique state names in your location list.',SLPLUS_PREFIX),
-                ''
-                );
+        echo CreateCheckboxDiv(
+            'sl_use_country_search',
+            __('Show Country Pulldown',SLPLUS_PREFIX),
+            __('Displays the country pulldown on the search form. It is built from the unique country names in your location list.',SLPLUS_PREFIX) . $ppFeatureMsg,
+            '',
+            !$slplus_plugin->license->packages['Pro Pack']->isenabled
+            );
+
+        echo CreateCheckboxDiv(
+            'slplus_show_state_pd',
+            __('Show State Pulldown',SLPLUS_PREFIX),
+            __('Displays the state pulldown on the search form. It is built from the unique state names in your location list.',SLPLUS_PREFIX) . $ppFeatureMsg,
+            '',
+            !$slplus_plugin->license->packages['Pro Pack']->isenabled
+            );
 
 
-            echo CreateCheckboxDiv(
-                '_disable_search',
-                __('Hide Find Locations button',SLPLUS_PREFIX),
-                __('Remove the "Find Locations" button from the search form.', SLPLUS_PREFIX)
-                );
-
-        //-----
-        // No Pro Pack
-        //
-        } else {
-            print "<div class='form_entry' style='text-align:right;padding-top:136px;'>Want more?<br/> <a href='http://www.charlestonsw.com/'>Check out our other WordPress offerings.</a></div>";
-        }
-
+        echo CreateCheckboxDiv(
+            '_disable_search',
+            __('Hide Find Locations button',SLPLUS_PREFIX),
+            __('Remove the "Find Locations" button from the search form.', SLPLUS_PREFIX) . $ppFeatureMsg,
+            SLPLUS_PREFIX,
+            !$slplus_plugin->license->packages['Pro Pack']->isenabled
+            );
 
         do_action('slp_add_search_form_features_setting');
 
@@ -105,7 +117,7 @@ echo CreateInputDiv(
 <?php
     global $slplus_plugin;
     $slplus_message = ($slplus_plugin->license->packages['Pro Pack']->isenabled) ?
-        __('Thank you for purchasing the <a href="%s">%s</a> premium add-on.',SLPLUS_PREFIX) :
+        __('',SLPLUS_PREFIX) :
         __('Tag features are available in the <a href="%s">%s</a> premium add-on.',SLPLUS_PREFIX)
 ?>
     <div class='section_column'>

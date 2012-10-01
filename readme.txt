@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
 Tags: google maps, store finder, store locator, store locater, google, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus, bing map, bing, yahoo maps, yahoo, mapping, retail
 Requires at least: 3.3
 Tested up to: 3.4.2
-Stable tag: 3.3
+Stable tag: 3.4
 
 Store Locator Plus works with Google Maps v3 to put a store location search on your site.
 The most active store locator plugin with monthly patches and updates!
@@ -185,11 +185,17 @@ We update about once per month or more frequently as needed.
 
 Visit the [Store Locator Plus Release Notes](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/) at our website.
 
-= Latest Release: 3.3 (September 21st, 2012) =
+= Latest Release: 3.4 (October 1st, 2012) =
 
-* Patch for Store Pages add-on not replacing web links properly
-* [Action Hooks for Customized and Third Party add-ons](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/add-on-packs-roll-your-own/)
-* Move screen shots to assets to lessen size  of zip install
-* Remove obsolete JavaScript files
+* Pro Pack: Map center is now available for all licensed Pro Pack users regardless of version licensed.
+* Store Pages: patch fixes missing "create pages" button if Pro Pack was not licensed.
+* Store Pages: patch to fix "pages replace website" links
+* Map zoom fix, properly reads initial map zoom and zoom tweak settings
+* Max Search Results - new setting limits maximum search results (was a Pro Pack only feature).
+* More action hooks for third party developers.
+* Admin interface cleanup for map settings.
+* Revised admin menu (sidebar and top of page).
+* Minor bug fixes and performance improvements.
+
 
 

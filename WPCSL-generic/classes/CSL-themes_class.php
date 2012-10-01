@@ -121,7 +121,7 @@ class wpCSL_themes__slplus {
             false, 
             __('How should the plugin UI elements look?  Check the <a href="'.
                 $this->support_url.
-                '" target="Cyber Sprocket">documentation</a> for more info.',
+                '" target="CSA">documentation</a> for more info.',
                 WPCSL__slplus__VERSION),
             $themeArray
         );        

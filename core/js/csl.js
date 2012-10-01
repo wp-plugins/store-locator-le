@@ -418,10 +418,9 @@ var csl = {
 		this.showTags = null;
 		this.overviewControl = null;
 		this.useEmailForm = null;
-		this.usePagesLinks = null;
 		this.useSameWindow = null;
 		this.websiteLabel = null;
-		this.zoomLevel = null;
+		this.zoomLevel = '12';
   	  	
   	  	//gmap set variables
   	  	this.options = null;
@@ -469,7 +468,6 @@ var csl = {
                 this.showTags = slplus.show_tags;
                 this.overviewControl = !!(parseInt(slplus.overview_ctrl));
                 this.useEmailForm = !!slplus.use_email_form;
-                this.usePagesLink = !!slplus.use_pages_link;
                 this.useSameWindow = !!slplus.use_same_window;
                 this.websiteLabel = slplus.website_label;
                 this.zoomLevel = slplus.zoom_level;
@@ -745,6 +743,17 @@ var csl = {
 				this.debugSearch('rebounded');
 				this.bounds = bounds;
 				this.gmap.fitBounds(this.bounds);
+
+                // Single Location or  Immediate Load Locations
+                // Use Map Zoom level + tweak
+                //
+                if ( (markerList.length == 1) || (this.load_locations == '1') ) {
+                    var newZoom = Math.max(Math.min(parseInt(slplus.zoom_level) - parseInt(slplus.zoom_tweak),20),1);
+                    this.gmap.setZoom(newZoom);
+                } else {
+                    var newZoom = Math.max(Math.min(this.gmap.getZoom() - parseInt(slplus.zoom_tweak),20),1);
+                    this.gmap.setZoom(newZoom);
+                }
 			}
 		}
 		
@@ -830,7 +839,7 @@ var csl = {
         this.__getMarkerUrl = function(aMarker) {
             var url = '';
             //add an http to the url
-            if ((slplus.use_pages_links) && (aMarker.sl_pages_url != '')) {
+            if ((slplus.use_pages_links == "1") && (aMarker.sl_pages_url != '')) {
                 url = aMarker.sl_pages_url;
             }
             else if (aMarker.url != '') {
@@ -842,7 +851,7 @@ var csl = {
                     url = aMarker.url;
                 }
             }
-            
+
             return url;
         }
 		

@@ -54,7 +54,7 @@ class wpCSL_products__slplus {
             $product_output[] = "<div class=\"{$this->css_prefix}-product\">";
             $product_output[] = "<h3>{$product->name}</h3>";
             $product_output[] = "<div class=\"{$this->css_prefix}-left\">";
-            $product_output[] = "<a href=\"{$product->web_urls[0]}\" target=\"cyber-sprocket-labs\" $linkModifiers>";
+            $product_output[] = "<a href=\"{$product->web_urls[0]}\" target=\"csa\" $linkModifiers>";
             $product_output[] = "<img src=\"{$product->image_urls[0]}\" alt=\"{$product->name}\" title=\"{$product->name}\" />";
             $product_output[] = '</a><br/>';
             $product_output[] = '<div class="'.$this->css_prefix.'-zoombox">';
@@ -66,12 +66,12 @@ class wpCSL_products__slplus {
             $product_output[] = '<p class="' . $this->css_prefix . '-price">'.$product->currency;
             if (function_exists('money_format') &&  ($moneyFormat != '')) {
                 $product_output[] =
-                    "$<a href=\"{$product->web_urls[0]}\" target=\"cyber-sprocket-labs\" $linkModifiers>".
+                    "$<a href=\"{$product->web_urls[0]}\" target=\"csa\" $linkModifiers>".
                     trim(money_format($moneyFormat, (float)$product->price)) .
                     '</a>';
             } else {
                 $product_output[] =
-                    "$<a href=\"{$product->web_urls[0]}\" target=\"cyber-sprocket-labs\">".
+                    "$<a href=\"{$product->web_urls[0]}\" target=\"csa\">".
                     trim(number_format((float)$product->price, 2)) .
                     '</a>';
             }

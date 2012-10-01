@@ -68,13 +68,19 @@ function SaveCheckboxToDB($boxname,$prefix = SLPLUS_PREFIX, $separator='-') {
  **  $message (string, optional) - default '', the help message 
  **  $prefix (string, optional) - defaults to SLPLUS_PREFIX, can be ''  
  **/
-function CreateCheckboxDiv($boxname,$label='',$msg='',$prefix=SLPLUS_PREFIX) {
+function CreateCheckboxDiv($boxname,$label='',$msg='',$prefix=SLPLUS_PREFIX, $disabled=false) {
     $whichbox = $prefix.$boxname; 
     return 
         "<div class='form_entry'>".
             "<div class='".SLPLUS_PREFIX."-input'>" .
-            "<label  for='$whichbox'>$label:</label>".
-            "<input name='$whichbox' value='1' type='checkbox' ".((get_option($whichbox) ==1)?' checked':'').">".
+            "<label  for='$whichbox' ".
+                ($disabled?"class='disabled '":' ').
+                ">$label:</label>".
+            "<input name='$whichbox' value='1' ".
+                "type='checkbox' ".
+                ((get_option($whichbox) ==1)?' checked ':' ').
+                ($disabled?"disabled='disabled'":' ') .
+            ">".
             "</div>".
             slp_createhelpdiv($boxname,$msg) .
         "</div>"
@@ -126,6 +132,23 @@ function CreatePulldownDiv($boxname,$values,$label='',$msg='',$prefix=SLPLUS_PRE
             ;
 
     return $content;
+}
+
+/**
+ * function: CreateTextAreaDiv
+ */
+function CreateTextAreaDiv($boxname,$label='',$msg='',$prefix=SLPLUS_PREFIX, $default='') {
+    $whichbox = $prefix.$boxname;
+    return
+        "<div class='form_entry'>" .
+            "<div class='".SLPLUS_PREFIX."-input'>" .
+                "<label for='$whichbox'>$label:</label>".
+                "<textarea  name='$whichbox'>".get_option($whichbox,$default)."</textarea>".
+            "</div>".
+            slp_createhelpdiv($boxname,$msg).
+         "</div>"
+        ;
+
 }
 
 
@@ -249,10 +272,13 @@ $sl_the_domain = array(
     "China"=>"ditu.google.com",
     "Czech Republic"=>"maps.google.cz",
     "Denmark"=>"maps.google.dk",
+    "Estonia" => 'maps.google.ee',
     "Finland"=>"maps.google.fi",
     "France"=>"maps.google.fr",
     "Germany"=>"maps.google.de",
+    "Greece"=>"maps.google.gr",
     "Hong Kong"=>"maps.google.com.hk",
+    "Hungary"=>"maps.google.hu",
     "India"=>"maps.google.co.in", 
     "Republic of Ireland"=>"maps.google.ie",
     "Italy"=>"maps.google.it",
@@ -266,6 +292,7 @@ $sl_the_domain = array(
     "Portugal"=>"maps.google.pt", 
     "Russia"=>"maps.google.ru",
     "Singapore"=>"maps.google.com.sg", 
+    "South Africa"=>"maps.google.co.za",
     "South Korea"=>"maps.google.co.kr", 
     "Spain"=>"maps.google.es",
     "Sweden"=>"maps.google.se",
@@ -301,22 +328,7 @@ $checked2   	    = (isset($checked2)  ?$checked2  :'');
 $sl_city_checked	= (get_option('sl_use_city_search',0) ==1)?' checked ':'';
 $checked3	        = (get_option('sl_remove_credits',0)  ==1)?' checked ':'';
 
-$sl_map_type_options=(isset($sl_map_type_options)?$sl_map_type_options:'');
-$map_type["".__("Normal", SLPLUS_PREFIX).""]="roadmap";
-$map_type["".__("Satellite", SLPLUS_PREFIX).""]="satellite";
-$map_type["".__("Hybrid", SLPLUS_PREFIX).""]="hybrid";
-$map_type["".__("Physical", SLPLUS_PREFIX).""]="terrain";
-
-// Map Type
-//
-$slp_current_setting = get_option('sl_map_type');
-foreach($map_type as $key=>$sl_value) {
-	$selected2=($slp_current_setting==$sl_value)? " selected " : "";
-	$sl_map_type_options.="<option value='$sl_value' $selected2>$key</option>\n";
-}
-
 //---- ICONS ----
-
 $cl_icon_str   =(isset($cl_icon_str)  ?$cl_icon_str  :'');
 $cl_icon2_str  =(isset($cl_icon2_str) ?$cl_icon2_str :'');
 $cl_icon_dir=opendir(SLPLUS_ICONDIR);

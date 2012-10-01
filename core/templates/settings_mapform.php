@@ -1,63 +1,136 @@
 <?php 
-    global $sl_map_type_options, $sl_num_initial_displayed, $sl_the_domain, $sl_char_enc,
+    global $sl_num_initial_displayed, $sl_the_domain, $sl_char_enc,
             $sl_zoom, $sl_zoom_adj, $sl_height,$sl_height_units,$sl_width,$sl_width_units,
-            $cl_icon_notification_msg,$checked3,$cl_icon,$cl_icon2,$cl_icon_str,$cl_icon2_str;    
+            $cl_icon_notification_msg,$checked3,$cl_icon,$cl_icon2,$cl_icon_str,$cl_icon2_str,
+            $slplus_plugin;
+
+    $slplus_message = ($slplus_plugin->license->packages['Pro Pack']->isenabled) ?
+        __('',SLPLUS_PREFIX) :
+        __('Extended settings are available in the <a href="%s">%s</a> premium add-on.',SLPLUS_PREFIX)
 ?>
 <div id='map_settings'>
     <div class='section_column'>   
         <div class='map_designer_settings'>
             <h2><?php _e('Features', SLPLUS_PREFIX); ?></h2>
-            <div class='form_entry'>
-                <label for='sl_map_type'><?php _e('Default Map Type', SLPLUS_PREFIX);?>:</label>
-                <select name='sl_map_type'><?php echo $sl_map_type_options;?></select>
-            </div>            
-            <div class='form_entry'>
-                <label for='sl_map_overview_control'><?php _e('Show Map Inset Box', SLPLUS_PREFIX);?>:</label>    
-                <input name='sl_map_overview_control' value='1' type='checkbox' <?php echo (get_option('sl_map_overview_control')==1)?'checked':'';?> >
-            </div>
+            <div class="section_column_content">
+        
             
-            <div class='form_entry'>
-                <label for='sl_load_locations_default'><?php _e("Immediately Show Locations", SLPLUS_PREFIX);?>:</label>
-                <input name='sl_load_locations_default' value='1' type='checkbox' <?php echo (get_option('sl_load_locations_default')==1)?'checked':'';?> >
-            </div>
-            
-            <div class='form_entry'>
-                <label for='sl_num_initial_displayed'><? _e('Immediately show up to', SLPLUS_PREFIX); ?></label>
-                <input name='sl_num_initial_displayed' value='<?php echo $sl_num_initial_displayed;?>' class='small'>
-                <?php _e('locations.', SLPLUS_PREFIX); ?>
-                <?php
-                echo slp_createhelpdiv('sl_num_initial_displayed',
-                    __('Recommended Max: 50', SLPLUS_PREFIX)
-                    );
-                ?>                 
-            </div>
-            
-            <?php
-             //--------------------------------
-             // Pro Pack
-             //            
-            if (function_exists('execute_and_output_plustemplate')) {
-            ?>                
-                        <div class='form_entry'>
-                            <label for='<?php echo SLPLUS_PREFIX.'_maxreturned'; ?>'><? _e("Return at most", SLPLUS_PREFIX); ?></label>
-                            <input name='<?php echo SLPLUS_PREFIX.'_maxreturned'; ?>' 
-                                value='<?php 
-                                    echo (trim(get_option(SLPLUS_PREFIX.'_maxreturned'))!="")? 
-                                        get_option(SLPLUS_PREFIX.'_maxreturned') : 
-                                        '25';                    
-                                ?>' 
-                                class='small'>
-                            <? _e("locations when searching.", SLPLUS_PREFIX); ?>
-                            <?php
-                            echo slp_createhelpdiv(SLPLUS_PREFIX-'_maxreturned',
-                                __('Enter a number to limit how many results are returned during a search. The default is 25.', SLPLUS_PREFIX)
+<?php
+                //------------------------
+                // Initial Look & Feel
+                //
+                echo '<p class="slp_admin_info"><strong>'.__('Initial Look and Feel',SLPLUS_PREFIX).'</strong></p>';
+                echo '<p>'.sprintf($slplus_message,$slplus_plugin->purchase_url,'Pro Pack').'</p>';
+                echo CreateCheckboxDiv(
+                        'sl_load_locations_default',
+                        __('Immediately Show Locations', SLPLUS_PREFIX),
+                        __('Display locations as soon as map loads, based on map center and default radius',SLPLUS_PREFIX),
+                        ''
+                        );
+                echo CreateInputDiv(
+                        'sl_num_initial_displayed',
+                        __('Number To Show Initially',SLPLUS_PREFIX),
+                        __('How many locations should be shown when Immediately Show Locations is checked.  Recommended maximum is 50.',SLPLUS_PREFIX),
+                        ''
+                        );
+
+                // Pro Pack : Initial Look & Feel
+                //
+                if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
+                        echo CreateInputDiv(
+                                'sl_starting_image',
+                                __('Starting Image',SLPLUS_PREFIX),
+                                __('If set, this image will be displayed until a search is performed.',SLPLUS_PREFIX),
+                                ''
                                 );
-                            ?>                 
-                        </div>
-            <?php
-                execute_and_output_plustemplate('mapsettings_mapfeatures.php');
-            }    
-            ?>
+                        echo CreateCheckboxDiv(
+                            '_disable_initialdirectory',
+                            __('Disable Initial Directory',SLPLUS_PREFIX),
+                            __('Do not display the listings under the map when "immediately show locations" is checked.', SLPLUS_PREFIX)
+                            );
+                }
+
+                //------------------------
+                // Map Settings
+                //
+                echo '<p class="slp_admin_info" style="clear:both;"><strong>'.__('Map Settings',SLPLUS_PREFIX).'</strong></p>';
+                echo '<p>'.sprintf($slplus_message,$slplus_plugin->purchase_url,'Pro Pack').'</p>';
+                echo CreatePulldownDiv(
+                        'sl_map_type',
+                        array('roadmap','hybrid','satellite','terrain'),
+                        $label=__('Default Map Type', SLPLUS_PREFIX),
+                        $msg=__('What style Google Map should we use?', SLPLUS_PREFIX),
+                        $prefix='',
+                        $default='roadmap'
+                        );
+
+                // Pro Pack : Map Settings
+                //
+                if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
+                        echo CreateTextAreaDiv(
+                                '_map_center',
+                                __('Center Map At',SLPLUS_PREFIX),
+                                __('Enter an address to serve as the initial focus for the map. Default is the center of the country.',SLPLUS_PREFIX),
+                                ''
+                                );
+                        echo CreateCheckboxDiv(
+                            'sl_map_overview_control',
+                            __('Show Map Inset Box',SLPLUS_PREFIX),
+                            __('When checked the map inset is shown.', SLPLUS_PREFIX),
+                            ''
+                            );
+                        echo CreateCheckboxDiv(
+                            '_disable_scrollwheel',
+                            __('Disable Scroll Wheel',SLPLUS_PREFIX),
+                            __('Disable the scrollwheel zoom on the maps interface.', SLPLUS_PREFIX)
+                            );
+                        echo CreateCheckboxDiv(
+                            '_disable_largemapcontrol3d',
+                            __('Hide map 3d control',SLPLUS_PREFIX),
+                            __('Turn the large map 3D control off.', SLPLUS_PREFIX)
+                            );
+                        echo CreateCheckboxDiv(
+                            '_disable_scalecontrol',
+                            __('Hide map scale',SLPLUS_PREFIX),
+                            __('Turn the map scale off.', SLPLUS_PREFIX)
+                            );
+                        echo CreateCheckboxDiv(
+                            '_disable_maptypecontrol',
+                            __('Hide map type',SLPLUS_PREFIX),
+                            __('Turn the map type selector off.', SLPLUS_PREFIX)
+                            );
+                }
+
+
+                //------------------------
+                // Search Results Settings
+                //
+                echo '<p class="slp_admin_info" style="clear:both;"><strong>'.__('Search Results',SLPLUS_PREFIX).'</strong></p>';
+                echo '<p>'.sprintf($slplus_message,$slplus_plugin->purchase_url,'Pro Pack').'</p>';
+                echo CreateInputDiv(
+                        '_maxreturned',
+                        __('Max search results',SLPLUS_PREFIX),
+                        __('How many locations does a search return? Default is 25.',SLPLUS_PREFIX)
+                        );
+
+                //--------
+               // Pro Pack : Search Results Settings
+                //
+                if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
+                    echo CreateCheckboxDiv(
+                        '_show_tags',
+                        __('Show Tags In Output',SLPLUS_PREFIX),
+                        __('Show the tags in the location output table and bubble.', SLPLUS_PREFIX)
+                        );
+
+                    echo CreateCheckboxDiv(
+                        '_use_email_form',
+                        __('Use Email Form',SLPLUS_PREFIX),
+                        __('Use email form instead of mailto: link when showing email addresses.', SLPLUS_PREFIX)
+                        );
+                }
+?>
+            </div>
         </div>
     </div>        
 
@@ -80,7 +153,7 @@
                         'sl_zoom_tweak',
                         array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19),
                         $label=__('Zoom Adjustment', SLPLUS_PREFIX),
-                        $msg=__('Changes how tight auto-zoom bounds the locations shown.  Lower numbers are closer to the lcoations.', SLPLUS_PREFIX),
+                        $msg=__('Changes how tight auto-zoom bounds the locations shown.  Lower numbers are closer to the locations.', SLPLUS_PREFIX),
                         $prefix='',
                         $default=4
                         );
