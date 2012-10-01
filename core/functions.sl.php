@@ -46,7 +46,7 @@ function move_upload_directories() {
 /*-----------------*/
 
 function initialize_variables() {
-    global $sl_height, $sl_width, $sl_width_units, $sl_height_units, $sl_radii;
+    global $sl_height, $sl_width, $sl_width_units, $sl_height_units;
     global $cl_icon, $cl_icon2, $sl_google_map_domain, $sl_google_map_country, $sl_theme, $sl_base, $sl_upload_base, $sl_location_table_view;
     global $sl_search_label, $sl_zoom_level, $sl_zoom_tweak, $sl_use_city_search, $sl_use_name_search, $sl_default_map;
     global $sl_radius_label, $sl_website_label, $sl_num_initial_displayed, $sl_load_locations_default;
@@ -128,16 +128,13 @@ function initialize_variables() {
         $slplus_show_state_pd="1";
         add_option('slplus_show_state_pd', $slplus_show_state_pd);
         }
-    $sl_zoom_level=get_option('sl_zoom_level');
-    if (empty($sl_zoom_level)) {
-        $sl_zoom_level="4";
-        add_option('sl_zoom_level', $sl_zoom_level);
-        }
-    $sl_zoom_tweak=get_option('sl_zoom_tweak');
-    if (empty($sl_zoom_tweak)) {
-        $sl_zoom_tweak="1";
-        add_option('sl_zoom_tweak', $sl_zoom_tweak);
-        }
+
+    $sl_zoom_level=get_option('sl_zoom_level','4');
+    add_option('sl_zoom_level', $sl_zoom_level);
+    
+    $sl_zoom_tweak=get_option('sl_zoom_tweak','1');
+    add_option('sl_zoom_tweak', $sl_zoom_tweak);
+
     $sl_search_label=get_option('sl_search_label');
     if (empty($sl_search_label)) {
         $sl_search_label="Address";
@@ -200,12 +197,6 @@ function initialize_variables() {
         add_option('sl_map_width_units', "%");
         $sl_width_units=get_option('sl_map_width_units');
         }	
-    
-    $sl_radii=get_option('sl_map_radii');
-    if (empty($sl_radii)) {
-        add_option('sl_map_radii', "10,25,50,100,(200),500");
-        $sl_radii=get_option('sl_map_radii');
-        }
 }
 
 
@@ -215,9 +206,7 @@ function initialize_variables() {
 function do_geocoding($address,$sl_id='') {    
     global $wpdb, $slplus_plugin;    
     
-    // Initialize delay in geocode speed
-    $delay = 0;
-    
+    $delay = 0;    
     $base_url = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false";
     
     // Loop through for X retries
@@ -229,23 +218,53 @@ function do_geocoding($address,$sl_id='') {
     
         // Iterate through the rows, geocoding each address
         $request_url = $base_url . "&address=" . urlencode($address);
+        $errorMessage = '';
         
-        if (extension_loaded("curl") && function_exists("curl_init")) {
+
+        // Use HTTP Handler (WP_HTTP) first...
+        //
+        if (isset($slplus_plugin->http_handler)) { 
+            $result = $slplus_plugin->http_handler->request( 
+                            $request_url, 
+                            array('timeout' => 3) 
+                            ); 
+            if ($slplus_plugin->http_result_is_ok($result) ) {
+                $raw_json = $result['body'];
+            }
+            
+        // Then Curl...
+        //
+        } elseif (extension_loaded("curl") && function_exists("curl_init")) {
                 $cURL = curl_init();
                 curl_setopt($cURL, CURLOPT_URL, $request_url);
                 curl_setopt($cURL, CURLOPT_RETURNTRANSFER, 1);
-                $json = curl_exec($cURL);
-                curl_close($cURL);  
-        }else{
-             $json = file_get_contents($request_url) or die("url not loading");
+                $raw_json = curl_exec($cURL);
+                curl_close($cURL);
+
+        // Lastly file_get_contents
+        //
+        } else {
+             $raw_json = file_get_contents($request_url);
         }
-        $json = json_decode($json);
-        $status = $json->{'status'};
+
+        // If raw_json exists, parse it
+        //
+        if (isset($raw_json)) {
+            $json = json_decode($raw_json);
+            $status = $json->{'status'};
+            
+        // no raw json
+        //
+        } else {
+            $json = '';
+            $status = '';
+        }
         
         // Geocode completed successfully
         //
         if (strcmp($status, "OK") == 0) {
             $iterations = 0;      // Break out of retry loop if we are OK
+            $delay = 0;
             
             // successful geocode
             $geocode_pending = false;
@@ -271,8 +290,23 @@ function do_geocoding($address,$sl_id='') {
             // Run insert/update
             //
             $update_result = $wpdb->query($query);
-            if (!$update_result) {
-                echo sprintf(__("Could not add/update address.  Error: %s.", SLPLUS_PREFIX),mysql_error())."\n<br>";
+            if ($update_result == 0) {
+                $theDBError = htmlspecialchars(mysql_error($wpdb->dbh),ENT_QUOTES);
+                $errorMessage .= __("Could not add/update address.  ", SLPLUS_PREFIX);
+                if ($theDBError != '') {
+                    $errorMessage .= sprintf(
+                                            __("Error: %s.", SLPLUS_PREFIX),
+                                            $theDBError
+                                            );
+                } elseif ($update_result === 0) {
+                    $errorMessage .=  __("It appears the data did not change.", SLPLUS_PREFIX);
+                } else {
+                    $errorMessage .=  __("No error logged.", SLPLUS_PREFIX);
+                    $errorMessage .= "<br/>\n" . __('Query: ', SLPLUS_PREFIX);
+                    $errorMessage .= print_r($wpdb->last_query,true);
+                    $errorMessage .= "<br/>\n" . "Results: " . gettype($update_result) . ' '. $update_result;
+                }
+
             }
 
         // Geocoding done too quickly
@@ -282,8 +316,8 @@ function do_geocoding($address,$sl_id='') {
           // No iterations left, tell user of failure
           //
 	      if(!$iterations){
-            echo sprintf(__("Address %s <font color=red>failed to geocode</font>. ", SLPLUS_PREFIX),$address);
-            echo sprintf(__("Received status %s.", SLPLUS_PREFIX),$status)."\n<br>";
+            $errorMessage .= sprintf(__("Address %s <font color=red>failed to geocode</font>. ", SLPLUS_PREFIX),$address);
+            $errorMessage .= sprintf(__("Received status %s.", SLPLUS_PREFIX),$status)."\n<br>";
 	      }                       
           $delay += 100000;
 
@@ -291,16 +325,30 @@ function do_geocoding($address,$sl_id='') {
         //
         } else if (strcmp($status, 'ZERO_RESULTS') == 0) {
 	    	$iterations = 0; 
-	    	echo sprintf(__("Address %s <font color=red>failed to geocode</font>. ", SLPLUS_PREFIX),$address);
-	      	echo sprintf(__("Unknown Address! Received status %s.", SLPLUS_PREFIX),$status)."\n<br>";
+	    	$errorMessage .= sprintf(__("Address %s <font color=red>failed to geocode</font>. ", SLPLUS_PREFIX),$address);
+	      	$errorMessage .= sprintf(__("Unknown Address! Received status %s.", SLPLUS_PREFIX),$status)."\n<br>";
           
         // Could Not Geocode
         //
         } else {
             $geocode_pending = false;
             echo sprintf(__("Address %s <font color=red>failed to geocode</font>. ", SLPLUS_PREFIX),$address);
-            echo sprintf(__("Received status %s.", SLPLUS_PREFIX),$status)."\n<br>";
+            if ($status != '') {
+                $errorMessage .= sprintf(__("Received data %s.", SLPLUS_PREFIX),'<pre>'.print_r($json,true).'</pre>')."\n";
+            } else {
+                $errorMessage .= sprintf(__("Reqeust sent to %s.", SLPLUS_PREFIX),$request_url)."\n<br>";
+                $errorMessage .= sprintf(__("Received status %s.", SLPLUS_PREFIX),$status)."\n<br>";
+            }
         }
+
+        // Show Error Messages
+        //
+        if ($errorMessage != '') {
+            print '<div class="geocode_error">' .
+                    $errorMessage .
+                    '</div>';
+        }
+
         usleep($delay);
     }
 }    
@@ -319,7 +367,7 @@ function activate_slplus() {
     // Data Updates
     //
     global $sl_db_version, $sl_installed_ver;
-	$sl_db_version='2.7';     //***** CHANGE THIS ON EVERY STRUCT CHANGE
+	$sl_db_version='3.1';     //***** CHANGE THIS ON EVERY STRUCT CHANGE
     $sl_installed_ver = get_option( SLPLUS_PREFIX."-db_version" );
 
 	install_main_table();
@@ -332,13 +380,34 @@ function activate_slplus() {
     if ($sl_installed_ver == '') {
         add_option(SLPLUS_PREFIX."-db_version", $sl_db_version);
     } else {
+        
+        // Change Pro Pack license info to new SKU
+        //
+        if (get_option(SLPLUS_PREFIX.'-SLPLUS-PRO-lk','') == '') {
+            update_option(SLPLUS_PREFIX.'-SLPLUS-PRO-lk',get_option(SLPLUS_PREFIX.'-SLPLUS-lk',''));
+            update_option(SLPLUS_PREFIX.'-SLPLUS-PRO-isenabled',get_option(SLPLUS_PREFIX.'-SLPLUS-isenabled',''));
+        }
+
+        // Change Pages license info to new SKU
+        //
+        if (get_option(SLPLUS_PREFIX.'-SLPLUS-PAGES-lk','') == '') {
+            update_option(SLPLUS_PREFIX.'-SLPLUS-PAGES-isenabled',get_option(SLPLUS_PREFIX.'-SLP-PAGES-isenabled',''));
+        }
+
         update_option(SLPLUS_PREFIX."-db_version", $sl_db_version);
     }
     
-    
+
+    // Roles
+    //
     if (function_exists('add_slplus_roles_and_caps')) {
         add_slplus_roles_and_caps();
-    }        
+    }      
+    
+    // Themes Cleaning
+    //
+    update_option($slplus_plugin->prefix.'-theme_lastupdated','2006-10-05');
+
 	move_upload_directories();
 }
 
@@ -380,6 +449,7 @@ function install_main_table() {
 			sl_url varchar(255) NULL,
 			sl_hours varchar(255) NULL,
 			sl_phone varchar(255) NULL,
+			sl_fax varchar(255) NULL,
 			sl_image varchar(255) NULL,
 			sl_private varchar(1) NULL,
 			sl_neat_title varchar(255) NULL,
@@ -501,9 +571,7 @@ function slplus_dbupdater($sql,$table_name) {
     $sl_width          = get_option('sl_map_width','100');        
     $sl_width_units    = get_option('sl_map_width_units','%');
 	$slplus_name_label = get_option('sl_name_label');
-    
-    $sl_radii          = get_option('sl_map_radii','1,5,10,(25),50,100,200,500');
-    $r_array        = explode(",", $sl_radii);
+    $r_array        = explode(",",get_option('sl_map_radii','1,5,10,(25),50,100,200,500'));
     
     $sl_instruction_message = get_option('sl_instruction_message',__('Enter Your Address or Zip Code Above.',SLPLUS_PREFIX));
     
@@ -587,69 +655,36 @@ function slplus_dbupdater($sql,$table_name) {
     $columns += (get_option('sl_use_country_search')!=1) ? 1 : 0; 	    
     $columns += (get_option('slplus_show_state_pd')!=1) ? 1 : 0; 	    
     $sl_radius_label=get_option('sl_radius_label');
-    $file = SLPLUS_COREDIR . 'templates/search_form.php';
 
     // Prep fnvars for passing to our template
     //
     $fnvars = array_merge($fnvars,(array) $attributes);       // merge in passed attributes
     
-    
-    // Prepare some data for JavaScript injection...
-    //
-    $slplus_home_icon = get_option('sl_map_home_icon');
-    $slplus_end_icon  = get_option('sl_map_end_icon');
-    $slplus_home_icon_file = str_replace(SLPLUS_ICONURL,SLPLUS_ICONDIR,$slplus_home_icon);
-    $slplus_end_icon_file  = str_replace(SLPLUS_ICONURL,SLPLUS_ICONDIR,$slplus_end_icon);
-    $slplus_home_size=(function_exists('getimagesize') && file_exists($slplus_home_icon_file))? 
-        getimagesize($slplus_home_icon_file) : 
-        array(0 => 20, 1 => 34);    
-    $slplus_end_size =(function_exists('getimagesize') && file_exists($slplus_end_icon_file)) ? 
-        getimagesize($slplus_end_icon_file)  : 
-        array(0 => 20, 1 => 34);
 		
 	//todo: make sure map type gets set to a sane value before getting here. Maybe not...
-    
-    // Lets get some variables into our script
+
+    //todo: if we allow map setting overrides via shortcode attributes we will need
+    // to re-localize the script.  It was moved to the actions class so we can
+    // localize prior to enqueue in the header.
     //
-    $scriptData = array(
-        'debug_mode'        => (get_option(SLPLUS_PREFIX.'-debugging') == 'on'),
-        'disable_scroll'    => (get_option(SLPLUS_PREFIX.'_disable_scrollwheel')==1),
-        'disable_dir'       => (get_option(SLPLUS_PREFIX.'_disable_initialdirectory' )==1),
-        'distance_unit'     => esc_attr(get_option('sl_distance_unit'),'miles'),
-        'load_locations'    => (get_option('sl_load_locations_default')==1),
-        'map_3dcontrol'     => (get_option(SLPLUS_PREFIX.'_disable_largemapcontrol3d')==0),
-        'map_country'       => SetMapCenter(),
-        'map_domain'        => get_option('sl_google_map_domain','maps.google.com'),
-        'map_home_icon'     => $slplus_home_icon,
-        'map_home_sizew'    => $slplus_home_size[0],
-        'map_home_sizeh'    => $slplus_home_size[1],
-        'map_end_icon'      => $slplus_end_icon,
-        'map_end_sizew'     => $slplus_end_size[0],
-        'map_end_sizeh'     => $slplus_end_size[1],
-        'use_sensor'            => (get_option(SLPLUS_PREFIX."_use_location_sensor")==1),
-        'map_scalectrl'     => (get_option(SLPLUS_PREFIX.'_disable_scalecontrol')==0),
-        'map_type'          => get_option('sl_map_type','roadmap'),
-        'map_typectrl'      => (get_option(SLPLUS_PREFIX.'_disable_maptypecontrol')==0),
-        'show_tags'         => (get_option(SLPLUS_PREFIX.'_show_tags')==1),
-        'overview_ctrl'     => get_option('sl_map_overview_control',0),
-        'use_email_form'    => (get_option(SLPLUS_PREFIX.'_email_form')==1),
-        'use_pages_links'   => ($slplus_plugin->settings->get_item('use_pages_links')=='on'),
-        'use_same_window'   => ($slplus_plugin->settings->get_item('use_same_window')=='on'),                
-        'website_label'     => esc_attr(get_option('sl_website_label','Website')),
-        'zoom_level'        => get_option('sl_zoom_level',4),
-        'zoom_tweak'        => get_option('sl_zoom_tweak',1),
-        );
-    wp_localize_script('csl_script','slplus',$scriptData);
-	wp_localize_script('csl_script','csl_ajax',array('ajaxurl' => admin_url('admin-ajax.php'), 'nonce' => wp_create_nonce('em')));
-    
+
+    // Setup the style sheets
+    //
+    setup_stylesheet_for_slplus();
+
+
     // Set our flag for later processing
     // of JavaScript files
     //
     if (!defined('SLPLUS_SHORTCODE_RENDERED')) {
         define('SLPLUS_SHORTCODE_RENDERED',true);
     }
-    
-    return get_string_from_phpexec($file); 
+
+    // Search / Map Actions
+    //
+    add_action('slp_render_search_form',array('SLPlus_UI','slp_render_search_form'));
+
+    return get_string_from_phpexec(SLPLUS_COREDIR . 'templates/search_and_map.php');
 }
 
 
@@ -672,65 +707,6 @@ function SetMapCenter() {
     }
     return esc_attr(get_option('sl_google_map_country','United States'));    
 }
-
-/**************************************
- ** function: csl_slplus_add_options_page()
- **
- ** Add the Store Locator panel to the admin sidebar.
- **
- **/
-function csl_slplus_add_options_page() {
-	global $slplus_plugin;
-	
-	if ( 
-	    (!function_exists('add_slplus_roles_and_caps') || current_user_can('manage_slp'))
-	    )
-	{
-        add_menu_page(
-            __($slplus_plugin->name, SLPLUS_PREFIX),  
-            __($slplus_plugin->name, SLPLUS_PREFIX), 
-            'administrator', 
-            SLPLUS_COREDIR.'add-locations.php'
-            );	
-		add_submenu_page(
-    	    SLPLUS_COREDIR.'add-locations.php',
-		    __("Add Locations", SLPLUS_PREFIX), 
-		    __("Add Locations", SLPLUS_PREFIX), 
-		    'administrator', 
-		    SLPLUS_COREDIR.'add-locations.php'
-		    );
-		add_submenu_page(
-    	    SLPLUS_COREDIR.'add-locations.php',
-		    __("Manage Locations", SLPLUS_PREFIX), 
-		    __("Manage Locations", SLPLUS_PREFIX), 
-		    'administrator', 
-		    SLPLUS_COREDIR.'view-locations.php'
-		    );
-		add_submenu_page(
-    	    SLPLUS_COREDIR.'add-locations.php',
-		    __("Map Settings", SLPLUS_PREFIX), 
-		    __("Map Settings", SLPLUS_PREFIX), 
-		    'administrator', 
-		    SLPLUS_COREDIR.'map-designer.php'
-		    );
-		
-		// Pro Pack Reporting
-		//
-		if ($slplus_plugin->license->packages['Pro Pack']->isenabled) { 		
-            if (function_exists('slplus_add_report_settings')) {
-                add_submenu_page(
-                    SLPLUS_COREDIR.'add-locations.php',
-                    __("Reports", SLPLUS_PREFIX), 
-                    __("Reports", SLPLUS_PREFIX), 
-                    'administrator', 
-                    SLPLUS_PLUGINDIR.'reporting.php'
-                    );		    
-            }
-        }   
-	}
-
-}
-
 
 /*-------------------------------------------------------------*/
 function comma($a) {

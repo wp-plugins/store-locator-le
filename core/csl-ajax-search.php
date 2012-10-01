@@ -92,13 +92,16 @@ function csl_ajax_onload() {
 			'lng' => $row['sl_longitude'],
 			'description' => html_entity_decode($row['sl_description']),
 			'url' => esc_attr($row['sl_url']),
-			'sl_pages_url' => ($row['sl_pages_on'] != 1 ? esc_attr($row['sl_pages_url']) : ''),
+			'sl_pages_url' => (($row['sl_pages_on'] == 1) ? esc_attr($row['sl_pages_url']) : ''),
 			'email' => esc_attr($row['sl_email']),
 			'hours' => esc_attr($row['sl_hours']),
 			'phone' => esc_attr($row['sl_phone']),
+			'fax'   => esc_attr($row['sl_fax']),
 			'image' => esc_attr($row['sl_image']),
 			'distance' => $row['sl_distance'],
-			'tags' => ($slplus_show_tags) ? esc_attr($row['sl_tags']) : ''
+			'tags' => ($slplus_show_tags) ? esc_attr($row['sl_tags']) : '',
+            'data_from' => 'load',
+            'id' => $row['sl_id'],
 		);
 		$response[] = $marker;
 	}
@@ -185,7 +188,7 @@ function csl_ajax_search() {
 			mysql_real_escape_string($option[SLPLUS_PREFIX.'_maxreturned'])
 		);
 		
-		$result = mysql_query($query);
+		$result = mysql_query(apply_filters('slp_mysql_search_query',$query));
 		if (!$result) {
 			die(json_encode( array('success' => false, 'query' => $query, 'response' => 'Invalid query: ' . mysql_error())));
 		}
@@ -197,7 +200,7 @@ function csl_ajax_search() {
 		// Reporting
 		// Insert the query into the query DB
 		// 
-		if (get_option(SLPLUS_PREFIX.'-reporting_enabled') === 'on') {
+		if (get_option(SLPLUS_PREFIX.'-reporting_enabled','off') === 'on') {
 			$qry = sprintf(                                              
 					"INSERT INTO ${dbPrefix}slp_rep_query ". 
 							   "(slp_repq_query,slp_repq_tags,slp_repq_address,slp_repq_radius) ". 
@@ -230,13 +233,16 @@ function csl_ajax_search() {
 				'lng' => $row['sl_longitude'],
 				'description' => html_entity_decode($row['sl_description']),
 				'url' => esc_attr($row['sl_url']),
-				'sl_pages_url' => ($row['sl_pages_on'] != 1 ? esc_attr($row['sl_pages_url']) : ''),
+				'sl_pages_url' => esc_attr($row['sl_pages_url']),
 				'email' => esc_attr($row['sl_email']),
 				'hours' => esc_attr($row['sl_hours']),
 				'phone' => esc_attr($row['sl_phone']),
+				'fax' => esc_attr($row['sl_fax']),
 				'image' => esc_attr($row['sl_image']),
 				'distance' => $row['sl_distance'],
-				'tags' => ($slplus_show_tags) ? esc_attr($row['sl_tags']) : ''
+				'tags' => ($slplus_show_tags) ? esc_attr($row['sl_tags']) : '',
+                'data_from' => 'search',
+                'id' => $row['sl_id'],
 			);
 			$response[] = $marker;
 			

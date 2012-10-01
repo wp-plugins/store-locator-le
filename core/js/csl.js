@@ -322,7 +322,7 @@ var csl = {
 		/**************************************
 		 * function: escapeExtended()
 		 *
-		 * Escape any extended characters, such as ü in für.
+		 * Escape any extended characters, such as ï¿½ in fï¿½r.
 		 * Standard US ASCII characters (< char #128) are unchanged
 		 *
 		 */ 
@@ -418,10 +418,9 @@ var csl = {
 		this.showTags = null;
 		this.overviewControl = null;
 		this.useEmailForm = null;
-		this.usePagesLinks = null;
 		this.useSameWindow = null;
 		this.websiteLabel = null;
-		this.zoomLevel = null;
+		this.zoomLevel = '12';
   	  	
   	  	//gmap set variables
   	  	this.options = null;
@@ -446,36 +445,40 @@ var csl = {
   	  	 * returns: none
   	  	 */
   	  	this.__init = function() {
-			this.address = slplus.map_country;
-  	  	  	this.zoom = slplus.zoom_level;
-  	  	  	this.mapType = slplus.map_type;
-			this.disableScroll = !!slplus.disable_scroll;
-			this.debugMode = !!slplus.debug_mode;
-			this.disableDir = !!slplus.disable_dir;
-			this.distanceUnit = slplus.distance_unit;
-			this.load_locations = !!slplus.load_locations;
-			this.mapCountry = slplus.map_country;
-			this.mapDomain = slplus.map_domain;
-			this.mapHomeIconUrl = slplus.map_home_icon;
-			this.mapHomeIconWidth = slplus.map_home_icon_sizew;
-			this.mapHomeIconHeight = slplus.map_home_icon_sizeh;
-			this.mapEndIconUrl = slplus.map_end_icon;
-			this.mapEndIconWidth = slplus.map_end_sizew;
-			this.mapEndIconHeight = slplus.map_end_sizeh;
-			this.mapScaleControl = !!slplus.map_scalectrl;
-			this.mapTypeControl = !!slplus.map_typectrl;
-			this.showTags = slplus.show_tags;
-			this.overviewControl = !!(parseInt(slplus.overview_ctrl));
-			this.useEmailForm = !!slplus.use_email_form;
-			this.usePagesLink = !!slplus.use_pages_link;
-			this.useSameWindow = !!slplus.use_same_window;
-			this.websiteLabel = slplus.website_label;
-			this.zoomLevel = slplus.zoom_level;
-  	  	  	this.disableDefaultUI = false;
-			
-			if (!this.disableDir) {
-				this.loadedOnce = true;
-			}
+                        
+            if (typeof slplus != 'undefined') {
+                this.address = slplus.map_country;
+                this.zoom = slplus.zoom_level;
+                this.mapType = slplus.map_type;
+                this.disableScroll = !!slplus.disable_scroll;
+                this.debugMode = !!slplus.debug_mode;
+                this.disableDir = !!slplus.disable_dir;
+                this.distanceUnit = slplus.distance_unit;
+                this.load_locations = !!slplus.load_locations;
+                this.mapCountry = slplus.map_country;
+                this.mapDomain = slplus.map_domain;
+                this.mapHomeIconUrl = slplus.map_home_icon;
+                this.mapHomeIconWidth = slplus.map_home_icon_sizew;
+                this.mapHomeIconHeight = slplus.map_home_icon_sizeh;
+                this.mapEndIconUrl = slplus.map_end_icon;
+                this.mapEndIconWidth = slplus.map_end_sizew;
+                this.mapEndIconHeight = slplus.map_end_sizeh;
+                this.mapScaleControl = !!slplus.map_scalectrl;
+                this.mapTypeControl = !!slplus.map_typectrl;
+                this.showTags = slplus.show_tags;
+                this.overviewControl = !!(parseInt(slplus.overview_ctrl));
+                this.useEmailForm = !!slplus.use_email_form;
+                this.useSameWindow = !!slplus.use_same_window;
+                this.websiteLabel = slplus.website_label;
+                this.zoomLevel = slplus.zoom_level;
+                this.disableDefaultUI = false;
+
+                if (!this.disableDir) {
+                    this.loadedOnce = true;
+                }
+            } else {
+                alert('Store Locator Plus script not loaded properly.');
+            }
   	  	}
         
         /***************************
@@ -661,6 +664,7 @@ var csl = {
   	  	 * returns: none
   	  	 */
 		this.putMarkers = function(markerList, animation) {
+
 			this.markers = [];
 			if (this.loadedOnce) {
 				var sidebar = document.getElementById('map_sidebar');
@@ -730,15 +734,26 @@ var csl = {
 				this.gmap.panTo(this.homePoint);
                 var sidebar = document.getElementById('map_sidebar');
 				sidebar.innerHTML = '<div class="no_results_found"><h2>No results found.</h2></div>';
-			}
+                jQuery('#map_sidebar').trigger('contentchanged');
+			} else {
+                jQuery('#map_sidebar').trigger('contentchanged');
+            }
 			
 			if (bounds != null) {
 				this.debugSearch('rebounded');
 				this.bounds = bounds;
-				//if (this.homePoint) { 
-				//	this.gmap.panTo(this.homePoint); }
 				this.gmap.fitBounds(this.bounds);
-				//this.gmap.panTo(this.bounds.getCenter());
+
+                // Single Location or  Immediate Load Locations
+                // Use Map Zoom level + tweak
+                //
+                if ( (markerList.length == 1) || (this.load_locations == '1') ) {
+                    var newZoom = Math.max(Math.min(parseInt(slplus.zoom_level) - parseInt(slplus.zoom_tweak),20),1);
+                    this.gmap.setZoom(newZoom);
+                } else {
+                    var newZoom = Math.max(Math.min(this.gmap.getZoom() - parseInt(slplus.zoom_tweak),20),1);
+                    this.gmap.setZoom(newZoom);
+                }
 			}
 		}
 		
@@ -824,7 +839,7 @@ var csl = {
         this.__getMarkerUrl = function(aMarker) {
             var url = '';
             //add an http to the url
-            if (aMarker.sl_pages_url != '') {
+            if ((slplus.use_pages_links == "1") && (aMarker.sl_pages_url != '')) {
                 url = aMarker.sl_pages_url;
             }
             else if (aMarker.url != '') {
@@ -836,7 +851,7 @@ var csl = {
                     url = aMarker.url;
                 }
             }
-            
+
             return url;
         }
 		
@@ -904,6 +919,9 @@ var csl = {
 			
 			if (aMarker.phone != '') {
 				html+="<br/><span class='location_detail_label'>Phone:</span> "+aMarker.phone;
+			}
+			if (aMarker.fax != '') {
+				html+="<br/><span class='location_detail_label'>Fax:</span> "+aMarker.fax;
 			}
 
 			var address = this.__createAddress(aMarker);
@@ -1117,32 +1135,53 @@ var csl = {
             if (jQuery.trim(city_state_zip) != '') {
                 city_state_zip += '<br/>';
             }
+            if (jQuery.trim(aMarker.phone) != '') {
+                thePhone = '<br/>phone: ' + aMarker.phone;
+            } else {
+                thePhone = ''
+            }
+            if (jQuery.trim(aMarker.fax) != '') {
+                theFax = '<br/>fax: ' + aMarker.fax;
+            } else {
+                theFax = ''
+            }
 
             var address = this.__createAddress(aMarker);
-			
-			var html =  '<center><table width="96%" cellpadding="4px" cellspacing="0" class="searchResultsTable">' +
-					'<tr>' +
-                    '<td class="results_row_left_column">' +
-                        '<span class="location_name">' + aMarker.name + '</span><br>' + 
-                        parseFloat(aMarker.distance).toFixed(1) + ' ' + slplus.distance_unit + '</td>' +
-                    '<td class="results_row_center_column">' + 
-                        street +  
-                        street2 + 
-                        city_state_zip +
-                        aMarker.phone +
-                    '</td>' +
-                    '<td class="results_row_right_column">' + 
-                        link + 
-                        elink +
-                        '<a href="http://' + slplus.map_domain + 
-                        '/maps?saddr=' + encodeURIComponent(this.address) + 
-                        '&daddr=' + encodeURIComponent(address) + 
-                        '" target="_blank" class="storelocatorlink">Directions</a>'+
-                        tagInfo +
-                        '</td>' +
-                        '</tr></table></center>';
-			div.innerHTML = html;
+
+
+            // JavaScript version of sprintf
+            //
+            String.prototype.format = function() {
+             var args = arguments;
+             return this.replace(/{(\d+)}/g, function(match, number) { 
+               return typeof args[number] != 'undefined'
+                 ? args[number]
+                 : match
+               ;
+             });
+           };
+
+         // Create the results table
+         //
+ 		 div.innerHTML = slplus.results_string.format(
+                        aMarker.name,
+                        parseFloat(aMarker.distance).toFixed(1),
+                        slplus.distance_unit,
+                        street,
+                        street2,
+                        city_state_zip,
+                        thePhone,
+                        theFax,
+                        link,
+                        elink,
+                        slplus.map_domain,
+                        encodeURIComponent(this.address),
+                        encodeURIComponent(address),
+                        tagInfo
+                      )
+                      ;
 			div.className = 'results_entry';
+            div.id = 'slp_results_entry_'+aMarker.id;
 
 			return div;
 		}

@@ -27,6 +27,7 @@ function doAction(theAction,thePrompt) {
 }
 </script>
 <form name='locationForm' method='post'>
+    <input name='act' type='hidden'>
 <div id="action_buttons">
     <div id="action_bar_header"><h3><?php print __('Location Actions',SLPLUS_PREFIX); ?></h3></div>
     <div id="other_actions"  class='orangebox'>
@@ -89,11 +90,27 @@ function doAction(theAction,thePrompt) {
 //--------------------------------
 // Plus Version : Location Filters
 //
-if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {      
+if (
+   ($slplus_plugin->license->packages['Pro Pack']->isenabled) ||
+   ($slplus_plugin->license->packages['Store Pages']->isenabled)
+   ) {
 ?>
 <div id="filter_buttons">
     <div id="filter_bar_header"><h3><?php print __('Location Actions and Filters',SLPLUS_PREFIX); ?></h3></div>
-    <?php 
+
+    <?php
+    //----------
+    // Pro Pack
+    //
+    if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
+    ?>
+    <div id="filterbox_1"  class='orangebox'>
+        <p class="centerbutton"><a class='like-a-button' href="#" onclick="doAction('show_uncoded','')" name="show_uncoded"><?php echo __("Show Uncoded", SLPLUS_PREFIX); ?></a></p>
+        <p class="centerbutton"><a class='like-a-button' href="#" onclick="doAction('show_all','')" name="show_all"><?php echo __("Show All", SLPLUS_PREFIX); ?></a></p>
+    </div>
+    <?php
+    }
+
     //----------
     // Store Pages
     //
@@ -104,15 +121,11 @@ if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
          </div>    
     <?php                 
     }
-    ?>         
-    <div id="filterbox_1"  class='orangebox'>
-        <p class="centerbutton"><a class='like-a-button' href="#" onclick="doAction('show_uncoded','')" name="show_uncoded"><?php echo __("Show Uncoded", SLPLUS_PREFIX); ?></a></p>         
-        <p class="centerbutton"><a class='like-a-button' href="#" onclick="doAction('show_all','')" name="show_all"><?php echo __("Show All", SLPLUS_PREFIX); ?></a></p>         
-    </div>
-</div>
-<?php
-}
-?>
 
-</div>
+    do_action('slp_add_manage_locations_action_box');
+    
+
+echo '</div>';
+}
+echo '</div>';
 

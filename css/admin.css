@@ -15,7 +15,10 @@
 div#wpbody-content div.wrap div.updated {
     clear: both;
 }
- 
+
+div.geocode_error {
+ clear: both;
+}
 /*----------------------------------
  *
  * A div that looks like a button. 
@@ -64,13 +67,17 @@ div#wpbody-content div.wrap div.updated {
 
 div.csl-slplus-input {
     float: left;
-} 
+}
+div.csl-slplus-input textarea {
+    width: 252px;
+    border: solid 1px #666666;
+}
  
 /* More Info Box */
 div.csl-slplus-moreicon {
     background: url("../core/images/General_icons16.png") 
         no-repeat scroll 
-        -17px 0px 
+        -15px 0px
         transparent; 
     height:20px;
     width: 20px;
@@ -82,6 +89,9 @@ div.csl-slplus-moreicon {
 div.csl-slplus-moretext {
     display: none;
     clear: both;    
+}
+a.moreinfo_clicker {
+    text-decoration: none;
 }
 
 
@@ -106,7 +116,7 @@ div.csl-slplus-moretext {
  }
  div.optionpack_box iframe {
      margin: 0px auto;
-     width: 160px;
+     width: 180px;
  }
  div.optionpack_name {
      font-size: 17px;
@@ -188,7 +198,7 @@ div #slplus_actionbar
 
 /* Action Bar Specific */
 div#action_buttons {
-    width: 888px;
+    width: 890px;
     position: relative;
     margin-top: 12px;    
 }
@@ -214,7 +224,7 @@ div#slplus_actionbar {
     padding-top: 1px;
 }
 div#tag_block {
-    width: 340px;
+    width: 341px;
 }
 div#slplus_actionbar div#tag_actions {
     clear: both;
@@ -334,6 +344,9 @@ input#bulk_file {
 .form_entry {
     clear:both;
 }
+div.section_column .form_entry {
+    min-width: 475px;
+}
 
 .section_description H3 {
 	margin: 0px;
@@ -344,12 +357,15 @@ input#bulk_file {
 }
 
 .section_description label {
-    width: 180px;
+    width: 185px;
     float: left;
     text-align: right;
     margin: 0px 3px 0px 6px;
     display: block;
     clear: left;
+}
+.section_description label.disabled {
+    color: #CCC;
 }
 
 .section_description INPUT {
@@ -558,6 +574,14 @@ td.optionpack {
     margin-top: 3px;
 }
 
+
+div.section_column_content {
+    padding: 0px 6px;
+}
+
+p.slp_admin_info {
+    clear: both;
+}
 
 #poststuff #rb_details h2, #poststuff .section_column h2 {
     margin-bottom: 3px;  

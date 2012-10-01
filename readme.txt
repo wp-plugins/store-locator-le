@@ -1,14 +1,14 @@
 === Google Maps via Store Locator Plus ===
 Plugin Name: Google Maps via Store Locator Plus
-Contributors: cybersprocket
-Donate link: http://www.storelocatorplus.com/
+Contributors: charlestonsw
+Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
 Tags: google maps, store finder, store locator, store locater, google, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus, bing map, bing, yahoo maps, yahoo, mapping, retail
 Requires at least: 3.3
-Tested up to: 3.4.1
-Stable tag: 3.1.4
+Tested up to: 3.4.2
+Stable tag: 3.4
 
 Store Locator Plus works with Google Maps v3 to put a store location search on your site.
-The most active store locator plugin.
+The most active store locator plugin with monthly patches and updates!
 
 == Description ==
 
@@ -21,7 +21,6 @@ Advanced customization is available via the settings interface in the admin pane
 = Features =
 
 * You can use it for a variety of countries, as supported by Google Maps.
-* The Store Pages add-on allows you to connect each of your locations with a Wordpress page -- so you can add hours, images and more!
 * Supports international languages and character sets.
 * Allows you to use unique map icons or your own custom map icons.
 * Change default map settings via the admin panel including:
@@ -30,62 +29,38 @@ Advanced customization is available via the settings interface in the admin pane
 * Starting zoom level
 * You can use miles or kilometers
 * Pulldown list of cities and/or countries on search form can be toggled on/off.
-* Bulk upload your locations via the CSV loader.
 * Location search tracking and reporting, find out what your visitors are looking for.
 * Popup email form.
-* Use your own themes and icons to customize how your map looks
 
 = Rate Us =
 
 Please [rate us](http://wordpress.org/extend/plugins/store-locator-le/)!
-Give us a chance to <a href="http://www.cybersprocket.com/contact-us/">address your concerns</a> if we didn't earn 5 stars.
+Give us a chance to <a href="http://www.charlestonsw.com/contact-us/">address your concerns</a> if we didn't earn 5 stars.
+
+= Premium Add-Ons =
+
+We now offer premium add-on packages for our basic Store Locator Plus plugin.
+
+* [Pro Pack](http://www.charlestonsw.com/product/store-locator-plus) : More control over the map, search form, loading locations.
+* [Store Pages](http://www.charlestonsw.com/product/store-locator-plus-store-pages) : Create SEO friendly WordPress pages for your store locations.
+* [Enhanced Search](http://www.charlestonsw.com/product/store-locator-plus-enhanced-search) : Get even more control over the basic search form and even more when the Pro Pack is installed.
+
+If you are a plugin developer you will be interested in our new "Roll Your Own" program where you can create SLP based premium (or free) add-ons of your own.   Create something great and list it on our site!
 
 = Special Requests =
 
 We do accept feature requests for all of our plugins, free ones included. The most requested features will make it into the next version.
 
-<strong>If you need a special feature NOW, <a href="http://www.cybersprocket.com/contact-us/">contact us</a>!</strong> We offer expedited feature development. Most features can be implemented in less than a week for $200!
+If you need something NOW, or are looking for something beyond a basic "tweak" of the plugin, please check out our
+[Customization Service](http://www.charlestonsw.com/product/customization/).  Rates start at $500/day.
 
-= Looking For Customized WordPress Plugins? =
+= Upgrades and Patches =
 
-If you are looking for custom WordPress development for your own plugins, give
-us a call.   Not only can we offer competitive rates but we can also leverage
-our existing framework for WordPress applications which reduces development time
-and costs.
-
-Learn more at: http://www.cybersprocket.com/services/wordpress-developers/
-
-= Pro Pack Available =
-
-The plugin has an optional Pro Pack available that adds advanced features to the Store Locator Plus product.
-Some of the added features include:
-
-* **NEW!**  Search by store name - Looking for a specific store? Search by name and pull it up instantly.
-* CSV Bulk Uploads - using the CSV bulk loader
-* Extended Map Settings - Control more details about how the map looks, disable the scale, the zoom, and more.
-* Extended Manage Location Features - more controls for managing locations.
-* Reporting - information on the reporting system and how it works.
-* Tag Search - how to use tag based location searches.
-* Custom Themes (Pro Pack v2.4) - easily add your own custom styles that stay in place during patches and upgrades.
-
-Learn More about these features at the [Store Locator Plus website](http://www.storelocatorplus.com/)
-
-= Upgrades =
-
-We will offer upgrade versions from time-to-time when special new features are added to the product.
-If you do not purchase the upgrade you will still receive bug fixes and minor feature additions, however
-some of the newest features may not be available to you.
+We try to release at least one upgrade/patch every month.
 
 The main product will always remain fully functional and free.  If you'd like to have some of the latest
-"bells & whistles" purchasing the upgrades is a great way to help support us and encourage us to add even
+"bells & whistles" purchasing one of our premium add-ons is a great way to help support us and encourage us to add even
 more items the next time around.
-
-= Related Links =
-
-* [Store Locator Plus](http://www.storelocatorplus.com/)
-* [Other Cyber Sprocket Plugins](http://wordpress.org/extend/plugins/profile/cybersprocket/)
-* [Custom WordPress Development](http://www.cybersprocket.com/services/wordpress-developers/)
-* [Our Facebook Page](http://www.facebook.com/cyber.sprocket.labs)
 
 = Our Philosophy =
 
@@ -96,12 +71,6 @@ These hidden problems impact memory usage, fill up disk space, and reduce perfor
 During our 20+ years of software development, we have also found that leaving "innocuous" warnings in place tends to lead to trouble further down the road. Warnings today often become errors tomorrow. Many programming languages, PHP included, continue to tighten security and close loopholes that are typically found living near all those warning messages. Some warnings are also telling you to "change this now, it will be gone tomorrow". Eventually tomorrow will come.
 
 While our plugins may not be the prettiest on the block, we do try to make sure that all the hidden stuff you don't see is designed as well as it can be. To sum it all up, we like to write plugins that last. We hope you appreciate our work.
-
-= New! Store Pages =
-
-You can have a WordPress page for each store location on your map turning your location data into SEO friendly content.  Store Pages are a special page type that is fully integrated with WordPress,  but you manage them through Store Locator Plus.  Store Pages also have their own taxonomy (category system) so you can manage Store Page categories without affecting the rest of your site.
-
-[more information](http://storelocatorplus.com/premium-add-ons/store-pages/)
 
 == Installation ==
 
@@ -139,63 +108,62 @@ Thanks to [Nicolas Mollet](http://mapicons.nicolasmollet.com/) for some of the g
 
 == Frequently Asked Questions ==
 
+= What is included in the plugin? =
+
+The plugin includes all the functions and features necessary to add multiple locations to a store finder tool on your website.
+List 1 location or 1,000, customize the search interface and results form, and more.
+All basic functionality needed for a fully functional plugin is included.
+Basic upgrades are free and available directly from the WordPress plugin repository.
+
+= What are the premium add-ons? =
+
+In response to feature requests from our customers, we had created a series of premium add-on packages for Store Locator Plus.
+These features extend the functionality of the plugin beyond the basic service and features and can be purchased ala-carte.
+This gives those customers who want more out of the plugin the extra features they desire while keeping the main plugin as
+efficient as possible for everyone else.   It also provides a great way to support future development while getting a
+"little something extra" when contributing to our efforts.
+
+Currently we offer the following premium add-on packages:
+
+* [Pro Pack](http://www.charlestonsw.com/product/store-locator-plus) : More control over the map, search form, loading locations.
+* [Store Pages](http://www.charlestonsw.com/product/store-locator-plus-store-pages) : Create SEO friendly WordPress pages for your store locations.
+* [Enhanced Search](http://www.charlestonsw.com/product/store-locator-plus-enhanced-search) : Get even more control over the basic search form and even more when the Pro Pack is installed.
+
+= Who is Charleston Software Associates? =
+
+Currently it is one guy hacking code in a home office.   I ONLY do mobile apps and WordPress plugins for a living.
+
+= Have a license issue? =
+
+If you have any problems with your license or validating a product please contact us via our web form at http://www.charlestonsw.com/ and we will resolve your licensing issues.
+
 = What are the terms of the license? =
 
 The license is GPL.  You get the code, feel free to modify it as you
 wish.  We prefer that our customers pay us because they like what we do and
 want to support our efforts to bring useful software to market.  Learn more
-on our [CSL License Terms page](http://redmine.cybersprocket.com/projects/commercial-products/wiki/Cyber_Sprocket_Labs_Licensing_Terms "CSL License Terms page").
+on our [CSL License Terms](http://www.charlestonsw.com/products/general-eula/).
 
 = How can I translate the plugin into my language? =
 
 * Find on internet the free program POEDIT, and learn how it works.
 * Use the .pot file located in the languages directory of this plugin to create or update the .po files.
 * Place these file in the languages subdirectory.
-* If everything is ok, email the files to lobbyjones@cybersprocket.com and we will add them to the next release.
+* If everything is ok, email the files to info@charlestonsw.com and we will add them to the next release.
 * For more information on POT files, domains, gettext and i18n have a look at the I18n for WordPress developers Codex page and more specifically at the section about themes and plugins.
 
 If you create a translation file please send it to us and we'll include it in the next release!  We'll also list you here in our credits section!
 
 = What browsers are supported? =
 
-All major browsers should work, however Cyber Sprocket Labs only officially supports the current and the most recent prior release of Internet Explorer, Firefox, Chrome, and Safari.
+All major browsers should work, however CSA only officially supports the current and the most recent prior release of Internet Explorer, Firefox, Chrome, and Safari.
 
-As of June, 2011 this includes:
+As of September, 2012 this includes:
 
-* Internet Explorer (IE) 8/9
-* Firefox 4/5
-* Chrome 11/12
-* Safari 4/5
-
-= What is the Pro Pack? =
-
-The Pro Pack is a paid add-on for the main Store Locator Plus product.
-When you purchase the Pro Pack the system will automatically install a variety of new features in the base product.
-The features that are added by the Pro Pack change on a regular basis.
-Please see the [Store Locator Plus website](http://www.storelocatorplus.com) for the latest feature list.
-
-Some of the features in the Pro Pack include:
-
-* Ability to search by location name
-* A searched-locations report.
-* Ability to input addresses in bulk via a CSV upload.
-* Ability to associate tags with locations and filter search results by those tags.
-* Additional search form elements.
-* The CSS Themes system.
-
-= What are Store Pages? =
-
-Store Pages are a new WordPress page type that are created from the location data you have entered in your Store Locator Plus locations database.
-Store Pages have their own categories and can be managed separately from the main WordPress site pages.
-Store Pages content is fully accessible from your standard WordPress search and menu interface, providing a great way to get SEO value from your location data.
-
-Store Pages is a paid add-on for the free Store Locator Plus product. When you purchase the Store Pages add-on new features will be added to the base product.
-
-Please see the [Store Locator Plus website](http://www.storelocatorplus.com) for the latest feature list.
-
-= What happened to the Plus Pack? =
-
-We renamed it the Pro Pack.  Your Plus Pack license will work for the Pro Pack.
+* Internet Explorer (IE) 9
+* Firefox 15
+* Chrome 21
+* Safari 5
 
 == Screenshots ==
 
@@ -211,354 +179,23 @@ We renamed it the Pro Pack.  Your Plus Pack license will work for the Pro Pack.
 
 More screenshots are available via the [Store Locator Plus website](http://www.storelocatorplus.com/).
 
-== Upgrade Notice ==
-
-Update to allow the use of the location sensor, and compatability issues with IE
-
 == Changelog ==
 
-= 3.1.4 (July 26th, 2012) =
+We update about once per month or more frequently as needed.
 
-* Fixed where some versions of jquery will not start an anon. function
+Visit the [Store Locator Plus Release Notes](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/) at our website.
 
-= 3.1.3 (July 23rd, 2012) =
+= Latest Release: 3.4 (October 1st, 2012) =
 
-* Export raw html from the description field
+* Pro Pack: Map center is now available for all licensed Pro Pack users regardless of version licensed.
+* Store Pages: patch fixes missing "create pages" button if Pro Pack was not licensed.
+* Store Pages: patch to fix "pages replace website" links
+* Map zoom fix, properly reads initial map zoom and zoom tweak settings
+* Max Search Results - new setting limits maximum search results (was a Pro Pack only feature).
+* More action hooks for third party developers.
+* Admin interface cleanup for map settings.
+* Revised admin menu (sidebar and top of page).
+* Minor bug fixes and performance improvements.
 
-= 3.1.2 (July 20th, 2012) =
 
-* Made the plugin far less likely to conflict with other plugins
-
-= 3.1.1 (July 17th, 2012) =
-
-* Fixed where parts of the plugin output after the closing html tag
-* Fixed where ajax to/from a secured url weren't correctly working.
-
-= 3.1 (July 11th, 2012) =
-
-* Allows the use of the location sensor via pro pack
-* Javascript made more compatible with Internet Explorer
-
-= 3.0.92 (July 2nd, 2012) =
-
-* Added a comma even if there isn't a state in the address
-
-= 3.0.91 (June 28th, 2012) =
-
-* Fixed where the 3 day display wasn't updating properly
-* The 3 day display will now disappear after 3 days
-
-= 3.0.9 (June 22nd, 2012) =
-
-* Fixed a namespace issue and store locator should be much more compatible with other plugins
-
-= 3.0.8 (June 19th 2012) =
-
-* [Store Pages] Able to turn on and off the links to store pages
-* Fixed an issue where the map wouldn't be compatible with ie7 and ie8
-* Fixed an issue where on some installs jQuery wouldn't parse json
-* Added a countdown to the "please rate us"
-* Fixed the random "> at the end of checkboxes
-* Searching with extended character set works
-* Removed extraneous line breaks causing certain filters to break inline javascript
-
-= 3.0.7 (June 12th 2012) =
-
-* Activation issues resolved
-* Mobile Listener Available
-
-= 3.0.5 (June 11th 2012) =
-
-* [security] Fixed an issue where the installation path could be viewed
-* [security] Fixed an SQL injection vulnerability
-
-= 3.0.4 (June 9th 2012) =
-
-* Fixed activation
-
-= 3.0.3 (June 6th 2012) =
-
-* Fixed an issue that causes store pages not to activate
-* Added a please rate us feature
-
-= 3.0.2 (June 5th 2012) =
-
-* Fixed an issue where directions link wasn't working
-* Fixed an issue where just showing a tag based map using shortcode attributes wasn't working
-* Fixed a css issue
-* Fixed where clicking the select all checkmark wasn't working
-
-= 3.0.1 (May 31st, 2012) =
-
-* Included function to check for auto-updates
-
-= 3.0 (May 29th, 2012) =
-
-* [Pro Pack 3.0] You can now enable search by store name.
-* [Pro Pack 3.0] Fixes to tag search.
-* [Store Pages] Links now display on localhost.
-* Updated to Google Maps V3.
-* Custom icons now support custom shadows.
-* Removed symlinked directories for servers that do not support them.
-* Significant Javascript rewrite to support Google Maps API V3.
-* API Key no longer required.
-* Removed symlinks
-* Fixed icons for gmaps V3 support
-* Server side geocodes updated to V3
-* *Dramatically* increased the time to load a map page for users experiencing an extreme lag.
-
-= 2.7.1 (May 17th, 2012 =
-
-* Fixed readme file
-
-= 2.7 (May 14th, 2012) =
-
-[Version 2.7 Release Notes](http://redmine.cybersprocket.com/projects/mc-closeststore/versions/490)
-
-* [Store Pages] New premium add-on is available for purchase.
-* [Pro Pack 2.7+] You can now override the latitude/longitude of geocoded locations.
-* [Pro Pack 2.7+] You can override the default theme for the plugin via shortcode attributes.
-* [Pro Pack] Speed up reporting system for heavy traffic sites.
-* Add locations form tweaks.
-* More code performance and structure improvements.
-* Updated admin interface icons for manage listings, etc.
-* Navigation bar header UI cleanup.
-* The SLPlus themes only load/render on pages with the shortcode.
-* Blank addresses are now allowed, the search will default to the center of the map.
-* bug fix: do not re-run geocoding if address does not change during edit
-* bug fix: Selecting map type was not changing the UI.
-* NOTE: If you use the legacy ./custom-css you will need to upgrade to the Pro Pack and use themes.
-
-= 2.6 (April 12th, 2012) =
-
-* [Pro Pack] Dark Theme, add hand over submit, restyle submit button.
-* [Pro Pack] Simple Boxed Theme, side-by-side listing entries.
-* [Pro Pack] Simple Boxed Fastfood Theme, larger side-by-side listing entries for the WP Fastfood Theme.
-* [Pro Pack] Hidden Results Theme, hide the text results under the map.
-* [Pro Pack] Hidden Map Theme, hide the map.
-* Stop map "double-zoom" when "show initial locations" is set.
-* Half-dozen new icons added to the built-in icon set.
-* Icon selector now finds all jpg,png,gif images in the ./core/images/icons folder.
-* Fix initial missing shadow icons.
-* Fix automatic icon image sizing.
-* Page load speed has been increased for SLPlus pages.
-* Added some new CSS div/table IDs to make it easier to customize the output styling.
-* CSS loading has been simplified and updated to use modern WP3.X methodologies.
-* PHP-based JavaScript file has been eliminated, elminating security errors on some servers.
-* JavaScript and CSS now only loads on pages with SLPlus shortcodes.
-* JavaScript loading has been simplified and updated to use modern WP3.X methodologies.
-
-= 2.5 (March 9th, 2012) =
-
-* [Pro Pack v2.4+] Limit to N results.
-* [Pro Pack] Starting image can now be stored off-site simply use http as the prefix.
-* Map height/width over 100% would cause erratic behavior.  Auto-set max to 100% if over 100.
-
-= 2.4 (February 8th, 2012) =
-
-* Force height on icon sizes.
-* Fixed problem with menu/button links on admin panel for subdirectory installs.
-* Fixed problem with certain international characters stopping the initial map zoom/search.
-* Pro Pack v2.4 : Integrated custom themes system. (paid upgrade)
-* Pro Pack v2.4 : You can now set your center location for the map. (paid upgrade)
-
-= 2.3.1 (January 25th, 2012) =
-
-* Fix missing CSS files.
-
-= 2.3 (January 19th, 2012) =
-
-* Pro Pack Feature #7165: Manage Locations : Filter To Uncoded Only
-* Pro Pack Feature #7166: Recode locations that failed to geocode.
-* Pro Pack Feature #7231: Add label to State Pulldown.
-* Fix missing map marker.
-* Feature #7230: Change default radius selection.
-* Feature #7229: Fix typo in zoom level instruction.
-* Manage Locations Updates
-** Feature #7233: Clean up action bar header.
-** Feature #7235: Update expand/normal view interface.
-** Feature #7236: Manage locations: Stylize the page length setting.
-** Feature #7237: Manage locations: use icon sprites v. text for edit/delete.
-
-
-= 2.2.5 (December 26th, 2011) =
-
-* Fix address lookup for address search with comma or space.
-* Retain ability to search for addresses with UTF8 characters like ü in für.
-* Added extended debugging messages to address search.
-
-= 2.2.4 (December 2011) =
-
-* Store Locator Plus and LE are now merged, allowing for direct-from-WordPress upgrades.
-* General performance improvements via reduced memory usage while running searches.
-* Address search now can process special characters like: ü
-* Better lookup and testing for loading wp_config, the source of "unable to load JavaScript errors"
-* Description field can now hold > 255 characters.
-* If only 1 location is returned the map no longer auto-zooms onto that location, is uses the zoom level setting.
-* Added zoom level adjustment for how tight to zoom in on results.
-* Increase performance & reduce disk I/O when building map settings page.
-* Language file updated (/core/languages/store-locator-plus.pot)
-* Pro Pack: state pulldown now available
-* Pro Pack: tags with spaces can be filtered and searched
-* Pro Pack: allow tags in table and bubble
-* Pro Pack: tags in table and bubble now wrapped with div and spans with unique classes to allow for icon displays
-* patch 2.2.4 - update language maps for better language support
-
-= 2.1 (October 2011) =
-
-* Fix error when debug mode is enabled.
-* Updated administrative pages header with new menu button bar.
-
-= 2.0.3 (September 9th 2011) =
-
-* Fix syntax error in view locations.
-
-
-= 2.0.2 (September 2011) =
-
-* Minor edits.
-
-= 2.0.1 (August 2011) =
-
-* Elminate errors on servers with exec() disabled on php.
-
-= 2.0 (June 2011) =
-
-* Feature: Added tracking and reporting system.
-* Feature: Multiple retries available for better geocoding() on bulk or single-item uploads.
-* Feature: Improved failed goecode reporting.
-* Feature: Scroll wheel zoom can be disabled via a map settings checkbox.
-* Feature: Search form address, radius, and search buttons can be hidden.
-* Feature: Google maps scale, 3d controls, type of map overlays can be hidden.
-* Update: If the search-by-tags box is shown it takes precedence over the only_with attribute.
-* Update: Re-factored the code to share components with the light edition (LE) version.
-* Update: Icon paths have changed - make sure you reset your icons via the map designer.
-* Update: Added Republic of Ireland to the countries list.
-* Fix: conflict with copyr() with other plugins.
-* Fix: language file loading.
-* Fix: Custom icons are back for Internet Explorer.
-
-= 1.9 (May 11th 2011) =
-
-* Add email contact via forms option.
-* Better reporting of failed PHP connector loading.
-* More checking & user reporting on failed map interface loading.
-* Fix problem with multisite installs where plugin was only installed in parent.
-* Updated language file.
-
-= 1.8.2 (April 22 2011) =
-
-* Fix broken paths in the config loader.
-
-= 1.8.1 (Easter Weekend 2011) =
-
-* Short open tag fix.
-* Look for wp-config in secure location (one level up) for secured installs
-
-= 1.8 (April 2011) =
-
-* Can now override the search form tag list pulldown via the shortcode (tags_for_pulldown).
-* Can now specify a search form only produce results for a single tag via the shortcode (only_with_tag).
-* Set search form input font to black, the background is currently forced white in the CSS.
-* Added new email field to store locator data.
-* Fix errors on javascript processing on some systems with no subdomain support.
-* [Shortcode documentation](http://redmine.cybersprocket.com/projects/mc-closeststore/wiki/How_To_Implement)
-
-
-= 1.7.6 (March 26th 2011) =
-
-* Better path processing in javascript files to find wp-config.php (fixes missing maps on some installs)
-* Added author name to main plugin source.
-
-
-= 1.7.5 (March 21st 2011) =
-
-* Rename base php file to prevent "not a valid header" messages.
-* Update various links to prevent double-slash and possible URL issues on WAMP systems.
-* Strip extra whitespace around tags to improve search
-* Updated CSV loader to detect and process Mac based line endings.
-* CSV loader checks number of columns and reports error message if too many are found.
-* Debugging mode turns on debugging in store-locator-js.php for JavaScript issues.
-
-= 1.7.4 (March 14th 2011) =
-
-* Force CSL-helper class into distribution kit.
-
-= 1.7.3 (March 12th 2011) =
-
-* Better checking if admin user logged in / Admin demo mode works on more sites now.
-* Extended debugging output.
-* Change menu to read "Add Locations" v. "SLP Locations"
-
-= 1.7.2 (March 3rd 2011) =
-
-* Add pulldown selection for tag searches.
-
-= 1.7.1 (March 2nd 2011) =
-
-* Fix search when tag searches are not enabled.
-
-= 1.7 (March 2011) =
-
-* Can now search locations by tags.
-* Cleaned up map settings page.
-* Fixed bulk upload record count.
-* Added CSV mime type for some WP installs that blocked it on bulk uploads.
-
-= 1.6.5 (February 15th 2011) =
-
-* Allows purchased license key to be saved after the DB key holding the purchase flag has been mangled.
-
-= 1.6.4 (February 11th 2011) =
-
-* Set the SLPLUS CSS for images to have visibility & display to !important.
-* Some themes & plugins force javascript images to be hidden, causing the map not to display.
-
-
-= 1.6.3 (February 10th 2011) =
-
-* Fix conflict errors when replacing Store Locator with SLPLUS.
-* The conflict errors would cause the Google Map to not display on some installs.
-
-
-= 1.6.2 (February 8th 2011) =
-
-* Re-distribute 1.6.1 patch, full kit did not make it to the WordPress system.
-
-= 1.6.1 (February 7th 2011) =
-
-* Fix problem with Map API key not saving.
-
-= 1.6 (February 5th 2011) =
-
-* Fix problem with subdomain installs not finding store locations.
-
-= 1.5 (February 2011) =
-
-* Added bulk upload feature via CSV files.
-* Fixed problem with map display on subdomain installs.
-* Fixed a problem with map not showing up in v1.4 release.
-* Fixed paging problem on view locations.
-* Various performance tweaks for page loads:
-* ... built-in shortcode processor v. custom regex processor
-* ... removed customization backups on each page load
-* ... admin panel helper info setup only on settings page call
-
-= 1.4  (January 2011) =
-
-* City/County pulldown only shown if checked of on admin panel.
-* Updated layout of search form, using more CSS for easier layout changes
-* Add locations form cleaned up
-* Manage/view locations form cleaned up
-* Make search work with address 2 field
-* Make map and search results output show address 2 field
-* Revamp manage locations header
-* More warnings in the main codebase have been fixed
-* Removed Store Locator Plugin addons support, addons support causing problems.
-
-= 1.3  (December 2010) =
-
-* Add country field to address data.
-* Clean up various coding errors since WordPress 3.0 release
-* Initial release based on Google Maps Store Locator for WordPress v1.2.39.3
 

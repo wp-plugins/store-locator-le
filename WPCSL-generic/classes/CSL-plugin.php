@@ -3,12 +3,12 @@
 *
 * file: CSL-plugin.php
 *
-* The main Cyber Sprocket library for communicating effectively with 
+* The main library for communicating effectively with 
 * WordPress.   This class manages the related helper classes so we can 
 * share a code libary and reduce code redundancy.
 * 
 ************************************************************************/
-define('WPCSL__slplus__VERSION', '2.0.11');
+define('WPCSL__slplus__VERSION', '2.0.12');
 
 // (LC) 
 // These helper files should only be loaded if needed by the plugin
@@ -61,15 +61,17 @@ require_once('CSL-themes_class.php');
 *     * 'prefix' :: A string used to prefix all of the Wordpress
 *       settings for the plugin.
 *
-*     * 'support_url' :; The URL for the support page at Cyber Sprocket Labs
+*     * 'support_url' :; The URL for the support page at WordPress
 *
 *     * 'purchase_url' :: The URL for purchasing the plugin
 *
-*     * 'url' :: The URL for the product page at Cyber Sprocket Labs.
+*     * 'url' :: The URL for the product page for purchases.
 *
 *     * 'has_packages' :: defaults to false, if true that means the main product is
 *       not licensed but we still need the license class to manage add-ons.
 *
+ *    * 'admin_slugs' :: and array (or single string) of valid admin page slugs for this plugin.
+ *
 */
 class wpCSL_plugin__slplus {
 
@@ -90,7 +92,7 @@ class wpCSL_plugin__slplus {
         $this->display_settings = true;
         $this->display_settings_collapsed = false;
         $this->show_locale      = true;
-        $this->broadcast_url    = 'http://www.cybersprocket.com/signage/index.php';
+        $this->broadcast_url    = 'http://www.charlestonsw.com/signage/index.php';
         $this->shortcode_was_rendered = false;
         $this->current_admin_page = '';
         $this->prefix           = '';
@@ -105,8 +107,8 @@ class wpCSL_plugin__slplus {
                 
         // Do the setting override or initial settings.
         //
-        foreach ($params as $name => $sl_value) {
-            $this->$name = $sl_value;
+        foreach ($params as $name => $value) {
+            $this->$name = $value;
         }
 
         // Check to see if we are doing an update
@@ -132,6 +134,7 @@ class wpCSL_plugin__slplus {
         // or we are processing the update action sent from this page
         //        
         $this->isOurAdminPage = ($this->current_admin_page == $this->prefix.'-options');
+
         if (!$this->isOurAdminPage) {
             $this->isOurAdminPage = 
                  isset($_REQUEST['action']) && 
@@ -139,8 +142,27 @@ class wpCSL_plugin__slplus {
                  isset($_REQUEST['option_page']) && 
                  (substr($_REQUEST['option_page'], 0, strlen($this->prefix)) === $this->prefix)
                  ;
-        }        
-        
+        }
+
+
+        // This test allows for direct calling of the options page from an
+        // admin page call direct from the sidebar using a class/method
+        // operation.
+        //
+        // To use: pass an array of strings that are valid admin page slugs for
+        // this plugin.  You can also pass a single string, we catch that too.
+        //
+        if ((!$this->isOurAdminPage) && isset($this->admin_slugs)) {
+           if (is_array($this->admin_slugs)) {
+               foreach ($this->admin_slugs as $admin_slug) {
+                $this->isOurAdminPage = ($this->current_admin_page === $admin_slug);
+                if ($this->isOurAdminPage) { break; }
+               }
+           } else {
+               $this->isOurAdminPage = ($this->current_admin_page === $this->admin_slugs);
+           }
+        }
+
         // Debugging Flag
         $this->debugging = (get_option($this->prefix.'-debugging') == 'on');
         
@@ -291,10 +313,10 @@ class wpCSL_plugin__slplus {
      ** Our own version of the php5.2 array_fill_keys
      ** So we can hopefully stay with php5.1 compatability
      **/
-    function csl_array_fill_keys($target,$sl_value='') {
+    function csl_array_fill_keys($target,$value='') {
         if(is_array($target)) {
             foreach($target as $key => $val) {
-                $filledArray[$val] = is_array($sl_value) ? $sl_value[$key] : $sl_value;
+                $filledArray[$val] = is_array($value) ? $value[$key] : $value;
             }
         }
         return $filledArray;
@@ -908,7 +930,7 @@ class wpCSL_plugin__slplus {
             //is the timer up?
             if ($time >= $destruct_time) {
                 //if the checkbox has been hit, then set to false
-                if ($this->settings->get_item(thisbox)==true) {
+                if ($this->settings->get_item('thisbox')==true) {
                     $destruct_time = false;
                 }
                 //if not then set it to true
@@ -979,8 +1001,8 @@ class wpCSL_plugin__slplus {
             if ($this->debugging) {
                 if (is_array($atts)) {
                     print __('DEBUG: Shortcode called with attributes:',WPCSL__slplus__VERSION) . "<br/>\n";
-                    foreach ($atts as $name=>$sl_value) {
-                        print $name.':'.$sl_value."<br/>\n";
+                    foreach ($atts as $name=>$value) {
+                        print $name.':'.$value."<br/>\n";
                     }
                 } else {
                     print __('DEBUG: Shortcode called with no attributes.',WPCSL__slplus__VERSION) . "<br/>\n";
@@ -1145,13 +1167,13 @@ class wpCSL_plugin__slplus {
      **/
     function apply_driver_defaults(&$defaults) {
         $results = array();
-        foreach ($defaults as $key => $sl_value) {
-            if (is_array($sl_value)) {
-                $results[$key] = $this->apply_driver_defaults($sl_value);
+        foreach ($defaults as $key => $value) {
+            if (is_array($value)) {
+                $results[$key] = $this->apply_driver_defaults($value);
             }
             else {
-                if (get_option($this->prefix .'-'.$sl_value)) {
-                    $results[$sl_value] = get_option($this->prefix .'-'.$sl_value);
+                if (get_option($this->prefix .'-'.$value)) {
+                    $results[$value] = get_option($this->prefix .'-'.$value);
                 }
             }
         }

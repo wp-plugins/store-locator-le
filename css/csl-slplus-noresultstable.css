@@ -269,3 +269,10 @@ tr#cm_mapTR {
     visibility: hidden;
 } 
 
+span.slp_checkbox_entry {
+    padding-right: 12px;
+}
+
+span.slp_checkbox_entry input[type="checkbox"] {
+    vertical-align: text-bottom;
+}
