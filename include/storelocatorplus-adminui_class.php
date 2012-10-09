@@ -176,6 +176,29 @@ if (! class_exists('SLPlus_AdminUI')) {
 
         }
 
+        /*****************************
+         * function: url_test()
+         *
+         */
+        function url_test($url) {
+            return (strtolower(substr($url,0,7))=="http://");
+        }
+
+        /*****************************
+        * function: slpCreateColumnHeader()
+        *
+        * Create the column headers for sorting the table.
+        *
+        */
+        function slpCreateColumnHeader($theURL,$fldID='sl_store',$fldLabel='ID',$opt='sl_store',$dir='ASC') {
+            if ($opt == $fldID) {
+                $curDIR = (($dir=='ASC')?'DESC':'ASC');
+            } else {
+                $curDIR = $dir;
+            }
+            return "<th><a href='$theURL&o=$fldID&sortorder=$curDIR'>$fldLabel</a></th>";
+        }
+
         /**
          * method: redirectTo_GeneralSettings
          * 

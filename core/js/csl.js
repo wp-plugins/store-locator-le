@@ -1204,10 +1204,11 @@ var cslutils;
 function InitializeTheMap() {
 	cslutils = new csl.Utils();
 	cslmap = new csl.Map();
-    if (!!slplus.use_sensor) {
+
+    if (slplus.use_sensor) {
         sensor = new csl.LocationServices();
         sensor.currentLocation(function(loc) {
-            cslmap.usingSensor = true;
+            //cslmap.usingSensor = true;
             cslmap.__buildMap(new google.maps.LatLng(loc.coords.latitude, loc.coords.longitude));
         },
         function(error) {
