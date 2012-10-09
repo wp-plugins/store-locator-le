@@ -21,6 +21,14 @@
                 //
                 echo '<p class="slp_admin_info"><strong>'.__('Initial Look and Feel',SLPLUS_PREFIX).'</strong></p>';
                 echo '<p>'.sprintf($slplus_message,$slplus_plugin->purchase_url,'Pro Pack').'</p>';
+
+                echo CreateCheckboxDiv(
+                    '_force_load_js',
+                    __('Force Load JavaScript',SLPLUS_PREFIX),
+                    __('Force the JavaScript for Store Locator Plus to load on every page. ' .
+                    'This can slow down your site, but is compatible with more themes and plugins.', SLPLUS_PREFIX)
+                    );
+
                 echo CreateCheckboxDiv(
                         'sl_load_locations_default',
                         __('Immediately Show Locations', SLPLUS_PREFIX),

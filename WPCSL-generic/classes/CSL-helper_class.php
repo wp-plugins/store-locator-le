@@ -1,23 +1,50 @@
 <?php
+/**
+ * Helper, non-critical methods to make WordPress plugins easier to manage.
+ *
+ * Mostly does things like execute and output PHP files as strings or direct
+ * output to the "screen" to facilitate PHP template files.  More will come
+ * over time.
+ *
+ * @author Lance Cleveland <lance@lancecleveland.com>
+ * @copyright (c) 2012, Lance Cleveland
+ *
+ * @since 2.0.0
+ * @version 2.0.13
+ *
+ * @package wpCSL
+ * @subpackage wpCSL_helper
+ */
 
-/***********************************************************************
-* Class: wpCSL_helper
-*
-* Contains various helper, but non-critical methods to assist in making
-* WordPress Plugins easier to build.
-*
-************************************************************************/
 
 class wpCSL_helper__slplus {
 
-    /**************************************
-     ** method: get_string_from_phpexec()
-     ** 
-     ** Executes the included php (or html) file and returns the output as a string.
-     **
-     ** Parameters:
-     **  $file (string, required) - name of the file 
-     **/
+    /**
+     *
+     * @param type $params
+     */
+    function __construct($params=null) {
+
+        // Defaults
+        //
+
+        // Set by incoming parameters
+        //
+        foreach ($params as $name => $value) {
+            $this->$name = $value;
+        }
+
+        // Override incoming parameters
+
+    }
+
+
+    /**
+     * Executes the included php (or html) file and returns the output as a string.
+     *
+     * Parameters:
+     * @param string $file - required fully qualified file name
+     */
     function get_string_from_phpexec($file) {
         if (file_exists($file)) {
             ob_start();
@@ -30,34 +57,38 @@ class wpCSL_helper__slplus {
     
     
      
-    /**************************************
-     ** method: execute_and_output_template()
-     ** 
-     ** Executes the included php (or html) file and prints out the results.
-     ** Makes for easy include templates that depend on processing logic to be
-     ** dumped mid-stream into a WordPress page.  A plugin in a plugin sorta.
-     **
-     ** Parameters:
-     **  $file (string, required) - name of the file in the plugin/templates dir
-     **/
-    function execute_and_output_template($file) {
-        $file = SLPLUS_PLUGINDIR.'/templates/'.$file;
-        print get_string_from_phpexec($file);
+    /**
+     *
+     * Executes the a php file in ./templates/ file and prints out the results.
+     *
+     * Makes for easy include templates that depend on processing logic to be
+     * dumped mid-stream into a WordPress page. 
+     *
+     * @param string $file - required file name in the ./templates directory
+     * @param type $dir - optional directory path, defaults to plugin_dir_path
+     */
+    function execute_and_output_template($file,$dir=null) {
+        if ($dir == null) {
+            $dir = $this->parent->plugin_path;
+        }
+        print $this->get_string_from_phpexec($dir.'templates/'.$file);
     }
     
     
     
-    /**************************************
-     ** method: convert_text_to_html
-     ** 
-     ** Convert text in the WP readme file format (wiki markup) to basic HTML
-     **
-     ** Parameters:
-     **  $file (string, required) - name of the file in the plugin dir
-     **/
-    function convert_text_to_html($file='readme.txt') {
+    /**
+     * Convert text in the WP readme file format (wiki markup) to basic HTML
+     *
+     * Parameters:
+     * @param string $file - optional name of the file in the plugin dir defaults to readme.txt
+     * @param type $dir - optional directory path, defaults to plugin_dir_path
+     */
+    function convert_text_to_html($file='readme.txt',$dir=null) {
+        if ($dir == null) {
+            $dir = $this->parent->plugin_path;
+        }
         ob_start();
-        include(SLPLUS_PLUGINDIR.$file);
+        include($dir.$file);
         $content=ob_get_contents();
         ob_end_clean();
         $content=ereg_replace("\=\=\= ", "<h2>", $content);
@@ -69,5 +100,51 @@ class wpCSL_helper__slplus {
         $content=do_hyperlink($content);
         return nl2br($content);
     }    
+
+
+
+    /**
+     * function: SavePostToOptionsTable
+     */
+    function SavePostToOptionsTable($optionname,$default=null) {
+        if ($default != null) {
+            if (!isset($_POST[$optionname])) {
+                $_POST[$optionname] = $default;
+            }
+        }
+        if (isset($_POST[$optionname])) {
+            update_option($optionname,$_POST[$optionname]);
+        }
+    }
+
+    /**************************************
+     ** function: SaveCheckboxToDB
+     **
+     ** Update the checkbox setting in the database.
+     **
+     ** Parameters:
+     **  $boxname (string, required) - the name of the checkbox (db option name)
+     **  $prefix (string, optional) - defaults to SLPLUS_PREFIX, can be ''
+     **/
+    function SaveCheckboxToDB($boxname,$prefix = null, $separator='-') {
+        if ($prefix === null) { $prefix = $this->parent->prefix; }
+        $whichbox = $prefix.$separator.$boxname;
+        $_POST[$whichbox] = isset($_POST[$whichbox])?1:0;
+        $this->SavePostToOptionsTable($whichbox,0);
+    }
+
+    /**
+     * Saves a textbox from an option input form to the options table.
+     *
+     * @param string $boxname - base name of the option
+     * @param string $prefix - the plugin prefix
+     * @param string $separator - the separator char
+     */
+    function SaveTextboxToDB($boxname,$prefix = null, $separator='-') {
+        if ($prefix === null) { $prefix = $this->parent->prefix; }
+        $whichbox = $prefix.$separator.$boxname;
+        $this->SavePostToOptionsTable($whichbox);
+    }
+
 
 }

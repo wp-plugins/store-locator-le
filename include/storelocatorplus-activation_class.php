@@ -1,4 +1,10 @@
 <?php
+/**
+ * Activate Class
+ * 
+ * Mostly handles data structure changes.  
+ * Update the plugin version in config.php on every structure change.
+ */
 
 if (! class_exists('SLPlus_Activate')) {
     class SLPlus_Activate {
@@ -6,6 +12,8 @@ if (! class_exists('SLPlus_Activate')) {
         /******************************
          * PUBLIC PROPERTIES & METHODS
          ******************************/
+
+        public  $db_version_on_start = '';
         
         /*************************************
          * The Constructor
@@ -13,13 +21,15 @@ if (! class_exists('SLPlus_Activate')) {
         function __construct($params = null) {
             // Do the setting override or initial settings.
             //
-            foreach ($params as $name => $sl_value) {
-                $this->$name = $sl_value;
+            if ($params != null) {
+                foreach ($params as $name => $sl_value) {
+                    $this->$name = $sl_value;
+                }
             }
         } 
         
         /***********************************
-         ** function: slplus_dbupdater
+         ** function: dbupdater
          ** 
          ** Update the data structures on new db versions.
          **
@@ -42,9 +52,15 @@ if (! class_exists('SLPlus_Activate')) {
                 return 'updated';    
             }   
         }
-        
+
         /*************************************
          * Update main table
+         *
+         * As of version 3.5, use sl_option_value to store serialized options
+         * related to a single location.
+         *
+         * Update the plugin version in config.php on every structure change.
+         *
          */
         function install_main_table() {
             global $wpdb;
@@ -79,6 +95,7 @@ if (! class_exists('SLPlus_Activate')) {
                     sl_linked_postid int NULL,
                     sl_pages_url varchar(255) NULL,
                     sl_pages_on varchar(1) NULL,
+                    sl_option_value longtext NULL,
                     sl_lastupdated  timestamp NOT NULL default current_timestamp,			
                     PRIMARY KEY  (sl_id),
                     INDEX (sl_store),
@@ -91,16 +108,14 @@ if (! class_exists('SLPlus_Activate')) {
             // If we updated an existing DB, do some mods to the data
             //
             if ($this->dbupdater($sql,$table_name) === 'updated') {
-                global $sl_installed_ver;
-                
                 // We are upgrading from something less than 2.0
                 //
-                if (floatval($sl_installed_ver) < 2.0) {
+                if (floatval($this->db_version_on_start) < 2.0) {
                     dbDelta("UPDATE $table_name SET sl_lastupdated=current_timestamp " . 
                         "WHERE sl_lastupdated < '2011-06-01'"
                         );
                 }   
-                if (floatval($sl_installed_ver) < 2.2) {
+                if (floatval($this->db_version_on_start) < 2.2) {
                     dbDelta("ALTER $table_name MODIFY sl_description text ");
                 }
             }         
@@ -130,10 +145,11 @@ if (! class_exists('SLPlus_Activate')) {
         
         /*************************************
          * Install reporting tables
+         *
+         * Update the plugin version in config.php on every structure change.
          */
         function install_reporting_tables() {
             global $wpdb;
-
     
             $charset_collate = '';
             if ( ! empty($wpdb->charset) )
@@ -141,10 +157,8 @@ if (! class_exists('SLPlus_Activate')) {
             if ( ! empty($wpdb->collate) )
                 $charset_collate .= " COLLATE $wpdb->collate";
 
-            //*****
-            //***** CHANGE sl_db_version IN slplus_dbupdater() 
-            //***** ANYTIME YOU CHANGE THIS STRUCTURE
-            //*****		
+            // Reporting: Queries
+            //
             $table_name = $wpdb->prefix . "slp_rep_query";
             $sql = "CREATE TABLE $table_name (
                     slp_repq_id    bigint(20) unsigned NOT NULL auto_increment,
@@ -161,10 +175,9 @@ if (! class_exists('SLPlus_Activate')) {
             $this->dbupdater($sql,$table_name);	
             
 
-            //*****
-            //***** CHANGE sl_db_version IN slplus_dbupdater() 
-            //***** ANYTIME YOU CHANGE THIS STRUCTURE
-            //*****		
+
+            // Reporting: Query Results
+            //
             $table_name = $wpdb->prefix . "slp_rep_query_results";
             $sql = "CREATE TABLE $table_name (
                     slp_repqr_id    bigint(20) unsigned NOT NULL auto_increment,
@@ -178,7 +191,7 @@ if (! class_exists('SLPlus_Activate')) {
 
             // Install or Update the slp_rep_query_results table
             //
-            $slplusNewOrUpdated = $this->dbupdater($sql,$table_name);     
+            $this->dbupdater($sql,$table_name);     
         }
         
         /*************************************
@@ -217,12 +230,54 @@ if (! class_exists('SLPlus_Activate')) {
         /*************************************
          * Updates the plugin
          */
-        function update($slplus_plugin, $old_version) {
-            $updater = new SLPlus_Activate(array(
-                'plugin' => $slplus_plugin,
-                'old_version' => $old_version,
-            ));
-            
+        function update($slplus_plugin=null, $old_version=null) {
+
+            // Called As Namespace
+            //
+            if ($slplus_plugin!=null) {
+                $updater = new SLPlus_Activate(array(
+                    'plugin' => $slplus_plugin,
+                    'old_version' => $old_version,
+                ));
+
+            // Called as object method
+            } else {
+                $updater = $this;
+            }
+
+            // Set our starting version
+            //
+            $updater->db_version_on_start = get_option( SLPLUS_PREFIX."-db_version" );
+
+            // New Installation
+            //
+            if ($updater->db_version_on_start === '') {
+                add_option(SLPLUS_PREFIX."-db_version", $updater->plugin->version);
+
+            // Updating previous install
+            //
+            } else {
+
+                // Change Pro Pack license info to new SKU
+                //
+                if (get_option(SLPLUS_PREFIX.'-SLPLUS-PRO-lk','') == '') {
+                    update_option(SLPLUS_PREFIX.'-SLPLUS-PRO-lk',get_option(SLPLUS_PREFIX.'-SLPLUS-lk',''));
+                    update_option(SLPLUS_PREFIX.'-SLPLUS-PRO-isenabled',get_option(SLPLUS_PREFIX.'-SLPLUS-isenabled',''));
+                }
+
+                // Change Pages license info to new SKU
+                //
+                if (get_option(SLPLUS_PREFIX.'-SLPLUS-PAGES-lk','') == '') {
+                    update_option(SLPLUS_PREFIX.'-SLPLUS-PAGES-isenabled',get_option(SLPLUS_PREFIX.'-SLP-PAGES-isenabled',''));
+                }
+
+                update_option(SLPLUS_PREFIX."-db_version", $updater->plugin->version);
+            }
+            update_option(SLPLUS_PREFIX.'-theme_lastupdated','2006-10-05');
+
+
+            // Update Tables, Setup Roles, Move Directories
+            //
             $updater->install_main_table();
             $updater->install_reporting_tables();
             $updater->add_splus_roles_and_caps();

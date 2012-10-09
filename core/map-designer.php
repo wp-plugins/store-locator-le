@@ -156,9 +156,8 @@ function CreateTextAreaDiv($boxname,$label='',$msg='',$prefix=SLPLUS_PREFIX, $de
 // Main Processing
 //===========================================================================
 if (!$_POST) {
-    move_upload_directories();
+    $slplus_plugin->Activate->move_upload_directories();
     $update_msg ='';
-    
 } else {
     $sl_google_map_arr=explode(":", $_POST['google_map_domain']);
     update_option('sl_google_map_country', $sl_google_map_arr[0]);
@@ -246,6 +245,7 @@ if (!$_POST) {
         'hide_address_entry',
         'disable_search',
 		'show_search_by_name',
+        'use_email_form',
         'use_location_sensor'
         );
     foreach ($BoxesToHit as $JustAnotherBox) {        

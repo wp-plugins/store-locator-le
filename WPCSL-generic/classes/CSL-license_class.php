@@ -311,9 +311,11 @@ class wpCSL_license_package__slplus {
         // required settings.
         if (!$this->isenabled) {
 
-            $this->parent->check_license_key($this->sku, false, get_option($this->lk_option_name));
-            $this->isenabled = get_option($this->enabled_option_name);
-            $this->active_version =  get_option($this->prefix.'-'.$this->sku.'-latest-version-numeric');             
+            // License is OK - mark it as such
+            //
+            $this->isenabled = $this->parent->check_license_key($this->sku, false, get_option($this->lk_option_name));
+            update_option($this->enabled_option_name,$this->isenabled);
+            $this->active_version =  get_option($this->prefix.'-'.$this->sku.'-latest-version-numeric');
         }
 
         // Attempt to register the parent if we have one
