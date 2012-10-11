@@ -41,7 +41,7 @@ if (defined('SLPLUS_PLUGINDIR')) {
             'admin_slugs'           => array('slp_general_settings'),
 
             'on_update' => array('SLPlus_Activate', 'update'),
-            'version' => '3.2',
+            'version' => '3.5',
 
             'url'                   => 'http://www.charlestonsw.com/product/store-locator-plus-2/',            
             'support_url'            => 'http://www.charlestonsw.com/support/documentation/store-locator-plus/',
@@ -93,15 +93,17 @@ function configure_slplus_propack() {
    
     // Setup metadata
     //
+    $myPurl = 'http://www.charlestonsw.com/product/store-locator-plus/';
     $slplus_plugin->license->add_licensed_package(
             array(
                 'name'              => 'Pro Pack',
                 'help_text'         => 'A variety of enhancements are provided with this package.  ' .
-                                       'See the <a href="'.$slplus_plugin->purchase_url.'" target="newinfo">product page</a> for details.  If you purchased this add-on ' .
+                                       'See the <a href="'.$myPurl.'" target="newinfo">product page</a> for details.  If you purchased this add-on ' .
                                        'come back to this page to enter the license key to activate the new features.',
                 'sku'               => 'SLPLUS-PRO',
                 'paypal_button_id'  => '59YT3GAJ7W922',
-                'paypal_upgrade_button_id' => '59YT3GAJ7W922'
+                'paypal_upgrade_button_id' => '59YT3GAJ7W922',
+                'purchase_url'      => $myPurl
             )
         );
     
@@ -128,15 +130,17 @@ function configure_slplus_storepages() {
    
     // Setup metadata
     //
+    $myPurl = 'http://www.charlestonsw.com/product/store-locator-plus-store-pages/';
     $slplus_plugin->license->add_licensed_package(
             array(
                 'name'              => 'Store Pages',
                 'help_text'         => 'Create individual WordPress pages from your locations data. Great for SEO.  ' .
-                                       'See the <a href="'.$slplus_plugin->purchase_url.'" target="newinfo">product page</a> for details.  If you purchased this add-on ' .
+                                       'See the <a href="'.$myPurl.'" target="newinfo">product page</a> for details.  If you purchased this add-on ' .
                                        'come back to this page to enter the license key to activate the new features.',
                 'sku'               => 'SLPLUS-PAGES',
                 'paypal_button_id'  => 'CT449P2ZH454E',
-                'paypal_upgrade_button_id' => 'CT449P2ZH454E'
+                'paypal_upgrade_button_id' => 'CT449P2ZH454E',
+                'purchase_url'      => $myPurl
             )
         );
 }

@@ -91,8 +91,7 @@ $this->ex('<?php
 	
 	//Since miles is default, if kilometers is selected, divide by 1.609344 in order to convert the kilometer value selection back in miles when generating the XML
 	//
-	$multiplier=3959;
-	$multiplier=($units=="km")? ($multiplier*1.609344) : $multiplier;
+	$multiplier=($units=="km")? 6371 : 3959;
 
 	$option[$prefix_maxreturned]=(trim($max_returned)!="")? 
     $max_returned : 
