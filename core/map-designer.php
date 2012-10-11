@@ -68,7 +68,7 @@ function SaveCheckboxToDB($boxname,$prefix = SLPLUS_PREFIX, $separator='-') {
  **  $message (string, optional) - default '', the help message 
  **  $prefix (string, optional) - defaults to SLPLUS_PREFIX, can be ''  
  **/
-function CreateCheckboxDiv($boxname,$label='',$msg='',$prefix=SLPLUS_PREFIX, $disabled=false) {
+function CreateCheckboxDiv($boxname,$label='',$msg='',$prefix=SLPLUS_PREFIX, $disabled=false, $default=0) {
     $whichbox = $prefix.$boxname; 
     return 
         "<div class='form_entry'>".
@@ -78,7 +78,7 @@ function CreateCheckboxDiv($boxname,$label='',$msg='',$prefix=SLPLUS_PREFIX, $di
                 ">$label:</label>".
             "<input name='$whichbox' value='1' ".
                 "type='checkbox' ".
-                ((get_option($whichbox) ==1)?' checked ':' ').
+                ((get_option($whichbox,$default) ==1)?' checked ':' ').
                 ($disabled?"disabled='disabled'":' ') .
             ">".
             "</div>".
@@ -156,7 +156,9 @@ function CreateTextAreaDiv($boxname,$label='',$msg='',$prefix=SLPLUS_PREFIX, $de
 // Main Processing
 //===========================================================================
 if (!$_POST) {
-    $slplus_plugin->Activate->move_upload_directories();
+    if (is_a($slplus_plugin->Activate,'SLPlus_Activate')) {
+        $slplus_plugin->Activate->move_upload_directories();
+    }
     $update_msg ='';
 } else {
     $sl_google_map_arr=explode(":", $_POST['google_map_domain']);
@@ -218,6 +220,7 @@ if (!$_POST) {
     // Checkboxes with custom names
     //
     $BoxesToHit = array(
+        SLPLUS_PREFIX.'-force_load_js',
         'sl_use_city_search',
         'sl_use_country_search',
         'sl_load_locations_default',

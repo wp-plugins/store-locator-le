@@ -329,6 +329,9 @@ input#bulk_file {
     border: 1px solid #DDDDDD;
     color: #888888;     
  }
+ tr#slp_location_edit_row td.slp_location_edit_cell {
+     border: 3px dashed #999999;
+ }
 
 /***************************
  * Settings: Map

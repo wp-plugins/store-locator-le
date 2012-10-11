@@ -203,7 +203,44 @@ if (! class_exists('SLPlus_Activate')) {
                 $role->add_cap('manage_slp');
             }
         }
-        
+
+
+        /************************************************************
+         * Copy a file, or recursively copy a folder and its contents
+         */
+        function copyr($source, $dest) {
+            // Check for symlinks
+            if (is_link($source)) {
+                return symlink(readlink($source), $dest);
+            }
+
+            // Simple copy for a file
+            if (is_file($source)) {
+                return copy($source, $dest);
+            }
+
+            // Make destination directory
+            if (!is_dir($dest)) {
+                mkdir($dest, 0755);
+            }
+
+            // Loop through the folder
+            $dir = dir($source);
+            while (false !== $entry = $dir->read()) {
+                // Skip pointers
+                if ($entry == '.' || $entry == '..') {
+                    continue;
+                }
+
+                // Deep copy directories
+                $this->copyr("$source/$entry", "$dest/$entry");
+            }
+
+            // Clean up
+            $dir->close();
+            return true;
+        }
+
         /*************************************
          * Move upload directories
          */
@@ -220,10 +257,10 @@ if (! class_exists('SLPlus_Activate')) {
                 mkdir($sl_upload_path . "/custom-icons", 0755);
             }	
             if (is_dir($sl_path . "/languages") && !is_dir($sl_upload_path . "/languages")) {
-                csl_copyr($sl_path . "/languages", $sl_upload_path . "/languages");
+                $thiss->copyr($sl_path . "/languages", $sl_upload_path . "/languages");
             }
             if (is_dir($sl_path . "/images") && !is_dir($sl_upload_path . "/images")) {
-                csl_copyr($sl_path . "/images", $sl_upload_path . "/images");
+                $this->copyr($sl_path . "/images", $sl_upload_path . "/images");
             }
         }
         

@@ -54,6 +54,18 @@ if ($_POST                                                  &&
     (isset($_GET['edit']) && $_GET['edit'])                 &&
     (!isset($_POST['act']) || (isset($_POST['act']) && ($_POST['act']!="delete"))) 
     ) {
+
+    // Get our original address first
+    //
+    $old_address=$wpdb->get_results("SELECT * FROM ".$wpdb->prefix."store_locator WHERE sl_id=$_GET[edit]", ARRAY_A);
+    if (!isset($old_address[0]['sl_address']))  { $old_address[0]['sl_address'] = '';   }
+    if (!isset($old_address[0]['sl_address2'])) { $old_address[0]['sl_address2'] = '';  }
+    if (!isset($old_address[0]['sl_city'])) 	{ $old_address[0]['sl_city'] = ''; 	    }
+    if (!isset($old_address[0]['sl_state'])) 	{ $old_address[0]['sl_state'] = ''; 	}
+    if (!isset($old_address[0]['sl_zip'])) 	    { $old_address[0]['sl_zip'] = ''; 		}
+
+    // Update The Location Data
+    //
     $field_value_str = '';
     foreach ($_POST as $key=>$sl_value) {
         if (ereg("\-$_GET[edit]", $key)) {
@@ -68,18 +80,13 @@ if ($_POST                                                  &&
         }
     }
     $field_value_str=substr($field_value_str, 0, strlen($field_value_str)-2);
-    $edit=$_GET['edit'];
+    $field_value_str = apply_filters('slp_update_location_data',$field_value_str,$_GET['edit']);
+    $wpdb->query("UPDATE ".$wpdb->prefix."store_locator SET $field_value_str WHERE sl_id=$_GET[edit]");
+    
+    // Check our address
+    //
     extract($_POST);
     $the_address="$address $address2, $city, $state $zip";
-
-    $old_address=$wpdb->get_results("SELECT * FROM ".$wpdb->prefix."store_locator WHERE sl_id=$_GET[edit]", ARRAY_A);
-    $wpdb->query("UPDATE ".$wpdb->prefix."store_locator SET $field_value_str WHERE sl_id=$_GET[edit]");
-
-    if (!isset($old_address[0]['sl_address']))  { $old_address[0]['sl_address'] = '';   } 
-    if (!isset($old_address[0]['sl_address2'])) { $old_address[0]['sl_address2'] = '';  } 
-    if (!isset($old_address[0]['sl_city'])) 	{ $old_address[0]['sl_city'] = ''; 	    } 
-    if (!isset($old_address[0]['sl_state'])) 	{ $old_address[0]['sl_state'] = ''; 	} 
-    if (!isset($old_address[0]['sl_zip'])) 	    { $old_address[0]['sl_zip'] = ''; 		} 
 
     // RE-geocode if the address changed
     // or if the lat/long is not set
@@ -93,6 +100,8 @@ if ($_POST                                                  &&
         do_geocoding($the_address,$_GET['edit']);
     }
 
+    // Redirect to the edit page
+    //
     print "<script>location.replace('".ereg_replace("&edit=$_GET[edit]", "",
                 $_SERVER['REQUEST_URI'])."');</script>";
 }
@@ -446,14 +455,12 @@ if ($slpLocations=$wpdb->get_results(
         // Show the edit form in a new row for the location that was selected.
         //
         if (isset($_GET['edit']) && ($locID==$_GET['edit'])) {
-            print "<tr style='background-color:$bgcol'>";
-            $colspan=(get_option('sl_location_table_view')!="Normal")? 	12 : 18;	
-            if ($slplus_plugin->license->packages['Store Pages']->isenabled) { $colspan++; }	            
-
-            print "<td colspan='$colspan'><form name='manualAddForm' method=post>
+            print "<tr id='slp_location_edit_row' style='background-color:$bgcol'>";
+            print "<td class='slp_location_edit_cell' colspan='".(count($slpManageColumns)+4)."'>
+            <form name='manualAddForm' method=post>
             <a name='a".$locID."'></a>
             <table cellpadding='0' class='manual_update_table'>
-            <!--thead><tr><td>".__("Type&nbsp;Address", SLPLUS_PREFIX)."</td></tr></thead-->
+            <!--thead><tr><td id='slp_manual_update_table_left_cell'>".__("Type&nbsp;Address", SLPLUS_PREFIX)."</td></tr></thead-->
             <tr>
                 <td valign='top'>";
 
@@ -472,15 +479,19 @@ if ($slpLocations=$wpdb->get_results(
                 $slpEditForm .= "<label for='store_page'>Store Page</label><a href='$sl_value[sl_pages_url]' target='cybersprocket'>$shortSPurl</a><br/>";
             }
 
-            $slpEditForm .= "<br><nobr><input type='submit' value='".__("Update", SLPLUS_PREFIX)."' class='button-primary'><input type='button' class='button' value='".__("Cancel", SLPLUS_PREFIX)."' onclick='location.href=\"".ereg_replace("&edit=$_GET[edit]", "",$_SERVER['REQUEST_URI'])."\"'></nobr>";
+            $slpEditForm .= "<br><nobr>".
+                    "<input type='submit' value='".__("Update", SLPLUS_PREFIX)."' class='button-primary'>".
+                    "<input type='button' class='button' value='".__("Cancel", SLPLUS_PREFIX)."' onclick='location.href=\"".ereg_replace("&edit=$_GET[edit]", "",$_SERVER['REQUEST_URI'])."\"'>".
+                    "<input type='hidden' name='option_value-$locID' value='$sl_value[sl_option_value]' />" .
+                    "</nobr>";
             print apply_filters('slp_edit_location_left_column',$slpEditForm);
             print "</td>";
 
 
-            print "<td>";
+            print "<td id='slp_manual_update_table_right_cell'>";
             $slpEditForm =
                     "<div id='slp_edit_right_column'>" .
-                    "<b>".__("Additional Information", SLPLUS_PREFIX)."</b><br>
+                    "<strong>".__("Additional Information", SLPLUS_PREFIX)."</strong><br>
                     <textarea name='description-$locID' rows='5' cols='17'>$sl_value[sl_description]</textarea>&nbsp;<small>".__("Description", SLPLUS_PREFIX)."</small><br>
                     <input name='tags-$locID' value='$sl_value[sl_tags]'>&nbsp;<small>"  .__("Tags (seperate with commas)", SLPLUS_PREFIX)."</small><br>		
                     <input name='url-$locID'  value='$sl_value[sl_url]'>&nbsp;<small>"   .__("URL", SLPLUS_PREFIX)."</small><br>
@@ -546,7 +557,7 @@ if ($slpLocations=$wpdb->get_results(
             // Data Columns
             //
             foreach ($slpManageColumns as $slpField => $slpLabel) {
-                print '<td>' . $sl_value[$slpField] . '</td>';
+                print '<td>' . apply_filters('slp_column_data',$sl_value[$slpField], $slpField, $slpLabel) . '</td>';
             }
 
             // Lat/Long Columns

@@ -23,10 +23,13 @@
                 echo '<p>'.sprintf($slplus_message,$slplus_plugin->purchase_url,'Pro Pack').'</p>';
 
                 echo CreateCheckboxDiv(
-                    '_force_load_js',
+                    '-force_load_js',
                     __('Force Load JavaScript',SLPLUS_PREFIX),
-                    __('Force the JavaScript for Store Locator Plus to load on every page. ' .
-                    'This can slow down your site, but is compatible with more themes and plugins.', SLPLUS_PREFIX)
+                    __('Force the JavaScript for Store Locator Plus to load on every page with early loading. ' .
+                    'This can slow down your site, but is compatible with more themes and plugins.', SLPLUS_PREFIX),
+                    SLPLUS_PREFIX,
+                    false,
+                    1
                     );
 
                 echo CreateCheckboxDiv(
@@ -76,7 +79,7 @@
                 //
                 if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
                         echo CreateTextAreaDiv(
-                                '_map_center',
+                                SLPLUS_PREFIX.'_map_center',
                                 __('Center Map At',SLPLUS_PREFIX),
                                 __('Enter an address to serve as the initial focus for the map. Default is the center of the country.',SLPLUS_PREFIX),
                                 ''
