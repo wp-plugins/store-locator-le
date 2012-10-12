@@ -21,30 +21,39 @@ $map_character_encoding=(get_option('sl_map_character_encoding')!="")?
 $sl_upload_base=get_option('siteurl')."/wp-content/uploads/sl-uploads"; //URL to store locator uploads directory
  
  
-
-/* -----------------*/
-function move_upload_directories() {
-	global $sl_upload_path, $sl_path;
-	
-	if (!is_dir(ABSPATH . "wp-content/uploads")) {
-		mkdir(ABSPATH . "wp-content/uploads", 0755);
-	}
-	if (!is_dir($sl_upload_path)) {
-		mkdir($sl_upload_path, 0755);
-	}
-	if (!is_dir($sl_upload_path . "/custom-icons")) {
-		mkdir($sl_upload_path . "/custom-icons", 0755);
-	}	
-	if (is_dir($sl_path . "/languages") && !is_dir($sl_upload_path . "/languages")) {
-		csl_copyr($sl_path . "/languages", $sl_upload_path . "/languages");
-	}
-	if (is_dir($sl_path . "/images") && !is_dir($sl_upload_path . "/images")) {
-		csl_copyr($sl_path . "/images", $sl_upload_path . "/images");
-	}
-}
-
-/*-----------------*/
-
+/**
+ * 
+ * @global type $sl_height
+ * @global type $sl_width
+ * @global type $sl_width_units
+ * @global type $sl_height_units
+ * @global type $cl_icon
+ * @global type $cl_icon2
+ * @global type $sl_google_map_domain
+ * @global type $sl_google_map_country
+ * @global type $sl_theme
+ * @global string $sl_base
+ * @global string $sl_upload_base
+ * @global type $sl_location_table_view
+ * @global type $sl_search_label
+ * @global type $sl_zoom_level
+ * @global type $sl_zoom_tweak
+ * @global type $sl_use_city_search
+ * @global type $sl_use_name_search
+ * @global type $sl_default_map
+ * @global type $sl_radius_label
+ * @global type $sl_website_label
+ * @global type $sl_num_initial_displayed
+ * @global type $sl_load_locations_default
+ * @global type $sl_distance_unit
+ * @global type $sl_map_overview_control
+ * @global type $sl_admin_locations_per_page
+ * @global type $sl_instruction_message
+ * @global type $sl_map_character_encoding
+ * @global type $sl_use_country_search
+ * @global type $slplus_show_state_pd
+ * @global string $slplus_name_label
+ */
 function initialize_variables() {
     global $sl_height, $sl_width, $sl_width_units, $sl_height_units;
     global $cl_icon, $cl_icon2, $sl_google_map_domain, $sl_google_map_country, $sl_theme, $sl_base, $sl_upload_base, $sl_location_table_view;
@@ -199,10 +208,13 @@ function initialize_variables() {
         }	
 }
 
-
-
-
-/*----------------------------*/
+/**
+ *
+ * @global type $wpdb
+ * @global type $slplus_plugin
+ * @param type $address
+ * @param type $sl_id
+ */
 function do_geocoding($address,$sl_id='') {    
     global $wpdb, $slplus_plugin;    
     
@@ -353,185 +365,6 @@ function do_geocoding($address,$sl_id='') {
     }
 }    
 
-
-/***********************************
- ** Run install/update activation routines
- **
- ** [LE/PLUS]
- **/
-
-function activate_slplus() {
-    global $slplus_plugin;
-    
-   
-    // Data Updates
-    //
-    global $sl_db_version, $sl_installed_ver;
-	$sl_db_version='3.1';     //***** CHANGE THIS ON EVERY STRUCT CHANGE
-    $sl_installed_ver = get_option( SLPLUS_PREFIX."-db_version" );
-
-	install_main_table();
-	if (function_exists('install_reporting_tables')) {
-	    install_reporting_tables();
-    }
-    
-    // Update the version
-    //
-    if ($sl_installed_ver == '') {
-        add_option(SLPLUS_PREFIX."-db_version", $sl_db_version);
-    } else {
-        
-        // Change Pro Pack license info to new SKU
-        //
-        if (get_option(SLPLUS_PREFIX.'-SLPLUS-PRO-lk','') == '') {
-            update_option(SLPLUS_PREFIX.'-SLPLUS-PRO-lk',get_option(SLPLUS_PREFIX.'-SLPLUS-lk',''));
-            update_option(SLPLUS_PREFIX.'-SLPLUS-PRO-isenabled',get_option(SLPLUS_PREFIX.'-SLPLUS-isenabled',''));
-        }
-
-        // Change Pages license info to new SKU
-        //
-        if (get_option(SLPLUS_PREFIX.'-SLPLUS-PAGES-lk','') == '') {
-            update_option(SLPLUS_PREFIX.'-SLPLUS-PAGES-isenabled',get_option(SLPLUS_PREFIX.'-SLP-PAGES-isenabled',''));
-        }
-
-        update_option(SLPLUS_PREFIX."-db_version", $sl_db_version);
-    }
-    
-
-    // Roles
-    //
-    if (function_exists('add_slplus_roles_and_caps')) {
-        add_slplus_roles_and_caps();
-    }      
-    
-    // Themes Cleaning
-    //
-    update_option($slplus_plugin->prefix.'-theme_lastupdated','2006-10-05');
-
-	move_upload_directories();
-}
-
-
-/***********************************
- ** function: install_main_table
- **
- ** Install/update the main locations table.
- **
- **/
-function install_main_table() {
-	global $wpdb, $sl_installed_ver;
-    
-	
-	//*****
-	//***** CHANGE sl_db_version IN activate_slplus() 
-	//***** ANYTIME YOU CHANGE THIS STRUCTURE
-	//*****	
-	$charset_collate = '';
-    if ( ! empty($wpdb->charset) )
-        $charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
-    if ( ! empty($wpdb->collate) )
-        $charset_collate .= " COLLATE $wpdb->collate";	
-	$table_name = $wpdb->prefix . "store_locator";
-	$sql = "CREATE TABLE $table_name (
-			sl_id mediumint(8) unsigned NOT NULL auto_increment,
-			sl_store varchar(255) NULL,
-			sl_address varchar(255) NULL,
-			sl_address2 varchar(255) NULL,
-			sl_city varchar(255) NULL,
-			sl_state varchar(255) NULL,
-			sl_zip varchar(255) NULL,
-			sl_country varchar(255) NULL,
-			sl_latitude varchar(255) NULL,
-			sl_longitude varchar(255) NULL,
-			sl_tags mediumtext NULL,
-			sl_description text NULL,
-			sl_email varchar(255) NULL,
-			sl_url varchar(255) NULL,
-			sl_hours varchar(255) NULL,
-			sl_phone varchar(255) NULL,
-			sl_fax varchar(255) NULL,
-			sl_image varchar(255) NULL,
-			sl_private varchar(1) NULL,
-			sl_neat_title varchar(255) NULL,
-			sl_linked_postid int NULL,
-			sl_pages_url varchar(255) NULL,
-			sl_lastupdated  timestamp NOT NULL default current_timestamp,			
-			PRIMARY KEY  (sl_id),
-			INDEX (sl_store),
-			INDEX (sl_longitude),
-			INDEX (sl_latitude)
-			) 
-			$charset_collate
-			";
-		
-    // If we updated an existing DB, do some mods to the data
-    //
-    if (slplus_dbupdater($sql,$table_name) === 'updated') {
-        
-        // We are upgrading from something less than 2.0
-        //
-	    if (floatval($sl_installed_ver) < 2.0) {
-            dbDelta("UPDATE $table_name SET sl_lastupdated=current_timestamp " . 
-                "WHERE sl_lastupdated < '2011-06-01'"
-                );
-        }   
-	    if (floatval($sl_installed_ver) < 2.2) {
-            dbDelta("ALTER $table_name MODIFY sl_description text ");
-        }
-    }         
-	
-	//set up google maps v3
-	if (floatval($sl_installed_ver) < 3.0) {
-		$old_option = get_option('sl_map_type');
-		$new_option = 'roadmap';
-		switch ($old_option) {
-			case 'G_NORMAL_MAP':
-				$new_option = 'roadmap';
-				break;
-			case 'G_SATELLITE_MAP':
-				$new_option = 'satellite';
-				break;
-			case 'G_HYBRID_MAP':
-				$new_option = 'hybrid';
-				break;
-			case 'G_PHYSICAL_MAP':
-				$new_option = 'terrain';
-				break;
-			default:
-				$new_option = 'roadmap';
-				break;
-		}
-		
-		update_option('sl_map_type', $new_option);
-	}
-}
-
-/***********************************
- ** function: slplus_dbupdater
- ** 
- ** Update the data structures on new db versions.
- **
- **/ 
-function slplus_dbupdater($sql,$table_name) {
-    global $wpdb, $sl_db_version, $sl_installed_ver;
-        
-    // New installation
-    //
-	if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
-		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-		dbDelta($sql);
-		return 'new';
-		
-    // Installation upgrade
-    //
-	} else {        
-        if( $sl_installed_ver != $sl_db_version ) {
-            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-            dbDelta($sql);
-            return 'updated';    
-        }
-    }   
-}
 /**************************************
  ** function: store_locator_shortcode
  **
@@ -708,7 +541,11 @@ function SetMapCenter() {
     return esc_attr(get_option('sl_google_map_country','United States'));    
 }
 
-/*-------------------------------------------------------------*/
+/**
+ *
+ * @param type $a
+ * @return type
+ */
 function comma($a) {
 	$a=ereg_replace('"', "&quot;", $a);
 	$a=ereg_replace("'", "&#39;", $a);
@@ -717,42 +554,5 @@ function comma($a) {
 	$a=ereg_replace(" & ", " &amp; ", $a);
 	return ereg_replace("," ,"&#44;" ,$a);
 	
-}
-
-/************************************************************
- * Copy a file, or recursively copy a folder and its contents
- */
-function csl_copyr($source, $dest)
-{
-    // Check for symlinks
-    if (is_link($source)) {
-        return symlink(readlink($source), $dest);
-    }
-
-    // Simple copy for a file
-    if (is_file($source)) {
-        return copy($source, $dest);
-    }
-
-    // Make destination directory
-    if (!is_dir($dest)) {
-        mkdir($dest, 0755);
-    }
-
-    // Loop through the folder
-    $dir = dir($source);
-    while (false !== $entry = $dir->read()) {
-        // Skip pointers
-        if ($entry == '.' || $entry == '..') {
-            continue;
-        }
-
-        // Deep copy directories
-        csl_copyr("$source/$entry", "$dest/$entry");
-    }
-
-    // Clean up
-    $dir->close();
-    return true;
 }
 

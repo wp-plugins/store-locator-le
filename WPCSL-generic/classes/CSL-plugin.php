@@ -8,7 +8,7 @@
 * share a code libary and reduce code redundancy.
 * 
 ************************************************************************/
-define('WPCSL__slplus__VERSION', '2.0.12');
+define('WPCSL__slplus__VERSION', '2.0.13');
 
 // (LC) 
 // These helper files should only be loaded if needed by the plugin
@@ -227,13 +227,28 @@ class wpCSL_plugin__slplus {
             
         );
 
-        if ($this->cache_obj_name != 'none') {
+        /**
+         * Cache Object Config (if needed)
+         */
+        if  ($this->use_obj_defaults || ($this->cache_obj_name != 'none')) {
             $this->cache_config = array(
                 'prefix' => $this->prefix,
                 'path' => $this->cache_path
             );
-        }            
+        }
+
+        /**
+         * Helper Object Config (if needed)
+         */
+        if  ($this->use_obj_defaults || ($this->helper_obj_name != 'none')) {
+            $this->helper_config = array(
+            'parent'            => $this
+            );
+        }
         
+        /**
+         * License Object Config (if needed)
+         */
         if ($this->has_packages || !$this->no_license) {
             $this->license_config = array(
                 'prefix'        => $this->prefix,
@@ -338,7 +353,7 @@ class wpCSL_plugin__slplus {
             case 'wpCSL_helper__slplus':
             case 'default':
             default:
-                $this->helper = new wpCSL_helper__slplus();
+                $this->helper = new wpCSL_helper__slplus($this->helper_config);
 
         }
     }    
