@@ -539,52 +539,6 @@ var csl = {
                 }
             }
         }
-  	  	
-  	  	/***************************
-  	  	 * function: __geocodeResult
-  	  	 * usage:
-		 * Called when the geocode is complete
-  	  	 * parameters:
-  	  	 * 	results: some usable results (see google api reference)
-  	  	 *		status:  the status of the geocode (ok means g2g)
-  	  	 * returns: none
-  	  	 */
-  	  	this.__geocodeResult = function(results, status) {
-			if (status == 'OK' && results.length > 0)
-  	  	  	{
-				this.debugSearch('building map');
-				
-					this.debugSearch(results[0]);
-				// if the map hasn't been created, then create one
-				if (this.gmap == null)
-				{
-					this.__buildMap(results[0].geometry.location);
-				}
-				//the map has been created so shift the center of the map
-				else {
-					//move the center of the map
-					//this.gmap.panTo(results[0].geometry.location);
-					this.homePoint = results[0].geometry.location;
-					this.homeAdress = results[0].formatted_address;
-					
-					this.addMarkerAtCenter();
-					var tag_to_search_for = this.saneValue('tag_to_search_for', '');
-					//do a search based on settings
-					var radius = this.saneValue('radiusSelect');
-					this.loadMarkers(results[0].geometry.location, radius, tag_to_search_for);
-				}
-				//if the user entered an address, replace it with a formatted one
-				var addressInput = this.saneValue('addressInput','');
-				if (addressInput != '') {
-					addressInput = results[0].formatted_address;
-				}
-  	  	  	} else {
-				//address couldn't be processed, so use the center of the map
-				var tag_to_search_for = this.saneValue('tag_to_search_for', '');
-				var radius = this.saneValue('radiusSelect');
-				this.loadMarkers(null, radius, tag_to_search_for);
-  	  	  	}
-  	  	}
   	  	  
 		/***************************
   	  	 * function: __waitForTileLoad
@@ -822,8 +776,41 @@ var csl = {
 				{
 					'address': this.address
   	  	  	  	},
-  	  	  	  	function (result, status) {							// This is a little complicated, 
-  	  	  	  	_this.__geocodeResult.call(_this, result, status); }	// but it forces the callback to keep its scope
+  	  	  	  	function (results, status) {
+                    if (status == 'OK' && results.length > 0)
+                    {
+                        // if the map hasn't been created, then create one
+                        if (_this.gmap == null)
+                        {
+                            _this.__buildMap(results[0].geometry.location);
+                        }
+                        //the map has been created so shift the center of the map
+                        else {
+                            //move the center of the map
+                            //this.gmap.panTo(results[0].geometry.location);
+                            _this.homePoint = results[0].geometry.location;
+                            _this.homeAdress = results[0].formatted_address;
+
+                            _this.addMarkerAtCenter();
+                            var tag_to_search_for = _this.saneValue('tag_to_search_for', '');
+                            //do a search based on settings
+                            var radius = _this.saneValue('radiusSelect');
+                            this.loadMarkers(results[0].geometry.location, radius, tag_to_search_for);
+                        }
+                        //if the user entered an address, replace it with a formatted one
+                        var addressInput = _this.saneValue('addressInput','');
+                        if (addressInput != '') {
+                            addressInput = results[0].formatted_address;
+                        }
+                    } else {
+                        //address couldn't be processed, so use the center of the map
+                        var tag_to_search_for = _this.saneValue('tag_to_search_for', '');
+                        var radius = _this.saneValue('radiusSelect');
+                        _this.loadMarkers(null, radius, tag_to_search_for);
+                    }
+
+                }
+  	  	  	  	
   	  	  	);
   	  	}
         
@@ -1224,5 +1211,9 @@ function InitializeTheMap() {
  * When the document has been loaded...
  *
  */
-jQuery('#document').ready(InitializeTheMap());
+jQuery('#document').ready(
+function() {
+    InitializeTheMap();
+}
+);
 
