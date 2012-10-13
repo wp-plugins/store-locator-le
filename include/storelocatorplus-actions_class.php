@@ -95,7 +95,7 @@ if (! class_exists('SLPlus_Actions')) {
             );
         
             //-------------------------
-            // Google Communiations
+            // Google Communication
             //-------------------------    
              $this->parent->settings->add_section(
                 array(
@@ -467,6 +467,7 @@ if (! class_exists('SLPlus_Actions')) {
             // Lets get some variables into our script
             //
             $scriptData = array(
+                'core_url'          => SLPLUS_COREURL,
                 'debug_mode'        => (get_option(SLPLUS_PREFIX.'-debugging') == 'on'),
                 'disable_scroll'    => (get_option(SLPLUS_PREFIX.'_disable_scrollwheel')==1),
                 'disable_dir'       => (get_option(SLPLUS_PREFIX.'_disable_initialdirectory' )==1),

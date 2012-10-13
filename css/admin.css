@@ -393,6 +393,30 @@ div.section_column .form_entry {
     width: 100%;
 }
 
+div.slp_icon_row {
+    margin: 6px 3px 24px 150px;
+    overflow: auto;
+    width: 360px;
+    height: 110px;
+}
+
+div.slp_icon_selector_box {
+    border: solid 1px transparent;
+    float: left;
+    min-width: 48px;
+    min-height: 48px;
+    text-align: center;
+}
+div.slp_icon_selector_box:hover {
+    border: solid 1px #AAA;
+    background-color:#FFFFDD;
+}
+img.slp_icon_selector {
+    cursor:pointer;
+    padding:2px;
+    margin: 0px 2px;
+    vertical-align: middle;
+}
 
 /***************************
  * Settings: General
@@ -665,10 +689,10 @@ p.slp_admin_info {
 }
 
 .form-table .input_label {
-    vertical-align: middle;
-    padding: 0px;
-    text-align: right;
     font-weight:bold;
+    padding: 1em 0 0;
+    text-align: right;
+    vertical-align: top;
 }
 
 div#wpbody-content div.wrap div.updated,

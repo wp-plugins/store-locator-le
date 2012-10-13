@@ -325,6 +325,29 @@ class wpCSL_settings__slplus {
         }
     }
 
+    /**
+     * Add a simple checkbox to the settings array.
+     *
+     * @param string $section - slug for the parent section
+     * @param string $label - text to appear before the setting
+     * @param string $fieldID - the option value field
+     * @param string $description - the help text under the more icon expansion
+     * @param boolean $disabled - true if the field is disabled
+     */
+    function add_checkbox($section,$label,$fieldID,$description=null,$disabled=false) {
+        $this->add_item(
+                $section,
+                $label,
+                $fieldID,
+                'checkbox',
+                false,
+                $description,
+                null,
+                null,
+                $disabled
+                );
+    }
+
     /**------------------------------------
      ** Method: register
      ** 

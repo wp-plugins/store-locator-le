@@ -181,7 +181,7 @@ if (!$_POST) {
     }    
     update_option('sl_map_width_units', $_POST['width_units']);
     update_option('sl_map_width', $_POST['width']);
-    
+
     update_option('sl_map_home_icon', $_POST['icon']);
     update_option('sl_map_end_icon', $_POST['icon2']);
 
@@ -333,42 +333,26 @@ $checked3	        = (get_option('sl_remove_credits',0)  ==1)?' checked ':'';
 
 //---- ICONS ----
 $cl_icon_str   =(isset($cl_icon_str)  ?$cl_icon_str  :'');
+$cl_icon_str .= $slplus_plugin->AdminUI->rendorIconSelector('icon','prev');
 $cl_icon2_str  =(isset($cl_icon2_str) ?$cl_icon2_str :'');
-$cl_icon_dir=opendir(SLPLUS_ICONDIR);
 
-// List icons
-while (false !== ($an_icon=readdir($cl_icon_dir))) {
-	if (
-	    (preg_match('/\.(png|gif|jpg)/i', $an_icon) > 0) && 
-	    (preg_match('/shadow\.(png|gif|jpg)/i', $an_icon) <= 0) 
-	    ) {
-		$cl_icon_str.=
-		"<img style='cursor:pointer; padding:2px; margin: 0px 2px;' 
-		     src='".SLPLUS_ICONURL.$an_icon."'
-		     onclick='document.forms[0].icon.value=this.src;document.getElementById(\"prev\").src=this.src;'
-		     onmouseover='style.borderColor=\"red\";' 
-		     onmouseout='style.borderColor=\"white\";'
-		     >";
-	}
-}
 // Custom icon directory?
 if (is_dir($sl_upload_path."/custom-icons/")) {
 	$cl_icon_upload_dir=opendir($sl_upload_path."/custom-icons/");
 	while (false !== ($an_icon=readdir($cl_icon_upload_dir))) {
 		if (!ereg("^\.{1,2}$", $an_icon) && !ereg("shadow", $an_icon) && !ereg("\.db", $an_icon)) {
 			$cl_icon_str.=
-			"<img style='cursor:pointer; padding:2px; margin: 0px 2px;' 
+			"<div class='slp_icon_selector_box'><img class='slp_icon_selector'
 			src='$sl_upload_base/custom-icons/$an_icon' 
 			onclick='document.forms[\"mapDesigner\"].icon.value=this.src;document.getElementById(\"prev\").src=this.src;' 
-			onmouseover='style.borderColor=\"red\";' 
-			onmouseout='style.borderColor=\"white\";'
-			>";
+			></div>";
 		}
 	}
 }
 
 $cl_icon2_str = preg_replace('/\.icon\.value/','.icon2.value',$cl_icon_str);
 $cl_icon2_str = preg_replace('/getElementById\("prev"\)/','getElementById("prev2")',$cl_icon2_str);
+$cl_icon2_str = preg_replace('/getElementById\("icon"\)/','getElementById("icon2")',$cl_icon2_str);
 
 // Icon is the old path, notify them to re-select
 //

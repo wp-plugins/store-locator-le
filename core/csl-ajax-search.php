@@ -5,6 +5,45 @@
  ** Perform a search via ajax
  ***************************************************************************/
 
+/**
+ * Format the result data into a named array.
+ * 
+ * We will later use this to build our JSONP response.
+ * 
+ * @param array $data - the data from the SLP database
+ * @return named array
+ */
+function slp_add_marker($row = null,$type='load') {
+    if ($row == null) {
+        return '';
+    }
+    $marker = array(
+          'name' => esc_attr($row['sl_store']),
+          'address' => esc_attr($row['sl_address']),
+          'address2' => esc_attr($row['sl_address2']),
+          'city' => esc_attr($row['sl_city']),
+          'state' => esc_attr($row['sl_state']),
+          'zip' => esc_attr($row['sl_zip']),
+          'lat' => $row['sl_latitude'],
+          'lng' => $row['sl_longitude'],
+          'description' => html_entity_decode($row['sl_description']),
+          'url' => esc_attr($row['sl_url']),
+          'sl_pages_url' => esc_attr($row['sl_pages_url']),
+          'email' => esc_attr($row['sl_email']),
+          'hours' => esc_attr($row['sl_hours']),
+          'phone' => esc_attr($row['sl_phone']),
+          'fax'   => esc_attr($row['sl_fax']),
+          'image' => esc_attr($row['sl_image']),
+          'distance' => $row['sl_distance'],
+          'tags' => ((get_option(SLPLUS_PREFIX.'_show_tags',0) ==1)? esc_attr($row['sl_tags']) : ''),
+          'data_from' => $type,
+          'option_value' => esc_js($row['sl_option_value']),
+          'id' => $row['sl_id'],
+      );
+
+      $marker = apply_filters('slp_search_results',$marker);
+      return $marker;
+}
 
 /**
  * Handle AJAX request for OnLoad action.
@@ -17,9 +56,7 @@ function csl_ajax_onload() {
 	$password=DB_PASSWORD;
 	$database=DB_NAME;
 	$host=DB_HOST;
-	//include("database-info.php");
 	$dbPrefix = $wpdb->prefix;
-	// Opens a connection to a MySQL server
 	$connection=mysql_connect ($host, $username, $password);
 	if (!$connection) {
 		die (json_encode( array('success' => false, 'response' => 'Not connected : ' . mysql_error())));
@@ -32,9 +69,7 @@ function csl_ajax_onload() {
 	  die (json_encode( array('success' => false, 'response' => 'Can\'t use db : ' . mysql_error())));
 	}
 
-
 	$num_initial_displayed=trim(get_option('sl_num_initial_displayed','25'));
-
 
 	// If tags are passed filter to just those tags
 	//
@@ -73,46 +108,16 @@ function csl_ajax_onload() {
 	if (!$result) {
 	  die('Invalid query: ' . mysql_error());
 	}
-
-	$response = array();
     
-	// Show Tags
-	//
-	$slplus_show_tags = (get_option(SLPLUS_PREFIX.'_show_tags') ==1);
 
 	// Iterate through the rows, printing json nodes for each
+	$response = array();
 	while ($row = @mysql_fetch_assoc($result)){
-	  // ADD TO json response
-	  $marker = array(
-	  'name' => esc_attr($row['sl_store']),
-			'address' => esc_attr($row['sl_address']),
-			'address2' => esc_attr($row['sl_address2']),
-			'city' => esc_attr($row['sl_city']),
-			'state' => esc_attr($row['sl_state']),
-			'zip' => esc_attr($row['sl_zip']),
-			'lat' => $row['sl_latitude'],
-			'lng' => $row['sl_longitude'],
-			'description' => html_entity_decode($row['sl_description']),
-			'url' => esc_attr($row['sl_url']),
-			'sl_pages_url' => esc_attr($row['sl_pages_url']),
-			'email' => esc_attr($row['sl_email']),
-			'hours' => esc_attr($row['sl_hours']),
-			'phone' => esc_attr($row['sl_phone']),
-			'fax'   => esc_attr($row['sl_fax']),
-			'image' => esc_attr($row['sl_image']),
-			'distance' => $row['sl_distance'],
-			'tags' => ($slplus_show_tags) ? esc_attr($row['sl_tags']) : '',
-            'data_from' => 'load',
-            'id' => $row['sl_id'],
-		);
-		$response[] = $marker;
-	}
-	
-	$response = json_encode( array( 'success' => true, 'count' => count($response) , 'response' => $response ) );
+        $response[] = slp_add_marker($row,'load');
+	}	
 	
 	header( "Content-Type: application/json" );
-    echo $response;
-	
+    echo json_encode( array( 'success' => true, 'count' => count($response) , 'response' => $response ) );
 	die();
 }
 
@@ -127,7 +132,6 @@ function csl_ajax_search() {
 	$password=DB_PASSWORD;
 	$database=DB_NAME;
 	$host=DB_HOST;
-	//include("database-info.php");
 	$dbPrefix = $wpdb->prefix;
 	
 	// Get parameters from URL
@@ -175,114 +179,65 @@ function csl_ajax_search() {
     '25';
 	
 	$max = mysql_real_escape_string($option[SLPLUS_PREFIX.'_maxreturned']);
-    //for ($rad = $radius; $rad < 40000; $rad += 100) {
-		//Select all the rows in the markers table
-		$query = sprintf(
-			"SELECT *,".
-			"( $multiplier * acos( cos( radians('%s') ) * cos( radians( sl_latitude ) ) * cos( radians( sl_longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( sl_latitude ) ) ) ) AS sl_distance ".
-			"FROM ${dbPrefix}store_locator ".
-			"WHERE sl_longitude<>'' %s %s ".
-			"HAVING (sl_distance < '%s') ".
-			'ORDER BY sl_distance ASC '.
-			'LIMIT %s',
-			mysql_real_escape_string($center_lat),
-			mysql_real_escape_string($center_lng),
-			mysql_real_escape_string($center_lat),
-			$tag_filter,
-			$name_filter,
-			mysql_real_escape_string($radius),
-			mysql_real_escape_string($option[SLPLUS_PREFIX.'_maxreturned'])
-		);
+    $query = sprintf(
+        "SELECT *,".
+        "( $multiplier * acos( cos( radians('%s') ) * cos( radians( sl_latitude ) ) * cos( radians( sl_longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( sl_latitude ) ) ) ) AS sl_distance ".
+        "FROM ${dbPrefix}store_locator ".
+        "WHERE sl_longitude<>'' %s %s ".
+        "HAVING (sl_distance < '%s') ".
+        'ORDER BY sl_distance ASC '.
+        'LIMIT %s',
+        mysql_real_escape_string($center_lat),
+        mysql_real_escape_string($center_lng),
+        mysql_real_escape_string($center_lat),
+        $tag_filter,
+        $name_filter,
+        mysql_real_escape_string($radius),
+        mysql_real_escape_string($option[SLPLUS_PREFIX.'_maxreturned'])
+    );
 		
-		$result = mysql_query(apply_filters('slp_mysql_search_query',$query));
-		if (!$result) {
-			die(json_encode( array('success' => false, 'query' => $query, 'response' => 'Invalid query: ' . mysql_error())));
-		}
+    $result = mysql_query(apply_filters('slp_mysql_search_query',$query));
+    if (!$result) {
+        die(json_encode( array('success' => false, 'query' => $query, 'response' => 'Invalid query: ' . mysql_error())));
+    }
 
-		// Show Tags
-		//
-		$slplus_show_tags = (get_option(SLPLUS_PREFIX.'_show_tags') ==1);
+    // Reporting
+    // Insert the query into the query DB
+    //
+    if (get_option(SLPLUS_PREFIX.'-reporting_enabled','off') === 'on') {
+        $qry = sprintf(
+                "INSERT INTO ${dbPrefix}slp_rep_query ".
+                           "(slp_repq_query,slp_repq_tags,slp_repq_address,slp_repq_radius) ".
+                    "values ('%s','%s','%s','%s')",
+                    mysql_real_escape_string($_SERVER['QUERY_STRING']),
+                    mysql_real_escape_string($_POST['tags']),
+                    mysql_real_escape_string($_POST['address']),
+                    mysql_real_escape_string($_POST['radius'])
+                );
+        $wpdb->query($qry);
+        $slp_QueryID = mysql_insert_id();
+    }		
+		
+    // Iterate through the rows, printing XML nodes for each
+    $response = array();
+    while ($row = @mysql_fetch_assoc($result)){
+        $response[] = slp_add_marker($row,'search');
 
-		// Reporting
-		// Insert the query into the query DB
-		// 
-		if (get_option(SLPLUS_PREFIX.'-reporting_enabled','off') === 'on') {
-			$qry = sprintf(                                              
-					"INSERT INTO ${dbPrefix}slp_rep_query ". 
-							   "(slp_repq_query,slp_repq_tags,slp_repq_address,slp_repq_radius) ". 
-						"values ('%s','%s','%s','%s')",
-						mysql_real_escape_string($_SERVER['QUERY_STRING']),
-						mysql_real_escape_string($_POST['tags']),
-						mysql_real_escape_string($_POST['address']),
-						mysql_real_escape_string($_POST['radius'])
-					);
-			$wpdb->query($qry);
-			$slp_QueryID = mysql_insert_id();
-		}
-		
-		// Start the response string
-		$response = array();
-		
-		// Iterate through the rows, printing XML nodes for each
-		while ($row = @mysql_fetch_assoc($result)){
-			// ADD to array of markers
-			
-			$marker = array(
-				//'test' => stuff
-				'name' => esc_attr($row['sl_store']),
-				'address' => esc_attr($row['sl_address']),
-				'address2' => esc_attr($row['sl_address2']),
-				'city' => esc_attr($row['sl_city']),
-				'state' => esc_attr($row['sl_state']),
-				'zip' => esc_attr($row['sl_zip']),
-				'lat' => $row['sl_latitude'],
-				'lng' => $row['sl_longitude'],
-				'description' => html_entity_decode($row['sl_description']),
-				'url' => esc_attr($row['sl_url']),
-				'sl_pages_url' => esc_attr($row['sl_pages_url']),
-				'email' => esc_attr($row['sl_email']),
-				'hours' => esc_attr($row['sl_hours']),
-				'phone' => esc_attr($row['sl_phone']),
-				'fax' => esc_attr($row['sl_fax']),
-				'image' => esc_attr($row['sl_image']),
-				'distance' => $row['sl_distance'],
-				'tags' => ($slplus_show_tags) ? esc_attr($row['sl_tags']) : '',
-                'data_from' => 'search',
-                'id' => $row['sl_id'],
-			);
-			$response[] = $marker;
-			
-			// Reporting
-			// Insert the results into the reporting table
-			//
-			if (get_option(SLPLUS_PREFIX.'-reporting_enabled') === "on") {
-				$wpdb->query(
-					sprintf(
-						"INSERT INTO ${dbPrefix}slp_rep_query_results 
-							(slp_repq_id,sl_id) values (%d,%d)",
-							$slp_QueryID,
-							$row['sl_id']  
-						)
-					);           
-			}
-		}
-		
-		//if (count($response) > 1) {
-		//	break;
-		//}
-	//}
-	
-	// generate the response
-    $response = json_encode( array( 'success' => true, 'count' => count($response), 'option' => $_POST['address'], 'response' => $response ) );
- 
-    // response output
+        // Reporting
+        // Insert the results into the reporting table
+        //
+        if (get_option(SLPLUS_PREFIX.'-reporting_enabled') === "on") {
+            $wpdb->query(
+                sprintf(
+                    "INSERT INTO ${dbPrefix}slp_rep_query_results
+                        (slp_repq_id,sl_id) values (%d,%d)",
+                        $slp_QueryID,
+                        $row['sl_id']
+                    )
+                );
+        }
+    }
     header( "Content-Type: application/json" );
-    echo $response;
-	
-	
-	
-	  
- 
-    // IMPORTANT: don't forget to "exit"
-    exit;
+    echo json_encode( array( 'success' => true, 'count' => count($response), 'option' => $_POST['address'], 'response' => $response ) );
+    die();
  }

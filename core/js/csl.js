@@ -13,7 +13,40 @@
   */
 var csl = {
 
-    /***************************
+   /***************************
+  	* Animation enum technically
+  	* usage:
+  	* 		Animation enumeration
+  	*/
+  	Animation: { Bounce: 1, Drop: 2, None: 0 },
+
+
+    /***************************************************************************
+     *
+     * MOUSE ANIMATION SUBCLASS
+     *
+     */
+	MouseAnimation: function()
+	{
+		this.anim2 = function(imgObj, url) {
+			imgObj.src=url;
+		}
+
+		this.anim = function(name, type) {
+			if (type==0)
+				document.images[name].src="/core/images/"+name+".gif";
+			if (type==1)
+				document.images[name].src="/core/images/"+name+"_over.gif";
+			if (type==2)
+				document.images[name].src="/core/images/"+name+"_down.gif";
+		}
+	},
+
+    /***************************************************************************
+     *
+     * LOCATION SERVICES SUBCLASS
+     *
+     ***************************
      * Location services
      * usage:
      * 		gets the users current location
@@ -41,7 +74,11 @@ var csl = {
             this.__init();
         },
 	
-	/***************************
+    /***************************************************************************
+     *
+     * AJAX SUBCLASS
+     *
+	 ***************************
   	 * Class: Ajax
   	 * usage:
 	 * 		Sends an ajax request (use Ajax.Send())
@@ -133,30 +170,10 @@ var csl = {
 		}
 	},
 	
-	MouseAnimation: function()
-	{
-		this.anim2 = function(imgObj, url) {
-			imgObj.src=url;
-		}
-		
-		this.anim = function(name, type) {
-			if (type==0)
-				document.images[name].src="/core/images/"+name+".gif";
-			if (type==1)
-				document.images[name].src="/core/images/"+name+"_over.gif";
-			if (type==2)
-				document.images[name].src="/core/images/"+name+"_down.gif";
-		}
-	},
-  	  
-	/***************************
-  	* Animation enum technically
-  	* usage:
-  	* 		Animation enumeration 
-  	*/
-  	Animation: { Bounce: 1, Drop: 2, None: 0 },
-  	  
-	/***************************
+    /***************************************************************************
+     *
+     * MARKERS SUBCLASS
+     *
   	 * Marker for google maps
   	 * usage:
   	 * create a google maps marker
@@ -178,40 +195,52 @@ var csl = {
 		this.__iconWidth = iconSizeW;
 		this.__iconImage = null;
 		this.__shadowImage = null;
-  	  	
+
+        /*------------------------
+         * MARKERS Init
+         */
   	  	this.__init = function() {
+
 			if (this.__iconUrl != null) {
 				this.__iconImage = this.__iconUrl;
 			}
-			//this.__iconImage = null;
-			if (this.__iconImage == null)
-			{
+
+            // No icon image
+            //
+			if (this.__iconImage == null) {
 				this.__gmarker = new google.maps.Marker(
-				{
-					position: this.__position,
-					map: this.__map.gmap,
-					animation: this.__animationType,
-					position: this.__position,
-					title: this.__title
-				});
-			}		
-			//find the shadow icon
-			else {
-				// var http = new XMLHttpRequest();
-				// http.onreadystatechange = function() { };
-				// http.open("HEAD", this.__iconUrl.replace('.png', '_shadow.png'), false);
-				// http.send(null);
-				
-				// if (http.status == 404) {
-					// this.noShadow();
-				// }
-				// else {
-					this.useShadow();
-				//}
-			}
-			
+                    {
+                        position: this.__position,
+                        map: this.__map.gmap,
+                        animation: this.__animationType,
+                        position: this.__position,
+                        title: this.__title
+                    });
+
+			// Use specified icon
+            //
+			} else {
+                var shadowKey = this.__iconUrl;
+                if (typeof cslmap.shadows[shadowKey] === 'undefined') {
+                    var shadow = this.__iconUrl.replace('.png', '_shadow.png');
+                    jQuery.ajax(
+                        {
+                            url: shadow,
+                            type: 'HEAD',
+                            async: false,
+                            error: function() { cslmap.shadows[shadowKey] = cslmap.coreurl+'images/icons/blank.png'; },
+                            success: function() { cslmap.shadows[shadowKey] = shadow; }
+                        }
+                    );
+                }
+                this.__shadowImage = cslmap.shadows[shadowKey];
+                this.buildMarker();
+            }
   	  	}
 		
+        /*------------------------
+         * MARKERS buildMarker
+         */
 		this.buildMarker = function() {
 			this.__gmarker = new google.maps.Marker(
   	  	  	{
@@ -225,35 +254,23 @@ var csl = {
   	  	  	  	title: this.__title
   	  	  	});
 		}
-		
-		this.noShadow = function() {
-			var parts = this.__iconUrl.split('/');
-			var shadow = this.__iconUrl.replace(parts[parts.length - 1], 'blank.png');
-			this.__shadowImage = new google.maps.MarkerImage(shadow,
-				//set the size
-				new google.maps.Size(this.__iconWidth, this.__iconHeight));
-			this.buildMarker();
-			
-		}
-		
-		this.useShadow = function() {
-			var shadow = this.__iconUrl.replace('.png', '_shadow.png');
-			this.__shadowImage = shadow;
-				//set the size
-				//new google.maps.Size(this.__iconWidth, this.__iconHeight));
-			this.buildMarker();
-		}
-  	  	 
+
   	  	this.__init();
   	},
-	
+
+
+    /***************************************************************************
+     *
+     * UTILITIES SUBCLASS
+     *
+     */
 	Utils: function() {
-		/*****************************************************************************
-		* File: store-locator-emailform.js
-		* 
-		* Create the lightbox email form.
-		*
-		*****************************************************************************/
+
+		/***********************************
+         *
+		 * Create the lightbox email form.
+		 *
+		 */
 		this.show_email_form = function(to) {
 			var allScripts=document.getElementsByTagName('script');
 			var add_base=allScripts[allScripts.length -2].src.replace(/\/js\/csl.js(.*)$/,'');
@@ -332,7 +349,11 @@ var csl = {
 		}
 	},
   	  
-	/***************************
+    /***************************************************************************
+     *
+     * INFO SUBCLASS
+     *
+	 ***************************
   	 * Popup info window Object
   	 * usage:
   	 * create a google info window
@@ -372,8 +393,12 @@ var csl = {
   	  	  
   	  	this.__init();
   	},
-  	  
-  	/***************************
+
+    /***************************************************************************
+     *
+     * MAP SUBCLASS
+     *
+  	 ***************************
   	 * Map Object
   	 * usage:
   	 * create a google maps object linked to a map/canvas id
@@ -436,7 +461,11 @@ var csl = {
 		this.lastRadius = null;
 		this.loadedOnce = false;
         this.centerLoad = false;
-		
+
+        // missing shadows
+        //
+        this.shadows = new Object;
+
 		/***************************
   	  	 * function: __init()
   	  	 * usage:
@@ -447,6 +476,7 @@ var csl = {
   	  	this.__init = function() {
                         
             if (typeof slplus != 'undefined') {
+                this.coreurl = slplus.core_url;
                 this.address = slplus.map_country;
                 this.zoom = slplus.zoom_level;
                 this.mapType = slplus.map_type;
@@ -505,7 +535,8 @@ var csl = {
                     overviewMapControlOptions: { opened: this.overviewControl }
                 };
                 this.debugSearch(this.options);
-                this.gmap = new google.maps.Map(document.getElementById('map'), this.options);
+                slpMapDiv = document.getElementById('map');
+                this.gmap = new google.maps.Map(slpMapDiv, this.options);
                 this.debugSearch(this.gmap);
                 //this forces any bad css from themes to fix the "gray bar" issue by setting the css max-width to none
                 var _this = this;
@@ -630,6 +661,7 @@ var csl = {
 			
 			this.debugSearch('create latlng bounds for shifts');
 			var bounds;
+            var locationIcon;
 			this.debugSearch('number results ' + markerList.length);
 			for (markerNumber in markerList) {
 				this.debugSearch(markerList[markerNumber]);
@@ -654,7 +686,9 @@ var csl = {
 				}
 				
 				this.debugSearch(position);
-				this.markers.push(new csl.Marker(animation, this, "", position, this.mapEndIconUrl, this.mapEndIconWidth, this.mapEndIconHeight ));
+
+                locationIcon = ((typeof markerList[markerNumber].icon != 'undefined') && (markerList[markerNumber].icon.length > 4)?markerList[markerNumber].icon:this.mapEndIconUrl);
+				this.markers.push(new csl.Marker(animation, this, "", position, locationIcon, this.mapEndIconWidth, this.mapEndIconHeight ));
 				_this = this;
 				
 				//create a sidebar entry
@@ -795,7 +829,7 @@ var csl = {
                             var tag_to_search_for = _this.saneValue('tag_to_search_for', '');
                             //do a search based on settings
                             var radius = _this.saneValue('radiusSelect');
-                            this.loadMarkers(results[0].geometry.location, radius, tag_to_search_for);
+                            _this.loadMarkers(results[0].geometry.location, radius, tag_to_search_for);
                         }
                         //if the user entered an address, replace it with a formatted one
                         var addressInput = _this.saneValue('addressInput','');
@@ -1177,8 +1211,13 @@ var csl = {
   	  	this.__init();
 	}
 }
- 
-//global vars
+
+
+/***************************************************************************
+ *
+ * CSL Main Execution
+ *
+ */
 var cslmap;
 var cslutils;
  
