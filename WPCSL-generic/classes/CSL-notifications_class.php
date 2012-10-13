@@ -1,13 +1,35 @@
 <?php
-
+/**
+ * The Notification System.
+ *
+ * Puts notifications on top of wpCSL plugin admin pages.
+ *
+ * @author Lance Cleveland <lance@charlestonsw.com>
+ * @copyright Lance Cleveland
+ * @package wpCSL
+ * @subpackage Notifications
+ *
+ */
 class wpCSL_notifications__slplus {
 
+    /**
+     * Build a new notification object.
+     *
+     * @param type $params
+     */
     function __construct($params) {
         foreach ($params as $name => $value) {
             $this->$name = $value;
         }
     }
 
+    /**
+     * Add a notification to the notice stack
+     *
+     * @param type $level
+     * @param type $content
+     * @param type $link
+     */
     function add_notice($level = 1, $content, $link = null) {
         $this->notices[] = new wpCSL_notifications_notice__slplus(
             array(
@@ -18,10 +40,20 @@ class wpCSL_notifications__slplus {
         );
     }
 
+    /**
+     * Render the notices to the browser page.
+     */
     function display() {
         echo $this->get();
     }
-    function get($simple=false) {
+
+   /**
+    * Return a formatted HTML string representing the notification.
+    *
+    * @param boolean $simple - set to true to see simplified unformatted notices.
+    * @return string - the HTML or simple string output
+    */
+   function get($simple=false) {
 
         // No need to do anything if there aren't any notices
         if (!isset($this->notices)) return;
@@ -34,6 +66,7 @@ class wpCSL_notifications__slplus {
         $difference = max(array_keys($levels));
 
         $notice_output = '';
+        $actionMessage = __('needs attention',WPCSL__slplus__VERSION);
         foreach ($levels as $key => $value) {
             if (!$simple) {
                 $color = round($difference);
@@ -53,7 +86,7 @@ class wpCSL_notifications__slplus {
                 case 3:
                     $notice_output .= "<div id='{$this->prefix}_notice' class='updated fade'
                     style='background-color: rgb(255, 165, 104);'>\n";
-                    break;    
+                    break;
                 case 2:
                     $notice_output .= "<div id='{$this->prefix}_notice' class='updated fade'
                     style='background-color: rgb(255, 165, 0);'>\n";
@@ -73,6 +106,7 @@ class wpCSL_notifications__slplus {
                 case 9:
                     $notice_output .= "<div id='{$this->prefix}_notice' class='updated fade'
                     style='background-color: rgb(250, 250, 210);'>\n";
+                    $actionMessage = __('wants you to know',WPCSL__slplus__VERSION);
                     break;
                 case 8:
                     $notice_output .= "<div id='{$this->prefix}_notice' class='updated fade'
@@ -84,9 +118,10 @@ class wpCSL_notifications__slplus {
                     break;
                 }
                 $notice_output .= sprintf(
-                    __('<p><strong><a href="%s">%s</a> needs attention: </strong>',WPCSL__slplus__VERSION),
-                    $this->url, 
-                    $this->name
+                    __('<p><strong><a href="%s">%s</a> %s: </strong>',WPCSL__slplus__VERSION),
+                    $this->url,
+                    $this->name,
+                    $actionMessage
                 );
                 $notice_output .= "<ul>\n";
             }
@@ -96,7 +131,7 @@ class wpCSL_notifications__slplus {
                 if (!$simple) { $notice_output .= '</li>'; }
                 $notice_output .= "\n";
             }
-            if (!$simple) { 
+            if (!$simple) {
                 $notice_output .= "</ul>\n";
                 $notice_output .= "</p></div>\n";
             }
@@ -106,6 +141,10 @@ class wpCSL_notifications__slplus {
     }
 }
 
+/**
+ * This class represents each individual notice.
+ *
+ */
 class wpCSL_notifications_notice__slplus {
 
     function __construct($params) {

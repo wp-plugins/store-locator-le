@@ -5,6 +5,26 @@
  ** Generic helper functions.  May live in WPCSL-Generic soon.
  ***************************************************************************/
 
+
+/**
+ * Help deserialize data to array.
+ *
+ * Useful for sl_option_value  field processing.
+ *
+ * @param type $value
+ * @return type
+ */
+function slp_deserialize_to_array($value) {
+    $arrayData = maybe_unserialize($value);
+    if (!is_array($arrayData)) {
+        if ($arrayData == '') {
+            $arrayData = array();
+        } else {
+            $arrayData = array('value' => $arrayData);
+        }
+    }
+    return $arrayData;
+}
  
 /**************************************
  ** function: get_string_from_phpexec()

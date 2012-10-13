@@ -29,7 +29,7 @@ class wpCSL_products__slplus {
             $this->$name = $value;
         }
     }
-    
+
     /*-------------------------------------
      * method: display_products
      *
@@ -65,13 +65,15 @@ class wpCSL_products__slplus {
             $product_output[] = '<p class="' . $this->css_prefix . '-desc" >'.$product->description.'</p>';
             $product_output[] = '<p class="' . $this->css_prefix . '-price">'.$product->currency;
             if (function_exists('money_format') &&  ($moneyFormat != '')) {
-                $product_output[] =
-                    "$<a href=\"{$product->web_urls[0]}\" target=\"csa\" $linkModifiers>".
+                $product_output[] =                    
+                    "<a href=\"{$product->web_urls[0]}\" target=\"csa\" $linkModifiers>".
+                    apply_filters($this->prefix.'_money_prefix','$') .
                     trim(money_format($moneyFormat, (float)$product->price)) .
                     '</a>';
             } else {
                 $product_output[] =
-                    "$<a href=\"{$product->web_urls[0]}\" target=\"csa\">".
+                    "<a href=\"{$product->web_urls[0]}\" target=\"csa\">".
+                    apply_filters($this->prefix.'_money_prefix','$') .
                     trim(number_format((float)$product->price, 2)) .
                     '</a>';
             }

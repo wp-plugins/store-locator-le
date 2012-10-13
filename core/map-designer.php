@@ -68,7 +68,7 @@ function SaveCheckboxToDB($boxname,$prefix = SLPLUS_PREFIX, $separator='-') {
  **  $message (string, optional) - default '', the help message 
  **  $prefix (string, optional) - defaults to SLPLUS_PREFIX, can be ''  
  **/
-function CreateCheckboxDiv($boxname,$label='',$msg='',$prefix=SLPLUS_PREFIX, $disabled=false) {
+function CreateCheckboxDiv($boxname,$label='',$msg='',$prefix=SLPLUS_PREFIX, $disabled=false, $default=0) {
     $whichbox = $prefix.$boxname; 
     return 
         "<div class='form_entry'>".
@@ -78,7 +78,7 @@ function CreateCheckboxDiv($boxname,$label='',$msg='',$prefix=SLPLUS_PREFIX, $di
                 ">$label:</label>".
             "<input name='$whichbox' value='1' ".
                 "type='checkbox' ".
-                ((get_option($whichbox) ==1)?' checked ':' ').
+                ((get_option($whichbox,$default) ==1)?' checked ':' ').
                 ($disabled?"disabled='disabled'":' ') .
             ">".
             "</div>".
@@ -156,9 +156,10 @@ function CreateTextAreaDiv($boxname,$label='',$msg='',$prefix=SLPLUS_PREFIX, $de
 // Main Processing
 //===========================================================================
 if (!$_POST) {
-    move_upload_directories();
+    if (is_a($slplus_plugin->Activate,'SLPlus_Activate')) {
+        $slplus_plugin->Activate->move_upload_directories();
+    }
     $update_msg ='';
-    
 } else {
     $sl_google_map_arr=explode(":", $_POST['google_map_domain']);
     update_option('sl_google_map_country', $sl_google_map_arr[0]);
@@ -180,7 +181,7 @@ if (!$_POST) {
     }    
     update_option('sl_map_width_units', $_POST['width_units']);
     update_option('sl_map_width', $_POST['width']);
-    
+
     update_option('sl_map_home_icon', $_POST['icon']);
     update_option('sl_map_end_icon', $_POST['icon2']);
 
@@ -219,6 +220,7 @@ if (!$_POST) {
     // Checkboxes with custom names
     //
     $BoxesToHit = array(
+        SLPLUS_PREFIX.'-force_load_js',
         'sl_use_city_search',
         'sl_use_country_search',
         'sl_load_locations_default',
@@ -246,6 +248,7 @@ if (!$_POST) {
         'hide_address_entry',
         'disable_search',
 		'show_search_by_name',
+        'use_email_form',
         'use_location_sensor'
         );
     foreach ($BoxesToHit as $JustAnotherBox) {        
@@ -330,42 +333,26 @@ $checked3	        = (get_option('sl_remove_credits',0)  ==1)?' checked ':'';
 
 //---- ICONS ----
 $cl_icon_str   =(isset($cl_icon_str)  ?$cl_icon_str  :'');
+$cl_icon_str .= $slplus_plugin->AdminUI->rendorIconSelector('icon','prev');
 $cl_icon2_str  =(isset($cl_icon2_str) ?$cl_icon2_str :'');
-$cl_icon_dir=opendir(SLPLUS_ICONDIR);
 
-// List icons
-while (false !== ($an_icon=readdir($cl_icon_dir))) {
-	if (
-	    (preg_match('/\.(png|gif|jpg)/i', $an_icon) > 0) && 
-	    (preg_match('/shadow\.(png|gif|jpg)/i', $an_icon) <= 0) 
-	    ) {
-		$cl_icon_str.=
-		"<img style='cursor:pointer; padding:2px; margin: 0px 2px;' 
-		     src='".SLPLUS_ICONURL.$an_icon."'
-		     onclick='document.forms[0].icon.value=this.src;document.getElementById(\"prev\").src=this.src;'
-		     onmouseover='style.borderColor=\"red\";' 
-		     onmouseout='style.borderColor=\"white\";'
-		     >";
-	}
-}
 // Custom icon directory?
 if (is_dir($sl_upload_path."/custom-icons/")) {
 	$cl_icon_upload_dir=opendir($sl_upload_path."/custom-icons/");
 	while (false !== ($an_icon=readdir($cl_icon_upload_dir))) {
 		if (!ereg("^\.{1,2}$", $an_icon) && !ereg("shadow", $an_icon) && !ereg("\.db", $an_icon)) {
 			$cl_icon_str.=
-			"<img style='cursor:pointer; padding:2px; margin: 0px 2px;' 
+			"<div class='slp_icon_selector_box'><img class='slp_icon_selector'
 			src='$sl_upload_base/custom-icons/$an_icon' 
 			onclick='document.forms[\"mapDesigner\"].icon.value=this.src;document.getElementById(\"prev\").src=this.src;' 
-			onmouseover='style.borderColor=\"red\";' 
-			onmouseout='style.borderColor=\"white\";'
-			>";
+			></div>";
 		}
 	}
 }
 
 $cl_icon2_str = preg_replace('/\.icon\.value/','.icon2.value',$cl_icon_str);
 $cl_icon2_str = preg_replace('/getElementById\("prev"\)/','getElementById("prev2")',$cl_icon2_str);
+$cl_icon2_str = preg_replace('/getElementById\("icon"\)/','getElementById("icon2")',$cl_icon2_str);
 
 // Icon is the old path, notify them to re-select
 //

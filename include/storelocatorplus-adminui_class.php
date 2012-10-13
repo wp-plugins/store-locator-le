@@ -176,6 +176,29 @@ if (! class_exists('SLPlus_AdminUI')) {
 
         }
 
+        /*****************************
+         * function: url_test()
+         *
+         */
+        function url_test($url) {
+            return (strtolower(substr($url,0,7))=="http://");
+        }
+
+        /*****************************
+        * function: slpCreateColumnHeader()
+        *
+        * Create the column headers for sorting the table.
+        *
+        */
+        function slpCreateColumnHeader($theURL,$fldID='sl_store',$fldLabel='ID',$opt='sl_store',$dir='ASC') {
+            if ($opt == $fldID) {
+                $curDIR = (($dir=='ASC')?'DESC':'ASC');
+            } else {
+                $curDIR = $dir;
+            }
+            return "<th><a href='$theURL&o=$fldID&sortorder=$curDIR'>$fldLabel</a></th>";
+        }
+
         /**
          * method: redirectTo_GeneralSettings
          * 
@@ -333,6 +356,41 @@ if (! class_exists('SLPlus_AdminUI')) {
 
                 // Show the manual location entry form
                 execute_and_output_template('add_locations.php');
+         }
+
+
+         /**
+          * Render an icon selector for the icon images store in the SLP plugin icon directory.
+          * 
+          * @param string $elementToUpate - the name of the input ID to update on click
+          * @return string - the html of the icon selector
+          */
+         function rendorIconSelector($inputFieldID = null, $inputImageID = null) {
+            if (($inputFieldID == null) || ($inputImageID == null)) { return ''; }
+            $htmlStr = '';
+            $iconDir=opendir(SLPLUS_ICONDIR);
+            while (false !== ($an_icon=readdir($iconDir))) {
+                if (
+                    (preg_match('/\.(png|gif|jpg)/i', $an_icon) > 0) &&
+                    (preg_match('/shadow\.(png|gif|jpg)/i', $an_icon) <= 0)
+                    ) {
+                    $htmlStr .=
+                        "<div class='slp_icon_selector_box'>".
+                            "<img class='slp_icon_selector'
+                                 src='".SLPLUS_ICONURL.$an_icon."'
+                                 onclick='".
+                                    "document.getElementById(\"".$inputFieldID."\").value=this.src;".
+                                    "document.getElementById(\"".$inputImageID."\").src=this.src;".
+                                 "'>".
+                         "</div>"
+                         ;
+                }
+            }
+            if ($htmlStr != '') {
+                $htmlStr = '<div id="'.$inputFieldID.'_icon_row" class="slp_icon_row">'.$htmlStr.'</div>';
+
+            }
+            return $htmlStr;
          }
 
     }
