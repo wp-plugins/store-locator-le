@@ -2,6 +2,7 @@
  * Anywhere
  */
 
+ div#icon-edit.icon32.icon32-posts-store_page,
  #icon-Store_Locator_Plus___Map_Settings,
  #icon-Store_Locator_Plus___Reporting,
  #icon-Store_Locator_Plus,
@@ -12,13 +13,6 @@
     background: url("../core/images/StoreLocatorPlus_icons32.png") no-repeat scroll -75px -3px transparent;
 }
 
-div#wpbody-content div.wrap div.updated {
-    clear: both;
-}
-
-div.geocode_error {
- clear: both;
-}
 /*----------------------------------
  *
  * A div that looks like a button. 
@@ -335,6 +329,9 @@ input#bulk_file {
     border: 1px solid #DDDDDD;
     color: #888888;     
  }
+ tr#slp_location_edit_row td.slp_location_edit_cell {
+     border: 3px dashed #999999;
+ }
 
 /***************************
  * Settings: Map
@@ -396,11 +393,35 @@ div.section_column .form_entry {
     width: 100%;
 }
 
+div.slp_icon_row {
+    margin: 6px 3px 24px 150px;
+    overflow: auto;
+    width: 360px;
+    height: 110px;
+}
+
+div.slp_icon_selector_box {
+    border: solid 1px transparent;
+    float: left;
+    min-width: 48px;
+    min-height: 48px;
+    text-align: center;
+}
+div.slp_icon_selector_box:hover {
+    border: solid 1px #AAA;
+    background-color:#FFFFDD;
+}
+img.slp_icon_selector {
+    cursor:pointer;
+    padding:2px;
+    margin: 0px 2px;
+    vertical-align: middle;
+}
 
 /***************************
  * Settings: General
  **/
- 
+
 #wpcontent .csl_select, #wpcontent .csl_option
 {
     padding-right: 6px;
@@ -491,27 +512,6 @@ td.optionpack {
   padding: 5px 3px;
 }
 
-/*** Generic Formatting ***/
-.floatright {
-    float: right;
-}
-.floatleft {
-    float: left;
-}
-
-.helpicon {
-    padding-left: 5px;
-    position: relative;
-    vertical-align: top;
-}
-
-.form-table .input_label {
-    vertical-align: middle;
-    padding: 0px;
-    text-align: right;
-    font-weight:bold;
-}
-
 /**** Manage Locations Page ****/
 .addloclink {
     float: left;
@@ -526,8 +526,6 @@ td.optionpack {
     padding-top: 7px;
     width: 250px;
 }
-
-
 
 .cybersprocket-csllogo {
     clear: both;
@@ -675,3 +673,38 @@ p.slp_admin_info {
     width: 64px;
 }
 
+
+/*** Generic Formatting ***/
+.floatright {
+    float: right;
+}
+.floatleft {
+    float: left;
+}
+
+.helpicon {
+    padding-left: 5px;
+    position: relative;
+    vertical-align: top;
+}
+
+.form-table .input_label {
+    font-weight:bold;
+    padding: 1em 0 0;
+    text-align: right;
+    vertical-align: top;
+}
+
+div#wpbody-content div.wrap div.updated,
+div.csa_info_msg,
+div.geocode_error
+{
+    clear: both;
+}
+
+div.csa_info_msg {
+    padding: 12px;
+    font-weight: bold;
+    font-size: 1.25em;
+    
+}

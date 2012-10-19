@@ -12,7 +12,7 @@
     cursor: pointer;   
 }
 
-.sl_header #addressSubmit {
+.sl_header #addressSubmit.slp_ui_button {
     /* like-a-button */
     background: #FFF; /* for non-css3 browsers */
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#CCCCCC'); /* for IE */
@@ -43,7 +43,7 @@
     box-shadow: 0px 0px 4px #000;           
 }    
 
-.sl_header #addressSubmit:hover {
+.sl_header #addressSubmit.slp_ui_button:hover {
     background: #BBBBBB;      
     margin: 0px 2px 2px 0px;
     

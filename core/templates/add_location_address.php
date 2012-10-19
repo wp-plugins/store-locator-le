@@ -1,5 +1,5 @@
 <?php 
-global $text_domain, $sl_upload_path, $slplus_plugin;
+global $text_domain, $slplus_plugin;
 ?>
 <table cellpadding='10px' cellspacing='0' style='width:100%' class='manual_add_table'>
     <tr>
@@ -39,19 +39,19 @@ global $text_domain, $sl_upload_path, $slplus_plugin;
             <input name='sl_tags'><br/>
             <span style="padding-left: 130px;"><em>separate with commas</em></span><br/>
             
-            <label for='sl_url'><?php _e("URL", $text_domain);?></label>
+            <label for='sl_url'><?php echo get_option('sl_website_label','Website');?></label>
             <input name='sl_url'><br/>
             
             <label for='sl_email'><?php _e("email", $text_domain);?></label>
             <input name='sl_email'><br/>
             
-            <label for='sl_hours'><?php _e("Hours", $text_domain);?></label>
+            <label for='sl_hours'><?php echo $slplus_plugin->settings->get_item('label_hours','Hours','_');?></label>
             <input name='sl_hours'><br/>
             
-            <label for='sl_phone'><?php _e("Phone", $text_domain);?></label>
+            <label for='sl_phone'><?php echo $slplus_plugin->settings->get_item('label_phone','Phone','_');?></label>
             <input name='sl_phone'><br/>
 
-            <label for='sl_fax'><?php _e("Fax", $text_domain);?></label>
+            <label for='sl_fax'><?php echo $slplus_plugin->settings->get_item('label_fax'  ,'Fax'  ,'_');?></label>
             <input name='sl_fax'><br/>
             
             <label for='sl_image'><?php _e("Image URL (shown with location)", $text_domain);?></label>

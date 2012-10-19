@@ -1,7 +1,6 @@
 <?php
-  global $sl_search_label, $sl_width, $sl_height, $sl_width_units, $sl_height_units, $sl_hide,
-      $sl_radius, $sl_radius_label, $r_options, $button_style,
-      $sl_instruction_message, $cs_options, $slplus_state_options, $sl_country_options, 
+  global $sl_search_label, $sl_width, $sl_height, $sl_width_units, $sl_height_units,
+      $sl_radius, $sl_radius_label, $r_options, $sl_instruction_message, $slplus_state_options, $sl_country_options, 
       $fnvars, $slplus_plugin, $slplus_name_label;
 
       $prefix = $slplus_plugin->prefix;
@@ -32,7 +31,13 @@ if ($sl_starting_image != '') {
 }
 ?>
                 <div id='map' style='width:<?php echo $sl_width?><?php echo $sl_width_units?>; height:<?php echo $sl_height?><?php echo $sl_height_units?>'></div>
-                <table cellpadding='0px' class='sl_footer' width='<?php echo $sl_width?><?php echo $sl_width_units?>;' <?php echo $sl_hide?>>
+                <table cellpadding='0px'
+                       class='sl_footer'
+                       width='<?php echo $sl_width?><?php echo $sl_width_units?>;'
+                       <?php
+                        echo ((get_option('sl_remove_credits',0)==1)?"style='display:none;'":'');
+                       ?>
+                       >
                 <tr class="slp_map_tagline">
                     <td class='sl_footer_right_column'>
                         <?php echo __('search provided by', SLPLUS_PREFIX); ?> <a href='<?php echo $slplus_plugin->url; ?>' target='_blank'><?php echo $slplus_plugin->name; ?></a>
