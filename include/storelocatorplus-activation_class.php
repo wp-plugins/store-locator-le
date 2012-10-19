@@ -245,22 +245,26 @@ if (! class_exists('SLPlus_Activate')) {
          * Move upload directories
          */
         function move_upload_directories() {
-            $sl_upload_path = ABSPATH.'wp-content/uploads/sl-uploads';
-            $sl_path = ABSPATH.'wp-content/plugins/'.SLPLUS_PLUGINDIR;
+
+            // Make the upload director(ies)
+            //
             if (!is_dir(ABSPATH . "wp-content/uploads")) {
                 mkdir(ABSPATH . "wp-content/uploads", 0755);
             }
-            if (!is_dir($sl_upload_path)) {
-                mkdir($sl_upload_path, 0755);
+            if (!is_dir(SLPLUS_UPLOADDIR)) {
+                mkdir(SLPLUS_UPLOADDIR, 0755);
             }
-            if (!is_dir($sl_upload_path . "/custom-icons")) {
-                mkdir($sl_upload_path . "/custom-icons", 0755);
-            }	
-            if (is_dir($sl_path . "/languages") && !is_dir($sl_upload_path . "/languages")) {
-                $thiss->copyr($sl_path . "/languages", $sl_upload_path . "/languages");
+            if (!is_dir(SLPLUS_UPLOADDIR . "/custom-icons")) {
+                mkdir(SLPLUS_UPLOADDIR . "/custom-icons", 0755);
             }
-            if (is_dir($sl_path . "/images") && !is_dir($sl_upload_path . "/images")) {
-                $this->copyr($sl_path . "/images", $sl_upload_path . "/images");
+
+            // Copy over language files and images
+            //
+            if (is_dir(SLPLUS_COREDIR. "/languages") && !is_dir(SLPLUS_UPLOADDIR . "/languages")) {
+                $this->copyr(SLPLUS_COREDIR . "/languages", SLPLUS_UPLOADDIR . "/languages");
+            }
+            if (is_dir(SLPLUS_COREDIR . "/images") && !is_dir(SLPLUS_UPLOADDIR . "/images")) {
+                $this->copyr(SLPLUS_COREDIR . "/images", SLPLUS_UPLOADDIR . "/images");
             }
         }
         
@@ -288,8 +292,9 @@ if (! class_exists('SLPlus_Activate')) {
 
             // New Installation
             //
-            if ($updater->db_version_on_start === '') {
+            if ($updater->db_version_on_start == '') {
                 add_option(SLPLUS_PREFIX."-db_version", $updater->plugin->version);
+                add_option(SLPLUS_PREFIX.'_'.'disable_find_image','1');   // Disable the image find locations on new installs
 
             // Updating previous install
             //
@@ -311,7 +316,6 @@ if (! class_exists('SLPlus_Activate')) {
                 update_option(SLPLUS_PREFIX."-db_version", $updater->plugin->version);
             }
             update_option(SLPLUS_PREFIX.'-theme_lastupdated','2006-10-05');
-
 
             // Update Tables, Setup Roles, Move Directories
             //

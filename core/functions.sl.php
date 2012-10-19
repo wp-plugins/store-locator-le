@@ -5,20 +5,12 @@
  ** The collection of main core functions for Store Locator Plus
  ***************************************************************************/
 
-global $sl_dir, $sl_base, $sl_path, $sl_upload_path, $sl_upload_base;
-
 $text_domain=SLPLUS_PREFIX;
 $prefix = SLPLUS_PREFIX;
-
-$sl_dir =SLPLUS_PLUGINDIR;  //plugin absolute server directory name
-$sl_base=SLPLUS_PLUGINURL;  //URL to plugin directory
-$sl_path=ABSPATH.'wp-content/plugins/'.$sl_dir; //absolute server path to plugin directory
-$sl_upload_path=ABSPATH.'wp-content/uploads/sl-uploads'; //absolute server path to store locator uploads directory
 
 $map_character_encoding=(get_option('sl_map_character_encoding')!="")? 
     "&amp;oe=".get_option('sl_map_character_encoding') : 
     "";
-$sl_upload_base=get_option('siteurl')."/wp-content/uploads/sl-uploads"; //URL to store locator uploads directory
  
  
 /**
@@ -32,13 +24,10 @@ $sl_upload_base=get_option('siteurl')."/wp-content/uploads/sl-uploads"; //URL to
  * @global type $sl_google_map_domain
  * @global type $sl_google_map_country
  * @global type $sl_theme
- * @global string $sl_base
- * @global string $sl_upload_base
  * @global type $sl_location_table_view
  * @global type $sl_search_label
  * @global type $sl_zoom_level
  * @global type $sl_zoom_tweak
- * @global type $sl_use_city_search
  * @global type $sl_use_name_search
  * @global type $sl_default_map
  * @global type $sl_radius_label
@@ -50,17 +39,15 @@ $sl_upload_base=get_option('siteurl')."/wp-content/uploads/sl-uploads"; //URL to
  * @global type $sl_admin_locations_per_page
  * @global type $sl_instruction_message
  * @global type $sl_map_character_encoding
- * @global type $sl_use_country_search
- * @global type $slplus_show_state_pd
  * @global string $slplus_name_label
  */
 function initialize_variables() {
     global $sl_height, $sl_width, $sl_width_units, $sl_height_units;
-    global $cl_icon, $cl_icon2, $sl_google_map_domain, $sl_google_map_country, $sl_theme, $sl_base, $sl_upload_base, $sl_location_table_view;
-    global $sl_search_label, $sl_zoom_level, $sl_zoom_tweak, $sl_use_city_search, $sl_use_name_search, $sl_default_map;
+    global $cl_icon, $cl_icon2, $sl_google_map_domain, $sl_google_map_country, $sl_theme, $sl_location_table_view;
+    global $sl_search_label, $sl_zoom_level, $sl_zoom_tweak, $sl_use_name_search, $sl_default_map;
     global $sl_radius_label, $sl_website_label, $sl_num_initial_displayed, $sl_load_locations_default;
     global $sl_distance_unit, $sl_map_overview_control, $sl_admin_locations_per_page, $sl_instruction_message;
-    global $sl_map_character_encoding, $sl_use_country_search, $slplus_show_state_pd, $slplus_name_label;
+    global $sl_map_character_encoding, $slplus_name_label;
     
     $sl_map_character_encoding=get_option('sl_map_character_encoding');
     if (empty($sl_map_character_encoding)) {
@@ -121,21 +108,6 @@ function initialize_variables() {
     if (empty($sl_use_name_search)) {
         $sl_use_name_search="0";
         add_option('sl_use_name_search', $sl_use_name_search);
-        }
-    $sl_use_city_search=get_option('sl_use_city_search');
-    if (empty($sl_use_city_search)) {
-        $sl_use_city_search="1";
-        add_option('sl_use_city_search', $sl_use_city_search);
-        }
-    $sl_use_country_search=get_option('sl_use_country_search');
-    if (empty($sl_use_country_search)) {
-        $sl_use_country_search="1";
-        add_option('sl_use_country_search', $sl_use_country_search);
-        }
-    $slplus_show_state_pd=get_option('slplus_show_state_pd');
-    if (empty($slplus_show_state_pd)) {
-        $slplus_show_state_pd="1";
-        add_option('slplus_show_state_pd', $slplus_show_state_pd);
         }
 
     $sl_zoom_level=get_option('sl_zoom_level','4');
@@ -381,11 +353,9 @@ function do_geocoding($address,$sl_id='') {
     // Let's start using a SINGLE named array called "fnvars" to pass along anything
     // we want.
     //
-    global  $sl_dir, $sl_base, $sl_upload_base, $sl_path, $sl_upload_path, $text_domain, $wpdb,
-	    $slplus_plugin, $prefix,	        
-	    $sl_search_label, $sl_width, $sl_height, $sl_width_units, $sl_height_units, $sl_hide,
-	    $sl_radius, $sl_radius_label, $r_options, $button_style,
-	    $sl_instruction_message, $cs_options, $slplus_name_label,
+    global  $text_domain, $wpdb,
+	    $slplus_plugin, $prefix, $sl_search_label, $sl_width, $sl_height, $sl_width_units, $sl_height_units,
+	    $sl_radius, $sl_radius_label, $r_options, $sl_instruction_message, $cs_options, $slplus_name_label,
 	    $sl_country_options, $slplus_state_options, $fnvars;	 	    
     $fnvars = array();
 
@@ -415,19 +385,19 @@ function do_geocoding($address,$sl_id='') {
     $slplus_state_options=(isset($slplus_state_options)   ?$slplus_state_options:'');
 
     foreach ($r_array as $sl_value) {
-        $s=(ereg("\(.*\)", $sl_value))? " selected='selected' " : "" ;
+        $selected=(preg_match('/\(.*\)/', $sl_value))? " selected='selected' " : "" ;
         
         // Hiding Radius?
         if (get_option(SLPLUS_PREFIX.'_hide_radius_selections') == 1) {
             if ($s == " selected='selected' ") {
-                $sl_value=ereg_replace("[^0-9]", "", $sl_value);
+                $sl_value=preg_replace('/[^0-9]/', '', $sl_value);
                 $r_options = "<input type='hidden' id='radiusSelect' name='radiusSelect' value='$sl_value'>";
             }
             
         // Not hiding radius, build pulldown.
         } else {
-            $sl_value=ereg_replace("[^0-9]", "", $sl_value);
-            $r_options.="<option value='$sl_value' $s>$sl_value $unit_display</option>";
+            $sl_value=preg_replace('/[^0-9]/', '', $sl_value);
+            $r_options.="<option value='$sl_value' $selected>$sl_value $unit_display</option>";
         }
     }
         
@@ -435,7 +405,7 @@ function do_geocoding($address,$sl_id='') {
     // Show City Search option is checked
     // setup the pulldown list
     //
-    if (get_option('sl_use_city_search')==1) {
+    if (get_option('sl_use_city_search',0)==1) {
         $cs_array=$wpdb->get_results(
             "SELECT CONCAT(TRIM(sl_city), ', ', TRIM(sl_state)) as city_state " .
                 "FROM ".$wpdb->prefix."store_locator " .
@@ -462,32 +432,12 @@ function do_geocoding($address,$sl_id='') {
         $sl_country_options = '';    
         $slplus_state_options = '';
     }
-        
-    $sl_theme_base=$sl_upload_base."/images";
-    $sl_theme_path=$sl_upload_path."/images";
-    if (!file_exists($sl_theme_path."/search_button.png")) {
-        $sl_theme_base=$sl_base."/images";
-        $sl_theme_path=$sl_path."/images";
-    }
-    $sub_img=$sl_theme_base."/search_button.png";
-    $mousedown=(file_exists($sl_theme_path."/search_button_down.png"))? 
-        "onmousedown=\"this.src='$sl_theme_base/search_button_down.png'\" onmouseup=\"this.src='$sl_theme_base/search_button.png'\"" : 
-        "";
-    $mouseover=(file_exists($sl_theme_path."/search_button_over.png"))? 
-        "onmouseover=\"this.src='$sl_theme_base/search_button_over.png'\" onmouseout=\"this.src='$sl_theme_base/search_button.png'\"" : 
-        "";
-    $button_style=(file_exists($sl_theme_path."/search_button.png"))? 
-        "type='image' src='$sub_img' $mousedown $mouseover" : 
-        "type='submit'";
-    $sl_hide=(get_option('sl_remove_credits')==1)? 
-        "style='display:none;'" : 
-        "";
 
     $columns = 1;
-    $columns += (get_option('sl_use_city_search')!=1) ? 1 : 0;
-    $columns += (get_option('sl_use_country_search')!=1) ? 1 : 0; 	    
-    $columns += (get_option('slplus_show_state_pd')!=1) ? 1 : 0; 	    
-    $sl_radius_label=get_option('sl_radius_label');
+    $columns += (get_option('sl_use_city_search',0)!=1) ? 1 : 0;
+    $columns += (get_option('sl_use_country_search',0)!=1) ? 1 : 0;
+    $columns += (get_option('slplus_show_state_pd',0)!=1) ? 1 : 0;
+    $sl_radius_label=get_option('sl_radius_label','');
 
     // Prep fnvars for passing to our template
     //
@@ -547,12 +497,12 @@ function SetMapCenter() {
  * @return type
  */
 function comma($a) {
-	$a=ereg_replace('"', "&quot;", $a);
-	$a=ereg_replace("'", "&#39;", $a);
-	$a=ereg_replace(">", "&gt;", $a);
-	$a=ereg_replace("<", "&lt;", $a);
-	$a=ereg_replace(" & ", " &amp; ", $a);
-	return ereg_replace("," ,"&#44;" ,$a);
-	
+	$a=preg_replace("/'/"     , '&#39;'   , $a);
+	$a=preg_replace('/"/'     , '&quot;'  , $a);
+	$a=preg_replace('/>/'     , '&gt;'    , $a);
+	$a=preg_replace('/</'     , '&lt;'    , $a);
+	$a=preg_replace('/,/'     , '&#44;'   , $a);
+	$a=preg_replace('/ & /'   , ' &amp; ' , $a);
+    return $a;
 }
 

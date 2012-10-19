@@ -104,14 +104,3 @@ function setup_stylesheet_for_slplus() {
     }        
 }
 
-/**************************************
- ** function: setup_ADMIN_stylesheet_for_slplus
- **
- ** Setup the CSS for the admin page.
- **/
-function setup_ADMIN_stylesheet_for_slplus() {
-    if ( file_exists(SLPLUS_PLUGINDIR.'css/admin.css')) {
-        wp_enqueue_style('csl_slplus_admin_css', SLPLUS_PLUGINURL .'/css/admin.css'); 
-    }
-}
-

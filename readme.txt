@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
 Tags: google maps, store finder, store locator, store locater, google, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus, bing map, bing, yahoo maps, yahoo, mapping, retail
 Requires at least: 3.3
 Tested up to: 3.4.2
-Stable tag: 3.5.3
+Stable tag: 3.6
 
 Store Locator Plus works with Google Maps v3 to put a store location search on your site.
 The most active store locator plugin with monthly patches and updates!
@@ -44,6 +44,7 @@ We now offer premium add-on packages for our basic Store Locator Plus plugin.
 * [Pro Pack](http://www.charlestonsw.com/product/store-locator-plus) : More control over the map, search form, loading locations.
 * [Store Pages](http://www.charlestonsw.com/product/store-locator-plus-store-pages) : Create SEO friendly WordPress pages for your store locations.
 * [Enhanced Search](http://www.charlestonsw.com/product/store-locator-plus-enhanced-search) : Get even more control over the basic search form and even more when the Pro Pack is installed.
+* [Tagalong](http://www.charlestonsw.com/product/store-locator-plus-tagalong/) : Add custom map markers based on location categories.
 
 If you are a plugin developer you will be interested in our new "Roll Your Own" program where you can create SLP based premium (or free) add-ons of your own.   Create something great and list it on our site!
 
@@ -185,36 +186,26 @@ We update about once per month or more frequently as needed.
 
 Visit the [Store Locator Plus Release Notes](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/) at our website.
 
-= Latest Release: 3.5.3 (Early-October, 2012) =
+= 3.6 (Mid-October, 2012) =
 
-* Patch typo in JavaScript that made search form inactive on first click.
-
-
-= Latest Release: 3.5.2 (Early-October, 2012) =
-
-* Patch to make the JavaScript map loading work on more sites with or without early loading
-
-
-= Latest Release: 3.5.1 (Early-October, 2012) =
-
-* Patch to fix "force javascript" not saving.
-* Patch to fix "center map at" not saving.
-* Add more [Roll Your Own](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/add-on-packs-roll-your-own/) hooks and filters for 3rd party plugins and tagalong.
-
-
-= Latest Release: 3.5 (Early-October, 2012) =
-
-* [Pro Pack](http://www.charlestonsw.com/product/store-locator-plus/) : Add "remove license" to general settings page.
-* [Pro Pack](http://www.charlestonsw.com/product/store-locator-plus/) : Fixed "use email form" setting.
-* [Store Pages](http://www.charlestonsw.com/product/store-locator-plus-store-pages/) : Add "remove license" to general settings page.
-* [Store Pages](http://www.charlestonsw.com/product/store-locator-plus-store-pages/) : Fixed a bug for pages replace websites on initial load.
-* Force Load JavaScript is not longer Pro Pack only.  Turning it off can help some sites that are having map display issues.
-* Location sensor refinement.  Should cause less problems when "use location sensor" is enabled.
-* Update KM calculations to use 6371 KM/radian (the preferred standard) versus the calculated 6371.392896 value that was being used.
-** Calculations in SLP are based on the Spherical Law of Cosines.  Distances on an imperfect sphere like Earth are not exact.
-* Code stability and performance enhancements through proper object instantiation (smaller code, more features, less bugs).
-* Better handling of activation and update data structure changes.
-* Add more [Roll Your Own](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/add-on-packs-roll-your-own/) hooks and filters for 3rd party plugins and tagalong.
-
-
+* Turned off "show city pulldown" on new installs.
+* Turned off "show country pulldown" on new installs.
+* Added option to turn off the "Find Locations" image, it will be a standard form button instead, easier to style that way. 
+* Add labels for phone, fax, directions, and hours in map settings.
+* Manage/Add locations form entries for hours, fax, phone, and website URL field labels are now tied to map settings labels.
+** Want to use the hours field as "the best beer in the house" field?  Go ahead, we won't tell anyone.  Change the label and put whatever text in there you want.
+* Patch: Fix the [zoom functionality](http://www.charlestonsw.com/support/store-locator-plus/slp-zoom-settings-for-map-display/).
+* Patch: Fix the "sensor required" message, thanks jeffo.de on the WordPress Support Forums!
+* Patch: Fixed the custom icon processor.   Custom icons go in /wp-content/uploads/sl-uploads/custom-icons/
+* Patch: Fix city selection search for some sites (javascript __gmarker is undefined error)
+* Patch: Fix various undefined element errors in JavaScript that impacted map location loading on some sites.
+* Patch: Fix the "find locations" button image.
+* Patch: Fix the copy of images, icons, and location files to the "preservation" space at /wp-content/uploads/sl-uploads/
+* Only load SLP admin.css on SLP pages
+* Replace PHP ereg() and erep_replace() with PCRE versions.
+** ereg functions are deprecated with PHP5.3, no need to be filling up warning logs with that info.
+** This is normally hidden on a production install.
+** PCRE is faster anyway, which makes this release a minor performance improvement.
+* Add more [Hooks and Filters](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/) for 3rd party plugins.
+* Add unique IDs to the result table elements for better JavaScript mangling.
 

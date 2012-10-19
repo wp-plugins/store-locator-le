@@ -165,8 +165,8 @@ if (!$_POST) {
     update_option('sl_google_map_country', $sl_google_map_arr[0]);
     update_option('sl_google_map_domain', $sl_google_map_arr[1]);
     
-    $_POST['height']=ereg_replace("[^0-9]", "", $_POST['height']);
-    $_POST['width']=ereg_replace("[^0-9]", "", $_POST['width']);
+    $_POST['height']=preg_replace('/[^0-9]/', '', $_POST['height']);
+    $_POST['width'] =preg_replace('/[^0-9]/', '', $_POST['width']);
 
     // Height if % set range 0..100    
     if ($_POST['height_units'] == '%') {
@@ -202,6 +202,11 @@ if (!$_POST) {
         'sl_radius_label'                       ,
         'sl_search_label'                       ,
         'sl_website_label'                      ,
+
+        SLPLUS_PREFIX.'_label_directions'       ,
+        SLPLUS_PREFIX.'_label_fax'              ,
+        SLPLUS_PREFIX.'_label_hours'            ,
+        SLPLUS_PREFIX.'_label_phone'            ,
         
         'sl_starting_image'                     ,
         SLPLUS_PREFIX.'_tag_search_selections'  ,
@@ -239,17 +244,18 @@ if (!$_POST) {
         'show_tag_any',
         'email_form',
         'show_tags',
-        'disable_scrollwheel',
+        'disable_find_image',
         'disable_initialdirectory',
         'disable_largemapcontrol3d',
         'disable_scalecontrol',
+        'disable_scrollwheel',
+        'disable_search',
         'disable_maptypecontrol',
         'hide_radius_selections',
         'hide_address_entry',
-        'disable_search',
 		'show_search_by_name',
         'use_email_form',
-        'use_location_sensor'
+        'use_location_sensor',
         );
     foreach ($BoxesToHit as $JustAnotherBox) {        
         SaveCheckBoxToDB($JustAnotherBox, SLPLUS_PREFIX, '_');
@@ -335,21 +341,6 @@ $checked3	        = (get_option('sl_remove_credits',0)  ==1)?' checked ':'';
 $cl_icon_str   =(isset($cl_icon_str)  ?$cl_icon_str  :'');
 $cl_icon_str .= $slplus_plugin->AdminUI->rendorIconSelector('icon','prev');
 $cl_icon2_str  =(isset($cl_icon2_str) ?$cl_icon2_str :'');
-
-// Custom icon directory?
-if (is_dir($sl_upload_path."/custom-icons/")) {
-	$cl_icon_upload_dir=opendir($sl_upload_path."/custom-icons/");
-	while (false !== ($an_icon=readdir($cl_icon_upload_dir))) {
-		if (!ereg("^\.{1,2}$", $an_icon) && !ereg("shadow", $an_icon) && !ereg("\.db", $an_icon)) {
-			$cl_icon_str.=
-			"<div class='slp_icon_selector_box'><img class='slp_icon_selector'
-			src='$sl_upload_base/custom-icons/$an_icon' 
-			onclick='document.forms[\"mapDesigner\"].icon.value=this.src;document.getElementById(\"prev\").src=this.src;' 
-			></div>";
-		}
-	}
-}
-
 $cl_icon2_str = preg_replace('/\.icon\.value/','.icon2.value',$cl_icon_str);
 $cl_icon2_str = preg_replace('/getElementById\("prev"\)/','getElementById("prev2")',$cl_icon2_str);
 $cl_icon2_str = preg_replace('/getElementById\("icon"\)/','getElementById("icon2")',$cl_icon2_str);
@@ -358,14 +349,14 @@ $cl_icon2_str = preg_replace('/getElementById\("icon"\)/','getElementById("icon2
 //
 $cl_icon_notification_msg=
 (
-    ( !ereg("/core/images/icons/", get_option('sl_map_home_icon')) 
+    ( !preg_match('#/core/images/icons/#', get_option('sl_map_home_icon'))
         && 
-      !ereg("/custom-icons/", get_option('sl_map_home_icon'))
+      !preg_match('#/custom-icons/#', get_option('sl_map_home_icon'))
     )
         || 
-    ( !ereg("/core/images/icons/", get_option('sl_map_end_icon')) 
+    ( !preg_match('#/core/images/icons/#', get_option('sl_map_end_icon'))
         && 
-      !ereg("/custom-icons/", get_option('sl_map_end_icon'))
+      !preg_match('#/custom-icons/#', get_option('sl_map_end_icon'))
     )
 )
     ? 

@@ -3,7 +3,7 @@
 Plugin Name: Google Maps via Store Locator Plus
 Plugin URI: http://www.charlestonsw.com/products/store-locator-plus/
 Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Gooogle Maps.  This is a highly customizable, easily expandable, enterprise-class location management system.
-Version: 3.5.3
+Version: 3.6
 Author: Charleston Software Associates
 Author URI: http://www.charlestonsw.com
 License: GPL3
@@ -26,11 +26,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 */
 
+if (isset($_SERVER['SERVER_NAME']) && ($_SERVER['SERVER_NAME']==='wpdev.cybersprocket.com')){
+    error_reporting(E_ALL);
+}
 
-// Globals
-global $sl_upload_path,$slpath;
-$sl_upload_path='';
-$sl_path='';
 
 // Drive Path Defines
 //
@@ -42,6 +41,13 @@ if (defined('SLPLUS_COREDIR') === false) {
 }
 if (defined('SLPLUS_ICONDIR') === false) {
     define('SLPLUS_ICONDIR', SLPLUS_COREDIR . 'images/icons/');
+}
+if (defined('SLPLUS_UPLOADDIR') === false) {
+    $upload_dir = wp_upload_dir('slp');
+    $upload_path = preg_replace('/\/slp\/$/','/sl-uploads/',$upload_dir['path']);
+    $upload_url  = preg_replace('/\/slp\/$/','/sl-uploads/',$upload_dir['url']);
+    define('SLPLUS_UPLOADDIR', $upload_path);
+    define('SLPLUS_UPLOADURL', $upload_url);
 }
 
 // URL Defines
@@ -110,7 +116,6 @@ add_action('shutdown'           ,array($slplus_plugin->Actions,'shutdown')      
 //
 add_action('admin_menu'         ,array($slplus_plugin->Actions,'admin_menu')           );
 add_action('admin_init'         ,array($slplus_plugin->Actions,'admin_init'),10        );
-add_action('admin_print_styles' , 'setup_ADMIN_stylesheet_for_slplus'           );
 add_action('admin_head'         , 'slpreport_downloads'                         );
 
 // Short Codes

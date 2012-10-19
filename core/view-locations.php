@@ -68,8 +68,8 @@ if ($_POST                                                  &&
     //
     $field_value_str = '';
     foreach ($_POST as $key=>$sl_value) {
-        if (ereg("\-$_GET[edit]", $key)) {
-            $slpFieldName = ereg_replace("\-$_GET[edit]", "", $key);
+        if (preg_match('#\-'.$_GET['edit'].'#', $key)) {
+            $slpFieldName = preg_replace('#\-'.$_GET['edit'].'#', '', $key);
             if (!$slplus_plugin->license->packages['Pro Pack']->isenabled) {
                 if ( ($slpFieldName == 'latitude') || ($slpFieldName == 'longitude')) {
                     continue;
@@ -82,11 +82,20 @@ if ($_POST                                                  &&
     $field_value_str=substr($field_value_str, 0, strlen($field_value_str)-2);
     $field_value_str = apply_filters('slp_update_location_data',$field_value_str,$_GET['edit']);
     $wpdb->query("UPDATE ".$wpdb->prefix."store_locator SET $field_value_str WHERE sl_id=$_GET[edit]");
-    
+
     // Check our address
     //
-    extract($_POST);
-    $the_address="$address $address2, $city, $state $zip";
+    if (!isset($_POST['address'])   ) { $_POST['address'] = '';     }
+    if (!isset($_POST['address2'])  ) { $_POST['address2'] = '';    }
+    if (!isset($_POST['city'])      ) { $_POST['city'] = '';        }
+    if (!isset($_POST['state'])     ) { $_POST['state'] = '';       }
+    if (!isset($_POST['zip'])       ) { $_POST['zip'] = '';         }
+    $the_address=
+            $_POST['address']   .' '    .
+            $_POST['address2']  .', '   .
+            $_POST['city']      .', '   .
+            $_POST['state']     .' '    .
+            $_POST['zip'];
 
     // RE-geocode if the address changed
     // or if the lat/long is not set
@@ -102,14 +111,15 @@ if ($_POST                                                  &&
 
     // Redirect to the edit page
     //
-    print "<script>location.replace('".ereg_replace("&edit=$_GET[edit]", "",
+    print "<script>location.replace('".preg_replace('/&edit='.$_GET['edit'].'/', '',
                 $_SERVER['REQUEST_URI'])."');</script>";
 }
-	
+
 //------------------------------------------------------------------------
 // ACTION HANDLER
 // If post action is set
 //------------------------------------------------------------------------
+extract($_POST);
 if (isset($_REQUEST['act'])) {
 
     // Delete Action	    
@@ -181,7 +191,7 @@ if (isset($_REQUEST['act'])) {
         }
 
     // Tagging Action
-    }  elseif (eregi("tag", $_REQUEST['act'])) {
+    }  elseif (preg_match('#tag#i', $_REQUEST['act'])) {
 
         //adding or removing tags for specified a locations
         if ($_POST) {extract($_POST);}
@@ -303,7 +313,7 @@ if (isset($_GET['changeUpdater']) && ($_GET['changeUpdater']==1)) {
         update_option('sl_location_updater_type', 'Tagging');
         $updaterTypeText="Tagging";
     }
-    $_SERVER['REQUEST_URI']=ereg_replace("&changeUpdater=1", "", $_SERVER['REQUEST_URI']);
+    $_SERVER['REQUEST_URI']=preg_replace('/&changeUpdater=1/', '', $_SERVER['REQUEST_URI']);
     print "<script>location.replace('".$_SERVER['REQUEST_URI']."');</script>";
 }
 
@@ -392,7 +402,7 @@ if ($slpLocations=$wpdb->get_results(
         $slpManageColumns = array_merge($slpManageColumns,
                     array(
                         'sl_description'    => __('Description'  ,SLPLUS_PREFIX),
-                        'sl_url'            => __('URL'          ,SLPLUS_PREFIX),
+                        'sl_url'            => get_option('sl_website_label','Website'),
                     )
                 );
 
@@ -409,12 +419,13 @@ if ($slpLocations=$wpdb->get_results(
         $slpManageColumns = array_merge($slpManageColumns,
                     array(
                         'sl_email'       => __('Email'        ,SLPLUS_PREFIX),
-                        'sl_hours'       => __('Hours'        ,SLPLUS_PREFIX),
-                        'sl_phone'       => __('Phone'        ,SLPLUS_PREFIX),
-                        'sl_fax'         => __('Fax'          ,SLPLUS_PREFIX),
+                        'sl_hours'       => $slplus_plugin->settings->get_item('label_hours','Hours','_'),
+                        'sl_phone'       => $slplus_plugin->settings->get_item('label_phone','Phone','_'),
+                        'sl_fax'         => $slplus_plugin->settings->get_item('label_fax'  ,'Fax'  ,'_'),
                         'sl_image'       => __('Image'        ,SLPLUS_PREFIX),
                     )
                 );
+
     }
 
     // Third party plugin add-ons
@@ -481,7 +492,7 @@ if ($slpLocations=$wpdb->get_results(
 
             $slpEditForm .= "<br><nobr>".
                     "<input type='submit' value='".__("Update", SLPLUS_PREFIX)."' class='button-primary'>".
-                    "<input type='button' class='button' value='".__("Cancel", SLPLUS_PREFIX)."' onclick='location.href=\"".ereg_replace("&edit=$_GET[edit]", "",$_SERVER['REQUEST_URI'])."\"'>".
+                    "<input type='button' class='button' value='".__("Cancel", SLPLUS_PREFIX)."' onclick='location.href=\"".preg_replace('/&edit=$_GET[edit]/', '',$_SERVER['REQUEST_URI'])."\"'>".
                     "<input type='hidden' name='option_value-$locID' value='$sl_value[sl_option_value]' />" .
                     "</nobr>";
             print apply_filters('slp_edit_location_left_column',$slpEditForm);
@@ -494,11 +505,11 @@ if ($slpLocations=$wpdb->get_results(
                     "<strong>".__("Additional Information", SLPLUS_PREFIX)."</strong><br>
                     <textarea name='description-$locID' rows='5' cols='17'>$sl_value[sl_description]</textarea>&nbsp;<small>".__("Description", SLPLUS_PREFIX)."</small><br>
                     <input name='tags-$locID' value='$sl_value[sl_tags]'>&nbsp;<small>"  .__("Tags (seperate with commas)", SLPLUS_PREFIX)."</small><br>		
-                    <input name='url-$locID'  value='$sl_value[sl_url]'>&nbsp;<small>"   .__("URL", SLPLUS_PREFIX)."</small><br>
+                    <input name='url-$locID'  value='$sl_value[sl_url]'>&nbsp;<small>"   .get_option('sl_website_label','Website')."</small><br>
                     <input name='email-$locID' value='$sl_value[sl_email]'>&nbsp;<small>".__("Email", SLPLUS_PREFIX)."</small><br>
-                    <input name='hours-$locID' value='$sl_value[sl_hours]'>&nbsp;<small>".__("Hours", SLPLUS_PREFIX)."</small><br>
-                    <input name='phone-$locID' value='$sl_value[sl_phone]'>&nbsp;<small>".__("Phone", SLPLUS_PREFIX)."</small><br>
-                    <input name='fax-$locID'   value='$sl_value[sl_fax]'>&nbsp;<small>"  .__("Fax", SLPLUS_PREFIX)."</small><br>
+                    <input name='hours-$locID' value='$sl_value[sl_hours]'>&nbsp;<small>".$slplus_plugin->settings->get_item('label_hours','Hours','_')."</small><br>
+                    <input name='phone-$locID' value='$sl_value[sl_phone]'>&nbsp;<small>".$slplus_plugin->settings->get_item('label_phone','Phone','_')."</small><br>
+                    <input name='fax-$locID'   value='$sl_value[sl_fax]'>&nbsp;<small>"  .$slplus_plugin->settings->get_item('label_fax','Fax','_')."</small><br>
                     <input name='image-$locID' value='$sl_value[sl_image]'>&nbsp;<small>".__("Image URL (shown with location)", SLPLUS_PREFIX)."</small>" .
                     '</div>'
                     ;
@@ -537,7 +548,7 @@ if ($slpLocations=$wpdb->get_results(
             print "<th class='thnowrap'>".                                                     // Action Column
 
                 "<a class='action_icon edit_icon' alt='".__('edit',SLPLUS_PREFIX)."' title='".__('edit',SLPLUS_PREFIX)."' 
-                    href='".ereg_replace("&edit=".(isset($_GET['edit'])?$_GET['edit']:''), "",$_SERVER['REQUEST_URI']).
+                    href='".preg_replace('/&edit='.(isset($_GET['edit'])?$_GET['edit']:'').'/', '',$_SERVER['REQUEST_URI']).
                 "&edit=" . $locID ."#a$locID'></a>".
                 "&nbsp;" . 
                 "<a class='action_icon delete_icon' alt='".__('delete',SLPLUS_PREFIX)."' title='".__('delete',SLPLUS_PREFIX)."' 

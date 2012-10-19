@@ -99,13 +99,19 @@ echo CreateInputDiv(
             !$slplus_plugin->license->packages['Pro Pack']->isenabled
             );
 
-
         echo CreateCheckboxDiv(
             '_disable_search',
             __('Hide Find Locations button',SLPLUS_PREFIX),
             __('Remove the "Find Locations" button from the search form.', SLPLUS_PREFIX) . $ppFeatureMsg,
             SLPLUS_PREFIX,
             !$slplus_plugin->license->packages['Pro Pack']->isenabled
+            );
+
+        echo CreateCheckboxDiv(
+            '_disable_find_image',
+            __('Use Find Location Text Button',SLPLUS_PREFIX),
+            __('Use a standard text button for "Find Locations" instead of the provided button images.', SLPLUS_PREFIX) . $ppFeatureMsg,
+            SLPLUS_PREFIX
             );
 
         do_action('slp_add_search_form_features_setting');
@@ -212,6 +218,34 @@ echo CreateInputDiv(
         __('Search results text for the website link.',SLPLUS_PREFIX),
         '',
         'website'
+        );
+echo CreateInputDiv(
+        '_label_hours',
+        __('Hours', SLPLUS_PREFIX),
+        __('Hours label.',SLPLUS_PREFIX),
+        SLPLUS_PREFIX,
+        'Hours: '
+        );
+echo CreateInputDiv(
+        '_label_phone',
+        __('Phone', SLPLUS_PREFIX),
+        __('Phone label.',SLPLUS_PREFIX),
+        SLPLUS_PREFIX,
+        'Phone: '
+        );
+echo CreateInputDiv(
+        '_label_fax',
+        __('Fax', SLPLUS_PREFIX),
+        __('Fax label.',SLPLUS_PREFIX),
+        SLPLUS_PREFIX,
+        'Fax: '
+        );
+echo CreateInputDiv(
+        '_label_directions',
+        __('Directions', SLPLUS_PREFIX),
+        __('Directions label.',SLPLUS_PREFIX),
+        SLPLUS_PREFIX,
+        'Directions'
         );
 echo CreateInputDiv(
         'sl_instruction_message',

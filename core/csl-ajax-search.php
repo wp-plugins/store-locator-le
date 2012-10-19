@@ -18,30 +18,30 @@ function slp_add_marker($row = null,$type='load') {
         return '';
     }
     $marker = array(
-          'name' => esc_attr($row['sl_store']),
-          'address' => esc_attr($row['sl_address']),
-          'address2' => esc_attr($row['sl_address2']),
-          'city' => esc_attr($row['sl_city']),
-          'state' => esc_attr($row['sl_state']),
-          'zip' => esc_attr($row['sl_zip']),
-          'lat' => $row['sl_latitude'],
-          'lng' => $row['sl_longitude'],
+          'name'        => esc_attr($row['sl_store']),
+          'address'     => esc_attr($row['sl_address']),
+          'address2'    => esc_attr($row['sl_address2']),
+          'city'        => esc_attr($row['sl_city']),
+          'state'       => esc_attr($row['sl_state']),
+          'zip'         => esc_attr($row['sl_zip']),
+          'lat'         => $row['sl_latitude'],
+          'lng'         => $row['sl_longitude'],
           'description' => html_entity_decode($row['sl_description']),
-          'url' => esc_attr($row['sl_url']),
-          'sl_pages_url' => esc_attr($row['sl_pages_url']),
-          'email' => esc_attr($row['sl_email']),
-          'hours' => esc_attr($row['sl_hours']),
-          'phone' => esc_attr($row['sl_phone']),
-          'fax'   => esc_attr($row['sl_fax']),
-          'image' => esc_attr($row['sl_image']),
-          'distance' => $row['sl_distance'],
-          'tags' => ((get_option(SLPLUS_PREFIX.'_show_tags',0) ==1)? esc_attr($row['sl_tags']) : ''),
-          'data_from' => $type,
-          'option_value' => esc_js($row['sl_option_value']),
-          'id' => $row['sl_id'],
+          'url'         => esc_attr($row['sl_url']),
+          'sl_pages_url'=> esc_attr($row['sl_pages_url']),
+          'email'       => esc_attr($row['sl_email']),
+          'hours'       => esc_attr($row['sl_hours']),
+          'phone'       => esc_attr($row['sl_phone']),
+          'fax'         => esc_attr($row['sl_fax']),
+          'image'       => esc_attr($row['sl_image']),
+          'distance'    => $row['sl_distance'],
+          'tags'        => ((get_option(SLPLUS_PREFIX.'_show_tags',0) ==1)? esc_attr($row['sl_tags']) : ''),
+          'data_from'   => $type,
+          'option_value'=> esc_js($row['sl_option_value']),
+          'id'          => $row['sl_id'],
       );
 
-      $marker = apply_filters('slp_search_results',$marker);
+      $marker = apply_filters('slp_results_marker_data',$marker);
       return $marker;
 }
 
@@ -221,20 +221,23 @@ function csl_ajax_search() {
     // Iterate through the rows, printing XML nodes for each
     $response = array();
     while ($row = @mysql_fetch_assoc($result)){
-        $response[] = slp_add_marker($row,'search');
+        $thisLocation = slp_add_marker($row,'search');
+        if (!empty($thisLocation)) {
+            $response[] = $thisLocation;
 
-        // Reporting
-        // Insert the results into the reporting table
-        //
-        if (get_option(SLPLUS_PREFIX.'-reporting_enabled') === "on") {
-            $wpdb->query(
-                sprintf(
-                    "INSERT INTO ${dbPrefix}slp_rep_query_results
-                        (slp_repq_id,sl_id) values (%d,%d)",
-                        $slp_QueryID,
-                        $row['sl_id']
-                    )
-                );
+            // Reporting
+            // Insert the results into the reporting table
+            //
+            if (get_option(SLPLUS_PREFIX.'-reporting_enabled') === "on") {
+                $wpdb->query(
+                    sprintf(
+                        "INSERT INTO ${dbPrefix}slp_rep_query_results
+                            (slp_repq_id,sl_id) values (%d,%d)",
+                            $slp_QueryID,
+                            $row['sl_id']
+                        )
+                    );
+            }
         }
     }
     header( "Content-Type: application/json" );

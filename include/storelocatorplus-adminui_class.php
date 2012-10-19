@@ -15,13 +15,75 @@ if (! class_exists('SLPlus_AdminUI')) {
         /******************************
          * PUBLIC PROPERTIES & METHODS
          ******************************/
-        
+        public $styleHandle = 'csl_slplus_admin_css';
+
         /*************************************
          * The Constructor
          */
         function __construct($params=null) {
+
+            // Register our admin styleseheet
+            //
+            if (file_exists(SLPLUS_PLUGINDIR.'css/admin.css')) {
+                wp_register_style($this->styleHandle, SLPLUS_PLUGINURL .'/css/admin.css');
+            }
         } 
         
+        /**
+         * Enqueue the admin stylesheet when needed.
+         */
+        function enqueue_admin_stylesheet() {
+            wp_enqueue_style($this->styleHandle);
+        }
+
+        /**
+         * Setup the stylesheet only when needed.
+         */
+        function set_style_as_needed() {
+            $slugPrefix = 'store-locator-plus_page_';
+
+            // Add Locations
+            //
+            add_action(
+                   'admin_print_styles-' . $slugPrefix . 'slp_add_locations',
+                    array($this,'enqueue_admin_stylesheet')
+                    );
+
+            // General Settings
+            //
+           add_action(
+                   'admin_print_styles-'  . $slugPrefix . 'slp_general_settings',
+                    array($this,'enqueue_admin_stylesheet')
+                    );
+           add_action(
+                   'admin_print_styles-'  . 'settings_page_csl-slplus-options',
+                    array($this,'enqueue_admin_stylesheet')
+                    );
+
+
+            // Manage Locations
+            //
+            add_action(
+                   'admin_print_styles-' . 'store-locator-le/core/view-locations.php',
+                    array($this,'enqueue_admin_stylesheet')
+                    );
+
+            // Map Settings
+            //
+            add_action(
+                   'admin_print_styles-' . 'store-locator-le/core/map-designer.php',
+                    array($this,'enqueue_admin_stylesheet')
+                    );
+
+            // Reporting
+            //
+            add_action(
+                   'admin_print_styles-' . 'store-locator-le/reporting.php',
+                    array($this,'enqueue_admin_stylesheet')
+                    );
+
+        }
+
         /*************************************
          * method: slpRenderCreatePageButton()
          *
@@ -34,7 +96,7 @@ if (! class_exists('SLPlus_AdminUI')) {
                         alt='".__('create page',SLPLUS_PREFIX)."' 
                         title='".__('create page',SLPLUS_PREFIX)."' 
                         href='".
-                            ereg_replace("&createpage=".(isset($_GET['createpage'])?$_GET['createpage']:''), "",$_SERVER['REQUEST_URI']).
+                            preg_replace('/&createpage=/'.(isset($_GET['createpage'])?$_GET['createpage']:''), "",$_SERVER['REQUEST_URI']).
                             "&act=createpage&sl_id=$locationID&slp_pageid=$storePageID#a$locationID'
                    ></a>";            
         }  
@@ -217,11 +279,9 @@ if (! class_exists('SLPlus_AdminUI')) {
          * Draw the add locations page.  Use to be a separate script ./core/add-locations.php
          *
          * @global type $wpdb
-         * @global type $sl_upload_path
-         * @global type $sl_path
          */
          function renderPage_AddLocations() {
-                global $slplus_plugin,$wpdb, $sl_upload_path, $sl_path;
+                global $slplus_plugin,$wpdb;
 
                 print "<div class='wrap'>
                             <div id='icon-add-locations' class='icon32'><br/></div>
@@ -246,7 +306,7 @@ if (! class_exists('SLPlus_AdminUI')) {
                     $fieldList = '';
                     $sl_valueList = '';
                     foreach ($_POST as $key=>$sl_value) {
-                        if (ereg("sl_", $key)) {
+                        if (preg_match('#sl_#', $key)) {
                             $fieldList.="$key,";
                             $sl_value=comma($sl_value);
                             $sl_valueList.="\"".stripslashes($sl_value)."\",";
@@ -368,22 +428,27 @@ if (! class_exists('SLPlus_AdminUI')) {
          function rendorIconSelector($inputFieldID = null, $inputImageID = null) {
             if (($inputFieldID == null) || ($inputImageID == null)) { return ''; }
             $htmlStr = '';
-            $iconDir=opendir(SLPLUS_ICONDIR);
-            while (false !== ($an_icon=readdir($iconDir))) {
-                if (
-                    (preg_match('/\.(png|gif|jpg)/i', $an_icon) > 0) &&
-                    (preg_match('/shadow\.(png|gif|jpg)/i', $an_icon) <= 0)
-                    ) {
-                    $htmlStr .=
-                        "<div class='slp_icon_selector_box'>".
-                            "<img class='slp_icon_selector'
-                                 src='".SLPLUS_ICONURL.$an_icon."'
-                                 onclick='".
-                                    "document.getElementById(\"".$inputFieldID."\").value=this.src;".
-                                    "document.getElementById(\"".$inputImageID."\").src=this.src;".
-                                 "'>".
-                         "</div>"
-                         ;
+
+            $directories = apply_filters('slp_icon_directories',array(SLPLUS_ICONDIR, SLPLUS_UPLOADDIR."/custom-icons/"));
+            foreach ($directories as $directory) {
+                $iconDir=opendir($directory);
+                $iconURL = (($directory === SLPLUS_ICONDIR)?SLPLUS_ICONURL:SLPLUS_UPLOADURL.'/custom-icons/');
+                while (false !== ($an_icon=readdir($iconDir))) {
+                    if (
+                        (preg_match('/\.(png|gif|jpg)/i', $an_icon) > 0) &&
+                        (preg_match('/shadow\.(png|gif|jpg)/i', $an_icon) <= 0)
+                        ) {
+                        $htmlStr .=
+                            "<div class='slp_icon_selector_box'>".
+                                "<img class='slp_icon_selector'
+                                     src='".$iconURL.$an_icon."'
+                                     onclick='".
+                                        "document.getElementById(\"".$inputFieldID."\").value=this.src;".
+                                        "document.getElementById(\"".$inputImageID."\").src=this.src;".
+                                     "'>".
+                             "</div>"
+                             ;
+                    }
                 }
             }
             if ($htmlStr != '') {

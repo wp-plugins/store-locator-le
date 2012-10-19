@@ -36,23 +36,24 @@ class wpCSL_license__slplus {
      ** transaction ID).
      **/
     function check_license_key($theSKU='', $isa_package=false, $usethis_license='', $force = false) {
+
+        // The forced license needed for plugins with no main license
+        // but licensed packages
+        //
+        if (!$isa_package && ($usethis_license == '')) {
+            $usethis_license = get_option($this->prefix . '-license_key','');
+        }
+
+        // Don't check to see if the license is valid if there is
+        // no supplied license key
+        if ($usethis_license == '') {
+            return false;
+        }
+
         // The SKU
         //
         if ($theSKU == '') {
             $theSKU = $this->sku;
-        }
-        
-        // The forced license
-        // needed for plugins with no main license 
-        // but licensed packages
-        //
-        if ($usethis_license == '') {
-            $usethis_license = get_option($this->prefix . '-license_key');
-        }
-
-        // Don't check to see if the license is valid if there is no supplied license key
-        if ($usethis_license == '') {
-            return false;
         }
 
         // Save the current date and retrieve the last time we checked
@@ -292,7 +293,7 @@ class wpCSL_license_package__slplus {
         
         // Set our active version (what we are licensed for)
         //
-        $this->active_version =  (isset($this->force_version)?$this->force_version:get_option($this->prefix.'-'.$this->sku.'-latest-version-numeric')); 
+        $this->active_version =  (isset($this->force_version)?$this->force_version:get_option($this->prefix.'-'.$this->sku.'-latest-version-numeric'));
     }
     
     
@@ -313,7 +314,7 @@ class wpCSL_license_package__slplus {
 
             // License is OK - mark it as such
             //
-            $this->isenabled = $this->parent->check_license_key($this->sku, false, get_option($this->lk_option_name));
+            $this->isenabled = $this->parent->check_license_key($this->sku, true, get_option($this->lk_option_name));
             update_option($this->enabled_option_name,$this->isenabled);
             $this->active_version =  get_option($this->prefix.'-'.$this->sku.'-latest-version-numeric');
         }

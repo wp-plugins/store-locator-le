@@ -84,7 +84,7 @@ function slplus_create_country_pd() {
         // If Use Country Search option is enabled
         // build our country pulldown.
         //
-        if (get_option('sl_use_country_search')==1) {
+        if (get_option('sl_use_country_search',0)==1) {
             $cs_array=$wpdb->get_results(
                 "SELECT TRIM(sl_country) as country " .
                     "FROM ".$wpdb->prefix."store_locator " .
@@ -131,7 +131,7 @@ function slplus_create_state_pd() {
         // If Use State Search option is enabled
         // build our state pulldown.
         //
-        if (get_option('slplus_show_state_pd')==1) {
+        if (get_option('slplus_show_state_pd',0)==1) {
             $cs_array=$wpdb->get_results(
                 "SELECT TRIM(sl_state) as state " .
                     "FROM ".$wpdb->prefix."store_locator " .
