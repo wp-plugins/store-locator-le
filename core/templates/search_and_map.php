@@ -3,7 +3,6 @@
       $sl_radius, $sl_radius_label, $r_options, $sl_instruction_message, $slplus_state_options, $sl_country_options, 
       $fnvars, $slplus_plugin, $slplus_name_label;
 
-      $prefix = $slplus_plugin->prefix;
       print "<div id='sl_div'>";
 
     // Render the search form
@@ -30,10 +29,10 @@ if ($sl_starting_image != '') {
 <?php
 }
 ?>
-                <div id='map' style='width:<?php echo $sl_width?><?php echo $sl_width_units?>; height:<?php echo $sl_height?><?php echo $sl_height_units?>'></div>
-                <table cellpadding='0px'
+                <div id='map' style='width:<?php echo $sl_width.$sl_width_units?>; height:<?php echo $sl_height.$sl_height_units?>;'></div>
+                <table cellpadding='0'
                        class='sl_footer'
-                       width='<?php echo $sl_width?><?php echo $sl_width_units?>;'
+                       width='<?php echo $sl_width.$sl_width_units?>;'
                        <?php
                         echo ((get_option('sl_remove_credits',0)==1)?"style='display:none;'":'');
                        ?>
@@ -62,5 +61,3 @@ if ($sl_starting_image != '') {
     </tr>
   </table>
 </div>
-
-

@@ -68,9 +68,7 @@ if ( isset($_POST['sl_store']) && $_POST['sl_store'] && $notpca ) {
 	    ($_FILES['csvfile']['size'] > 0)
 	) {	
 
-    if  (function_exists('custom_upload_mimes')) {
-        add_filter('upload_mimes', 'custom_upload_mimes');
-    }	
+    add_filter('upload_mimes', 'custom_upload_mimes');
 
 	// Get the type of the uploaded file. This is returned as "type/extension"
 	$arr_file_type = wp_check_filetype(basename($_FILES['csvfile']['name']));

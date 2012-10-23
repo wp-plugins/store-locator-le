@@ -1,10 +1,8 @@
 <?php
-  global $sl_search_label, $sl_width, $sl_height, $sl_width_units, $sl_height_units,
+  global $sl_search_label,
       $sl_radius, $sl_radius_label, $r_options,
       $sl_instruction_message, $cs_options, $slplus_state_options, $sl_country_options,
       $fnvars, $slplus_plugin, $slplus_name_label;
-
-      $prefix = $slplus_plugin->prefix;
 
       $slp_SearchDivs = new SLPlus_UI_DivManager();
 ?>
@@ -44,7 +42,7 @@ ob_start();
           ?>
           <div id='addy_in_state'>
               <label for='addressInputState'><?php 
-                  print get_option($prefix.'_state_pd_label');
+                  print get_option(SLPLUS_PREFIX.'_state_pd_label');
                   ?></label>
               <select id='addressInputState' onchange='aI=document.getElementById("searchForm").addressInput;if(this.value!=""){oldvalue=aI.value;aI.value=this.value;}else{aI.value=oldvalue;}'>
                   <option value=''>--Search By State--</option>
@@ -89,7 +87,7 @@ ob_start();
           ?>
                   <div id='search_by_tag' class='search_item' <?php if (isset($fnvars['only_with_tag'])) { print "style='display:none;'"; }?>>
                       <label for='tag_to_search_for'><?php
-                          print get_option($prefix.'_search_tag_label');
+                          print get_option(SLPLUS_PREFIX.'_search_tag_label');
                           ?></label>
                       <?php
                           // Tag selections
@@ -98,7 +96,7 @@ ob_start();
                               $tag_selections = $fnvars['tags_for_pulldown'];
                           }
                           else {
-                              $tag_selections = get_option($prefix.'_tag_search_selections');
+                              $tag_selections = get_option(SLPLUS_PREFIX.'_tag_search_selections');
                           }
 
                           // Tag selections

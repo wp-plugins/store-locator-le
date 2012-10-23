@@ -22,6 +22,22 @@ if (! class_exists('SLPlus_UI')) {
         function __construct($params) {
         } 
         
+        /**
+         * Do not texturize our shortcodes.
+         * 
+         * @param array $shortcodes
+         * @return array
+         */
+        function no_texturize_shortcodes($shortcodes) {
+           return array_merge($shortcodes,
+                    array(
+                     'STORE-LOCATOR',
+                     'SLPLUS',
+                     'slplus',
+                    )
+                   );
+        }
+
         /*************************************
          * method: slp_render_search_form()
          *

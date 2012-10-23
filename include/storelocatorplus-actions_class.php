@@ -356,6 +356,10 @@ if (! class_exists('SLPlus_Actions')) {
                 
             }
 
+            // Do not texturize our shortcodes
+            //
+            add_filter('no_texturize_shortcodes',array('SLPlus_UI','no_texturize_shortcodes'));
+
             // Register Stores Taxonomy
             //
             $this->register_store_taxonomy();
@@ -382,7 +386,27 @@ if (! class_exists('SLPlus_Actions')) {
                         )
                 );
         }
-        
+
+
+
+        /**************************************
+         * SetMapCenter()
+         *
+         * Set the starting point for the center of the map.
+         * Uses country by default.
+         */
+        function SetMapCenter() {
+            global $slplus_plugin;
+            $customAddress = get_option(SLPLUS_PREFIX.'_map_center');
+            if (
+                (preg_replace('/\W/','',$customAddress) != '') &&
+                $slplus_plugin->license->packages['Pro Pack']->isenabled
+                ) {
+                return str_replace(array("\r\n","\n","\r"),', ',esc_attr($customAddress));
+            }
+            return esc_attr(get_option('sl_google_map_country','United States'));
+        }
+
         /*************************************
          * method: wp_enqueue_scripts()
          * 
@@ -477,7 +501,7 @@ if (! class_exists('SLPlus_Actions')) {
                 'label_hours'       => esc_attr(get_option(SLPLUS_PREFIX.'_label_hours',        'Hours: ')       ),
                 'label_phone'       => esc_attr(get_option(SLPLUS_PREFIX.'_label_phone',        'Phone: ')       ),
                 'map_3dcontrol'     => (get_option(SLPLUS_PREFIX.'_disable_largemapcontrol3d')==0),
-                'map_country'       => SetMapCenter(),
+                'map_country'       => $slplus_plugin->Actions->SetMapCenter(),
                 'map_domain'        => get_option('sl_google_map_domain','maps.google.com'),
                 'map_home_icon'     => $slplus_home_icon,
                 'map_home_sizew'    => $slplus_home_size[0],
