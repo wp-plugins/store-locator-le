@@ -5,53 +5,41 @@
  ** The collection of main core functions for Store Locator Plus
  ***************************************************************************/
 
-global $sl_dir, $sl_base, $sl_path, $sl_upload_path, $sl_upload_base;
-
-$text_domain=SLPLUS_PREFIX;
-$prefix = SLPLUS_PREFIX;
-
-$sl_dir =SLPLUS_PLUGINDIR;  //plugin absolute server directory name
-$sl_base=SLPLUS_PLUGINURL;  //URL to plugin directory
-$sl_path=ABSPATH.'wp-content/plugins/'.$sl_dir; //absolute server path to plugin directory
-$sl_upload_path=ABSPATH.'wp-content/uploads/sl-uploads'; //absolute server path to store locator uploads directory
-
-$map_character_encoding=(get_option('sl_map_character_encoding')!="")? 
-    "&amp;oe=".get_option('sl_map_character_encoding') : 
-    "";
-$sl_upload_base=get_option('siteurl')."/wp-content/uploads/sl-uploads"; //URL to store locator uploads directory
- 
- 
-
-/* -----------------*/
-function move_upload_directories() {
-	global $sl_upload_path, $sl_path;
-	
-	if (!is_dir(ABSPATH . "wp-content/uploads")) {
-		mkdir(ABSPATH . "wp-content/uploads", 0755);
-	}
-	if (!is_dir($sl_upload_path)) {
-		mkdir($sl_upload_path, 0755);
-	}
-	if (!is_dir($sl_upload_path . "/custom-icons")) {
-		mkdir($sl_upload_path . "/custom-icons", 0755);
-	}	
-	if (is_dir($sl_path . "/languages") && !is_dir($sl_upload_path . "/languages")) {
-		csl_copyr($sl_path . "/languages", $sl_upload_path . "/languages");
-	}
-	if (is_dir($sl_path . "/images") && !is_dir($sl_upload_path . "/images")) {
-		csl_copyr($sl_path . "/images", $sl_upload_path . "/images");
-	}
-}
-
-/*-----------------*/
-
+/**
+ * 
+ * @global type $sl_height
+ * @global type $sl_width
+ * @global type $sl_width_units
+ * @global type $sl_height_units
+ * @global type $cl_icon
+ * @global type $cl_icon2
+ * @global type $sl_google_map_domain
+ * @global type $sl_google_map_country
+ * @global type $sl_theme
+ * @global type $sl_location_table_view
+ * @global type $sl_search_label
+ * @global type $sl_zoom_level
+ * @global type $sl_zoom_tweak
+ * @global type $sl_use_name_search
+ * @global type $sl_default_map
+ * @global type $sl_radius_label
+ * @global type $sl_website_label
+ * @global type $sl_num_initial_displayed
+ * @global type $sl_load_locations_default
+ * @global type $sl_distance_unit
+ * @global type $sl_map_overview_control
+ * @global type $sl_admin_locations_per_page
+ * @global type $sl_instruction_message
+ * @global type $sl_map_character_encoding
+ * @global string $slplus_name_label
+ */
 function initialize_variables() {
     global $sl_height, $sl_width, $sl_width_units, $sl_height_units;
-    global $cl_icon, $cl_icon2, $sl_google_map_domain, $sl_google_map_country, $sl_theme, $sl_base, $sl_upload_base, $sl_location_table_view;
-    global $sl_search_label, $sl_zoom_level, $sl_zoom_tweak, $sl_use_city_search, $sl_use_name_search, $sl_default_map;
+    global $cl_icon, $cl_icon2, $sl_google_map_domain, $sl_google_map_country, $sl_theme, $sl_location_table_view;
+    global $sl_search_label, $sl_zoom_level, $sl_zoom_tweak, $sl_use_name_search, $sl_default_map;
     global $sl_radius_label, $sl_website_label, $sl_num_initial_displayed, $sl_load_locations_default;
     global $sl_distance_unit, $sl_map_overview_control, $sl_admin_locations_per_page, $sl_instruction_message;
-    global $sl_map_character_encoding, $sl_use_country_search, $slplus_show_state_pd, $slplus_name_label;
+    global $sl_map_character_encoding, $slplus_name_label;
     
     $sl_map_character_encoding=get_option('sl_map_character_encoding');
     if (empty($sl_map_character_encoding)) {
@@ -112,21 +100,6 @@ function initialize_variables() {
     if (empty($sl_use_name_search)) {
         $sl_use_name_search="0";
         add_option('sl_use_name_search', $sl_use_name_search);
-        }
-    $sl_use_city_search=get_option('sl_use_city_search');
-    if (empty($sl_use_city_search)) {
-        $sl_use_city_search="1";
-        add_option('sl_use_city_search', $sl_use_city_search);
-        }
-    $sl_use_country_search=get_option('sl_use_country_search');
-    if (empty($sl_use_country_search)) {
-        $sl_use_country_search="1";
-        add_option('sl_use_country_search', $sl_use_country_search);
-        }
-    $slplus_show_state_pd=get_option('slplus_show_state_pd');
-    if (empty($slplus_show_state_pd)) {
-        $slplus_show_state_pd="1";
-        add_option('slplus_show_state_pd', $slplus_show_state_pd);
         }
 
     $sl_zoom_level=get_option('sl_zoom_level','4');
@@ -199,10 +172,13 @@ function initialize_variables() {
         }	
 }
 
-
-
-
-/*----------------------------*/
+/**
+ *
+ * @global type $wpdb
+ * @global type $slplus_plugin
+ * @param type $address
+ * @param type $sl_id
+ */
 function do_geocoding($address,$sl_id='') {    
     global $wpdb, $slplus_plugin;    
     
@@ -353,185 +329,6 @@ function do_geocoding($address,$sl_id='') {
     }
 }    
 
-
-/***********************************
- ** Run install/update activation routines
- **
- ** [LE/PLUS]
- **/
-
-function activate_slplus() {
-    global $slplus_plugin;
-    
-   
-    // Data Updates
-    //
-    global $sl_db_version, $sl_installed_ver;
-	$sl_db_version='3.1';     //***** CHANGE THIS ON EVERY STRUCT CHANGE
-    $sl_installed_ver = get_option( SLPLUS_PREFIX."-db_version" );
-
-	install_main_table();
-	if (function_exists('install_reporting_tables')) {
-	    install_reporting_tables();
-    }
-    
-    // Update the version
-    //
-    if ($sl_installed_ver == '') {
-        add_option(SLPLUS_PREFIX."-db_version", $sl_db_version);
-    } else {
-        
-        // Change Pro Pack license info to new SKU
-        //
-        if (get_option(SLPLUS_PREFIX.'-SLPLUS-PRO-lk','') == '') {
-            update_option(SLPLUS_PREFIX.'-SLPLUS-PRO-lk',get_option(SLPLUS_PREFIX.'-SLPLUS-lk',''));
-            update_option(SLPLUS_PREFIX.'-SLPLUS-PRO-isenabled',get_option(SLPLUS_PREFIX.'-SLPLUS-isenabled',''));
-        }
-
-        // Change Pages license info to new SKU
-        //
-        if (get_option(SLPLUS_PREFIX.'-SLPLUS-PAGES-lk','') == '') {
-            update_option(SLPLUS_PREFIX.'-SLPLUS-PAGES-isenabled',get_option(SLPLUS_PREFIX.'-SLP-PAGES-isenabled',''));
-        }
-
-        update_option(SLPLUS_PREFIX."-db_version", $sl_db_version);
-    }
-    
-
-    // Roles
-    //
-    if (function_exists('add_slplus_roles_and_caps')) {
-        add_slplus_roles_and_caps();
-    }      
-    
-    // Themes Cleaning
-    //
-    update_option($slplus_plugin->prefix.'-theme_lastupdated','2006-10-05');
-
-	move_upload_directories();
-}
-
-
-/***********************************
- ** function: install_main_table
- **
- ** Install/update the main locations table.
- **
- **/
-function install_main_table() {
-	global $wpdb, $sl_installed_ver;
-    
-	
-	//*****
-	//***** CHANGE sl_db_version IN activate_slplus() 
-	//***** ANYTIME YOU CHANGE THIS STRUCTURE
-	//*****	
-	$charset_collate = '';
-    if ( ! empty($wpdb->charset) )
-        $charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
-    if ( ! empty($wpdb->collate) )
-        $charset_collate .= " COLLATE $wpdb->collate";	
-	$table_name = $wpdb->prefix . "store_locator";
-	$sql = "CREATE TABLE $table_name (
-			sl_id mediumint(8) unsigned NOT NULL auto_increment,
-			sl_store varchar(255) NULL,
-			sl_address varchar(255) NULL,
-			sl_address2 varchar(255) NULL,
-			sl_city varchar(255) NULL,
-			sl_state varchar(255) NULL,
-			sl_zip varchar(255) NULL,
-			sl_country varchar(255) NULL,
-			sl_latitude varchar(255) NULL,
-			sl_longitude varchar(255) NULL,
-			sl_tags mediumtext NULL,
-			sl_description text NULL,
-			sl_email varchar(255) NULL,
-			sl_url varchar(255) NULL,
-			sl_hours varchar(255) NULL,
-			sl_phone varchar(255) NULL,
-			sl_fax varchar(255) NULL,
-			sl_image varchar(255) NULL,
-			sl_private varchar(1) NULL,
-			sl_neat_title varchar(255) NULL,
-			sl_linked_postid int NULL,
-			sl_pages_url varchar(255) NULL,
-			sl_lastupdated  timestamp NOT NULL default current_timestamp,			
-			PRIMARY KEY  (sl_id),
-			INDEX (sl_store),
-			INDEX (sl_longitude),
-			INDEX (sl_latitude)
-			) 
-			$charset_collate
-			";
-		
-    // If we updated an existing DB, do some mods to the data
-    //
-    if (slplus_dbupdater($sql,$table_name) === 'updated') {
-        
-        // We are upgrading from something less than 2.0
-        //
-	    if (floatval($sl_installed_ver) < 2.0) {
-            dbDelta("UPDATE $table_name SET sl_lastupdated=current_timestamp " . 
-                "WHERE sl_lastupdated < '2011-06-01'"
-                );
-        }   
-	    if (floatval($sl_installed_ver) < 2.2) {
-            dbDelta("ALTER $table_name MODIFY sl_description text ");
-        }
-    }         
-	
-	//set up google maps v3
-	if (floatval($sl_installed_ver) < 3.0) {
-		$old_option = get_option('sl_map_type');
-		$new_option = 'roadmap';
-		switch ($old_option) {
-			case 'G_NORMAL_MAP':
-				$new_option = 'roadmap';
-				break;
-			case 'G_SATELLITE_MAP':
-				$new_option = 'satellite';
-				break;
-			case 'G_HYBRID_MAP':
-				$new_option = 'hybrid';
-				break;
-			case 'G_PHYSICAL_MAP':
-				$new_option = 'terrain';
-				break;
-			default:
-				$new_option = 'roadmap';
-				break;
-		}
-		
-		update_option('sl_map_type', $new_option);
-	}
-}
-
-/***********************************
- ** function: slplus_dbupdater
- ** 
- ** Update the data structures on new db versions.
- **
- **/ 
-function slplus_dbupdater($sql,$table_name) {
-    global $wpdb, $sl_db_version, $sl_installed_ver;
-        
-    // New installation
-    //
-	if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
-		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-		dbDelta($sql);
-		return 'new';
-		
-    // Installation upgrade
-    //
-	} else {        
-        if( $sl_installed_ver != $sl_db_version ) {
-            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-            dbDelta($sql);
-            return 'updated';    
-        }
-    }   
-}
 /**************************************
  ** function: store_locator_shortcode
  **
@@ -548,11 +345,9 @@ function slplus_dbupdater($sql,$table_name) {
     // Let's start using a SINGLE named array called "fnvars" to pass along anything
     // we want.
     //
-    global  $sl_dir, $sl_base, $sl_upload_base, $sl_path, $sl_upload_path, $text_domain, $wpdb,
-	    $slplus_plugin, $prefix,	        
-	    $sl_search_label, $sl_width, $sl_height, $sl_width_units, $sl_height_units, $sl_hide,
-	    $sl_radius, $sl_radius_label, $r_options, $button_style,
-	    $sl_instruction_message, $cs_options, $slplus_name_label,
+    global  $wpdb,
+	    $slplus_plugin, $sl_search_label, $sl_width, $sl_height, $sl_width_units, $sl_height_units,
+	    $sl_radius, $sl_radius_label, $r_options, $sl_instruction_message, $cs_options, $slplus_name_label,
 	    $sl_country_options, $slplus_state_options, $fnvars;	 	    
     $fnvars = array();
 
@@ -582,19 +377,19 @@ function slplus_dbupdater($sql,$table_name) {
     $slplus_state_options=(isset($slplus_state_options)   ?$slplus_state_options:'');
 
     foreach ($r_array as $sl_value) {
-        $s=(ereg("\(.*\)", $sl_value))? " selected='selected' " : "" ;
+        $selected=(preg_match('/\(.*\)/', $sl_value))? " selected='selected' " : "" ;
         
         // Hiding Radius?
         if (get_option(SLPLUS_PREFIX.'_hide_radius_selections') == 1) {
             if ($s == " selected='selected' ") {
-                $sl_value=ereg_replace("[^0-9]", "", $sl_value);
+                $sl_value=preg_replace('/[^0-9]/', '', $sl_value);
                 $r_options = "<input type='hidden' id='radiusSelect' name='radiusSelect' value='$sl_value'>";
             }
             
         // Not hiding radius, build pulldown.
         } else {
-            $sl_value=ereg_replace("[^0-9]", "", $sl_value);
-            $r_options.="<option value='$sl_value' $s>$sl_value $unit_display</option>";
+            $sl_value=preg_replace('/[^0-9]/', '', $sl_value);
+            $r_options.="<option value='$sl_value' $selected>$sl_value $unit_display</option>";
         }
     }
         
@@ -602,7 +397,7 @@ function slplus_dbupdater($sql,$table_name) {
     // Show City Search option is checked
     // setup the pulldown list
     //
-    if (get_option('sl_use_city_search')==1) {
+    if (get_option('sl_use_city_search',0)==1) {
         $cs_array=$wpdb->get_results(
             "SELECT CONCAT(TRIM(sl_city), ', ', TRIM(sl_state)) as city_state " .
                 "FROM ".$wpdb->prefix."store_locator " .
@@ -629,32 +424,12 @@ function slplus_dbupdater($sql,$table_name) {
         $sl_country_options = '';    
         $slplus_state_options = '';
     }
-        
-    $sl_theme_base=$sl_upload_base."/images";
-    $sl_theme_path=$sl_upload_path."/images";
-    if (!file_exists($sl_theme_path."/search_button.png")) {
-        $sl_theme_base=$sl_base."/images";
-        $sl_theme_path=$sl_path."/images";
-    }
-    $sub_img=$sl_theme_base."/search_button.png";
-    $mousedown=(file_exists($sl_theme_path."/search_button_down.png"))? 
-        "onmousedown=\"this.src='$sl_theme_base/search_button_down.png'\" onmouseup=\"this.src='$sl_theme_base/search_button.png'\"" : 
-        "";
-    $mouseover=(file_exists($sl_theme_path."/search_button_over.png"))? 
-        "onmouseover=\"this.src='$sl_theme_base/search_button_over.png'\" onmouseout=\"this.src='$sl_theme_base/search_button.png'\"" : 
-        "";
-    $button_style=(file_exists($sl_theme_path."/search_button.png"))? 
-        "type='image' src='$sub_img' $mousedown $mouseover" : 
-        "type='submit'";
-    $sl_hide=(get_option('sl_remove_credits')==1)? 
-        "style='display:none;'" : 
-        "";
 
     $columns = 1;
-    $columns += (get_option('sl_use_city_search')!=1) ? 1 : 0;
-    $columns += (get_option('sl_use_country_search')!=1) ? 1 : 0; 	    
-    $columns += (get_option('slplus_show_state_pd')!=1) ? 1 : 0; 	    
-    $sl_radius_label=get_option('sl_radius_label');
+    $columns += (get_option('sl_use_city_search',0)!=1) ? 1 : 0;
+    $columns += (get_option('sl_use_country_search',0)!=1) ? 1 : 0;
+    $columns += (get_option('slplus_show_state_pd',0)!=1) ? 1 : 0;
+    $sl_radius_label=get_option('sl_radius_label','');
 
     // Prep fnvars for passing to our template
     //
@@ -684,75 +459,337 @@ function slplus_dbupdater($sql,$table_name) {
     //
     add_action('slp_render_search_form',array('SLPlus_UI','slp_render_search_form'));
 
-    return get_string_from_phpexec(SLPLUS_COREDIR . 'templates/search_and_map.php');
+    return $slplus_plugin->helper->get_string_from_phpexec(SLPLUS_COREDIR . 'templates/search_and_map.php');
+}
+
+
+/**
+ *
+ * @param type $a
+ * @return type
+ */
+function comma($a) {
+	$a=preg_replace("/'/"     , '&#39;'   , $a);
+	$a=preg_replace('/"/'     , '&quot;'  , $a);
+	$a=preg_replace('/>/'     , '&gt;'    , $a);
+	$a=preg_replace('/</'     , '&lt;'    , $a);
+	$a=preg_replace('/,/'     , '&#44;'   , $a);
+	$a=preg_replace('/ & /'   , ' &amp; ' , $a);
+    return $a;
 }
 
 
 /**************************************
- * SetMapCenter()
- *
- * Set the starting point for the center of the map.
- * Uses country by default.
- * Pro Pack v2.4+ allows for a custom address.
- */
-function SetMapCenter() {
+ ** function: custom_upload_mimes
+ **
+ ** Allows WordPress to process csv file types
+ **
+ **/
+function custom_upload_mimes ( $existing_mimes=array() ) {
+
+     // add CSV type
+    $existing_mimes['csv'] = 'text/csv';
+
+    // and return the new full result
+    return $existing_mimes;
+
+}
+
+/**************************************
+ ** function: slplus_add_pages_settings()
+ **
+ ** Add store pages settings to the admin interface.
+ **
+ **/
+function slplus_add_pages_settings() {
     global $slplus_plugin;
-    $customAddress = get_option(SLPLUS_PREFIX.'_map_center');
-    if (
-        (preg_replace('/\W/','',$customAddress) != '') &&
-        $slplus_plugin->license->packages['Pro Pack']->isenabled &&
-        ($slplus_plugin->license->packages['Pro Pack']->active_version >= 2004000)
-        ) {
-        return str_replace(array("\r\n","\n","\r"),', ',esc_attr($customAddress));
+
+    if ($slplus_plugin->license->AmIEnabled(true, "SLPLUS-PAGES")) {
+        $slplus_plugin->settings->add_item(
+            'Store Pages',
+            __('Pages Replace Websites', SLPLUS_PREFIX),
+            'use_pages_links',
+            'checkbox',
+            false,
+            __('Use the Store Pages local URL in place of the website URL on the map results list.', SLPLUS_PREFIX)
+        );
+        $slplus_plugin->settings->add_item(
+            'Store Pages',
+            __('Prevent New Window', SLPLUS_PREFIX),
+            'use_same_window',
+            'checkbox',
+            false,
+            __('Prevent Store Pages web links from opening in a new window.', SLPLUS_PREFIX)
+        );
     }
-    return esc_attr(get_option('sl_google_map_country','United States'));    
 }
 
-/*-------------------------------------------------------------*/
-function comma($a) {
-	$a=ereg_replace('"', "&quot;", $a);
-	$a=ereg_replace("'", "&#39;", $a);
-	$a=ereg_replace(">", "&gt;", $a);
-	$a=ereg_replace("<", "&lt;", $a);
-	$a=ereg_replace(" & ", " &amp; ", $a);
-	return ereg_replace("," ,"&#44;" ,$a);
-	
-}
 
-/************************************************************
- * Copy a file, or recursively copy a folder and its contents
- */
-function csl_copyr($source, $dest)
-{
-    // Check for symlinks
-    if (is_link($source)) {
-        return symlink(readlink($source), $dest);
-    }
+/**************************************
+ ** function: slplus_create_country_pd()
+ **
+ ** Create the county pulldown list, mark the checked item.
+ **
+ **/
+function slplus_create_country_pd() {
+    global $wpdb;
+    global $slplus_plugin;
 
-    // Simple copy for a file
-    if (is_file($source)) {
-        return copy($source, $dest);
-    }
+    // Pro Pack Enabled
+    //
+    if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
+        $myOptions = '';
 
-    // Make destination directory
-    if (!is_dir($dest)) {
-        mkdir($dest, 0755);
-    }
+        // If Use Country Search option is enabled
+        // build our country pulldown.
+        //
+        if (get_option('sl_use_country_search',0)==1) {
+            $cs_array=$wpdb->get_results(
+                "SELECT TRIM(sl_country) as country " .
+                    "FROM ".$wpdb->prefix."store_locator " .
+                    "WHERE sl_country<>'' " .
+                        "AND sl_latitude<>'' AND sl_longitude<>'' " .
+                    "GROUP BY country " .
+                    "ORDER BY country ASC",
+                ARRAY_A);
 
-    // Loop through the folder
-    $dir = dir($source);
-    while (false !== $entry = $dir->read()) {
-        // Skip pointers
-        if ($entry == '.' || $entry == '..') {
-            continue;
+            // If we have country data show it in the pulldown
+            //
+            if ($cs_array) {
+                foreach($cs_array as $sl_value) {
+                  $myOptions.=
+                    "<option value='$sl_value[country]'>" .
+                    $sl_value['country']."</option>";
+                }
+            }
         }
+        return $myOptions;
 
-        // Deep copy directories
-        csl_copyr("$source/$entry", "$dest/$entry");
+    // No Pro Pack
+    //
+    } else {
+        return '';
     }
+}
 
-    // Clean up
-    $dir->close();
-    return true;
+/**************************************
+ ** function: slplus_create_state_pd()
+ **
+ ** Create the state pulldown list, mark the checked item.
+ **
+ **/
+function slplus_create_state_pd() {
+    global $wpdb;
+    global $slplus_plugin;
+
+    // Pro Pack Enabled
+    //
+    if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
+        $myOptions = '';
+
+        // If Use State Search option is enabled
+        // build our state pulldown.
+        //
+        if (get_option('slplus_show_state_pd',0)==1) {
+            $cs_array=$wpdb->get_results(
+                "SELECT TRIM(sl_state) as state " .
+                    "FROM ".$wpdb->prefix."store_locator " .
+                    "WHERE sl_state<>'' " .
+                        "AND sl_latitude<>'' AND sl_longitude<>'' " .
+                    "GROUP BY state " .
+                    "ORDER BY state ASC",
+                ARRAY_A);
+
+            // If we have country data show it in the pulldown
+            //
+            if ($cs_array) {
+                foreach($cs_array as $sl_value) {
+                  $myOptions.=
+                    "<option value='$sl_value[state]'>" .
+                    $sl_value['state']."</option>";
+                }
+            }
+        }
+        return $myOptions;
+
+    // No Pro Pack
+    //
+    } else {
+        return '';
+    }
+}
+
+
+
+/**************************************
+ ** function: slpreport_downloads()
+ **
+ ** Setup the javascript hook for reporting AJAX
+ **
+ **/
+function slpreport_downloads() {
+    ?>
+    <script type="text/javascript" src="<?php echo SLPLUS_COREURL; ?>js/jquery.tablesorter.min.js"></script>
+    <script type="text/javascript" >
+    jQuery(document).ready(
+        function($) {
+            // Make tables sortable
+             var tstts = $("#topsearches_table").tablesorter( {sortList: [[1,1]]} );
+             var trtts = $("#topresults_table").tablesorter( {sortList: [[5,1]]} );
+
+            // Export Results Button Click
+            //
+            jQuery("#export_results").click(
+                function(e) {
+                    jQuery('<form action="<?php echo SLPLUS_PLUGINURL; ?>/downloadcsv.php" method="post">'+
+                            '<input type="hidden" name="filename" value="topresults">' +
+                            '<input type="hidden" name="query" value="' + jQuery("[name=topresults]").val() + '">' +
+                            '<input type="hidden" name="sort"  value="' + trtts[0].config.sortList.toString() + '">' +
+                            '<input type="hidden" name="all"   value="' + jQuery("[name=export_all]").is(':checked') + '">' +
+                            '</form>'
+                            ).appendTo('body').submit().remove();
+                }
+            );
+
+            // Export Searches Button Click
+            //
+            jQuery("#export_searches").click(
+                function(e) {
+                    jQuery('<form action="<?php echo SLPLUS_PLUGINURL; ?>/downloadcsv.php" method="post">'+
+                            '<input type="hidden" name="filename" value="topsearches">' +
+                            '<input type="hidden" name="query" value="' + jQuery("[name=topsearches]").val() + '">' +
+                            '<input type="hidden" name="sort"  value="' + tstts[0].config.sortList.toString() + '">' +
+                            '<input type="hidden" name="all"   value="' + jQuery("[name=export_all]").is(':checked') + '">' +
+                            '</form>'
+                            ).appendTo('body').submit().remove();
+                }
+            );
+
+        }
+    );
+    </script>
+    <?php
+}
+
+/**************************************
+ ** function: slplus_shortcode_atts()
+ **
+ ** Set the entire list of accepted attributes.
+ ** The shortcode_atts function ensures that all possible
+ ** attributes that could be passed are given a value which
+ ** makes later processing in the code a bit easier.
+ ** This is basically the equivalent of the php array_merge()
+ ** function.
+ **
+ **/
+function slplus_shortcode_atts($attributes) {
+    global $slplus_plugin;
+
+    // Pro Pack Enabled
+    //
+    if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
+        $slpAtts =
+            array(
+                'tags_for_pulldown'=> null,
+                'only_with_tag'    => null,
+                'theme'            => null,
+                );
+        shortcode_atts($slpAtts,$attributes);
+    }
+}
+
+
+
+/**
+ * Help deserialize data to array.
+ *
+ * Useful for sl_option_value  field processing.
+ *
+ * @param type $value
+ * @return type
+ */
+function slp_deserialize_to_array($value) {
+    $arrayData = maybe_unserialize($value);
+    if (!is_array($arrayData)) {
+        if ($arrayData == '') {
+            $arrayData = array();
+        } else {
+            $arrayData = array('value' => $arrayData);
+        }
+    }
+    return $arrayData;
+}
+
+/**************************************
+ ** function: get_string_from_phpexec()
+ **
+ ** Executes the included php (or html) file and returns the output as a string.
+ **
+ ** Parameters:
+ **  $file (string, required) - name of the file
+ **/
+function get_string_from_phpexec($file) {
+    global $slplus_plugin;
+    return $slplus_plugin->helper->get_string_from_phpexec($file);
+}
+
+
+/**************************************
+ ** function: execute_and_output_template()
+ **
+ ** Executes the included php (or html) file and prints out the results.
+ ** Makes for easy include templates that depend on processing logic to be
+ ** dumped mid-stream into a WordPress page.  A plugin in a plugin sorta.
+ **
+ ** Parameters:
+ **  $file (string, required) - name of the file in the plugin/templates dir
+ **/
+function execute_and_output_template($file) {
+    global $slplus_plugin;
+    $file = SLPLUS_COREDIR.'/templates/'.$file;
+    print $slplus_plugin->helper->get_string_from_phpexec($file);
+}
+
+
+/**************************************
+ ** function: slp_createhelpdiv()
+ **
+ ** Generate the string that displays the help icon and the expandable div
+ ** that mimics the WPCSL-Generic forms more info buttons.
+ **
+ ** Parameters:
+ **  $divname (string, required) - the name of the div to toggle
+ **  $msg (string, required) - the message to display
+ **/
+function slp_createhelpdiv($divname,$msg) {
+    return "<a class='moreinfo_clicker' onclick=\"swapVisibility('".SLPLUS_PREFIX."-help$divname');\" href=\"javascript:;\">".
+        '<div class="'.SLPLUS_PREFIX.'-moreicon" title="click for more info"><br/></div>'.
+        "</a>".
+        "<div id='".SLPLUS_PREFIX."-help$divname' class='input_note' style='display: none;'>".
+            $msg.
+        "</div>"
+        ;
+}
+
+
+/**************************************
+ ** function: setup_stylesheet_for_slplus
+ **
+ ** Setup the CSS for the product pages.
+ **/
+function setup_stylesheet_for_slplus() {
+    global $slplus_plugin, $fnvars;
+
+    // Pro Pack - Use Themes System
+    //
+    if ($slplus_plugin->license->AmIEnabled(true, "SLPLUS-PRO")) {
+        $slplus_plugin->themes->assign_user_stylesheet(isset($fnvars['theme'])?$fnvars['theme']:'');
+    } else {
+        wp_deregister_style(SLPLUS_PREFIX.'_user_header_css');
+        wp_dequeue_style(SLPLUS_PREFIX.'_user_header_css');
+        if ( file_exists(SLPLUS_PLUGINDIR.'css/default.css')) {
+            wp_enqueue_style(SLPLUS_PREFIX.'_user_header_css', SLPLUS_PLUGINURL .'/css/default.css');
+        }
+    }
 }
 

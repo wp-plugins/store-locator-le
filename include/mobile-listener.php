@@ -158,11 +158,9 @@ if (! class_exists('csl_mobile_listener')) {
 		            $posted_name = preg_replace('/(.*?)\s+$/','$1',$posted_name);
 		            $name_filter = " AND (sl_store LIKE '%%".$posted_name."%%')";
 	            }
-	
-	            //Since miles is default, if kilometers is selected, divide by 1.609344 in order to convert the kilometer value selection back in miles when generating the XML
-	            //
-	            $multiplier=3959;
-	            $multiplier=(get_option('sl_distance_unit')=="km")? ($multiplier*1.609344) : $multiplier;
+
+                // Radian multiplier to get linear distance
+                $multiplier=(get_option('sl_distance_unit')=="km")? 6371 : 3959;
 
 	            $option[SLPLUS_PREFIX.'_maxreturned']=(trim(get_option(SLPLUS_PREFIX.'_maxreturned'))!="")? 
                 get_option(SLPLUS_PREFIX.'_maxreturned') : 

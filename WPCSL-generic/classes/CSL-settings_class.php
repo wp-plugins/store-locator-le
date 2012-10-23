@@ -87,7 +87,7 @@ class wpCSL_settings__slplus {
 
                                  <div style="clear:left;">
                                    <div style="width:150px; float:left; text-align: right;
-                                       padding-right: 6px;">CSL IP Addresses:</div>
+                                       padding-right: 6px;">CSA IP Addresses:</div>
                                    <div style="float: left;">' . 
                                         gethostbyname('charlestonsw.com') . 
                                         ' and ' .  
@@ -246,8 +246,8 @@ class wpCSL_settings__slplus {
      **
      ** Return the value of a WordPress option that was saved via the settings interface.
      **/
-    function get_item($name, $default = null) {
-        $option_name = $this->prefix . '-' . $name;
+    function get_item($name, $default = null, $separator='-') {
+        $option_name = $this->prefix . $separator . $name;
         if (!isset($this->$option_name)) {            
             $this->$option_name =
                 ($default == null) ?
@@ -324,6 +324,55 @@ class wpCSL_settings__slplus {
             }
         }
     }
+
+    /**
+     * Add a simple checkbox to the settings array.
+     *
+     * @param string $section - slug for the parent section
+     * @param string $label - text to appear before the setting
+     * @param string $fieldID - the option value field
+     * @param string $description - the help text under the more icon expansion
+     * @param string $value - the default value to use, overrides get-option(name)
+     * @param boolean $disabled - true if the field is disabled
+     */
+    function add_checkbox($section,$label,$fieldID,$description=null,$value=null,$disabled=false) {
+        $this->add_item(
+                $section,
+                $label,
+                $fieldID,
+                'checkbox',
+                false,
+                $description,
+                null,
+                $value,
+                $disabled
+                );
+    }
+
+    /**
+     * Add a simple text input to the settings array.
+     *
+     * @param string $section - slug for the parent section
+     * @param string $label - text to appear before the setting
+     * @param string $fieldID - the option value field
+     * @param string $description - the help text under the more icon expansion
+     * @param string $value - the default value to use, overrides get-option(name)
+     * @param boolean $disabled - true if the field is disabled
+     */
+    function add_input($section,$label,$fieldID,$description=null,$value=null,$disabled=false) {
+        $this->add_item(
+                $section,
+                $label,
+                $fieldID,
+                'text',
+                false,
+                $description,
+                null,
+                $value,
+                $disabled
+                );
+    }
+
 
     /**------------------------------------
      ** Method: register
@@ -406,8 +455,8 @@ class wpCSL_settings__slplus {
 
        $license_ok =(  (get_option($this->prefix.'-purchased') == '1')   &&
                       ($theLicenseKey != '')
-                          );     
-        
+                          );
+
         // If has_packages is true that means we have an unlicensed product
         // so we don't want to show the license box
         //
@@ -422,7 +471,7 @@ class wpCSL_settings__slplus {
                 " value=\"". $theLicenseKey .
                 "\"". ($license_ok?'disabled' :'') .
                 " />";
-    
+
             if ($license_ok) {
                 $content .=
                     '<p class="slp_license_info">'.$theLicenseKey.'</p>'        .
@@ -434,7 +483,7 @@ class wpCSL_settings__slplus {
                               'alt="License validated!" '                       .
                               'title="License validated!"></span>'              ;
             }
-            
+
             $content .= (!$license_ok) ?
                 ('<span><font color="red"><br/>Without a license key, this plugin will ' .
                     'only function for Admins</font></span>') :
@@ -443,29 +492,52 @@ class wpCSL_settings__slplus {
                         !get_option($this->prefix.'-purchased')) ?
                 ('<span><font color="red">Your license key could not be verified</font></span>') :
                 '';
-    
+
             if (!$license_ok) {
                 $content .= $this->MakePayPalButton($this->paypal_button_id);
             }
-            
+
             $content .= '<div id="prodsku">sku: ';
             if (isset($this->sku) && ($this->sku != '')) {
                 $content .= $this->sku;
             } else {
-                $content .= 'not set';            
-            }        
+                $content .= 'not set';
+            }
             $content .= '</div>';
-            
 
-            
+
+
         // If we are using has_packages we need to seed our content string
         //
         } else {
             $content ='';
-        }            
-      
-        // List the packages
+        }
+
+        // List Packages
         //
+        $content .= $this->ListThePackages($license_ok);
+
+        // If the main product or packages show the license box
+        // Then show a save button here
+        //
+       $license_ok =(  (get_option($this->prefix.'-purchased') == '1')   &&
+                      (get_option($this->prefix.'-license_key') != '')
+                          );
+        if (!$license_ok) {
+            $content .= '<tr><td colspan="2">' .
+                $this->generate_save_button_string().
+                '</td></tr>';
+        }
+
+        echo $content;
+    }
+
+
+    /**
+     * Create the package license otuput for the admin interface.
+     */
+    function ListThePackages($license_ok = false) {
+        $content = '';
         if (isset($this->parent->license->packages) && ($this->parent->license->packages > 0)) {
             $content .= '<tr valign="top"><td class="optionpack" colspan="2">';
             foreach ($this->parent->license->packages as $package) {
@@ -476,20 +548,7 @@ class wpCSL_settings__slplus {
             }
             $content .= '</td></tr>';
         }
-        
-        // If the main product or packages show the license box
-        // Then show a save button here
-        //
-       $license_ok =(  (get_option($this->prefix.'-purchased') == '1')   &&
-                      (get_option($this->prefix.'-license_key') != '')            	    	    
-                          );            
-        if (!$license_ok) {
-            $content .= '<tr><td colspan="2">' .
-                $this->generate_save_button_string().
-                '</td></tr>';
-        }
-
-        echo $content;                
+        return $content;
     }
     
     /**------------------------------------
@@ -498,19 +557,19 @@ class wpCSL_settings__slplus {
      **/
     function EnabledOrBuymeString($mainlicenseOK, $package) {
         $content = '';
-        
+
         // If the main product is licensed or we want to force
-        // the packages list, show the checkbox or buy/validate button. 
+        // the packages list, show the checkbox or buy/validate button.
         //
         if ($mainlicenseOK || $this->has_packages) {
-            
+
             // Check if package is licensed now.
             //
 
             $package->isenabled = (
-                
+
                     $package->force_enabled ||
-                    
+
                     $package->parent->check_license_key(
                         $package->sku,
                         true,
@@ -528,15 +587,15 @@ class wpCSL_settings__slplus {
             // Upgrade is available if the current package version < the latest available
             // -AND- the current package version is has been set
             $upgrade_available = (
-                        ($installed_version != '') &&                
+                        ($installed_version != '') &&
                         (   get_option($this->prefix.'-'.$package->sku.'-version-numeric') <
                             get_option($this->prefix.'-'.$package->sku.'-latest-version-numeric')
-                        )                        
+                        )
                     );
 
             // Package is enabled, just show that
             //
-            if ($package->isenabled) {
+            if ($package->isenabled && ($package->license_key != '')) {
                 $packString = $package->name . ' is enabled!';
 
                 $content .=
@@ -553,20 +612,20 @@ class wpCSL_settings__slplus {
                             ' value="'.$package->license_key.'" '.
                             ' />';
                     ;
-                    
+
                 // OK - the license was verified, this package is valid
                 // but the mainlicense was not set...
                 // go set it.
                 if (!$mainlicenseOK && ($package->license_key != '')) {
-                    update_option($this->prefix.'-purchased',true);   
+                    update_option($this->prefix.'-purchased',true);
                     update_option($this->prefix.'-license_key',$package->license_key);
-                }                      
-                    
+                }
+
             // Package not enabled, show buy button
             //
             }
 
-            if (!$package->isenabled || $upgrade_available) {
+            if (!$package->isenabled || $upgrade_available || ($package->license_key == '')) {
                 if ($package->isenabled && $upgrade_available) {
                     $content .= '<b>There is a new version available: ' . $latest_version . '</b><br>';
                     $content .= $this->MakePayPalButton($package->paypal_upgrade_button_id, $package->help_text);
@@ -577,29 +636,32 @@ class wpCSL_settings__slplus {
 
                 // Show license entry box if we need to
                 //
-                if ($this->has_packages && !$upgrade_available) {
+                if (
+                        ($this->has_packages && !$upgrade_available) ||
+                        ($package->license_key == '')
+                    ){
                     $content .= "{$package->sku} Activation Key: <input type='text' ".
                             "name='{$package->lk_option_name}'" .
                             " value='' ".
-                            " />";                     
+                            " />";
                     if ($package->license_key != '') {
-                        $content .= 
+                        $content .=
                             "<br/><span class='csl_info'>".
                             "The key {$package->license_key} could not be validated.".
                             "</span>";
                     }
                 }
             }
-            
+
         // Main product not licensed, tell them.
         //
         } else {
             $content .= '<span>You must license the product before you can purchase add-on packages.</span>';
         }
-        
+
         return $content;
     }
-    
+
     /**------------------------------------
      ** method: MakePayPalButton
      **

@@ -7,7 +7,7 @@ if ($start<0 || $start=="" || !isset($start) || empty($start)) {$start=0;}
 if ($num_per_page<0 || $num_per_page=="") {$num_per_page=10;}
 $prev=$start-$num_per_page;
 $next=$start+$num_per_page;
-if (ereg("&start=$start",$_SERVER['QUERY_STRING'])) {
+if (preg_match('#&start='.$start.'#',$_SERVER['QUERY_STRING'])) {
 	$prev_page=str_replace("&start=$start","&start=$prev",$_SERVER['REQUEST_URI']);
 	$next_page=str_replace("&start=$start","&start=$next",$_SERVER['REQUEST_URI']);
 } else {
@@ -30,7 +30,7 @@ else {
 }
 $pos=($beginning_link-1)*$num_per_page;
 	for ($k=$beginning_link; $k<$end_link; $k++) {
-		if (ereg("&start=$start",$_SERVER['QUERY_STRING'])) {
+		if (preg_match('#&start='.$start.'#',$_SERVER['QUERY_STRING'])) {
 			$curr_page=str_replace("&start=$start","&start=$pos",$_SERVER['QUERY_STRING']);
 		}
 		else {
@@ -49,7 +49,7 @@ $pos=($beginning_link-1)*$num_per_page;
 }
 
 $qry = isset($_GET['q'])?$_GET['q']:'';
-$cleared=ereg_replace("q=$qry", "", $_SERVER['REQUEST_URI']);
+$cleared=preg_replace('/q=$qry/', '', $_SERVER['REQUEST_URI']);
 
 $extra_text=(trim($qry)!='')    ? 
     __("for your search of", SLPLUS_PREFIX).
@@ -63,7 +63,7 @@ $extra_text=(trim($qry)!='')    ?
 
 	$end_num=($numMembers2<($start+$num_per_page))? $numMembers2 : ($start+$num_per_page) ;
 	print "<nobr>".__("Results", SLPLUS_PREFIX)." <strong>".($start+1)." - ".$end_num."</strong>"; 
-	if (!ereg("doSearch", (isset($_GET['u'])?$_GET['u']:''))) {
+	if (!preg_match('#doSearch#', (isset($_GET['u'])?$_GET['u']:''))) {
 		print " ($numMembers2 ".__("total", SLPLUS_PREFIX).")".$extra_text; 
 	}
 	print "</nobr>";

@@ -13,14 +13,48 @@
   */
 var csl = {
 
-    /***************************
+   /***************************
+  	* Animation enum technically
+  	* usage:
+  	* 		Animation enumeration
+  	*/
+  	Animation: { Bounce: 1, Drop: 2, None: 0 },
+
+
+    /***************************************************************************
+     *
+     * MOUSE ANIMATION SUBCLASS
+     *
+     */
+	MouseAnimation: function()
+	{
+		this.anim2 = function(imgObj, url) {
+			imgObj.src=url;
+		}
+
+		this.anim = function(name, type) {
+			if (type==0)
+				document.images[name].src="/core/images/"+name+".gif";
+			if (type==1)
+				document.images[name].src="/core/images/"+name+"_over.gif";
+			if (type==2)
+				document.images[name].src="/core/images/"+name+"_down.gif";
+		}
+	},
+
+    /***************************************************************************
+     *
+     * LOCATION SERVICES SUBCLASS
+     *
+     ***************************
      * Location services
      * usage:
      * 		gets the users current location
      */
     LocationServices: function() {
         this.theService = null;
-        
+        this.location_timeout = null;
+
         this.__init = function() {
             try {
                 if (typeof navigator.geolocation == 'undefined') {
@@ -31,17 +65,22 @@ var csl = {
                 }
             } catch (e) {}
         };
-        
+
         this.currentLocation = function(callback, errorCallback) {
             if (this.theService) {
-                    this.theService.getCurrentPosition(callback, errorCallback);
+                    this.location_timeout = setTimeout(errorCallback, 5000);
+                    this.theService.getCurrentPosition(callback, errorCallback, {maximumAge:60000, timeout:5000, enableHighAccuracy:true});
                 }
             };
-            
+
             this.__init();
         },
-	
-	/***************************
+
+    /***************************************************************************
+     *
+     * AJAX SUBCLASS
+     *
+	 ***************************
   	 * Class: Ajax
   	 * usage:
 	 * 		Sends an ajax request (use Ajax.Send())
@@ -75,7 +114,7 @@ var csl = {
 				callback(response);
 			});
 		}
-		
+
 		this.GetXmlHttpObject = function() {
 			var objXMLHttp=null;
 			if (window.XMLHttpRequest) {
@@ -85,22 +124,20 @@ var csl = {
 			}
 			return objXMLHttp;
 		}
-		
+
 		this.stateChanged = function() {
-			if (xmlHttp.readyState==4 || xmlHttp.readyState=="complete") { 
+			if (xmlHttp.readyState==4 || xmlHttp.readyState=="complete") {
 				document.getElementById("ajaxMsg").innerHTML="Submission Successful.";
-			} 
+			}
 		}
-		
-		this.xmlHttp;
-		
+
 		this.showArticles = function(start) {
 			xmlHttp=GetXmlHttpObject();
 			if (xmlHttp==null)
 			{
 				alert ("Browser does not support HTTP Request");
 				return false;
-			} 
+			}
 			var url="/display_document_info.php";
 			url=url+"?start="+start;
 			url=url+"&sid="+Math.random();
@@ -108,55 +145,35 @@ var csl = {
 			xmlHttp.open("GET",url,true);
 			xmlHttp.send(null);
 		}
-		
+
 		this.doc_counter = function(the_loc) {
 			if (the_loc.search.indexOf('u=')!=-1) {
 				parts=the_loc.href.split('u=');
 				u_part=parts[1].split('&')[0];
-			} 
+			}
 			else {
 				dirs=the_loc.href.split('/');
 				u_part=dirs[dirs.length-1];
 				u_part=u_part.split('?')[0].split('.')[0];
 			}
-	
+
 			xmlHttp=GetXmlHttpObject();
 			if (xmlHttp==null)
 			{
 				alert ("Browser does not support HTTP Request");
 				return false;
-			} 
+			}
 			var url="/scripts/doc_counter.php";
 			url=url+"?u="+u_part;
 			xmlHttp.open("GET",url,true);
 			xmlHttp.send(null);
 		}
 	},
-	
-	MouseAnimation: function()
-	{
-		this.anim2 = function(imgObj, url) {
-			imgObj.src=url;
-		}
-		
-		this.anim = function(name, type) {
-			if (type==0)
-				document.images[name].src="/core/images/"+name+".gif";
-			if (type==1)
-				document.images[name].src="/core/images/"+name+"_over.gif";
-			if (type==2)
-				document.images[name].src="/core/images/"+name+"_down.gif";
-		}
-	},
-  	  
-	/***************************
-  	* Animation enum technically
-  	* usage:
-  	* 		Animation enumeration 
-  	*/
-  	Animation: { Bounce: 1, Drop: 2, None: 0 },
-  	  
-	/***************************
+
+    /***************************************************************************
+     *
+     * MARKERS SUBCLASS
+     *
   	 * Marker for google maps
   	 * usage:
   	 * create a google maps marker
@@ -178,40 +195,51 @@ var csl = {
 		this.__iconWidth = iconSizeW;
 		this.__iconImage = null;
 		this.__shadowImage = null;
-  	  	
+
+        /*------------------------
+         * MARKERS Init
+         */
   	  	this.__init = function() {
+
 			if (this.__iconUrl != null) {
 				this.__iconImage = this.__iconUrl;
 			}
-			//this.__iconImage = null;
-			if (this.__iconImage == null)
-			{
+
+            // No icon image
+            //
+			if (this.__iconImage == null) {
 				this.__gmarker = new google.maps.Marker(
-				{
-					position: this.__position,
-					map: this.__map.gmap,
-					animation: this.__animationType,
-					position: this.__position,
-					title: this.__title
-				});
-			}		
-			//find the shadow icon
-			else {
-				// var http = new XMLHttpRequest();
-				// http.onreadystatechange = function() { };
-				// http.open("HEAD", this.__iconUrl.replace('.png', '_shadow.png'), false);
-				// http.send(null);
-				
-				// if (http.status == 404) {
-					// this.noShadow();
-				// }
-				// else {
-					this.useShadow();
-				//}
-			}
-			
+                    {
+                        position: this.__position,
+                        map: this.__map.gmap,
+                        animation: this.__animationType,
+                        title: this.__title
+                    });
+
+			// Use specified icon
+            //
+			} else {
+                var shadowKey = this.__iconUrl;
+                if (typeof cslmap.shadows[shadowKey] === 'undefined') {
+                    var shadow = this.__iconUrl.replace('.png', '_shadow.png');
+                    jQuery.ajax(
+                        {
+                            url: shadow,
+                            type: 'HEAD',
+                            async: false,
+                            error: function() { cslmap.shadows[shadowKey] = cslmap.coreurl+'images/icons/blank.png'; },
+                            success: function() { cslmap.shadows[shadowKey] = shadow; }
+                        }
+                    );
+                }
+                this.__shadowImage = cslmap.shadows[shadowKey];
+                this.buildMarker();
+            }
   	  	}
-		
+
+        /*------------------------
+         * MARKERS buildMarker
+         */
 		this.buildMarker = function() {
 			this.__gmarker = new google.maps.Marker(
   	  	  	{
@@ -221,39 +249,26 @@ var csl = {
 				shadow: this.__shadowImage,
 				icon: this.__iconImage,
 				zIndex: 0,
-  	  	  	  	position: this.__position,
   	  	  	  	title: this.__title
   	  	  	});
 		}
-		
-		this.noShadow = function() {
-			var parts = this.__iconUrl.split('/');
-			var shadow = this.__iconUrl.replace(parts[parts.length - 1], 'blank.png');
-			this.__shadowImage = new google.maps.MarkerImage(shadow,
-				//set the size
-				new google.maps.Size(this.__iconWidth, this.__iconHeight));
-			this.buildMarker();
-			
-		}
-		
-		this.useShadow = function() {
-			var shadow = this.__iconUrl.replace('.png', '_shadow.png');
-			this.__shadowImage = shadow;
-				//set the size
-				//new google.maps.Size(this.__iconWidth, this.__iconHeight));
-			this.buildMarker();
-		}
-  	  	 
+
   	  	this.__init();
   	},
-	
+
+
+    /***************************************************************************
+     *
+     * UTILITIES SUBCLASS
+     *
+     */
 	Utils: function() {
-		/*****************************************************************************
-		* File: store-locator-emailform.js
-		* 
-		* Create the lightbox email form.
-		*
-		*****************************************************************************/
+
+		/***********************************
+         *
+		 * Create the lightbox email form.
+		 *
+		 */
 		this.show_email_form = function(to) {
 			var allScripts=document.getElementsByTagName('script');
 			var add_base=allScripts[allScripts.length -2].src.replace(/\/js\/csl.js(.*)$/,'');
@@ -261,9 +276,9 @@ var csl = {
 				"height=220,width=310,scrollbars=no,top=50,left=50,status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=0");
 			with (emailWin.document) {
 				writeln("<html><head><title>Send Email To " + to + "</title></head>");
-                
+
 				writeln("<body scroll='no' onload='self.focus()' onblur='close()'>");
-        
+
 				writeln("<style>");
 				writeln(".form_entry{ width: 300px; clear: both;} ");
 				writeln(".form_submit{ width: 300px; text-align: center; padding: 12px;} ");
@@ -274,41 +289,41 @@ var csl = {
 				writeln("INPUT type=['submit']{ padding-left: 120px; } ");
 				writeln("TEXTAREA { width: 185px; clear: both; padding-left: 120px; } ");
 				writeln("</style>");
-        
+
 				writeln("<form id='emailForm' method='GET'");
 				writeln(    " action='"+add_base+"/send-email.php'>");
-        
+
 				writeln("    <div id='email_form_content'>");
 
 				writeln("        <div class='form_entry'>");
 				writeln("            <label for='email_to'>To:</label>");
 				writeln("            <input type='hidden' name='email_to' value='" + to + "'/>");
-                
+
 				writeln("            <div class='to'>"+to+"</div>");
-				writeln("        </div>");           
-					
-        
+				writeln("        </div>");
+
+
 				writeln("        <div class='form_entry'>");
 				writeln("            <label for='email_name'>Your Name:</label>");
 				writeln("            <input name='email_name' value='' />");
 				writeln("        </div>");
-        
+
 				writeln("        <div class='form_entry'>");
 				writeln("            <label for='email_from'>Your Email:</label>");
 				writeln("            <input name='email_from' value='' />");
-				writeln("        </div>");             
-					
+				writeln("        </div>");
+
 				writeln("        <div class='form_entry'>");
 				writeln("            <label for='email_subject'>Subject:</label>");
 				writeln("            <input name='email_subject'  value='' />");
-				writeln("        </div>");        
-					
+				writeln("        </div>");
+
 				writeln("        <div class='form_entry'>");
 				writeln("            <label for='email_message'>Message:</label>");
 				writeln("            <textarea name='email_message'></textarea>");
-				writeln("        </div>");                
-				writeln("    </div>");    
-		
+				writeln("        </div>");
+				writeln("    </div>");
+
 				writeln("    <div class='form_submit'>");
 				writeln("        <input type='submit' value='Send Message'>");
 				writeln("    </div>");
@@ -316,23 +331,27 @@ var csl = {
 				writeln("</form>");
 				writeln("</body></html>");
 				close();
-			}     
+			}
 		}
-	
+
 		/**************************************
 		 * function: escapeExtended()
 		 *
 		 * Escape any extended characters, such as � in f�r.
 		 * Standard US ASCII characters (< char #128) are unchanged
 		 *
-		 */ 
+		 */
 		this.escapeExtended = function(string)
 		{
-			return string; 
+			return string;
 		}
 	},
-  	  
-	/***************************
+
+    /***************************************************************************
+     *
+     * INFO SUBCLASS
+     *
+	 ***************************
   	 * Popup info window Object
   	 * usage:
   	 * create a google info window
@@ -342,38 +361,42 @@ var csl = {
   	Info: function (content) {
 		this.__content = content;
   	  	this.__position = position;
-  	  	
+
   	  	this.__anchor = null;
   	  	this.__gwindow = null;
   	  	this.__gmap = null;
-  	  	
+
   	  	this.openWithNewContent = function(map, object, content) {
 			this.__content = content;
   	  		this.__gwindow = setContent = this.__content;
   	  	  	this.open(map, object);
   	  	}
-  	  	  
+
   	  	this.open = function(map, object) {
 			this.__gmap = map.gmap;
   	  	  	this.__anchor = object;
   	  	  	this.__gwindow.open(this.__gmap, this.__anchor);
   	  	}
-  	  	  
+
   	  	this.close = function() {
 			this.__gwindow.close();
   	  	}
-  	  	  
+
   	  	this.__init = function() {
 			this.__gwindow = new google.maps.InfoWindow(
   	  	  	{
 				content: this.__content
   	  	  	});
   	  	}
-  	  	  
+
   	  	this.__init();
   	},
-  	  
-  	/***************************
+
+    /***************************************************************************
+     *
+     * MAP SUBCLASS
+     *
+  	 ***************************
   	 * Map Object
   	 * usage:
   	 * create a google maps object linked to a map/canvas id
@@ -383,19 +406,19 @@ var csl = {
   	Map: function(aMapCanvas) {
 		//private: map number to look up at init
   	  	this.__mapCanvas = aMapCanvas;
-		
+
 		//function callbacks
 		this.tilesLoaded = null;
-  	  	
+
   	  	//php passed vars set in init
 		this.debug_mode = null;
   	  	this.address = null; //y
   	  	this.canvasID = null;
-  	  	this.draggable = true; 
+  	  	this.draggable = true;
   	  	this.tilt = 45; //n
   	  	this.zoomStyle = 0; // 0 = default, 1 = small, 2 = large
 		this.markers = null;
-		
+
 		//slplus options
         this.usingSensor = false;
 		this.debugMode = null;
@@ -421,7 +444,7 @@ var csl = {
 		this.useSameWindow = null;
 		this.websiteLabel = null;
 		this.zoomLevel = '12';
-  	  	
+
   	  	//gmap set variables
   	  	this.options = null;
   	  	this.gmap = null;
@@ -436,7 +459,11 @@ var csl = {
 		this.lastRadius = null;
 		this.loadedOnce = false;
         this.centerLoad = false;
-		
+
+        // missing shadows
+        //
+        this.shadows = new Object;
+
 		/***************************
   	  	 * function: __init()
   	  	 * usage:
@@ -445,8 +472,9 @@ var csl = {
   	  	 * returns: none
   	  	 */
   	  	this.__init = function() {
-                        
+
             if (typeof slplus != 'undefined') {
+                this.coreurl = slplus.core_url;
                 this.address = slplus.map_country;
                 this.zoom = slplus.zoom_level;
                 this.mapType = slplus.map_type;
@@ -480,7 +508,7 @@ var csl = {
                 alert('Store Locator Plus script not loaded properly.');
             }
   	  	}
-        
+
         /***************************
   	  	 * function: __buildMap
   	  	 * usage:
@@ -501,29 +529,29 @@ var csl = {
                     center: center,
                     zoom: parseInt(this.zoom),
                     scaleControl: this.mapScaleControl,
-                    overviewMapControl: this.overviewControl,
                     overviewMapControlOptions: { opened: this.overviewControl }
                 };
                 this.debugSearch(this.options);
-                this.gmap = new google.maps.Map(document.getElementById('map'), this.options);
+                slpMapDiv = document.getElementById('map');
+                this.gmap = new google.maps.Map(slpMapDiv, this.options);
                 this.debugSearch(this.gmap);
                 //this forces any bad css from themes to fix the "gray bar" issue by setting the css max-width to none
                 var _this = this;
                 google.maps.event.addListener(this.gmap, 'bounds_changed', function() {
                     _this.__waitForTileLoad.call(_this);
                 });
-              
+
                 this.debugSearch(this.usingSensor);
                 if (this.usingSensor) {
                     this.homePoint = center;
                     this.addMarkerAtCenter();
                 }
-                
+
                 //load all the markers
                 if (this.load_locations == '1') {
                     if (this.saneValue('addressInput', null) == null || this.saneValue('addressInput', null) == '') {
                         this.forceAll = true;
-                    
+
                         this.loadMarkers(null, null, this.saneValue('tag_to_search_for', null));
                     }
                     else {
@@ -539,53 +567,7 @@ var csl = {
                 }
             }
         }
-  	  	
-  	  	/***************************
-  	  	 * function: __geocodeResult
-  	  	 * usage:
-		 * Called when the geocode is complete
-  	  	 * parameters:
-  	  	 * 	results: some usable results (see google api reference)
-  	  	 *		status:  the status of the geocode (ok means g2g)
-  	  	 * returns: none
-  	  	 */
-  	  	this.__geocodeResult = function(results, status) {
-			if (status == 'OK' && results.length > 0)
-  	  	  	{
-				this.debugSearch('building map');
-				
-					this.debugSearch(results[0]);
-				// if the map hasn't been created, then create one
-				if (this.gmap == null)
-				{
-					this.__buildMap(results[0].geometry.location);
-				}
-				//the map has been created so shift the center of the map
-				else {
-					//move the center of the map
-					//this.gmap.panTo(results[0].geometry.location);
-					this.homePoint = results[0].geometry.location;
-					this.homeAdress = results[0].formatted_address;
-					
-					this.addMarkerAtCenter();
-					var tag_to_search_for = this.saneValue('tag_to_search_for', '');
-					//do a search based on settings
-					var radius = this.saneValue('radiusSelect');
-					this.loadMarkers(results[0].geometry.location, radius, tag_to_search_for);
-				}
-				//if the user entered an address, replace it with a formatted one
-				var addressInput = this.saneValue('addressInput','');
-				if (addressInput != '') {
-					addressInput = results[0].formatted_address;
-				}
-  	  	  	} else {
-				//address couldn't be processed, so use the center of the map
-				var tag_to_search_for = this.saneValue('tag_to_search_for', '');
-				var radius = this.saneValue('radiusSelect');
-				this.loadMarkers(null, radius, tag_to_search_for);
-  	  	  	}
-  	  	}
-  	  	  
+
 		/***************************
   	  	 * function: __waitForTileLoad
   	  	 * usage:
@@ -603,7 +585,7 @@ var csl = {
 				});
 			}
 		}
-		  
+
 		/***************************
   	  	 * function: __tilesAreLoaded
   	  	 * usage:
@@ -617,7 +599,7 @@ var csl = {
 			google.maps.event.removeListener(this.__tilesLoaded);
 			this.__tilesLoaded = null;
 		}
-		  
+
   	  	/***************************
   	  	 * function: addMarkerAtCenter
   	  	 * usage:
@@ -634,7 +616,7 @@ var csl = {
 				this.centerMarker = new csl.Marker(csl.Animation.None, this, "", this.homePoint, this.mapHomeIconUrl, this.mapHomeIconWidth, this.mapHomeIconHeight);
 			}
   	  	}
-		
+
 		/***************************
   	  	 * function: clearMarkers
   	  	 * usage:
@@ -646,12 +628,14 @@ var csl = {
 		this.clearMarkers = function() {
 			if (this.markers) {
 				for (markerNumber in this.markers) {
-					this.markers[markerNumber].__gmarker.setMap(null);
+                    if (typeof this.markers[markerNumber].__gmarker != 'undefined') {
+                        this.markers[markerNumber].__gmarker.setMap(null);
+                    }
 				}
 				this.markers.length = 0;
 			}
 		}
-		
+
 		/***************************
   	  	 * function: putMarkers
   	  	 * usage:
@@ -670,22 +654,25 @@ var csl = {
 				var sidebar = document.getElementById('map_sidebar');
 				sidebar.innerHTML = '';
 			}
-			
+
 			//don't animate for a large set of results
-			if (markerList.length > 25) animation = csl.Animation.None;
-			
+            var markerCount = markerList.length;
+			if (markerCount > 25) animation = csl.Animation.None;
+
 			this.debugSearch('create latlng bounds for shifts');
 			var bounds;
+            var locationIcon;
 			this.debugSearch('number results ' + markerList.length);
-			for (markerNumber in markerList) {
+            for (var markerNumber = 0 ; markerNumber < markerCount; ++markerNumber) {
 				this.debugSearch(markerList[markerNumber]);
 				var position = new google.maps.LatLng(markerList[markerNumber].lat, markerList[markerNumber].lng);
-				
-				if (markerNumber == 0)
-				{
+
+				if (markerNumber == 0) {
 					this.debugSearch('create initial bounds');
 					bounds = new google.maps.LatLngBounds();
-					if (this.homePoint) { bounds.extend(this.homePoint); } else {
+					if (this.homePoint) {
+                        bounds.extend(this.homePoint);
+                    } else {
                         if (this.centerLoad) {
                             bounds.extend(this.gmap.getCenter());
                         }
@@ -694,31 +681,32 @@ var csl = {
                         }
                     }
 					bounds.extend(position);
-				}
-				else  if (markerNumber > 0) {
+				} else {
 					bounds.extend(position);
 				}
-				
+
 				this.debugSearch(position);
-				this.markers.push(new csl.Marker(animation, this, "", position, this.mapEndIconUrl, this.mapEndIconWidth, this.mapEndIconHeight ));
+
+                locationIcon = ((typeof markerList[markerNumber].icon != 'undefined') && (markerList[markerNumber].icon.length > 4)?markerList[markerNumber].icon:this.mapEndIconUrl);
+				this.markers.push(new csl.Marker(animation, this, "", position, locationIcon, this.mapEndIconWidth, this.mapEndIconHeight ));
 				_this = this;
-				
+
 				//create a sidebar entry
 				if (this.loadedOnce) {
 					var sidebarEntry = this.createSidebar(markerList[markerNumber]);
 					sidebar.appendChild(sidebarEntry);
 				}
-				
+
 				//create info windows
-				google.maps.event.addListener(this.markers[markerNumber].__gmarker, 'click', 
+				google.maps.event.addListener(this.markers[markerNumber].__gmarker, 'click',
 				(function (infoData, marker) {
 					return function() {
 						_this.__handleInfoClicks.call(_this, infoData, marker);
 					}
 				})(markerList[markerNumber], this.markers[markerNumber]));
-				
+
 				if (this.loadedOnce) {
-					google.maps.event.addDomListener(sidebarEntry, 'click', 
+					google.maps.event.addDomListener(sidebarEntry, 'click',
 					(function(infoData, marker) {
 						return function() {
 							_this.__handleInfoClicks.call(_this, infoData, marker);
@@ -726,9 +714,9 @@ var csl = {
 					})(markerList[markerNumber], this.markers[markerNumber]));
 				}
 			}
-			
+
 			this.loadedOnce = true;
-			
+
 			//check for results
 			if (markerList.length == 0) {
 				this.gmap.panTo(this.homePoint);
@@ -738,25 +726,28 @@ var csl = {
 			} else {
                 jQuery('#map_sidebar').trigger('contentchanged');
             }
-			
+
 			if (bounds != null) {
 				this.debugSearch('rebounded');
 				this.bounds = bounds;
 				this.gmap.fitBounds(this.bounds);
+                var theCenter = this.gmap.getCenter();
 
-                // Single Location or  Immediate Load Locations
-                // Use Map Zoom level + tweak
+                // Searches, use Google Bounds - and adjust by the tweak.
+                // Initial Load Only - Use "Zoom Level"
                 //
-                if ( (markerList.length == 1) || (this.load_locations == '1') ) {
-                    var newZoom = Math.max(Math.min(parseInt(slplus.zoom_level) - parseInt(slplus.zoom_tweak),20),1);
-                    this.gmap.setZoom(newZoom);
-                } else {
-                    var newZoom = Math.max(Math.min(this.gmap.getZoom() - parseInt(slplus.zoom_tweak),20),1);
-                    this.gmap.setZoom(newZoom);
-                }
+                var newZoom =
+                    Math.max(Math.min(
+                        ((this.loadedOnce ||(markerList.length >1)) ?
+                          this.gmap.getZoom() - parseInt(slplus.zoom_tweak) :
+                          parseInt(slplus.zoom_level)
+                        )
+                    ,20),1)
+                    ;
+                this.gmap.setZoom(newZoom);
 			}
 		}
-		
+
 		/***************************
   	  	 * function: bounceMarkers
   	  	 * usage:
@@ -771,7 +762,7 @@ var csl = {
 			this.debugSearch('bounce');
 			this.putMarkers(markerList, csl.Animation.None);
 		}
-		
+
 		/***************************
   	  	 * function: dropMarkers
   	  	 * usage:
@@ -786,7 +777,7 @@ var csl = {
 			this.debugSearch('dropping');
 			this.putMarkers(markerList, csl.Animation.Drop);
 		}
-		
+
 		/***************************
   	  	 * function: private handleInfoClicks
   	  	 * usage:
@@ -806,7 +797,7 @@ var csl = {
 			//this.infowindow.setContent('hi');
 			this.infowindow.open(this.gmap, marker.__gmarker);
 		}
-  	  	  
+
   	  	/***************************
   	  	 * function doGeocode()
   	  	 * usage:
@@ -822,11 +813,44 @@ var csl = {
 				{
 					'address': this.address
   	  	  	  	},
-  	  	  	  	function (result, status) {							// This is a little complicated, 
-  	  	  	  	_this.__geocodeResult.call(_this, result, status); }	// but it forces the callback to keep its scope
+  	  	  	  	function (results, status) {
+                    if (status == 'OK' && results.length > 0)
+                    {
+                        // if the map hasn't been created, then create one
+                        if (_this.gmap == null)
+                        {
+                            _this.__buildMap(results[0].geometry.location);
+                        }
+                        //the map has been created so shift the center of the map
+                        else {
+                            //move the center of the map
+                            //this.gmap.panTo(results[0].geometry.location);
+                            _this.homePoint = results[0].geometry.location;
+                            _this.homeAdress = results[0].formatted_address;
+
+                            _this.addMarkerAtCenter();
+                            var tag_to_search_for = _this.saneValue('tag_to_search_for', '');
+                            //do a search based on settings
+                            var radius = _this.saneValue('radiusSelect');
+                            _this.loadMarkers(results[0].geometry.location, radius, tag_to_search_for);
+                        }
+                        //if the user entered an address, replace it with a formatted one
+                        var addressInput = _this.saneValue('addressInput','');
+                        if (addressInput != '') {
+                            addressInput = results[0].formatted_address;
+                        }
+                    } else {
+                        //address couldn't be processed, so use the center of the map
+                        var tag_to_search_for = _this.saneValue('tag_to_search_for', '');
+                        var radius = _this.saneValue('radiusSelect');
+                        _this.loadMarkers(null, radius, tag_to_search_for);
+                    }
+
+                }
+
   	  	  	);
   	  	}
-        
+
         /***************************
   	  	 * function: __getMarkerUrl
   	  	 * usage:
@@ -846,7 +870,7 @@ var csl = {
                 if (aMarker.url.indexOf("http://") == -1) {
                     aMarker.url = "http://" + aMarker.url;
                 }
-                
+
                 if (aMarker.url.indexOf(".") != -1) {
                     url = aMarker.url;
                 }
@@ -854,7 +878,7 @@ var csl = {
 
             return url;
         }
-		
+
         this.__createAddress = function(aMarker) {
 
             var address = '';
@@ -872,7 +896,7 @@ var csl = {
 
             return address;
         }
-        
+
 		/***************************
   	  	 * function: createMarkerContent
   	  	 * usage:
@@ -884,13 +908,13 @@ var csl = {
   	  	 */
 		this.createMarkerContent = function(aMarker) {
 			var html = '';
-            
+
             var url = this.__getMarkerUrl(aMarker);
-			
-			if (url != '') { 
+
+			if (url != '') {
 				html += "| <a href='"+url+"' target='"+(slplus.use_same_window?'_self':'_blank')+"' class='storelocatorlink'><nobr>" + slplus.website_label +" </nobr></a>";
-			} 
-			
+			}
+
 			if (aMarker.email.indexOf("@") != -1 && aMarker.email.indexOf(".") != -1) {
 				if (!this.useEmailForm) {
 					html += "| <a href='mailto:"+aMarker.email+"' target='_blank' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a>";
@@ -898,44 +922,44 @@ var csl = {
 					html += "| <a href='javascript:cslutils.show_email_form("+'"'+aMarker.email+'"'+");' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a><br/>";
 				}
 			}
-			
+
 			if (aMarker.image.indexOf(".") != -1) {
 				html+="<br/><img src='"+aMarker.image+"' class='sl_info_bubble_main_image'>";
 			} else {
 				aMarker.image = "";
 			}
-			
+
 			if (aMarker.description != '') {
 				html+="<br/>"+aMarker.description+"";
 			} else {
 				aMarker.description = '';
 			}
-			
+
 			if (aMarker.hours != '') {
-				html+="<br/><span class='location_detail_label'>Hours:</span> "+aMarker.hours;
+				html+="<br/><span class='location_detail_label'>"+slplus.label_hours+"</span> "+aMarker.hours;
 			} else {
 				aMarker.hours = "";
 			}
-			
+
 			if (aMarker.phone != '') {
-				html+="<br/><span class='location_detail_label'>Phone:</span> "+aMarker.phone;
+				html+="<br/><span class='location_detail_label'>"+slplus.label_phone+"</span> "+aMarker.phone;
 			}
 			if (aMarker.fax != '') {
-				html+="<br/><span class='location_detail_label'>Fax:</span> "+aMarker.fax;
+				html+="<br/><span class='location_detail_label'>"+slplus.label_fax+"</span> "+aMarker.fax;
 			}
 
 			var address = this.__createAddress(aMarker);
-			
+
 			if (slplus.show_tags) {
 				if (jQuery.trim(aMarker.tags) != '') {
 					html += '<br/>'+aMarker.tags;
 				}
 			}
-			var complete_html = '<div id="sl_info_bubble"><!--tr><td--><strong>' + aMarker.name + '</strong><br>' + address + '<br/> <a href="http://' + slplus.map_domain + '/maps?saddr=' + /*todo: searched address goes here*/ encodeURIComponent(this.address) + '&daddr=' + encodeURIComponent(address) + '" target="_blank" class="storelocatorlink">Directions</a> ' + html + '<br/><!--/td></tr--></div>';
-			
+			var complete_html = '<div id="sl_info_bubble"><!--tr><td--><strong>' + aMarker.name + '</strong><br>' + address + '<br/> <a href="http://' + slplus.map_domain + '/maps?saddr=' + /*todo: searched address goes here*/ encodeURIComponent(this.address) + '&daddr=' + encodeURIComponent(address) + '" target="_blank" class="storelocatorlink">'+slplus.label_directions+'</a> ' + html + '<br/><!--/td></tr--></div>';
+
 			return complete_html;
 		}
-		
+
 		this.debugSearch = function(toLog) {
 		    if (slplus.debug_mode == 1) {
                 try {
@@ -948,7 +972,7 @@ var csl = {
                 }
 			}
 		}
-		
+
 		/***************************
   	  	 * function: saneValue
   	  	 * usage:
@@ -970,7 +994,7 @@ var csl = {
 			}
 			return name;
 		}
-		
+
 		/***************************
   	  	 * function: loadMarkers
   	  	 * usage:
@@ -991,10 +1015,10 @@ var csl = {
 			}
 			this.debugSearch('doing search@' + center + ' for radius of ' + radius);
 			if (center == null) {
-				var center = this.gmap.getCenter();
+				center = this.gmap.getCenter();
 			}
 			if (radius == null) {
-				var radius = 40000;
+				radius = 40000;
 			}
 			this.lastCenter = center;
 			this.lastRadius = radius;
@@ -1003,7 +1027,8 @@ var csl = {
 			var name = this.saneValue('nameSearch', '');
 			var action = null;
 			if (realsearch) {
-				action = {action:'csl_ajax_search',lat:center.lat(),lng:center.lng(),radius:radius, tags: tags, name:name, address:this.saneValue('addressInput', 'no address entered')};
+                var formObj = jQuery('#searchForm').formParams();
+				action = {action:'csl_ajax_search',lat:center.lat(),lng:center.lng(),radius:radius, tags: tags, name:name, address:this.saneValue('addressInput', 'no address entered'),formflds:formObj};
 			}
 			else {
 				action = {action:'csl_ajax_onload',lat:center.lat(),lng:center.lng(),tags:tags };
@@ -1022,7 +1047,7 @@ var csl = {
 				});
 			}
 		}
-		
+
 		/***************************
   	  	 * function: tagFilter
   	  	 * usage:
@@ -1032,14 +1057,14 @@ var csl = {
   	  	 * returns: none
   	  	 */
 		 this.tagFilter = function() {
-			
+
 			//repeat last search passing tags
 			var tag_to_search_for = this.saneValue('tag_to_search_for', '');
 			this.loadMarkers(this.lastCenter, this.lastRadius, tag_to_search_for);
 			jQuery('#map_box_image').hide();
 			jQuery('#map_box_map').show();
 		 }
-		
+
 		/***************************
   	  	 * function: searchLocations
   	  	 * usage:
@@ -1053,13 +1078,13 @@ var csl = {
             jQuery('#map_box_image').hide();
 			jQuery('#map_box_map').show();
             google.maps.event.trigger(this.gmap, 'resize');
-                
+
 			// Address was given, use it...
-			// 
+			//
 			if (address != '') {
 				this.address = cslutils.escapeExtended(address);
 				this.doGeocode();
-				
+
 			}
 			else {
 				var tag_to_search_for = this.saneValue('tag_to_search_for', '');
@@ -1067,7 +1092,7 @@ var csl = {
 				this.loadMarkers(this.gmap.getCenter(), radius, tag_to_search_for);
 			}
 		}
-		
+
 		/***************************
   	  	 * function: createSidebar
   	  	 * usage:
@@ -1076,7 +1101,7 @@ var csl = {
   	  	 * 		aMarker: the marker data
   	  	 * returns: a html div with the data properly displayed
   	  	 */
-		this.createSidebar = function(aMarker) { 
+		this.createSidebar = function(aMarker) {
 			document.getElementById('map_sidebar_td').style.display='block';
 			var div = document.createElement('div');
 			var link = '';
@@ -1085,13 +1110,13 @@ var csl = {
 			var city = aMarker.city;
 			var state = aMarker.state;
 			var zip = aMarker.zip;
-			
+
             var url = this.__getMarkerUrl(aMarker);
-            
+
 			if (url != '') {
-				link = link = "<a href='"+url+"' target='"+(slplus.use_same_window?'_self':'_blank')+"' class='storelocatorlink'><nobr>" + slplus.website_label +"</nobr></a><br/>"; 
+				link = link = "<a href='"+url+"' target='"+(slplus.use_same_window?'_self':'_blank')+"' class='storelocatorlink'><nobr>" + slplus.website_label +"</nobr></a><br/>";
 			}
-			
+
 			var elink = '';
 			if (aMarker.email.indexOf('@') != -1 && aMarker.email.indexOf('.') != -1) {
 				if (!slplus.use_email_form) {
@@ -1101,7 +1126,7 @@ var csl = {
 					elink = "<a href='javascript:cslutils.show_email_form("+'"'+aMarker.email+'"'+");' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a><br/>";
 				}
 			}
-			
+
 			//if we are showing tags in the table
 			//
 			var tagInfo = '';
@@ -1111,7 +1136,7 @@ var csl = {
 					tagInfo = '<br/><div class="'+tagclass+'"><span class="tagtext">'+aMarker.tags+'</span></div>';
 				}
 			}
-			
+
 			//keep empty data lines out of the final result
 			//
 			if (jQuery.trim(street) != '') { street = street + '<br/>'; }
@@ -1136,12 +1161,12 @@ var csl = {
                 city_state_zip += '<br/>';
             }
             if (jQuery.trim(aMarker.phone) != '') {
-                thePhone = '<br/>phone: ' + aMarker.phone;
+                thePhone = '<br/>' + slplus.label_phone+ aMarker.phone;
             } else {
                 thePhone = ''
             }
             if (jQuery.trim(aMarker.fax) != '') {
-                theFax = '<br/>fax: ' + aMarker.fax;
+                theFax = '<br/>' + slplus.label_fax + aMarker.fax;
             } else {
                 theFax = ''
             }
@@ -1153,7 +1178,7 @@ var csl = {
             //
             String.prototype.format = function() {
              var args = arguments;
-             return this.replace(/{(\d+)}/g, function(match, number) { 
+             return this.replace(/{(\d+)}/g, function(match, number) {
                return typeof args[number] != 'undefined'
                  ? args[number]
                  : match
@@ -1177,7 +1202,9 @@ var csl = {
                         slplus.map_domain,
                         encodeURIComponent(this.address),
                         encodeURIComponent(address),
-                        tagInfo
+                        slplus.label_directions,
+                        tagInfo,
+                        aMarker.id
                       )
                       ;
 			div.className = 'results_entry';
@@ -1185,16 +1212,21 @@ var csl = {
 
 			return div;
 		}
-  	  	  
+
   	  	//dumb browser quirk trick ... wasted two hours on that one
   	  	this.__init();
 	}
 }
- 
-//global vars
+
+
+/***************************************************************************
+ *
+ * CSL Main Execution
+ *
+ */
 var cslmap;
 var cslutils;
- 
+
 /***************************
  * function InitializeTheMap()
  *
@@ -1204,13 +1236,16 @@ var cslutils;
 function InitializeTheMap() {
 	cslutils = new csl.Utils();
 	cslmap = new csl.Map();
-    if (!!slplus.use_sensor) {
+
+    if (slplus.use_sensor) {
         sensor = new csl.LocationServices();
         sensor.currentLocation(function(loc) {
             cslmap.usingSensor = true;
+            clearTimeout(sensor.location_timeout);
             cslmap.__buildMap(new google.maps.LatLng(loc.coords.latitude, loc.coords.longitude));
         },
         function(error) {
+            clearTimeout(sensor.location_timeout);
             cslmap.doGeocode();
         });
     }
@@ -1219,9 +1254,124 @@ function InitializeTheMap() {
     }
 }
 
-/* 
+/*---------------------------------
+ * formparams minified js
+ */
+(function( $ ) {
+	var radioCheck = /radio|checkbox/i,
+		keyBreaker = /[^\[\]]+/g,
+		numberMatcher = /^[\-+]?[0-9]*\.?[0-9]+([eE][\-+]?[0-9]+)?$/;
+
+	var isNumber = function( value ) {
+		if ( typeof value == 'number' ) {
+			return true;
+		}
+
+		if ( typeof value != 'string' ) {
+			return false;
+		}
+
+		return value.match(numberMatcher);
+	};
+
+	$.fn.extend({
+		/**
+		 * @parent dom
+		 * @download http://jmvcsite.heroku.com/pluginify?plugins[]=jquery/dom/form_params/form_params.js
+		 * @plugin jquery/dom/form_params
+		 * @test jquery/dom/form_params/qunit.html
+		 * <p>Returns an object of name-value pairs that represents values in a form.
+		 * It is able to nest values whose element's name has square brackets. </p>
+		 * Example html:
+		 * @codestart html
+		 * &lt;form>
+		 *   &lt;input name="foo[bar]" value='2'/>
+		 *   &lt;input name="foo[ced]" value='4'/>
+		 * &lt;form/>
+		 * @codeend
+		 * Example code:
+		 * @codestart
+		 * $('form').formParams() //-> { foo:{bar:2, ced: 4} }
+		 * @codeend
+		 *
+		 * @demo jquery/dom/form_params/form_params.html
+		 *
+		 * @param {Boolean} [convert] True if strings that look like numbers and booleans should be converted.  Defaults to true.
+		 * @return {Object} An object of name-value pairs.
+		 */
+		formParams: function( convert ) {
+			if ( this[0].nodeName.toLowerCase() == 'form' && this[0].elements ) {
+
+				return jQuery(jQuery.makeArray(this[0].elements)).getParams(convert);
+			}
+			return jQuery("input[name], textarea[name], select[name]", this[0]).getParams(convert);
+		},
+		getParams: function( convert ) {
+			var data = {},
+				current;
+
+			convert = convert === undefined ? true : convert;
+
+			this.each(function() {
+				var el = this,
+					type = el.type && el.type.toLowerCase();
+				//if we are submit, ignore
+				if ((type == 'submit') || !el.name ) {
+					return;
+				}
+
+				var key = el.name,
+					value = $.data(el, "value") || $.fn.val.call([el]),
+					isRadioCheck = radioCheck.test(el.type),
+					parts = key.match(keyBreaker),
+					write = !isRadioCheck || !! el.checked,
+					//make an array of values
+					lastPart;
+
+				if ( convert ) {
+					if ( isNumber(value) ) {
+						value = parseFloat(value);
+					} else if ( value === 'true' || value === 'false' ) {
+						value = Boolean(value);
+					}
+
+				}
+
+				// go through and create nested objects
+				current = data;
+				for ( var i = 0; i < parts.length - 1; i++ ) {
+					if (!current[parts[i]] ) {
+						current[parts[i]] = {};
+					}
+					current = current[parts[i]];
+				}
+				lastPart = parts[parts.length - 1];
+
+				//now we are on the last part, set the value
+				if ( lastPart in current && type === "checkbox" ) {
+					if (!$.isArray(current[lastPart]) ) {
+						current[lastPart] = current[lastPart] === undefined ? [] : [current[lastPart]];
+					}
+					if ( write ) {
+						current[lastPart].push(value);
+					}
+				} else if ( write || !current[lastPart] ) {
+					current[lastPart] = write ? value : undefined;
+				}
+
+			});
+			return data;
+		}
+	});
+
+})(jQuery)
+
+/*
  * When the document has been loaded...
  *
  */
-jQuery('#document').ready(InitializeTheMap());
-
+jQuery('#document').ready(
+function() {
+    InitializeTheMap();
+}
+);

@@ -5,6 +5,26 @@
  ** Generic helper functions.  May live in WPCSL-Generic soon.
  ***************************************************************************/
 
+
+/**
+ * Help deserialize data to array.
+ *
+ * Useful for sl_option_value  field processing.
+ *
+ * @param type $value
+ * @return type
+ */
+function slp_deserialize_to_array($value) {
+    $arrayData = maybe_unserialize($value);
+    if (!is_array($arrayData)) {
+        if ($arrayData == '') {
+            $arrayData = array();
+        } else {
+            $arrayData = array('value' => $arrayData);
+        }
+    }
+    return $arrayData;
+}
  
 /**************************************
  ** function: get_string_from_phpexec()
@@ -82,16 +102,5 @@ function setup_stylesheet_for_slplus() {
             wp_enqueue_style(SLPLUS_PREFIX.'_user_header_css', SLPLUS_PLUGINURL .'/css/default.css');
         }                    
     }        
-}
-
-/**************************************
- ** function: setup_ADMIN_stylesheet_for_slplus
- **
- ** Setup the CSS for the admin page.
- **/
-function setup_ADMIN_stylesheet_for_slplus() {
-    if ( file_exists(SLPLUS_PLUGINDIR.'css/admin.css')) {
-        wp_enqueue_style('csl_slplus_admin_css', SLPLUS_PLUGINURL .'/css/admin.css'); 
-    }
 }
 

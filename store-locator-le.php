@@ -3,7 +3,7 @@
 Plugin Name: Google Maps via Store Locator Plus
 Plugin URI: http://www.charlestonsw.com/products/store-locator-plus/
 Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Gooogle Maps.  This is a highly customizable, easily expandable, enterprise-class location management system.
-Version: 3.4
+Version: 3.6.1
 Author: Charleston Software Associates
 Author URI: http://www.charlestonsw.com
 License: GPL3
@@ -26,11 +26,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 */
 
+if (isset($_SERVER['SERVER_NAME']) && ($_SERVER['SERVER_NAME']==='wpdev.cybersprocket.com')){
+    error_reporting(E_ALL);
+}
 
-// Globals
-global $sl_upload_path,$slpath;
-$sl_upload_path='';
-$sl_path='';
 
 // Drive Path Defines
 //
@@ -42,6 +41,13 @@ if (defined('SLPLUS_COREDIR') === false) {
 }
 if (defined('SLPLUS_ICONDIR') === false) {
     define('SLPLUS_ICONDIR', SLPLUS_COREDIR . 'images/icons/');
+}
+if (defined('SLPLUS_UPLOADDIR') === false) {
+    $upload_dir = wp_upload_dir('slp');
+    $upload_path = preg_replace('/\/slp\/$/','/sl-uploads/',$upload_dir['path']);
+    $upload_url  = preg_replace('/\/slp\/$/','/sl-uploads/',$upload_dir['url']);
+    define('SLPLUS_UPLOADDIR', $upload_path);
+    define('SLPLUS_UPLOADURL', $upload_url);
 }
 
 // URL Defines
@@ -75,35 +81,55 @@ if (defined('SLPLUS_PREFIX') === false) {
 
 // Include our needed files
 //
+global $slplus_plugin;
 include_once(SLPLUS_PLUGINDIR . '/include/config.php'	);
-include_once(SLPLUS_PLUGINDIR . 'plus.php'		);
-include_once(SLPLUS_COREDIR   . 'csl_helpers.php'	);
 include_once(SLPLUS_COREDIR   . 'functions.sl.php'	);
 include_once(SLPLUS_COREDIR   . 'csl-ajax-search.php'	);
+
+// General WP Action Interface
+//
+//instantiated via admin_init() only...
+// adminUI class
+// Activation class
+//
 require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-actions_class.php');
+$slplus_plugin->Actions = new SLPlus_Actions(array('parent'=>$slplus_plugin));     // Lets invoke this and make it an object
+
 require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-activation_class.php');
 require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-ui_class.php');
 require_once(SLPLUS_PLUGINDIR . '/include/mobile-listener.php');
-// note: adminUI class is only required & invoked if needed... see slp-actions_class.php
 
+require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-ajax_handler_class.php');
+$slplus_plugin->AjaxHandler = new SLPlus_AjaxHandler(array('parent'=>$slplus_plugin));     // Lets invoke this and make it an object
 
-// Activation Action (install/upgrade)
-//
-register_activation_hook( __FILE__, 'activate_slplus');
 
 // Regular Actions
 //
-add_action('init'               ,array('SLPlus_Actions','init')                 );
-add_action('wp_enqueue_scripts' ,array('SLPlus_Actions','wp_enqueue_scripts')   );
-add_action('wp_footer'          ,array('SLPlus_Actions','wp_footer')            );
-add_action('shutdown'           ,array('SLPlus_Actions','shutdown')             ); 
+add_action('init'               ,array($slplus_plugin->Actions,'init')                 );
+add_action('wp_enqueue_scripts' ,array($slplus_plugin->Actions,'wp_enqueue_scripts')   );
+add_action('wp_footer'          ,array($slplus_plugin->Actions,'wp_footer')            );
+add_action('shutdown'           ,array($slplus_plugin->Actions,'shutdown')             );
 
 // Admin Actions
 //
-add_action('admin_menu'         ,array('SLPlus_Actions','admin_menu')           );
-add_action('admin_init'         ,array('SLPlus_Actions','admin_init'),10        );
-add_action('admin_print_styles' , 'setup_ADMIN_stylesheet_for_slplus'           );
+add_action('admin_menu'         ,array($slplus_plugin->Actions,'admin_menu')           );
+add_action('admin_init'         ,array($slplus_plugin->Actions,'admin_init'),10        );
 add_action('admin_head'         , 'slpreport_downloads'                         );
+
+// Short Codes
+//
+add_shortcode('STORE-LOCATOR','store_locator_shortcode');
+add_shortcode('SLPLUS','store_locator_shortcode');
+add_shortcode('slplus','store_locator_shortcode');
+
+// Text Domains
+//
+load_plugin_textdomain(SLPLUS_PREFIX, false, SLPLUS_COREDIR . 'languages/');
+
+
+//------------------------
+// AJAX Hooks
+//------------------------
 
 // Ajax search
 //
@@ -122,12 +148,7 @@ add_action('wp_ajax_nopriv_csl_get_locations', array('csl_mobile_listener', 'Get
 add_action('wp_ajax_csl_ajax_onload', 'csl_ajax_onload');
 add_action('wp_ajax_nopriv_csl_ajax_onload', 'csl_ajax_onload');
 
-// Short Codes
-//
-add_shortcode('STORE-LOCATOR','store_locator_shortcode');
-add_shortcode('SLPLUS','store_locator_shortcode');
-add_shortcode('slplus','store_locator_shortcode');
+// License resets
+add_action('wp_ajax_license_reset_pages'    , array($slplus_plugin->AjaxHandler,'license_reset_pages'));
+add_action('wp_ajax_license_reset_propack'  , array($slplus_plugin->AjaxHandler,'license_reset_propack'));
 
-// Text Domains
-//
-load_plugin_textdomain(SLPLUS_PREFIX, false, SLPLUS_COREDIR . 'languages/');
