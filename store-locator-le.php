@@ -3,7 +3,7 @@
 Plugin Name: Google Maps via Store Locator Plus
 Plugin URI: http://www.charlestonsw.com/products/store-locator-plus/
 Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Gooogle Maps.  This is a highly customizable, easily expandable, enterprise-class location management system.
-Version: 3.6.1
+Version: 3.6.2
 Author: Charleston Software Associates
 Author URI: http://www.charlestonsw.com
 License: GPL3
@@ -96,7 +96,10 @@ require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-actions_class.php');
 $slplus_plugin->Actions = new SLPlus_Actions(array('parent'=>$slplus_plugin));     // Lets invoke this and make it an object
 
 require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-activation_class.php');
+
 require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-ui_class.php');
+$slplus_plugin->UI = new SLPlus_UI(array('parent'=>$slplus_plugin));
+
 require_once(SLPLUS_PLUGINDIR . '/include/mobile-listener.php');
 
 require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-ajax_handler_class.php');
@@ -118,9 +121,9 @@ add_action('admin_head'         , 'slpreport_downloads'                         
 
 // Short Codes
 //
-add_shortcode('STORE-LOCATOR','store_locator_shortcode');
-add_shortcode('SLPLUS','store_locator_shortcode');
-add_shortcode('slplus','store_locator_shortcode');
+add_shortcode('STORE-LOCATOR', array($slplus_plugin->UI,'render_shortcode'));
+add_shortcode('SLPLUS',array($slplus_plugin->UI,'render_shortcode'));
+add_shortcode('slplus',array($slplus_plugin->UI,'render_shortcode'));
 
 // Text Domains
 //

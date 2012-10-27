@@ -1,7 +1,7 @@
 <?php
   global $sl_search_label,
-      $sl_radius, $sl_radius_label, $r_options,
-      $sl_instruction_message, $cs_options, $slplus_state_options, $sl_country_options,
+      $sl_radius_label, $r_options,
+      $cs_options, $slplus_state_options, $sl_country_options,
       $fnvars, $slplus_plugin, $slplus_name_label;
 
       $slp_SearchDivs = new SLPlus_UI_DivManager();

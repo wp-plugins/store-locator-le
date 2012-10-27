@@ -1,6 +1,6 @@
 <?php 
 global  $sl_city_checked, $sl_country_checked, $sl_show_tag_checked, $sl_show_any_checked,
-    $sl_radius_label, $sl_website_label,$sl_instruction_message,$slpMapSettings,$sl_the_distance_unit;
+    $sl_radius_label, $sl_website_label,$slpMapSettings,$sl_the_distance_unit;
 
 echo "<div id='search_settings'>";
 echo "<div class='section_column'>";
