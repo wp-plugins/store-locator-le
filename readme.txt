@@ -234,6 +234,11 @@ Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/su
 
 I was listing the entire change log here but with weekly/bi-weekly updates it as getting much too long.
 
+= 3.6.3 (Late October 2012)
+
+* No code, just a version update.  WordPress tagged the update today as "over 2 years old".
+
+
 = 3.6.2 (Late October Vacation Patch, 2012)
 
 * Hopefully removes the open HTML tags under the map.
