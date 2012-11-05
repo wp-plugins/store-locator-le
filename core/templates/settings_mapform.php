@@ -146,6 +146,10 @@
                         __('Use email form instead of mailto: link when showing email addresses.', SLPLUS_PREFIX)
                         );
                 }
+
+                // Third Party Add-Ons Hook
+                //
+                echo apply_filters('slp_add_results_settings','');
 ?>
             </div>
         </div>

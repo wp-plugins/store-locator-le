@@ -206,6 +206,11 @@ if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
             __('State', SLPLUS_PREFIX),
             __('Search form label to prefix the state selector.',SLPLUS_PREFIX)
             );
+    echo CreateInputDiv(
+            '_find_button_label',
+            __('Find Button', SLPLUS_PREFIX),
+            __('The label on the find button, if text mode is selected.',SLPLUS_PREFIX)
+            );
 }    
 
 

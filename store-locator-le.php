@@ -3,7 +3,7 @@
 Plugin Name: Google Maps via Store Locator Plus
 Plugin URI: http://www.charlestonsw.com/products/store-locator-plus/
 Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Gooogle Maps.  This is a highly customizable, easily expandable, enterprise-class location management system.
-Version: 3.6.3
+Version: 3.7
 Author: Charleston Software Associates
 Author URI: http://www.charlestonsw.com
 License: GPL3
@@ -84,7 +84,6 @@ if (defined('SLPLUS_PREFIX') === false) {
 global $slplus_plugin;
 include_once(SLPLUS_PLUGINDIR . '/include/config.php'	);
 include_once(SLPLUS_COREDIR   . 'functions.sl.php'	);
-include_once(SLPLUS_COREDIR   . 'csl-ajax-search.php'	);
 
 // General WP Action Interface
 //
@@ -111,6 +110,7 @@ $slplus_plugin->AjaxHandler = new SLPlus_AjaxHandler(array('parent'=>$slplus_plu
 add_action('init'               ,array($slplus_plugin->Actions,'init')                 );
 add_action('wp_enqueue_scripts' ,array($slplus_plugin->Actions,'wp_enqueue_scripts')   );
 add_action('wp_footer'          ,array($slplus_plugin->Actions,'wp_footer')            );
+add_action('wp_head'            ,array($slplus_plugin->Actions,'wp_head')              );
 add_action('shutdown'           ,array($slplus_plugin->Actions,'shutdown')             );
 
 // Admin Actions
@@ -134,24 +134,24 @@ load_plugin_textdomain(SLPLUS_PREFIX, false, SLPLUS_COREDIR . 'languages/');
 // AJAX Hooks
 //------------------------
 
+// Mobile Listener
+//
+add_action('wp_ajax_csl_get_locations'          , array('csl_mobile_listener', 'GetLocations'));
+add_action('wp_ajax_nopriv_csl_get_locations'   , array('csl_mobile_listener', 'GetLocations'));
+
 // Ajax search
 //
-add_action('wp_ajax_csl_ajax_search', 'csl_ajax_search');
-add_action('wp_ajax_nopriv_csl_ajax_search', 'csl_ajax_search');
+add_action('wp_ajax_csl_ajax_search'            , array($slplus_plugin->AjaxHandler,'csl_ajax_search'));
+add_action('wp_ajax_nopriv_csl_ajax_search'     , array($slplus_plugin->AjaxHandler,'csl_ajax_search'));
 
 add_action('wp_ajax_nopriv_csl_get_closest_location', array('csl_mobile_listener', 'GetClosestLocation'));
 
-// Mobile Listener
-//
-add_action('wp_ajax_csl_get_locations', array('csl_mobile_listener', 'GetLocations'));
-add_action('wp_ajax_nopriv_csl_get_locations', array('csl_mobile_listener', 'GetLocations'));
-
 // Ajax Load
 //
-add_action('wp_ajax_csl_ajax_onload', 'csl_ajax_onload');
-add_action('wp_ajax_nopriv_csl_ajax_onload', 'csl_ajax_onload');
+add_action('wp_ajax_csl_ajax_onload'            , array($slplus_plugin->AjaxHandler,'csl_ajax_onload'));
+add_action('wp_ajax_nopriv_csl_ajax_onload'     , array($slplus_plugin->AjaxHandler,'csl_ajax_onload'));
 
 // License resets
-add_action('wp_ajax_license_reset_pages'    , array($slplus_plugin->AjaxHandler,'license_reset_pages'));
-add_action('wp_ajax_license_reset_propack'  , array($slplus_plugin->AjaxHandler,'license_reset_propack'));
+add_action('wp_ajax_license_reset_pages'        , array($slplus_plugin->AjaxHandler,'license_reset_pages'));
+add_action('wp_ajax_license_reset_propack'      , array($slplus_plugin->AjaxHandler,'license_reset_propack'));
 
