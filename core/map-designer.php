@@ -215,6 +215,7 @@ if (!$_POST) {
         
         SLPLUS_PREFIX.'_search_tag_label'       ,
         SLPLUS_PREFIX.'_state_pd_label'         ,
+        SLPLUS_PREFIX.'_find_button_label'      ,
 
         );
     foreach ($BoxesToHit as $JustAnotherBox) {

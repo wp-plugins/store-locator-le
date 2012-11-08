@@ -29,8 +29,7 @@
           </div>
 <?php
             global $slp_thishtml_10;
-            $slp_thishtml_10 = ob_get_contents();
-            ob_end_clean();
+            $slp_thishtml_10 = ob_get_clean();
             add_filter('slp_search_form_divs',array($slp_SearchDivs,'buildDiv10'),10);
           }
 
@@ -52,8 +51,7 @@ ob_start();
 
           <?php
             global $slp_thishtml_20;
-            $slp_thishtml_20 = ob_get_contents();
-            ob_end_clean();
+            $slp_thishtml_20 = ob_get_clean();
             add_filter('slp_search_form_divs',array($slp_SearchDivs,'buildDiv20'),20);
           }
 
@@ -72,8 +70,7 @@ ob_start();
           <?php
 
             global $slp_thishtml_30;
-            $slp_thishtml_30 = ob_get_contents();
-            ob_end_clean();
+            $slp_thishtml_30 = ob_get_clean();
             add_filter('slp_search_form_divs',array($slp_SearchDivs,'buildDiv30'),30);
           }
 
@@ -124,8 +121,7 @@ ob_start();
                       </div>
               <?php
                     global $slp_thishtml_40;
-                    $slp_thishtml_40 = ob_get_contents();
-                    ob_end_clean();
+                    $slp_thishtml_40 = ob_get_clean();
                     add_filter('slp_search_form_divs',array($slp_SearchDivs,'buildDiv40'),40);
               }
 
@@ -141,8 +137,7 @@ ob_start();
                   </div>
                   <?php
                     global $slp_thishtml_50;
-                    $slp_thishtml_50 = ob_get_contents();
-                    ob_end_clean();
+                    $slp_thishtml_50 = ob_get_clean();
                     add_filter('slp_search_form_divs',array($slp_SearchDivs,'buildDiv50'),50);
               }
           }
@@ -168,8 +163,7 @@ ob_start();
          <?php
          }
         global $slp_thishtml_60;
-        $slp_thishtml_60 = ob_get_contents();
-        ob_end_clean();
+        $slp_thishtml_60 = ob_get_clean();
         add_filter('slp_search_form_divs',array($slp_SearchDivs,'buildDiv60'),60);
           ?>
 
@@ -190,8 +184,7 @@ ob_start();
             echo $r_options;
         }
         global $slp_thishtml_70;
-        $slp_thishtml_70 = ob_get_contents();
-        ob_end_clean();
+        $slp_thishtml_70 = ob_get_clean();
         add_filter('slp_search_form_divs',array($slp_SearchDivs,'buildDiv70'),70);
 
           //------------------------------------------------
@@ -225,12 +218,13 @@ ob_start();
 
           ?>               
           <div id='radius_in_submit'>
-              <input <?php echo $button_style?> value='Find Locations' id='addressSubmit'/>
+              <input <?php echo $button_style?> 
+                      value='<?php echo get_option(SLPLUS_PREFIX.'_find_button_label','Find Locations'); ?>'
+                      id='addressSubmit'/>
           </div>
           <?php
             global $slp_thishtml_80;
-            $slp_thishtml_80 = ob_get_contents();
-            ob_end_clean();
+            $slp_thishtml_80 = ob_get_clean();
             add_filter('slp_search_form_divs',array($slp_SearchDivs,'buildDiv80'),80);
           }
 
