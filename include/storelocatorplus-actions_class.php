@@ -300,20 +300,22 @@ if (! class_exists('SLPlus_Actions')) {
             // Register our scripts for later enqueue when needed
             //
             //wp_register_script('slplus_functions',SLPLUS_PLUGINURL.'/core/js/functions.js');
-            if (isset($api_key))
-            {
-                 //todo:character encoding ???
-                //"http://$sl_google_map_domain/maps?file=api&amp;v=2&amp;key=$api_key&amp;sensor=false{$sl_map_character_encoding}"
-                wp_enqueue_script(
+            if (get_option(SLPLUS_PREFIX.'-no_google_js','off') != 'on') {
+                if (isset($api_key))
+                {
+                     //todo:character encoding ???
+                    //"http://$sl_google_map_domain/maps?file=api&amp;v=2&amp;key=$api_key&amp;sensor=false{$sl_map_character_encoding}"
+                    wp_enqueue_script(
+                            'google_maps',
+                            'http://'.$sl_google_map_domain.'/maps/api/js?sensor=false&v=3.9&key='.$api_key
+                            );
+                }
+                else {
+                    wp_enqueue_script(
                         'google_maps',
-                        'http://'.$sl_google_map_domain.'/maps/api/js?sensor=false&v=3.9&key='.$api_key
-                        );
-            }
-            else {
-                wp_enqueue_script(
-                    'google_maps',
-                    'http://'.$sl_google_map_domain.'/maps/api/js?sensor=false&v=3.9'
-                );
+                        'http://'.$sl_google_map_domain.'/maps/api/js?sensor=false&v=3.9'
+                    );
+                }
             }
 
             wp_enqueue_script(

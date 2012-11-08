@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
 Tags: google maps, store finder, store locator, store locater, google, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus, bing map, bing, yahoo maps, yahoo, mapping, retail
 Requires at least: 3.3
 Tested up to: 3.4.2
-Stable tag: 3.7
+Stable tag: 3.7.1
 
 Store Locator Plus makes it easy to put a fully functional store finder on your site.
 The most active store locator plugin with monthly updates!
@@ -246,7 +246,12 @@ Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/su
 
 I was listing the entire change log here but with weekly/bi-weekly updates it as getting much too long.
 
-= 3.7 (November 2012)
+= 3.7.1 (Early November 2012) =
+
+* Detect directory read error (permission/missing directory) for icons.
+* Add "turn of google maps js" for themes that  have a google maps call built-in.  Enabling this can break SLP.
+
+= 3.7 (November 2012) =
 
 * Prevent JavaScript warning if force load javascript is on and user is on a non-SLP map page.
 * Fix JavaScript error on some sites where a timing issue created a JavaScript error on formParams.
