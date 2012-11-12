@@ -49,7 +49,9 @@ class wpCSL_helper__slplus {
         if (file_exists($file)) {
             ob_start();
             include($file);
-            return ob_get_clean();
+            $content = ob_get_contents();
+            ob_end_clean();
+            return $content;
         }
     }
     

@@ -78,7 +78,7 @@ ob_start();
           // Show Tag Search Is Enabled
           //
           if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
-              if (get_option(SLPLUS_PREFIX.'_show_tag_search',0) ==1) {
+              if ((get_option(SLPLUS_PREFIX.'_show_tag_search',0) ==1) || isset($fnvars['only_with_tag'])) {
 
                   ob_start();
           ?>

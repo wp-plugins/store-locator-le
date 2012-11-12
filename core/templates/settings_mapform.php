@@ -57,7 +57,7 @@
                         echo CreateInputDiv(
                                 'sl_starting_image',
                                 __('Starting Image',SLPLUS_PREFIX),
-                                __('If set, this image will be displayed until a search is performed.',SLPLUS_PREFIX),
+                                __('If set, this image will be displayed until a search is performed.  Enter the full URL for the image.',SLPLUS_PREFIX),
                                 ''
                                 );
                         echo CreateCheckboxDiv(

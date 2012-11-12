@@ -721,7 +721,7 @@ var csl = {
 			if (markerList.length == 0) {
 				this.gmap.panTo(this.homePoint);
                 var sidebar = document.getElementById('map_sidebar');
-				sidebar.innerHTML = '<div class="no_results_found"><h2>No results found.</h2></div>';
+				sidebar.innerHTML = '<div class="no_results_found"><h2>'+slplus.msg_noresults+'</h2></div>';
                 jQuery('#map_sidebar').trigger('contentchanged');
 			} else {
                 jQuery('#map_sidebar').trigger('contentchanged');
@@ -963,7 +963,8 @@ var csl = {
 
 			if (slplus.show_tags) {
 				if (jQuery.trim(aMarker.tags) != '') {
-					html += '<br/>'+aMarker.tags;
+					var tagclass = 'bubble_'+aMarker.tags.replace(/\W/g,'_');
+					html += '<br/><div class="'+tagclass+'"><span class="slp_info_bubble_tags">'+aMarker.tags + '</span></div>';
 				}
 			}
 			var complete_html = '<div id="sl_info_bubble"><!--tr><td--><strong>' + aMarker.name + '</strong><br>' + address + '<br/> <a href="http://' + slplus.map_domain + '/maps?saddr=' + /*todo: searched address goes here*/ encodeURIComponent(this.address) + '&daddr=' + encodeURIComponent(address) + '" target="_blank" class="storelocatorlink">'+slplus.label_directions+'</a> ' + html + '<br/><!--/td></tr--></div>';
@@ -1144,7 +1145,7 @@ var csl = {
 			if (slplus.show_tags) {
 				if (jQuery.trim(aMarker.tags) != '') {
 					var tagclass = aMarker.tags.replace(/\W/g,'_');
-					tagInfo = '<br/><div class="'+tagclass+'"><span class="tagtext">'+aMarker.tags+'</span></div>';
+					tagInfo = '<br/><div class="'+tagclass+' slp_result_table_tags"><span class="tagtext">'+aMarker.tags+'</span></div>';
 				}
 			}
 

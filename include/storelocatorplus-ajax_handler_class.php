@@ -110,7 +110,6 @@ if (! class_exists('SLPlus_AjaxHandler')) {
             //
             $tag_filter = '';
             if (
-                (get_option(SLPLUS_PREFIX.'_show_tag_search') ==1) &&
                 isset($_POST['tags']) && ($_POST['tags'] != '')
                ){
                 $posted_tag = preg_replace('/^\s+(.*?)/','$1',$_POST['tags']);
@@ -129,17 +128,28 @@ if (! class_exists('SLPlus_AjaxHandler')) {
             }
 
             // Select all the rows in the markers table
+            // Radius was ignored in the original SLP, showing all locations up to N max
+            // that is why 99999 is hard-coded here
+            //
             $multiplier=(get_option('sl_distance_unit')=="km")? 6371 : 3959;
-            $query = "SELECT *, ".
-                "( $multiplier * acos( cos( radians('".$_POST['lat']."') ) * cos( radians( sl_latitude ) ) * " .
-                        "cos( radians( sl_longitude ) - radians('".$_POST['lng']."') ) + sin( radians('".$_POST['lat']."') ) * ".
-                        "sin( radians( sl_latitude ) ) ) ) AS sl_distance ".
-                "FROM ".$wpdb->prefix."store_locator ".
-                "WHERE sl_store<>'' AND sl_longitude<>'' AND sl_latitude<>'' $tag_filter<>'' $name_filter  ".
-                "ORDER BY sl_distance ASC ".
-                "LIMIT $num_initial_displayed";
+            $query = sprintf(
+                "SELECT *,".
+                "( $multiplier * acos( cos( radians('%s') ) * cos( radians( sl_latitude ) ) * cos( radians( sl_longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( sl_latitude ) ) ) ) AS sl_distance ".
+                "FROM ${dbPrefix}store_locator ".
+                "WHERE sl_longitude<>'' and sl_longitude<>'' %s %s ".
+                "HAVING (sl_distance < '%s') ".
+                'ORDER BY sl_distance ASC '.
+                'LIMIT %s',
+                mysql_real_escape_string($_POST['lat']),
+                mysql_real_escape_string($_POST['lng']),
+                mysql_real_escape_string($_POST['lat']),
+                $tag_filter,
+                $name_filter,
+                mysql_real_escape_string('99999'),
+                $num_initial_displayed
+            );
+            $result = mysql_query(apply_filters('slp_mysql_search_query',$query));
 
-            $result = mysql_query($query);
             if (!$result) {
               die('Invalid query: ' . mysql_error());
             }
@@ -198,7 +208,6 @@ if (! class_exists('SLPlus_AjaxHandler')) {
             //
             $tag_filter = '';
             if (
-                (get_option(SLPLUS_PREFIX.'_show_tag_search') ==1) &&
                 isset($_POST['tags']) && ($_POST['tags'] != '')
             ){
                 $posted_tag = preg_replace('/^\s+(.*?)/','$1',$_POST['tags']);
@@ -227,7 +236,7 @@ if (! class_exists('SLPlus_AjaxHandler')) {
                 "SELECT *,".
                 "( $multiplier * acos( cos( radians('%s') ) * cos( radians( sl_latitude ) ) * cos( radians( sl_longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( sl_latitude ) ) ) ) AS sl_distance ".
                 "FROM ${dbPrefix}store_locator ".
-                "WHERE sl_longitude<>'' %s %s ".
+                "WHERE sl_longitude<>'' and sl_longitude<>'' %s %s ".
                 "HAVING (sl_distance < '%s') ".
                 'ORDER BY sl_distance ASC '.
                 'LIMIT %s',

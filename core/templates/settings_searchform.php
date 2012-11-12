@@ -259,4 +259,16 @@ echo CreateInputDiv(
         '',
         __('Enter an address or zip code and click the find locations button.',SLPLUS_PREFIX)
         );
+//----------------------------------------------------------------------
+// Pro Pack Enabled
+//
+if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
+    echo CreateInputDiv(
+            '_message_noresultsfound',
+            __('No Results Message', SLPLUS_PREFIX),
+            __('No results found message that appears under the map.',SLPLUS_PREFIX),
+            SLPLUS_PREFIX,
+            __('Results not found.',SLPLUS_PREFIX)
+            );
+    }
 echo "</div></div>";

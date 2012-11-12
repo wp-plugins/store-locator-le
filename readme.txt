@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
 Tags: google maps, store finder, store locator, store locater, google, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus, bing map, bing, yahoo maps, yahoo, mapping, retail
 Requires at least: 3.3
 Tested up to: 3.4.2
-Stable tag: 3.7.1
+Stable tag: 3.7.2
 
 Store Locator Plus makes it easy to put a fully functional store finder on your site.
 The most active store locator plugin with monthly updates!
@@ -226,6 +226,8 @@ Currently this includes:
 
 == Screenshots ==
 
+The website offers [more screen shots](http://www.charlestonsw.com/product/store-locator-plus-2/) including those from the latest updates and premium add-on packages.
+
 1. Location Details
 2. Tag filter pulldown
 3. All Options Search
@@ -236,7 +238,7 @@ Currently this includes:
 8. Admin Manage Locations
 9. Default settings
 
-More screenshots are available via the [Store Locator Plus website](http://www.storelocatorplus.com/).
+More screenshots are available via [the CSA website](http://www.charlestonsw.com/products/store-locator-plus/).
 
 == Changelog ==
 
@@ -245,6 +247,17 @@ I update about once per month or more frequently as needed.
 Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
 
 I was listing the entire change log here but with weekly/bi-weekly updates it as getting much too long.
+
+= 3.7.2 (November 9 2012) =
+
+* Wrap tag output in info bubble in div and span with tags.
+** Make it easier to "iconify" the tags with CSS.
+* Add more help to the starting image setting.
+* Consolidate and remove un-needed files, decreasing install package size.
+* Add CSS elements and filters for add/edit locations for better third party controls.
+* Style add locations page after manage locations edit page.
+* [Pro Pack](http://www.charlestonsw.com/products/store-locator-plus/) Patch: Using only_with_tag in the Pro Pack no longer requires you check off "Tag Input" under Map Settings/Search Form/Tags for the tag filter to work.
+* [Pro Pack](http://www.charlestonsw.com/products/store-locator-plus/) Added setting to customize "no results found" message that appears after a search with no results returned.
 
 = 3.7.1 (Early November 2012) =
 
