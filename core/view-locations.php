@@ -22,15 +22,11 @@ print "<div class='wrap'>
             <div id='icon-edit-locations' class='icon32'><br/></div>
             <h2>".
             __('Store Locator Plus - Manage Locations', SLPLUS_PREFIX).
-            "</h2>";
-
-            
-//-------------------------
-// Navbar Section
-//-------------------------    
-print '<div id="slplus_navbar">';
-print get_string_from_phpexec(SLPLUS_COREDIR.'/templates/navbar.php');
-print '</div>';            
+            "</h2>" .
+      '<div id="slplus_navbar">' .
+      $slplus_plugin->helper->get_string_from_phpexec(SLPLUS_COREDIR.'/templates/'.'navbar.php') .
+      '</div>';
+       
 
 // Check Google API Key
 // Not present : who cares
@@ -466,59 +462,11 @@ if ($slpLocations=$wpdb->get_results(
         // Show the edit form in a new row for the location that was selected.
         //
         if (isset($_GET['edit']) && ($locID==$_GET['edit'])) {
-            print "<tr id='slp_location_edit_row' style='background-color:$bgcol'>";
-            print "<td class='slp_location_edit_cell' colspan='".(count($slpManageColumns)+4)."'>
-            <form name='manualAddForm' method=post>
-            <a name='a".$locID."'></a>
-            <table cellpadding='0' class='manual_update_table'>
-            <!--thead><tr><td id='slp_manual_update_table_left_cell'>".__("Type&nbsp;Address", SLPLUS_PREFIX)."</td></tr></thead-->
-            <tr>
-                <td valign='top'>";
-
-            $slpEditForm = '';
-
-
-            execute_and_output_template('edit_location_address.php');
-
-            // Store Pages URLs
-            //
-            if (
-                ($slplus_plugin->license->packages['Store Pages']->isenabled) &&
-                ($sl_value['sl_pages_url'] != '')
-                ){
-                $shortSPurl = preg_replace('/^.*?store_page=/','',$sl_value['sl_pages_url']);
-                $slpEditForm .= "<label for='store_page'>Store Page</label><a href='$sl_value[sl_pages_url]' target='cybersprocket'>$shortSPurl</a><br/>";
-            }
-
-            $slpEditForm .= "<br><nobr>".
-                    "<input type='submit' value='".__("Update", SLPLUS_PREFIX)."' class='button-primary'>".
-                    "<input type='button' class='button' value='".__("Cancel", SLPLUS_PREFIX)."' onclick='location.href=\"".preg_replace('/&edit=$_GET[edit]/', '',$_SERVER['REQUEST_URI'])."\"'>".
-                    "<input type='hidden' name='option_value-$locID' value='$sl_value[sl_option_value]' />" .
-                    "</nobr>";
-            print apply_filters('slp_edit_location_left_column',$slpEditForm);
-            print "</td>";
-
-
-            print "<td id='slp_manual_update_table_right_cell'>";
-            $slpEditForm =
-                    "<div id='slp_edit_right_column'>" .
-                    "<strong>".__("Additional Information", SLPLUS_PREFIX)."</strong><br>
-                    <textarea name='description-$locID' rows='5' cols='17'>$sl_value[sl_description]</textarea>&nbsp;<small>".__("Description", SLPLUS_PREFIX)."</small><br>
-                    <input name='tags-$locID' value='$sl_value[sl_tags]'>&nbsp;<small>"  .__("Tags (seperate with commas)", SLPLUS_PREFIX)."</small><br>		
-                    <input name='url-$locID'  value='$sl_value[sl_url]'>&nbsp;<small>"   .get_option('sl_website_label','Website')."</small><br>
-                    <input name='email-$locID' value='$sl_value[sl_email]'>&nbsp;<small>".__("Email", SLPLUS_PREFIX)."</small><br>
-                    <input name='hours-$locID' value='$sl_value[sl_hours]'>&nbsp;<small>".$slplus_plugin->settings->get_item('label_hours','Hours','_')."</small><br>
-                    <input name='phone-$locID' value='$sl_value[sl_phone]'>&nbsp;<small>".$slplus_plugin->settings->get_item('label_phone','Phone','_')."</small><br>
-                    <input name='fax-$locID'   value='$sl_value[sl_fax]'>&nbsp;<small>"  .$slplus_plugin->settings->get_item('label_fax','Fax','_')."</small><br>
-                    <input name='image-$locID' value='$sl_value[sl_image]'>&nbsp;<small>".__("Image URL (shown with location)", SLPLUS_PREFIX)."</small>" .
-                    '</div>'
-                    ;
-            print apply_filters('slp_edit_location_right_column',$slpEditForm);
-            print "</td>
-                    </tr>
-                </table>
-            </form></td>
-            </tr>";
+            print 
+                "<tr id='slp_location_edit_row'>"               . 
+                "<td class='slp_locationinfoform_cell' colspan='".(count($slpManageColumns)+4)."'>".
+                $slplus_plugin->AdminUI->createString_LocationInfoForm($sl_value, $locID) .
+                '</td></tr>';
 
         // DISPLAY MODE
         //
