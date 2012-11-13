@@ -721,7 +721,7 @@ var csl = {
 			if (markerList.length == 0) {
 				this.gmap.panTo(this.homePoint);
                 var sidebar = document.getElementById('map_sidebar');
-				sidebar.innerHTML = '<div class="no_results_found"><h2>No results found.</h2></div>';
+				sidebar.innerHTML = '<div class="no_results_found"><h2>'+slplus.msg_noresults+'</h2></div>';
                 jQuery('#map_sidebar').trigger('contentchanged');
 			} else {
                 jQuery('#map_sidebar').trigger('contentchanged');
@@ -879,6 +879,15 @@ var csl = {
             return url;
         }
 
+        /***************************
+  	  	 * function: __createAddress
+  	  	 * usage:
+  	  	 * 		Build a formatted address string
+  	  	 * parameters:
+  	  	 * 		aMarker:
+		 *			the ajax result to build the information from
+  	  	 * returns: a formatted address string
+        */
         this.__createAddress = function(aMarker) {
 
             var address = '';
@@ -893,6 +902,8 @@ var csl = {
             if (aMarker.state != '') { address += ", " + aMarker.state; }
 
             if (aMarker.zip != '') { address += ", " + aMarker.zip; }
+
+            if (aMarker.country != '') { address += ", " + aMarker.country; }
 
             return address;
         }
@@ -952,7 +963,8 @@ var csl = {
 
 			if (slplus.show_tags) {
 				if (jQuery.trim(aMarker.tags) != '') {
-					html += '<br/>'+aMarker.tags;
+					var tagclass = 'bubble_'+aMarker.tags.replace(/\W/g,'_');
+					html += '<br/><div class="'+tagclass+'"><span class="slp_info_bubble_tags">'+aMarker.tags + '</span></div>';
 				}
 			}
 			var complete_html = '<div id="sl_info_bubble"><!--tr><td--><strong>' + aMarker.name + '</strong><br>' + address + '<br/> <a href="http://' + slplus.map_domain + '/maps?saddr=' + /*todo: searched address goes here*/ encodeURIComponent(this.address) + '&daddr=' + encodeURIComponent(address) + '" target="_blank" class="storelocatorlink">'+slplus.label_directions+'</a> ' + html + '<br/><!--/td></tr--></div>';
@@ -1133,7 +1145,7 @@ var csl = {
 			if (slplus.show_tags) {
 				if (jQuery.trim(aMarker.tags) != '') {
 					var tagclass = aMarker.tags.replace(/\W/g,'_');
-					tagInfo = '<br/><div class="'+tagclass+'"><span class="tagtext">'+aMarker.tags+'</span></div>';
+					tagInfo = '<br/><div class="'+tagclass+' slp_result_table_tags"><span class="tagtext">'+aMarker.tags+'</span></div>';
 				}
 			}
 
@@ -1204,7 +1216,8 @@ var csl = {
                         encodeURIComponent(address),
                         slplus.label_directions,
                         tagInfo,
-                        aMarker.id
+                        aMarker.id,
+                        aMarker.country
                       )
                       ;
 			div.className = 'results_entry';
@@ -1254,124 +1267,125 @@ function InitializeTheMap() {
     }
 }
 
-/*---------------------------------
- * formparams minified js
- */
-(function( $ ) {
-	var radioCheck = /radio|checkbox/i,
-		keyBreaker = /[^\[\]]+/g,
-		numberMatcher = /^[\-+]?[0-9]*\.?[0-9]+([eE][\-+]?[0-9]+)?$/;
-
-	var isNumber = function( value ) {
-		if ( typeof value == 'number' ) {
-			return true;
-		}
-
-		if ( typeof value != 'string' ) {
-			return false;
-		}
-
-		return value.match(numberMatcher);
-	};
-
-	$.fn.extend({
-		/**
-		 * @parent dom
-		 * @download http://jmvcsite.heroku.com/pluginify?plugins[]=jquery/dom/form_params/form_params.js
-		 * @plugin jquery/dom/form_params
-		 * @test jquery/dom/form_params/qunit.html
-		 * <p>Returns an object of name-value pairs that represents values in a form.
-		 * It is able to nest values whose element's name has square brackets. </p>
-		 * Example html:
-		 * @codestart html
-		 * &lt;form>
-		 *   &lt;input name="foo[bar]" value='2'/>
-		 *   &lt;input name="foo[ced]" value='4'/>
-		 * &lt;form/>
-		 * @codeend
-		 * Example code:
-		 * @codestart
-		 * $('form').formParams() //-> { foo:{bar:2, ced: 4} }
-		 * @codeend
-		 *
-		 * @demo jquery/dom/form_params/form_params.html
-		 *
-		 * @param {Boolean} [convert] True if strings that look like numbers and booleans should be converted.  Defaults to true.
-		 * @return {Object} An object of name-value pairs.
-		 */
-		formParams: function( convert ) {
-			if ( this[0].nodeName.toLowerCase() == 'form' && this[0].elements ) {
-
-				return jQuery(jQuery.makeArray(this[0].elements)).getParams(convert);
-			}
-			return jQuery("input[name], textarea[name], select[name]", this[0]).getParams(convert);
-		},
-		getParams: function( convert ) {
-			var data = {},
-				current;
-
-			convert = convert === undefined ? true : convert;
-
-			this.each(function() {
-				var el = this,
-					type = el.type && el.type.toLowerCase();
-				//if we are submit, ignore
-				if ((type == 'submit') || !el.name ) {
-					return;
-				}
-
-				var key = el.name,
-					value = $.data(el, "value") || $.fn.val.call([el]),
-					isRadioCheck = radioCheck.test(el.type),
-					parts = key.match(keyBreaker),
-					write = !isRadioCheck || !! el.checked,
-					//make an array of values
-					lastPart;
-
-				if ( convert ) {
-					if ( isNumber(value) ) {
-						value = parseFloat(value);
-					} else if ( value === 'true' || value === 'false' ) {
-						value = Boolean(value);
-					}
-
-				}
-
-				// go through and create nested objects
-				current = data;
-				for ( var i = 0; i < parts.length - 1; i++ ) {
-					if (!current[parts[i]] ) {
-						current[parts[i]] = {};
-					}
-					current = current[parts[i]];
-				}
-				lastPart = parts[parts.length - 1];
-
-				//now we are on the last part, set the value
-				if ( lastPart in current && type === "checkbox" ) {
-					if (!$.isArray(current[lastPart]) ) {
-						current[lastPart] = current[lastPart] === undefined ? [] : [current[lastPart]];
-					}
-					if ( write ) {
-						current[lastPart].push(value);
-					}
-				} else if ( write || !current[lastPart] ) {
-					current[lastPart] = write ? value : undefined;
-				}
-
-			});
-			return data;
-		}
-	});
-
-})(jQuery)
-
 /*
  * When the document has been loaded...
  *
  */
 jQuery('#document').ready(
-function() {
-    InitializeTheMap();
-}
+    function() {
+                /*---------------------------------
+                 * formparams minified js
+                 */
+                var radioCheck = /radio|checkbox/i,
+                    keyBreaker = /[^\[\]]+/g,
+                    numberMatcher = /^[\-+]?[0-9]*\.?[0-9]+([eE][\-+]?[0-9]+)?$/;
+
+                var isNumber = function( value ) {
+                    if ( typeof value == 'number' ) {
+                        return true;
+                    }
+
+                    if ( typeof value != 'string' ) {
+                        return false;
+                    }
+
+                    return value.match(numberMatcher);
+                };
+                jQuery.fn.extend({
+                        /**
+                         * @parent dom
+                         * @download http://jmvcsite.heroku.com/pluginify?plugins[]=jquery/dom/form_params/form_params.js
+                         * @plugin jquery/dom/form_params
+                         * @test jquery/dom/form_params/qunit.html
+                         * <p>Returns an object of name-value pairs that represents values in a form.
+                         * It is able to nest values whose element's name has square brackets. </p>
+                         * Example html:
+                         * @codestart html
+                         * &lt;form>
+                         *   &lt;input name="foo[bar]" value='2'/>
+                         *   &lt;input name="foo[ced]" value='4'/>
+                         * &lt;form/>
+                         * @codeend
+                         * Example code:
+                         * @codestart
+                         * $('form').formParams() //-> { foo:{bar:2, ced: 4} }
+                         * @codeend
+                         *
+                         * @demo jquery/dom/form_params/form_params.html
+                         *
+                         * @param {Boolean} [convert] True if strings that look like numbers and booleans should be converted.  Defaults to true.
+                         * @return {Object} An object of name-value pairs.
+                         */
+                        formParams: function( convert ) {
+                            if ( this[0].nodeName.toLowerCase() == 'form' && this[0].elements ) {
+
+                                return jQuery(jQuery.makeArray(this[0].elements)).getParams(convert);
+                            }
+                            return jQuery("input[name], textarea[name], select[name]", this[0]).getParams(convert);
+                        },
+                        getParams: function( convert ) {
+                            var data = {},
+                                current;
+
+                            convert = convert === undefined ? true : convert;
+
+                            this.each(function() {
+                                var el = this,
+                                    type = el.type && el.type.toLowerCase();
+                                //if we are submit, ignore
+                                if ((type == 'submit') || !el.name ) {
+                                    return;
+                                }
+
+                                var key = el.name,
+                                    value = jQuery.data(el, "value") || jQuery.fn.val.call([el]),
+                                    isRadioCheck = radioCheck.test(el.type),
+                                    parts = key.match(keyBreaker),
+                                    write = !isRadioCheck || !! el.checked,
+                                    //make an array of values
+                                    lastPart;
+
+                                if ( convert ) {
+                                    if ( isNumber(value) ) {
+                                        value = parseFloat(value);
+                                    } else if ( value === 'true' || value === 'false' ) {
+                                        value = Boolean(value);
+                                    }
+
+                                }
+
+                                // go through and create nested objects
+                                current = data;
+                                for ( var i = 0; i < parts.length - 1; i++ ) {
+                                    if (!current[parts[i]] ) {
+                                        current[parts[i]] = {};
+                                    }
+                                    current = current[parts[i]];
+                                }
+                                lastPart = parts[parts.length - 1];
+
+                                //now we are on the last part, set the value
+                                if ( lastPart in current && type === "checkbox" ) {
+                                    if (!jQuery.isArray(current[lastPart]) ) {
+                                        current[lastPart] = current[lastPart] === undefined ? [] : [current[lastPart]];
+                                    }
+                                    if ( write ) {
+                                        current[lastPart].push(value);
+                                    }
+                                } else if ( write || !current[lastPart] ) {
+                                    current[lastPart] = write ? value : undefined;
+                                }
+
+                            });
+                            return data;
+                        }
+                    }
+                );
+
+                // Our map initialization
+                //
+                if (jQuery('div#sl_div').is(":visible")) {
+                    InitializeTheMap();
+                }
+    }
 );

@@ -257,14 +257,21 @@ div.orangebox {
 
 
 /***************************
- * Locations: Add
+ * Locations: Add / Edit
  */
+div.slp_bulk_upload_div {
+  background-color: #F8F7DE;
+  border: 1px solid #F6E39A;
+  margin: 6px;
+  padding: 0 6px 6px;
+}
  div.add_location_form {
      display:block;
      position:relative;
      width: 100%;
  }
-table.manual_update_table label,
+table.slp_locationinfoform_table label,
+table.manual_add_table label,
 .add_location_form label {
     width: 120px;
     float: left;
@@ -329,7 +336,7 @@ input#bulk_file {
     border: 1px solid #DDDDDD;
     color: #888888;     
  }
- tr#slp_location_edit_row td.slp_location_edit_cell {
+ tr td.slp_locationinfoform_cell {
      border: 3px dashed #999999;
  }
 
@@ -488,10 +495,11 @@ div.feedburnerFeedBlock ul li span.headline {
 .map_designer_section td {
 	border-bottom:none;
 }
-.manual_add_table td, .manual_add_table td td, .manual_update_table td, .manual_update_table td td, .manual_update_table{
+.manual_add_table td, .manual_add_table td td, slp_locationinfoform_table td, slp_locationinfoform_table td td, .slp_locationinfoform_table{
 	border-bottom:none;
+    clear: both;
 }
-.manual_add_table td td td, .manual_update_table td td{
+.manual_add_table td td td, slp_locationinfoform_table td td{
 	padding-left:0px; padding-right:0px;
 }
 .left_side {

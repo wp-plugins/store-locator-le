@@ -208,6 +208,8 @@ if (!$_POST) {
         SLPLUS_PREFIX.'_label_hours'            ,
         SLPLUS_PREFIX.'_label_phone'            ,
         
+        SLPLUS_PREFIX.'_message_noresultsfound' ,
+        
         'sl_starting_image'                     ,
         SLPLUS_PREFIX.'_tag_search_selections'  ,
         SLPLUS_PREFIX.'_map_center'             ,
@@ -215,6 +217,7 @@ if (!$_POST) {
         
         SLPLUS_PREFIX.'_search_tag_label'       ,
         SLPLUS_PREFIX.'_state_pd_label'         ,
+        SLPLUS_PREFIX.'_find_button_label'      ,
 
         );
     foreach ($BoxesToHit as $JustAnotherBox) {
