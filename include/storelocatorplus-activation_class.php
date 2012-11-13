@@ -199,7 +199,7 @@ if (! class_exists('SLPlus_Activate')) {
          */
         function add_splus_roles_and_caps() {
             $role = get_role('administrator');
-            if (!$role->has_cap('manage_slp')) {
+            if (is_object($role) && !$role->has_cap('manage_slp')) {
                 $role->add_cap('manage_slp');
             }
         }
