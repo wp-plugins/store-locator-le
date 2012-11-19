@@ -15,17 +15,16 @@
 if (! class_exists('SLPlus_Actions')) {
     class SLPlus_Actions {
         
-        /******************************
+        /**
          * PUBLIC PROPERTIES & METHODS
-         ******************************/
+         */
         public $parent = null;
 
-        /*************************************
+        /**
          * The Constructor
          */
         function __construct($params=null) {
         }
-
 
         /**
          * Set the parent property to point to the primary plugin object.
@@ -43,25 +42,19 @@ if (! class_exists('SLPlus_Actions')) {
             return (isset($this->parent) && ($this->parent != null));
         }
         
-        /**************************************
-         ** method: admin_init()
-         **
-         ** Called when the WordPress admin_init action is processed.
-         **
-         ** Builds the interface elements used by WPCSL-generic for the admin interface.
-         **
-         **/
+        /**
+         * method: admin_init()
+         *
+         * Called when the WordPress admin_init action is processed.
+         *
+         * Builds the interface elements used by WPCSL-generic for the admin interface.
+         *
+         */
         function admin_init() {
             if (!$this->setParent()) { return; }
         
             // Already been here?  Get out.
             if (isset($this->parent->settings->sections['How to Use'])) { return; }
-
-            // Admin UI Helpers
-            //
-            require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-adminui_class.php');
-            $this->parent->AdminUI = new SLPlus_AdminUI();     // Lets invoke this and make it an object
-            $this->parent->AdminUI->set_style_as_needed();
 
             // Activation Helpers
             // Updates are handled via WPCSL via namespace style call
@@ -69,141 +62,16 @@ if (! class_exists('SLPlus_Actions')) {
             require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-activation_class.php');
             $this->parent->Activate = new SLPlus_Activate();
             register_activation_hook( __FILE__, array($this->parent->Activate,'update')); // WP built-in activation call
-            
-            //-------------------------
-            // Navbar Section
-            //-------------------------    
-            $this->parent->settings->add_section(
-                array(
-                    'name' => 'Navigation',
-                    'div_id' => 'slplus_navbar',
-                    'description' => get_string_from_phpexec(SLPLUS_COREDIR.'/templates/navbar.php'),
-                    'is_topmenu' => true,
-                    'auto' => false,
-                    'headerbar'     => false        
-                )
-            );       
-          
-            //-------------------------
-            // How to Use Section
-            //-------------------------    
-             $this->parent->settings->add_section(
-                array(
-                    'name' => 'How to Use',
-                    'description' => get_string_from_phpexec(SLPLUS_PLUGINDIR.'/how_to_use.txt'),
-                    'start_collapsed' => false
-                )
-            );
-        
-            //-------------------------
-            // Google Communication
-            //-------------------------    
-             $this->parent->settings->add_section(
-                array(
-                    'name'        => 'Google Communication',
-                    'description' => 'These settings affect how the plugin communicates with Google to create your map.'.
-                                        '<br/><br/>'
-                )
-            );
-            
-             $this->parent->settings->add_item(
-                'Google Communication', 
-                'Google API Key', 
-                'api_key', 
-                'text', 
-                false,
-                'Your Google API Key.  You will need to ' .
-                '<a href="http://code.google.com/apis/console/" target="newinfo">'.
-                'go to Google</a> to get your Google Maps API Key.'
-            );
-        
-        
-             $this->parent->settings->add_item(
-                'Google Communication', 
-                'Geocode Retries', 
-                'goecode_retries', 
-                'list', 
-                false,
-                'How many times should we try to set the latitude/longitude for a new address. ' .
-                'Higher numbers mean slower bulk uploads ('.
-                '<a href="http://www.charlestonsw.com/product/store-locator-plus/">plus version</a>'.
-                '), lower numbers makes it more likely the location will not be set during bulk uploads.',
-                array (
-                      'None' => 0,
-                      '1' => '1',
-                      '2' => '2',
-                      '3' => '3',
-                      '4' => '4',
-                      '5' => '5',
-                      '6' => '6',
-                      '7' => '7',
-                      '8' => '8',
-                      '9' => '9',
-                      '10' => '10',
-                    )
-            );
-            
-            //--------------------------
-            // Store Pages
+
+            // Admin UI Helpers
             //
-            $slp_rep_desc = __('These settings affect how the Store Pages add-on behaves. ', SLPLUS_PREFIX);
-            if (!$this->parent->license->AmIEnabled(true, "SLPLUS-PAGES")) {
-                $slp_rep_desc .= '<br/><br/>'.
-                    __('This is a <a href="http://www.charlestonsw.com/product/store-locator-plus-store-pages/">Store Pages</a>'.
-                    ' feature.  It provides a way to auto-create individual WordPress pages' .
-                    ' for each of your locations. ', SLPLUS_PREFIX);
-            } else {
-                $slp_rep_desc .= '<span style="float:right;">(<a href="#" onClick="'.
-                        'jQuery.post(ajaxurl,{action: \'license_reset_pages\'},function(response){alert(response);});'.
-                        '">'.__('Delete license',SLPLUS_PREFIX).'</a>)</span>';
-            }
-            $slp_rep_desc .= '<br/><br/>';                 
-            $this->parent->settings->add_section(
-                array(
-                    'name'        => 'Store Pages',
-                    'description' => $slp_rep_desc
-                )
-            );         
-            if ($this->parent->license->AmIEnabled(true, "SLPLUS-PAGES")) {
-                slplus_add_pages_settings();
-            }                
-            
-            //-------------------------
-            // Pro Pack
-            //
-            $slp_rep_desc = __('These settings affect how the Pro Pack add-on behaves. ', SLPLUS_PREFIX);
-            if (!$this->parent->license->AmIEnabled(true, "SLPLUS-PRO")) {
-                $slp_rep_desc .= '<br/><br/>'.
-                    __('This is a <a href="http://www.charlestonsw.com/product/store-locator-plus/">Pro Pack</a>'.
-                    ' feature.  It provides more settings and features that are not provided in the free plugin'
-                    , SLPLUS_PREFIX);
-            } else {
-                $slp_rep_desc .= '<span style="float:right;">(<a href="#" onClick="'.
-                        'jQuery.post(ajaxurl,{action: \'license_reset_propack\'},function(response){alert(response);});'.
-                        '">'.__('Delete license',SLPLUS_PREFIX).'</a>)</span>';
-            }
-            $slp_rep_desc .= '<br/><br/>'; 
-            $this->parent->settings->add_section(
-                array(
-                    'name'        => 'Pro Pack',
-                    'description' => $slp_rep_desc
-                )
-            );
-            if ($this->parent->license->AmIEnabled(true, "SLPLUS-PRO")) {
-                $this->parent->settings->add_item(
-                    'Pro Pack',
-                    __('Enable reporting', SLPLUS_PREFIX),
-                    'reporting_enabled',
-                    'checkbox',
-                    false,
-                    __('Enables tracking of searches and returned results.  The added overhead ' .
-                    'can increase how long it takes to return location search results.', SLPLUS_PREFIX)
-                );
-            }                
+            require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-adminui_class.php');
+            $this->parent->AdminUI = new SLPlus_AdminUI();     // Lets invoke this and make it an object
+            $this->parent->AdminUI->set_style_as_needed();
+            $this->parent->AdminUI->build_basic_admin_settings();
         }
 
-
-        /**************************************
+        /**
          * method: admin_menu()
          *
          * Add the Store Locator panel to the admin sidebar.
@@ -309,12 +177,12 @@ if (! class_exists('SLPlus_Actions')) {
             }
         }
         
-        /**************************************
-         ** method: init()
-         **
-         ** Called when the WordPress init action is processed.
-         **
-         **/
+        /**
+         * method: init()
+         *
+         * Called when the WordPress init action is processed.
+         *
+         */
         function init() {
             if (!$this->setParent()) { return; }
             
@@ -365,7 +233,6 @@ if (! class_exists('SLPlus_Actions')) {
             $this->register_store_taxonomy();
         }
 
-
         /**
          * Register the store taxonomy.
          *
@@ -387,12 +254,9 @@ if (! class_exists('SLPlus_Actions')) {
                 );
         }
 
-
-
-        /**************************************
-         * SetMapCenter()
-         *
+        /**
          * Set the starting point for the center of the map.
+         *
          * Uses country by default.
          */
         function SetMapCenter() {
@@ -407,9 +271,7 @@ if (! class_exists('SLPlus_Actions')) {
             return esc_attr(get_option('sl_google_map_country','United States'));
         }
 
-        /*************************************
-         * method: wp_enqueue_scripts()
-         * 
+        /**
          * This is called whenever the WordPress wp_enqueue_scripts action is called.
          */
         static function wp_enqueue_scripts() {
@@ -431,20 +293,22 @@ if (! class_exists('SLPlus_Actions')) {
             // Register our scripts for later enqueue when needed
             //
             //wp_register_script('slplus_functions',SLPLUS_PLUGINURL.'/core/js/functions.js');
-            if (isset($api_key))
-            {
-                 //todo:character encoding ???
-                //"http://$sl_google_map_domain/maps?file=api&amp;v=2&amp;key=$api_key&amp;sensor=false{$sl_map_character_encoding}"
-                wp_enqueue_script(
+            if (get_option(SLPLUS_PREFIX.'-no_google_js','off') != 'on') {
+                if (isset($api_key))
+                {
+                     //todo:character encoding ???
+                    //"http://$sl_google_map_domain/maps?file=api&amp;v=2&amp;key=$api_key&amp;sensor=false{$sl_map_character_encoding}"
+                    wp_enqueue_script(
+                            'google_maps',
+                            'http://'.$sl_google_map_domain.'/maps/api/js?sensor=false&v=3.9&key='.$api_key
+                            );
+                }
+                else {
+                    wp_enqueue_script(
                         'google_maps',
-                        'http://'.$sl_google_map_domain.'/maps/api/js?sensor=false&v=3.9&key='.$api_key
-                        );
-            }
-            else {
-                wp_enqueue_script(
-                    'google_maps',
-                    'http://'.$sl_google_map_domain.'/maps/api/js?sensor=false&v=3.9'
-                );
+                        'http://'.$sl_google_map_domain.'/maps/api/js?sensor=false&v=3.9'
+                    );
+                }
             }
 
             wp_enqueue_script(
@@ -471,13 +335,41 @@ if (! class_exists('SLPlus_Actions')) {
                 getimagesize($slplus_end_icon_file)  :
                 array(0 => 20, 1 => 34);
 
-            // Results Output String In JavaScript Format
-            //
-            $results_string = '<center>' .
+            /** 
+             * Results Output String In JavaScript Format
+             *
+             *              {0} aMarker.name,
+             *              {1} parseFloat(aMarker.distance).toFixed(1),
+             *              {2} slplus.distance_unit,
+             *              {3} street,
+             *              {4} street2,
+             *              {5} city_state_zip,
+             *              {6} thePhone,
+             *              {7} theFax,
+             *              {8} link,
+             *              {9} elink,
+             *              {10} slplus.map_domain,
+             *              {11} encodeURIComponent(this.address),
+             *              {12} encodeURIComponent(address),
+             *              {13} slplus.label_directions,
+             *              {14} tagInfo,
+             *              {15} aMarker.id
+             *              {16} aMarker.country
+             *              {17} aMarker.hours
+             */
+            $results_string =
+                    '<center>' .
                     '<table width="96%" cellpadding="4px" cellspacing="0" class="searchResultsTable" id="slp_results_table">'  .
                         '<tr class="slp_results_row" id="slp_location_{15}">'  .
-                            '<td class="results_row_left_column" id="slp_left_cell_{15}"><span class="location_name">{0}</span><br>{1} {2}</td>'  .
-                            '<td class="results_row_center_column" id="slp_center_cell_{15}">{3}{4}{5}{6}{7}</td>'  .
+                            '<td class="results_row_left_column" id="slp_left_cell_{15}"><span class="location_name">{0}</span><br/>{1} {2}</td>'  .
+                            '<td class="results_row_center_column" id="slp_center_cell_{15}">' .
+                                '<span class="slp_result_address slp_result_street">{3}</span>'.
+                                '<span class="slp_result_address slp_result_street2">{4}</span>' .
+                                '<span class="slp_result_address slp_result_citystatezip">{5}</span>' .
+                                '<span class="slp_result_address slp_result_country">{16}</span>'.
+                                '<span class="slp_result_address slp_result_phone">{6}</span>' .
+                                '<span class="slp_result_address slp_result_fax">{7}</span>' .
+                            '</td>'   .
                             '<td class="results_row_right_column" id="slp_right_cell_{15}">{8}{9}'  .
                                 '<a href="http://{10}' .
                                 '/maps?saddr={11}'  .
@@ -513,6 +405,7 @@ if (! class_exists('SLPlus_Actions')) {
                 'map_scalectrl'     => (get_option(SLPLUS_PREFIX.'_disable_scalecontrol')==0),
                 'map_type'          => get_option('sl_map_type','roadmap'),
                 'map_typectrl'      => (get_option(SLPLUS_PREFIX.'_disable_maptypecontrol')==0),
+                'msg_noresults'     => $slplus_plugin->settings->get_item('message_noresultsfound','No results found.','_'),
                 'results_string'    => apply_filters('slp_javascript_results_string',$results_string),
                 'show_tags'         => (get_option(SLPLUS_PREFIX.'_show_tags')==1),
                 'overview_ctrl'     => get_option('sl_map_overview_control',0),
@@ -528,9 +421,7 @@ if (! class_exists('SLPlus_Actions')) {
         }     
         
 
-        /*************************************
-         * method: wp_footer()
-         *
+        /**
          * This is called whenever the WordPress shutdown action is called.
          */
         function wp_footer() {
@@ -538,9 +429,17 @@ if (! class_exists('SLPlus_Actions')) {
 		}
 
 
-        /*************************************
-         * method: shutdown()
-         * 
+        /**
+         * Called when the <head> tags are rendered.
+         */
+        function wp_head() {
+            $output = strip_tags($this->parent->settings->get_item('custom_css',''));
+            if ($output != '') {
+                echo '<!-- SLP Pro Pack Custom CSS -->'."\n".'<style type="text/css">'."\n" . $output . '</style>'."\n\n";
+            }
+        }
+
+        /**
          * This is called whenever the WordPress shutdown action is called.
          */
         function shutdown() {
@@ -548,8 +447,9 @@ if (! class_exists('SLPlus_Actions')) {
             SLPlus_Actions::ManageTheScripts();
 		}
 
-        // Unload The SLP Scripts If No Shortcode
-        //
+        /**
+         * Unload The SLP Scripts If No Shortcode
+         */
         function ManageTheScripts() {
             if (!defined('SLPLUS_SCRIPTS_MANAGED') || !SLPLUS_SCRIPTS_MANAGED) {
 

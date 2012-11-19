@@ -279,10 +279,20 @@
 	vertical-align:top;
 	text-align:right;
 }
+
+
 span.slp_checkbox_entry {
     padding-right: 12px;
 }
 
 span.slp_checkbox_entry input[type="checkbox"] {
     vertical-align: text-bottom;
+}
+
+span.slp_result_address {
+    width: 100%;
+    display: inline-block;
+}
+span.slp_result_phone {
+    padding-top: 6px;
 }

@@ -4,8 +4,8 @@ Contributors: charlestonsw
 Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
 Tags: google maps, store finder, store locator, store locater, google, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus, bing map, bing, yahoo maps, yahoo, mapping, retail
 Requires at least: 3.3
-Tested up to: 3.4.2
-Stable tag: 3.6.3
+Tested up to: 3.4.3
+Stable tag: 3.7.4
 
 Store Locator Plus makes it easy to put a fully functional store finder on your site.
 The most active store locator plugin with monthly updates!
@@ -13,7 +13,7 @@ The most active store locator plugin with monthly updates!
 == Description ==
 
 Learn more about [Store Locator Plus at CSA](http://www.charlestonsw.com/product/store-locator-plus-2).
-The website offers more screen shots, technical documentation, full release notes and more.
+The website offers [more screen shots](http://www.charlestonsw.com/product/store-locator-plus-2/), [technical documentation](http://www.charlestonsw.com/support/documentation/technical-documentation/), [full release notes](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/) and more.
 
 Store Locator Plus is an advanced system for managing multiple physical locations via a fully integrated WordPress solution.
 Whether you have ten locations or ten-thousand, you manage them with ease right from within your WordPress admin panel.
@@ -54,11 +54,16 @@ Premium add-on packages are available to extend the capabilities of this plugin.
 ** The search form can be customized to show or hide a country pulldown, a city and state pulldown, and tag search fields.
 ** Enable pop-up email forms to help reduce spam.
 ** Have more control over the map interface.
+** Admin panel CSS override, tweak the look without editing/saving CSS files.
 * [Store Pages](http://www.charlestonsw.com/product/store-locator-plus-store-pages) : Create SEO friendly WordPress pages for your store locations.
 ** Create pages for each location with the click of a button.
 ** Each page can be edited as an individual post.
 ** Pages support their own comments, featured image, page style, and other standard WordPress page template features.
-* [Enhanced Search](http://www.charlestonsw.com/product/store-locator-plus-enhanced-search) : Get even more control over the basic search form and even more when the Pro Pack is installed.
+* [Enhanced Results](http://www.charlestonsw.com/product/store-locator-plus-enhanced-results)
+** Order results by name or distance.
+** Wrap the phone output in a tel: href tag.
+** Hide the distance on the results table.
+* [Enhanced Search](http://www.charlestonsw.com/product/store-locator-plus-enhanced-search) : Get even more control over the basic search form.
 ** Turn the search interface on/off.
 * [Tagalong](http://www.charlestonsw.com/product/store-locator-plus-tagalong/) : Add custom map markers based on location categories.
 ** Set a different marker for each location.
@@ -68,12 +73,18 @@ Premium add-on packages are available to extend the capabilities of this plugin.
 
 If you are a plugin developer you will be interested in the new "Roll Your Own" program where you can create SLP based premium (or free) add-ons of your own.   Create something great and list it on our site!
 
+= Support =
+
+Support for the plugin can be found in the [WordPress Forum](http://wordpress.org/support/plugin/store-locator-le).  If you have an urgent issue or want one-on-one support you can [purchase premium support](http://www.charlestonsw.com/product/product-support).
+
+You can also view the [CSA Product Documentation](http://www.charlestonsw.com/support/documentation) for more information about the plugin including [known conflicts](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/troubleshooting/known-conflicts/) with themes and plugins.
+
 = Special Requests =
 
 I accept feature requests for all plugins. The most requested features will make it into the next version if time permits.
 
 If you need something NOW, or are looking for something beyond a basic "tweak" of the plugin, please check out the
-[Customization Service](http://www.charlestonsw.com/product/customization/).  Rates start at $500/day.
+[Customization Service](http://www.charlestonsw.com/product/customization/).  
 
 = Upgrades and Patches =
 
@@ -144,9 +155,12 @@ new theme or any of the built-in defaults by selecting it from the auto-generate
 
 Users that opt not to purchase the Pro Pack can still customize the look by editing the basic CSS file that ships with the free plugin.
 
-= Attribution and Credits =
+= Special Thanks =
 
 Thanks to [Nicolas Mollet](http://mapicons.nicolasmollet.com/) for some of the great icons.
+
+[Massive Creative](http://www.massivecreativeinc.com) for some of our banners and other creative work.
+
 
 == Frequently Asked Questions ==
 
@@ -156,6 +170,11 @@ The plugin includes all the functions and features necessary to add multiple loc
 List 1 location or 1,000, customize the search interface and results form, and more.
 All basic functionality needed for a fully functional plugin is included.
 Basic upgrades are free and available directly from the WordPress plugin repository.
+
+= How do I report a bug? =
+
+Post in the [support forum](http://wordpress.org/support/plugin/store-locator-le).
+You can also [contact me](http://www.charlestonsw.com/product/product-support) to request premium support if you need immediate assistance.
 
 = What are the premium add-ons? =
 
@@ -167,7 +186,8 @@ efficient as possible for everyone else.   It also provides a great way to suppo
 
 Current premium add-ons:
 
-* [Enhanced Search](http://www.charlestonsw.com/product/store-locator-plus-enhanced-search) : Get even more control over the basic search form and even more when the Pro Pack is installed.
+* [Enhanced Results](http://www.charlestonsw.com/product/store-locator-plus-enhanced-results) : Get even more control over the search results.
+* [Enhanced Search](http://www.charlestonsw.com/product/store-locator-plus-enhanced-search) : Get even more control over the basic search form.
 * [Pro Pack](http://www.charlestonsw.com/product/store-locator-plus) : More control over the map, search form, loading locations.
 * [Store Pages](http://www.charlestonsw.com/product/store-locator-plus-store-pages) : Create SEO friendly WordPress pages for your store locations.
 * [Tagalong](http://www.charlestonsw.com/product/store-locator-plus-tagalong/) : Add custom map markers based on location categories.
@@ -214,6 +234,8 @@ Currently this includes:
 
 == Screenshots ==
 
+The website offers [more screen shots](http://www.charlestonsw.com/product/store-locator-plus-2/) including those from the latest updates and premium add-on packages.
+
 1. Location Details
 2. Tag filter pulldown
 3. All Options Search
@@ -224,7 +246,7 @@ Currently this includes:
 8. Admin Manage Locations
 9. Default settings
 
-More screenshots are available via the [Store Locator Plus website](http://www.storelocatorplus.com/).
+More screenshots are available via [the CSA website](http://www.charlestonsw.com/products/store-locator-plus/).
 
 == Changelog ==
 
@@ -234,43 +256,55 @@ Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/su
 
 I was listing the entire change log here but with weekly/bi-weekly updates it as getting much too long.
 
-= 3.6.3 (Late October, 2012)
+= 3.7.4 (Mid-November 2012) =
 
-* Internet disconnect during 3.6.2 upload left release half-baked on WordPress
-* No code changes
+* Change to under-map results HTML structure, address blocks now use span with classes.
+** More control for 3rd party add-ons, removing extra <br/> tags in output.
+** Update some of the CSS templates to tweak new span classes to adjust output display.
+* Make store hours available to 3rd party add-ons.
+** [Enhanced Results](http://www.charlestonsw.com/product/store-locator-plus-enhanced-results/) add-on has option to turn on the hours display under the map.
+* JavaScript load/search tests for valid servers response.
+** Logs to console if SLP server does not return properly JSONP response.
+* Tested for WordPress 3.4.3 compatibility.
 
-= 3.6.2 (Late October Vacation Patch, 2012)
+= 3.7.3 (November 12 2012) =
 
-* Hopefully removes the open HTML tags under the map.
-** Only happens on ThemeForest themes from what I can tell.
-** Do not hold it against me if this doesn't work, Sam Adams helped with this patch.
+* Make has_cap() not crash WPMU installs.
 
-= 3.6.1 (Late October, 2012) =
+= 3.7.2 (November 9 2012) =
 
-* Patch: fix "use location sensor" not showing map if people choose to deny location access.
-* Patch: fix(?) the div code below the map on sites that have a language/texturize plugin or theme enabled.
-* Performance: eliminate some unused code and reduce the total file count by combining function files.
+* Wrap tag output in info bubble in div and span with tags.
+** Make it easier to "iconify" the tags with CSS.
+* Add more help to the starting image setting.
+* Consolidate and remove un-needed files, decreasing install package size.
+* Add CSS elements and filters for add/edit locations for better third party controls.
+* Style add locations page after manage locations edit page.
+* [Pro Pack](http://www.charlestonsw.com/products/store-locator-plus/) Patch: Using only_with_tag in the Pro Pack no longer requires you check off "Tag Input" under Map Settings/Search Form/Tags for the tag filter to work.
+* [Pro Pack](http://www.charlestonsw.com/products/store-locator-plus/) Added setting to customize "no results found" message that appears after a search with no results returned.
 
-= 3.6 (Mid-October, 2012) =
+= 3.7.1 (Early November 2012) =
 
-* Turned off "show city pulldown" on new installs.
-* Turned off "show country pulldown" on new installs.
-* Added option to turn off the "Find Locations" image, it will be a standard form button instead, easier to style that way. 
-* Add labels for phone, fax, directions, and hours in map settings.
-* Manage/Add locations form entries for hours, fax, phone, and website URL field labels are now tied to map settings labels.
-** Want to use the hours field as "the best beer in the house" field?  Go ahead, we won't tell anyone.  Change the label and put whatever text in there you want.
-* Patch: Fix the [zoom functionality](http://www.charlestonsw.com/support/store-locator-plus/slp-zoom-settings-for-map-display/).
-* Patch: Fix the "sensor required" message, thanks jeffo.de on the WordPress Support Forums!
-* Patch: Fixed the custom icon processor.   Custom icons go in /wp-content/uploads/sl-uploads/custom-icons/
-* Patch: Fix city selection search for some sites (javascript __gmarker is undefined error)
-* Patch: Fix various undefined element errors in JavaScript that impacted map location loading on some sites.
-* Patch: Fix the "find locations" button image.
-* Patch: Fix the copy of images, icons, and location files to the "preservation" space at /wp-content/uploads/sl-uploads/
-* Only load SLP admin.css on SLP pages
-* Replace PHP ereg() and erep_replace() with PCRE versions.
-** ereg functions are deprecated with PHP5.3, no need to be filling up warning logs with that info.
-** This is normally hidden on a production install.
-** PCRE is faster anyway, which makes this release a minor performance improvement.
-* Add more [Hooks and Filters](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/) for 3rd party plugins.
-* Add unique IDs to the result table elements for better JavaScript mangling.
+* Detect directory read error (permission/missing directory) for icons.
+* Add "turn of google maps js" for themes that  have a google maps call built-in.  Enabling this can break SLP.
 
+= 3.7 (November 2012) =
+
+* Prevent JavaScript warning if force load javascript is on and user is on a non-SLP map page.
+* Fix JavaScript error on some sites where a timing issue created a JavaScript error on formParams.
+* Further package reduction: merge csl-ajax-search file into ajax handler class.
+* Add SLP version to JSONP response to aid debugging.
+* Country added to JSONP output.
+* Default results output now shows country (if set) with address.
+* Envato Theme Forest Patch - fix open HTML under map
+** I've been told there is [a problem Envato knows about](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/troubleshooting/known-conflicts/) that they can't fix.
+** This update MIGHT work around their bug by stripping all newline whitespace out of SLP HTML BEFORE they bastardize it.
+* Prevent duplicate form entries on search form.
+** Some themes or plugins are causing the form field trigger to be called twice.  Very strange (and non-standard) behavior.
+** Do not use do_shortcode() in your custom themes.  It does bad things.
+* [Pro Pack](http://www.charlestonsw.com/product/store-locator-plus/)
+** New custom css entry on general settings makes it easy to tweak the look of the SLP listings.
+** Find Locations button text can be changed from admin panel
+* [Enhanced Results](http://www.charlestonsw.com/product/store-locator-plus-enhanced-results/)
+** Option to turn on telephone URI
+** Option to show/hide distance (default:show)
+** Option to show/hide country (default:show)
