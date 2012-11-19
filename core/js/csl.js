@@ -695,6 +695,7 @@ var csl = {
 				if (this.loadedOnce) {
 					var sidebarEntry = this.createSidebar(markerList[markerNumber]);
 					sidebar.appendChild(sidebarEntry);
+                    jQuery('div#map_sidebar span:empty').hide();
 				}
 
 				//create info windows
@@ -1050,12 +1051,20 @@ var csl = {
 			var ajax = new csl.Ajax();
 			if (!realsearch) {
 				ajax.send(action, function (response) {
-					_this.dropMarkers.call(_this, response.response);
+                    if (typeof response.response != 'undefined') {
+                        _this.dropMarkers.call(_this, response.response);
+                    } else {
+                        if (window.console) { console.log('SLP server did not send back a valid JSONP response on load.'); }
+                    }
 				});
 			}
 			else {
 				ajax.send(action, function (response) {
-					_this.bounceMarkers.call(_this, response.response);
+                    if (typeof response.response != 'undefined') {                    
+    					_this.bounceMarkers.call(_this, response.response);
+                    } else {
+                        if (window.console) { console.log('SLP server did not send back a valid JSONP response on search.'); }
+                    }
 				});
 			}
 		}
@@ -1151,8 +1160,6 @@ var csl = {
 
 			//keep empty data lines out of the final result
 			//
-			if (jQuery.trim(street) != '') { street = street + '<br/>'; }
-			if (jQuery.trim(street2) != '') { street2 = street2 + '<br/>'; }
             var city_state_zip = '';
             if (jQuery.trim(city) != '') {
                 city_state_zip += city;
@@ -1169,16 +1176,13 @@ var csl = {
             if (jQuery.trim(zip) != '') {
                 city_state_zip += zip;
             }
-            if (jQuery.trim(city_state_zip) != '') {
-                city_state_zip += '<br/>';
-            }
             if (jQuery.trim(aMarker.phone) != '') {
-                thePhone = '<br/>' + slplus.label_phone+ aMarker.phone;
+                thePhone = slplus.label_phone+ aMarker.phone;
             } else {
                 thePhone = ''
             }
             if (jQuery.trim(aMarker.fax) != '') {
-                theFax = '<br/>' + slplus.label_fax + aMarker.fax;
+                theFax = slplus.label_fax + aMarker.fax;
             } else {
                 theFax = ''
             }
@@ -1198,8 +1202,29 @@ var csl = {
              });
            };
 
-         // Create the results table
-         //
+         /** Create the results table
+          *
+          * use {0} to {17} to place in the output
+          *
+          *              {0} aMarker.name,
+          *              {1} parseFloat(aMarker.distance).toFixed(1),
+          *              {2} slplus.distance_unit,
+          *              {3} street,
+          *              {4} street2,
+          *              {5} city_state_zip,
+          *              {6} thePhone,
+          *              {7} theFax,
+          *              {8} link,
+          *              {9} elink,
+          *              {10} slplus.map_domain,
+          *              {11} encodeURIComponent(this.address),
+          *              {12} encodeURIComponent(address),
+          *              {13} slplus.label_directions,
+          *              {14} tagInfo,
+          *              {15} aMarker.id
+          *              {16} aMarker.country
+          *              {17} aMarker.hours
+          */
  		 div.innerHTML = slplus.results_string.format(
                         aMarker.name,
                         parseFloat(aMarker.distance).toFixed(1),
@@ -1217,7 +1242,8 @@ var csl = {
                         slplus.label_directions,
                         tagInfo,
                         aMarker.id,
-                        aMarker.country
+                        aMarker.country,
+                        aMarker.hours
                       )
                       ;
 			div.className = 'results_entry';

@@ -422,7 +422,95 @@ if (! class_exists('SLPlus_AdminUI')) {
                         'auto'          => true
                     )
              );
+         }
 
+         /**
+          * Create the results settings panel
+          *
+          * @global type $slpMapSettings - a wpCSL settings panel object
+          */
+         function slp_add_results_settings_panel() {
+            global $slpMapSettings, $slplus_plugin;
+            global $cl_icon_notification_msg,$cl_icon,$cl_icon2,$cl_icon_str,$cl_icon2_str;
+            $slplus_message = ($slplus_plugin->license->packages['Pro Pack']->isenabled) ?
+                __('',SLPLUS_PREFIX) :
+                __('Extended settings are available in the <a href="%s">%s</a> premium add-on.',SLPLUS_PREFIX)
+                ;
+
+
+            // -- Search Results
+            //
+            $slpDescription =
+                    '<h2>' . __('Location Info',SLPLUS_PREFIX).'</h2>'.
+                    '<p class="slp_admin_info" style="clear:both;"><strong>'.__('Search Results',SLPLUS_PREFIX).'</strong></p>' .
+                    '<p>'.sprintf($slplus_message,$slplus_plugin->purchase_url,'Pro Pack').'</p>'
+                    ;
+            $slpDescription .= CreateInputDiv(
+                        '_maxreturned',
+                        __('Max search results',SLPLUS_PREFIX),
+                        __('How many locations does a search return? Default is 25.',SLPLUS_PREFIX)
+                        );
+
+            //--------
+            // Pro Pack : Search Results Settings
+            //
+            if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
+                $slpDescription .= CreateCheckboxDiv(
+                    '_show_tags',
+                    __('Show Tags In Output',SLPLUS_PREFIX),
+                    __('Show the tags in the location output table and bubble.', SLPLUS_PREFIX)
+                    );
+
+                $slpDescription .= CreateCheckboxDiv(
+                    '_use_email_form',
+                    __('Use Email Form',SLPLUS_PREFIX),
+                    __('Use email form instead of mailto: link when showing email addresses.', SLPLUS_PREFIX)
+                    );
+            }
+
+            // Filter on Results : Search Output Box
+            //
+            $slpDescription = apply_filters('slp_add_results_settings',$slpDescription);
+            $slpDescription =
+                "<div class='section_column'>".
+                    "<div class='map_designer_settings'>".
+                    $slpDescription .
+                    "</div>" .
+                "</div>"
+                ;
+
+            //-- icons
+            $slpDescription .=
+                "<div class='section_column'>".
+                    "<div class='map_designer_settings'>".
+                        "<h2>".__('Icons', SLPLUS_PREFIX)."</h2>".
+                        $cl_icon_notification_msg .
+                        "<div class='form_entry'>".
+                            "<label for='icon'>".__('Home Icon', SLPLUS_PREFIX)."</label>".
+                            "<input id='icon' name='icon' dir='rtl' size='45' value='".$cl_icon."' ".
+                                    'onchange="document.getElementById(\'prev\').src=this.value">'.
+                            "<img id='prev' src='".$cl_icon."' align='top'><br/>".
+                            $cl_icon_str.
+                        "</div>".
+                        "<div class='form_entry'>".
+                            "<label for='icon2'>".__('Destination Icon', SLPLUS_PREFIX)."</label>".
+                            "<input id='icon2' name='icon2' dir='rtl' size='45' value='".$cl_icon2."' ".
+                                'onchange="document.getElementById(\'prev2\').src=this.value">'.
+                            "<img id='prev2' src='".$cl_icon2."'align='top'><br/>".
+                            $cl_icon2_str.
+                        "</div>".
+                    "</div>".
+                "</div>"
+                ;
+
+
+            $slpMapSettings->add_section(
+                array(
+                        'name'          => __('Results',SLPLUS_PREFIX),
+                        'description'   => $slpDescription,
+                        'auto'          => true
+                    )
+             );
          }
 
         /*****************************

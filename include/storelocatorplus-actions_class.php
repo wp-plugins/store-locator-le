@@ -335,14 +335,41 @@ if (! class_exists('SLPlus_Actions')) {
                 getimagesize($slplus_end_icon_file)  :
                 array(0 => 20, 1 => 34);
 
-            // Results Output String In JavaScript Format
-            //
+            /** 
+             * Results Output String In JavaScript Format
+             *
+             *              {0} aMarker.name,
+             *              {1} parseFloat(aMarker.distance).toFixed(1),
+             *              {2} slplus.distance_unit,
+             *              {3} street,
+             *              {4} street2,
+             *              {5} city_state_zip,
+             *              {6} thePhone,
+             *              {7} theFax,
+             *              {8} link,
+             *              {9} elink,
+             *              {10} slplus.map_domain,
+             *              {11} encodeURIComponent(this.address),
+             *              {12} encodeURIComponent(address),
+             *              {13} slplus.label_directions,
+             *              {14} tagInfo,
+             *              {15} aMarker.id
+             *              {16} aMarker.country
+             *              {17} aMarker.hours
+             */
             $results_string =
                     '<center>' .
                     '<table width="96%" cellpadding="4px" cellspacing="0" class="searchResultsTable" id="slp_results_table">'  .
                         '<tr class="slp_results_row" id="slp_location_{15}">'  .
                             '<td class="results_row_left_column" id="slp_left_cell_{15}"><span class="location_name">{0}</span><br/>{1} {2}</td>'  .
-                            '<td class="results_row_center_column" id="slp_center_cell_{15}">{3}{4}{5}{16}{6}{7}</td>'  .
+                            '<td class="results_row_center_column" id="slp_center_cell_{15}">' .
+                                '<span class="slp_result_address slp_result_street">{3}</span>'.
+                                '<span class="slp_result_address slp_result_street2">{4}</span>' .
+                                '<span class="slp_result_address slp_result_citystatezip">{5}</span>' .
+                                '<span class="slp_result_address slp_result_country">{16}</span>'.
+                                '<span class="slp_result_address slp_result_phone">{6}</span>' .
+                                '<span class="slp_result_address slp_result_fax">{7}</span>' .
+                            '</td>'   .
                             '<td class="results_row_right_column" id="slp_right_cell_{15}">{8}{9}'  .
                                 '<a href="http://{10}' .
                                 '/maps?saddr={11}'  .

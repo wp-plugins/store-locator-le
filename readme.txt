@@ -4,8 +4,8 @@ Contributors: charlestonsw
 Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
 Tags: google maps, store finder, store locator, store locater, google, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus, bing map, bing, yahoo maps, yahoo, mapping, retail
 Requires at least: 3.3
-Tested up to: 3.4.2
-Stable tag: 3.7.3
+Tested up to: 3.4.3
+Stable tag: 3.7.4
 
 Store Locator Plus makes it easy to put a fully functional store finder on your site.
 The most active store locator plugin with monthly updates!
@@ -155,9 +155,12 @@ new theme or any of the built-in defaults by selecting it from the auto-generate
 
 Users that opt not to purchase the Pro Pack can still customize the look by editing the basic CSS file that ships with the free plugin.
 
-= Attribution and Credits =
+= Special Thanks =
 
 Thanks to [Nicolas Mollet](http://mapicons.nicolasmollet.com/) for some of the great icons.
+
+[Massive Creative](http://www.massivecreativeinc.com) for some of our banners and other creative work.
+
 
 == Frequently Asked Questions ==
 
@@ -167,6 +170,11 @@ The plugin includes all the functions and features necessary to add multiple loc
 List 1 location or 1,000, customize the search interface and results form, and more.
 All basic functionality needed for a fully functional plugin is included.
 Basic upgrades are free and available directly from the WordPress plugin repository.
+
+= How do I report a bug? =
+
+Post in the [support forum](http://wordpress.org/support/plugin/store-locator-le).
+You can also [contact me](http://www.charlestonsw.com/product/product-support) to request premium support if you need immediate assistance.
 
 = What are the premium add-ons? =
 
@@ -247,6 +255,17 @@ I update about once per month or more frequently as needed.
 Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
 
 I was listing the entire change log here but with weekly/bi-weekly updates it as getting much too long.
+
+= 3.7.4 (Mid-November 2012) =
+
+* Change to under-map results HTML structure, address blocks now use span with classes.
+** More control for 3rd party add-ons, removing extra <br/> tags in output.
+** Update some of the CSS templates to tweak new span classes to adjust output display.
+* Make store hours available to 3rd party add-ons.
+** [Enhanced Results](http://www.charlestonsw.com/product/store-locator-plus-enhanced-results/) add-on has option to turn on the hours display under the map.
+* JavaScript load/search tests for valid servers response.
+** Logs to console if SLP server does not return properly JSONP response.
+* Tested for WordPress 3.4.3 compatibility.
 
 = 3.7.3 (November 12 2012) =
 

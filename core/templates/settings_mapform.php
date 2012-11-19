@@ -1,7 +1,6 @@
 <?php 
     global $sl_num_initial_displayed, $sl_the_domain, $sl_char_enc,
-            $sl_zoom, $sl_zoom_adj, $sl_height,$sl_height_units,$sl_width,$sl_width_units,
-            $cl_icon_notification_msg,$checked3,$cl_icon,$cl_icon2,$cl_icon_str,$cl_icon2_str,
+            $sl_zoom, $sl_zoom_adj, $sl_height,$sl_height_units,$sl_width,$sl_width_units,$checked3,
             $slplus_plugin;
 
     $slplus_message = ($slplus_plugin->license->packages['Pro Pack']->isenabled) ?
@@ -119,37 +118,6 @@
                 }
 
 
-                //------------------------
-                // Search Results Settings
-                //
-                echo '<p class="slp_admin_info" style="clear:both;"><strong>'.__('Search Results',SLPLUS_PREFIX).'</strong></p>';
-                echo '<p>'.sprintf($slplus_message,$slplus_plugin->purchase_url,'Pro Pack').'</p>';
-                echo CreateInputDiv(
-                        '_maxreturned',
-                        __('Max search results',SLPLUS_PREFIX),
-                        __('How many locations does a search return? Default is 25.',SLPLUS_PREFIX)
-                        );
-
-                //--------
-               // Pro Pack : Search Results Settings
-                //
-                if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
-                    echo CreateCheckboxDiv(
-                        '_show_tags',
-                        __('Show Tags In Output',SLPLUS_PREFIX),
-                        __('Show the tags in the location output table and bubble.', SLPLUS_PREFIX)
-                        );
-
-                    echo CreateCheckboxDiv(
-                        '_use_email_form',
-                        __('Use Email Form',SLPLUS_PREFIX),
-                        __('Use email form instead of mailto: link when showing email addresses.', SLPLUS_PREFIX)
-                        );
-                }
-
-                // Third Party Add-Ons Hook
-                //
-                echo apply_filters('slp_add_results_settings','');
 ?>
             </div>
         </div>
@@ -194,28 +162,6 @@
         </div>
     </div>
     
-    <div class='section_column'>       
-        <div class='map_designer_settings'>
-            <h2><?php _e('Icons', SLPLUS_PREFIX);?></h2>    
-            <?php echo $cl_icon_notification_msg;?>
-            
-            <div class='form_entry'>
-                <label for='icon'><?php _e('Home Icon', SLPLUS_PREFIX);?></label>
-                <input id='icon' name='icon' dir='rtl' size='45' value='<?php echo $cl_icon;?>' onchange="document.getElementById('prev').src=this.value">
-                    &nbsp;&nbsp;<img id='prev' src='<?php echo $cl_icon;?>' align='top'><br/>
-                <?php echo $cl_icon_str;?>
-            </div>
-    
-            <div class='form_entry'>
-                <label for='icon2'><?php _e('Destination Icon', SLPLUS_PREFIX);?></label>
-                <input id='icon2' name='icon2' dir='rtl' size='45' value='<?php echo $cl_icon2;?>' onchange="document.getElementById('prev2').src=this.value">
-                    &nbsp;&nbsp;<img id='prev2' src='<?php echo $cl_icon2;?>'align='top'><br/>
-                <?php echo $cl_icon2_str;?>
-            </div>
-        </div>
-    </div>
-    
-
     <div class='section_column'>   
         <div class='map_interface_settings'> 
             <h2><?php _e('Country', SLPLUS_PREFIX);?></h2>

@@ -402,8 +402,9 @@ $slpMapSettings->add_section(
 //------------------------------------
 // Create The Search Form Settings Panel
 //
-add_action('slp_build_map_settings_panels',array('SLPlus_AdminUI','slp_add_search_form_settings_panel'),1);
-add_action('slp_build_map_settings_panels',array('SLPlus_AdminUI','slp_add_map_settings_panel'),2);
+add_action('slp_build_map_settings_panels',array('SLPlus_AdminUI','slp_add_search_form_settings_panel') ,10);
+add_action('slp_build_map_settings_panels',array('SLPlus_AdminUI','slp_add_map_settings_panel')         ,20);
+add_action('slp_build_map_settings_panels',array('SLPlus_AdminUI','slp_add_results_settings_panel')     ,30);
 
     
 //------------------------------------

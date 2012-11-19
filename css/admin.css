@@ -350,6 +350,7 @@ input#bulk_file {
 }
 div.section_column .form_entry {
     min-width: 475px;
+    padding: 6px;
 }
 
 .section_description H3 {
@@ -574,9 +575,8 @@ td.optionpack {
 
 #rb_details .rb_column, .section_column {
     float: left;
-    border: solid 1px #F0F0FF;
+    border: solid 1px #D0D0FF;
     margin-right: 24px;
-    padding: 0px;
     margin-top: 3px;
 }
 
@@ -593,7 +593,7 @@ p.slp_admin_info {
     margin-bottom: 3px;  
     margin-top: 0px;
     padding: 0px 6px;
-    background: #F4F4FF;
+    background: #D4D4FF;
 }
 
 .section_description {
