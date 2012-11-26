@@ -233,6 +233,128 @@ if (! class_exists('SLPlus_AdminUI')) {
         }
 
         /**
+         * Display the manage locations pagination
+         *
+         * @param type $totalLocations
+         * @param int $num_per_page
+         * @param int $start
+         */
+        function manage_locations_pagination($totalLocations = 0, $num_per_page = 10, $start = 0) {
+            
+            // Variable Init
+            $pos=0;
+            $prev = min(max(0,$start-$num_per_page),$totalLocations);
+            $next = min(max(0,$start+$num_per_page),$totalLocations);
+            $qry = isset($_GET['q'])?$_GET['q']:'';
+            $cleared=preg_replace('/q=$qry/', '', $_SERVER['REQUEST_URI']);
+
+            $extra_text=(trim($qry)!='')    ?
+                __("for your search of", SLPLUS_PREFIX).
+                    " <strong>\"$qry\"</strong>&nbsp;|&nbsp;<a href='$cleared'>".
+                    __("Clear&nbsp;Results", SLPLUS_PREFIX)."</a>" :
+                "" ;
+
+            // URL Regex Replace
+            //
+            if (preg_match('#&start='.$start.'#',$_SERVER['QUERY_STRING'])) {
+                $prev_page=str_replace("&start=$start","&start=$prev",$_SERVER['REQUEST_URI']);
+                $next_page=str_replace("&start=$start","&start=$next",$_SERVER['REQUEST_URI']);
+            } else {
+                $prev_page=$_SERVER['REQUEST_URI']."&start=$prev";
+                $next_page=$_SERVER['REQUEST_URI']."&start=$next";
+            }
+            
+            // Pages String
+            //
+            $pagesString = '';
+            if ($totalLocations>$num_per_page) {
+                if ((($start/$num_per_page)+1)-5<1) {
+                    $beginning_link=1;
+                } else {
+                    $beginning_link=(($start/$num_per_page)+1)-5;
+                }
+                if ((($start/$num_per_page)+1)+5>(($totalLocations/$num_per_page)+1)) {
+                    $end_link=(($totalLocations/$num_per_page)+1);
+                } else {
+                    $end_link=(($start/$num_per_page)+1)+5;
+                }
+                $pos=($beginning_link-1)*$num_per_page;
+                for ($k=$beginning_link; $k<$end_link; $k++) {
+                    if (preg_match('#&start='.$start.'#',$_SERVER['QUERY_STRING'])) {
+                        $curr_page=str_replace("&start=$start","&start=$pos",$_SERVER['QUERY_STRING']);
+                    }
+                    else {
+                        $curr_page=$_SERVER['QUERY_STRING']."&start=$pos";
+                    }
+                    if (($start-($k-1)*$num_per_page)<0 || ($start-($k-1)*$num_per_page)>=$num_per_page) {
+                        $pagesString .= "<a class='page-button' href=\"{$_SERVER['PHP_SELF']}?$curr_page\" >";
+                    } else {
+                        $pagesString .= "<a class='page-button thispage' href='#'>";
+                    }
+
+
+                    $pagesString .= "$k</a>";
+                    $pos=$pos+$num_per_page;
+                }
+            }
+
+            $prevpages = 
+                "<a class='prev-page page-button" .
+                    ((($start-$num_per_page)>=0) ? '' : ' disabled' ) .
+                    "' href='".
+                    ((($start-$num_per_page)>=0) ? $prev_page : '#' ).
+                    "'>‹</a>"
+                ;
+            $nextpages = 
+                "<a class='next-page page-button" .
+                    ((($start+$num_per_page)<$totalLocations) ? '' : ' disabled') .
+                    "' href='".
+                    ((($start+$num_per_page)<$totalLocations) ? $next_page : '#').
+                    "'>›</a>"
+                ;
+
+            $pagesString =
+                $prevpages .
+                $pagesString .
+                $nextpages
+                ;
+
+            print
+                '<div id="slp_pagination" class="tablenav top">'              .
+                    '<div id="slp_pagination_pages" class="tablenav-pages">'    .
+                        '<span class="displaying-num">'                         .
+                                $totalLocations                                 .
+                                ' '.__('locations',SLPLUS_PREFIX)               .
+                            '</span>'                                           .
+                            '<span class="pagination-links">'                   .
+                            $pagesString                                        .
+                            '</span>'                                           .
+                        '</div>'                                                .
+                        $extra_text                                             .
+                    '</div>'
+                ;
+        }
+
+        /**
+         * Render the manage locations table header
+         *
+         * @param array $slpManageColumns - the manage locations columns pre-filter
+         */
+        function manage_locations_table_header($slpManageColumns,$slpCleanURL,$opt,$dir) {
+            $tableHeaderString =
+                    "<thead>
+                    <tr >
+                        <th colspan='1'><input type='checkbox' onclick='checkAll(this,document.forms[\"locationForm\"])' class='button'></th>
+                        <th colspan='1'>".__("Actions", SLPLUS_PREFIX)."</th>"
+                    ;
+            foreach ($slpManageColumns as $slpField => $slpLabel) {
+                $tableHeaderString .= $this->slpCreateColumnHeader($slpCleanURL,$slpField,$slpLabel,$opt,$dir);
+            }
+            $tableHeaderString .= '<th>Lat</th><th>Lon</th></tr></thead>';
+            return $tableHeaderString;
+        }
+
+        /**
          * Enqueue the admin stylesheet when needed.
          */
         function enqueue_admin_stylesheet() {
@@ -521,19 +643,26 @@ if (! class_exists('SLPlus_AdminUI')) {
             return (strtolower(substr($url,0,7))=="http://");
         }
 
-        /*****************************
-        * function: slpCreateColumnHeader()
-        *
-        * Create the column headers for sorting the table.
-        *
-        */
+        /**
+         * Create the column headers for sorting the table.
+         *
+         * @param type $theURL
+         * @param type $fldID
+         * @param type $fldLabel
+         * @param type $opt
+         * @param type $dir
+         * @return type
+         */
         function slpCreateColumnHeader($theURL,$fldID='sl_store',$fldLabel='ID',$opt='sl_store',$dir='ASC') {
             if ($opt == $fldID) {
                 $curDIR = (($dir=='ASC')?'DESC':'ASC');
             } else {
                 $curDIR = $dir;
             }
-            return "<th><a href='$theURL&o=$fldID&sortorder=$curDIR'>$fldLabel</a></th>";
+            return "<th class='manage-column sortable'><a href='$theURL&o=$fldID&sortorder=$curDIR'>" .
+                    "<span>$fldLabel</span>".
+                    "<span class='sorting-indicator'></span>".
+                    "</a></th>";
         }
 
         /**
@@ -561,8 +690,8 @@ if (! class_exists('SLPlus_AdminUI')) {
 
                 print "<div class='wrap'>
                             <div id='icon-add-locations' class='icon32'><br/></div>
-                            <h2>".
-                            __('Store Locator Plus - Add Locations', SLPLUS_PREFIX).
+                            <h2>Store Locator Plus - ".
+                            __('Add Locations', SLPLUS_PREFIX).
                             "</h2>".
                       '<div id="slplus_navbar">'.
                       $slplus_plugin->helper->get_string_from_phpexec(SLPLUS_COREDIR.'/templates/navbar.php') .
@@ -685,9 +814,15 @@ if (! class_exists('SLPlus_AdminUI')) {
 
                 $base=get_option('siteurl');
                 $slplus_plugin->addform = true;
-                print '<table style="clear:both;"><tr><td class="slp_locationinfoform_cell">';
-                print $slplus_plugin->AdminUI->createString_LocationInfoForm(array(),'', true);
-                print '</td></tr></table>';
+                print 
+                    '<div id="location_table_wrapper">'.
+                        "<table id='manage_locations_table' class='slplus wp-list-table widefat fixed posts' cellspacing=0>" .
+                            '<tr><td class="slp_locationinfoform_cell">' .
+                                $slplus_plugin->AdminUI->createString_LocationInfoForm(array(),'', true) .
+                            '</td></tr>' .
+                        '</table>' .
+                    '</div>'
+                    ;
          }
 
          /**
@@ -704,11 +839,9 @@ if (! class_exists('SLPlus_AdminUI')) {
              $slpEditForm = '';
              
              $content  = ''                                                                     .
-                "<form name='manualAddForm' method='post' enctype='multipart/form-data'>"       .
+                "<form id='manualAddForm' name='manualAddForm' method='post' enctype='multipart/form-data'>"       .
                 "<a name='a".$locID."'></a>"                                                    .
                 "<table cellpadding='0' class='slp_locationinfoform_table'>"                           .
-                "<!--thead><tr><td id='slp_manual_update_table_left_cell'>"                     .
-                     __("Type&nbsp;Address", SLPLUS_PREFIX)."</td></tr></thead-->"              .
                 "<tr><td valign='top'>"                                                         .
                 $slplus_plugin->helper->get_string_from_phpexec(SLPLUS_COREDIR.'/templates/'.'edit_location_address.php')
                 ;
@@ -724,11 +857,16 @@ if (! class_exists('SLPlus_AdminUI')) {
                     $slpEditForm .= "<label for='store_page'>Store Page</label><a href='$sl_value[sl_pages_url]' target='csa'>$shortSPurl</a><br/>";
                 }
 
-                $slpEditForm .= "<br><nobr>".
+                $edCancelURL = isset($_GET['edit']) ?
+                    preg_replace('/&edit='.$_GET['edit'].'/', '',$_SERVER['REQUEST_URI']) :
+                    $_SERVER['REQUEST_URI']
+                    ;
+
+                $slpEditForm .= 
                         "<input type='submit' value='".($slplus_plugin->addform?__('Add',SLPLUS_PREFIX):__('Update', SLPLUS_PREFIX))."' class='button-primary'>".
-                        "<input type='button' class='button' value='".__('Cancel', SLPLUS_PREFIX)."' onclick='location.href=\"".preg_replace('/&edit=$_GET[edit]/', '',$_SERVER['REQUEST_URI'])."\"'>".
-                        "<input type='hidden' name='option_value-$locID' value='".($addform?'':$sl_value['sl_option_value'])."' />" .
-                        "</nobr>";
+                        "<input type='button' class='button' value='".__('Cancel', SLPLUS_PREFIX)."' onclick='location.href=\"".$edCancelURL."\"'>".
+                        "<input type='hidden' name='option_value-$locID' value='".($addform?'':$sl_value['sl_option_value'])."' />"
+                        ;
 
                 $content .= apply_filters('slp_edit_location_left_column',$slpEditForm)             .
                     '</td>'                                                                         .
