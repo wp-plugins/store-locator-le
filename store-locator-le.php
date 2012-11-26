@@ -3,7 +3,7 @@
 Plugin Name: Google Maps via Store Locator Plus
 Plugin URI: http://www.charlestonsw.com/products/store-locator-plus/
 Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Gooogle Maps.  This is a highly customizable, easily expandable, enterprise-class location management system.
-Version: 3.6.3
+Version: 3.7.5
 Author: Charleston Software Associates
 Author URI: http://www.charlestonsw.com
 License: GPL3
@@ -42,13 +42,7 @@ if (defined('SLPLUS_COREDIR') === false) {
 if (defined('SLPLUS_ICONDIR') === false) {
     define('SLPLUS_ICONDIR', SLPLUS_COREDIR . 'images/icons/');
 }
-if (defined('SLPLUS_UPLOADDIR') === false) {
-    $upload_dir = wp_upload_dir('slp');
-    $upload_path = preg_replace('/\/slp\/$/','/sl-uploads/',$upload_dir['path']);
-    $upload_url  = preg_replace('/\/slp\/$/','/sl-uploads/',$upload_dir['url']);
-    define('SLPLUS_UPLOADDIR', $upload_path);
-    define('SLPLUS_UPLOADURL', $upload_url);
-}
+
 
 // URL Defines
 //
@@ -73,6 +67,27 @@ if (defined('SLPLUS_BASENAME') === false) {
     define('SLPLUS_BASENAME', plugin_basename(__FILE__));
 }
 
+// SLP Uploads Dir
+//
+if (defined('SLPLUS_UPLOADDIR') === false) {
+    $upload_dir = wp_upload_dir('slp');
+    $error = $upload_dir['error'];
+    if ( $error === '') {
+        $upload_path = preg_replace('/\/slp\/$/','/sl-uploads/',$upload_dir['path']);
+        $upload_url  = preg_replace('/\/slp\/$/','/sl-uploads/',$upload_dir['url']);
+        define('SLPLUS_UPLOADDIR', $upload_path);
+        define('SLPLUS_UPLOADURL', $upload_url);
+    } else {
+        $error = preg_replace(
+                '/Unable to create directory /',
+                'Unable to create directory ' . ABSPATH ,
+                $error
+                );
+        define('SLPLUS_UPLOADDIR', SLPLUS_PLUGINDIR);
+        define('SLPLUS_UPLOADURL', SLPLUS_PLUGINURL);
+    }
+}
+
 // Our product prefix
 //
 if (defined('SLPLUS_PREFIX') === false) {
@@ -84,7 +99,12 @@ if (defined('SLPLUS_PREFIX') === false) {
 global $slplus_plugin;
 include_once(SLPLUS_PLUGINDIR . '/include/config.php'	);
 include_once(SLPLUS_COREDIR   . 'functions.sl.php'	);
-include_once(SLPLUS_COREDIR   . 'csl-ajax-search.php'	);
+
+// Errors?
+//
+if ($error != '') {
+    $slplus_plugin->notifications->add_notice(4,$error);
+}
 
 // General WP Action Interface
 //
@@ -111,6 +131,7 @@ $slplus_plugin->AjaxHandler = new SLPlus_AjaxHandler(array('parent'=>$slplus_plu
 add_action('init'               ,array($slplus_plugin->Actions,'init')                 );
 add_action('wp_enqueue_scripts' ,array($slplus_plugin->Actions,'wp_enqueue_scripts')   );
 add_action('wp_footer'          ,array($slplus_plugin->Actions,'wp_footer')            );
+add_action('wp_head'            ,array($slplus_plugin->Actions,'wp_head')              );
 add_action('shutdown'           ,array($slplus_plugin->Actions,'shutdown')             );
 
 // Admin Actions
@@ -134,24 +155,24 @@ load_plugin_textdomain(SLPLUS_PREFIX, false, SLPLUS_COREDIR . 'languages/');
 // AJAX Hooks
 //------------------------
 
+// Mobile Listener
+//
+add_action('wp_ajax_csl_get_locations'          , array('csl_mobile_listener', 'GetLocations'));
+add_action('wp_ajax_nopriv_csl_get_locations'   , array('csl_mobile_listener', 'GetLocations'));
+
 // Ajax search
 //
-add_action('wp_ajax_csl_ajax_search', 'csl_ajax_search');
-add_action('wp_ajax_nopriv_csl_ajax_search', 'csl_ajax_search');
+add_action('wp_ajax_csl_ajax_search'            , array($slplus_plugin->AjaxHandler,'csl_ajax_search'));
+add_action('wp_ajax_nopriv_csl_ajax_search'     , array($slplus_plugin->AjaxHandler,'csl_ajax_search'));
 
 add_action('wp_ajax_nopriv_csl_get_closest_location', array('csl_mobile_listener', 'GetClosestLocation'));
 
-// Mobile Listener
-//
-add_action('wp_ajax_csl_get_locations', array('csl_mobile_listener', 'GetLocations'));
-add_action('wp_ajax_nopriv_csl_get_locations', array('csl_mobile_listener', 'GetLocations'));
-
 // Ajax Load
 //
-add_action('wp_ajax_csl_ajax_onload', 'csl_ajax_onload');
-add_action('wp_ajax_nopriv_csl_ajax_onload', 'csl_ajax_onload');
+add_action('wp_ajax_csl_ajax_onload'            , array($slplus_plugin->AjaxHandler,'csl_ajax_onload'));
+add_action('wp_ajax_nopriv_csl_ajax_onload'     , array($slplus_plugin->AjaxHandler,'csl_ajax_onload'));
 
 // License resets
-add_action('wp_ajax_license_reset_pages'    , array($slplus_plugin->AjaxHandler,'license_reset_pages'));
-add_action('wp_ajax_license_reset_propack'  , array($slplus_plugin->AjaxHandler,'license_reset_propack'));
+add_action('wp_ajax_license_reset_pages'        , array($slplus_plugin->AjaxHandler,'license_reset_pages'));
+add_action('wp_ajax_license_reset_propack'      , array($slplus_plugin->AjaxHandler,'license_reset_propack'));
 

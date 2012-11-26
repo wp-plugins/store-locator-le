@@ -7,38 +7,27 @@
 
 global $slplus_plugin;
 
-// Save all values except a few for subsequent form processing
-//
-$sl_hidden='';
-foreach($_REQUEST as $key=>$val) {
-	if ($key!="q" && $key!="o" && $key!="sortorder" && $key!="start" && $key!="act" && $key!='sl_tags' && $key!='sl_id') {
-		$sl_hidden.="<input type='hidden' value='$val' name='$key'>\n"; 
-	}
-}
-
 // Header Text
 //
 print "<div class='wrap'>
             <div id='icon-edit-locations' class='icon32'><br/></div>
             <h2>".
             __('Store Locator Plus - Manage Locations', SLPLUS_PREFIX).
-            "</h2>";
+            "</h2>" .
+      '<div id="slplus_navbar">' .
+      $slplus_plugin->helper->get_string_from_phpexec(SLPLUS_COREDIR.'/templates/'.'navbar.php') .
+      '</div>';
+       
 
-            
-//-------------------------
-// Navbar Section
-//-------------------------    
-print '<div id="slplus_navbar">';
-print get_string_from_phpexec(SLPLUS_COREDIR.'/templates/navbar.php');
-print '</div>';            
-
-// Check Google API Key
-// Not present : who cares
+// Form and variable setup for processing
 //
-$slak=$slplus_plugin->driver_args['api_key'];
-    
-// Initialize Variables
-//
+$sl_hidden='';
+foreach($_REQUEST as $key=>$val) {
+	if ($key!="q" && $key!="o" && $key!="sortorder" && $key!="start" && $key!="act" && $key!='sl_tags' && $key!='sl_id') {
+		$sl_hidden.="<input type='hidden' value='$val' name='$key'>\n";
+	}
+}
+$slak=$slplus_plugin->driver_args['api_key'];    
 initialize_variables();  
 
 // If delete link is clicked
@@ -119,12 +108,11 @@ if ($_POST                                                  &&
 // ACTION HANDLER
 // If post action is set
 //------------------------------------------------------------------------
-extract($_POST);
+if ($_POST) {extract($_POST);}
 if (isset($_REQUEST['act'])) {
 
     // Delete Action	    
     if ($_REQUEST['act']=="delete") {
-        if ($_POST) {extract($_POST);}
         if (isset($sl_id)) {
 
             // use this to delete 100 at a time
@@ -194,8 +182,6 @@ if (isset($_REQUEST['act'])) {
     }  elseif (preg_match('#tag#i', $_REQUEST['act'])) {
 
         //adding or removing tags for specified a locations
-        if ($_POST) {extract($_POST);}
-
         if (isset($sl_id)) {
             if (is_array($sl_id)) {
                 $id_string='';
@@ -228,7 +214,6 @@ if (isset($_REQUEST['act'])) {
 
     // Locations Per Page Action
     } elseif ($_REQUEST['act']=="locationsPerPage") {
-        //If bulk delete is used
         update_option('sl_admin_locations_per_page', $_REQUEST['sl_admin_locations_per_page']);
         extract($_REQUEST);
 
@@ -342,14 +327,6 @@ if (isset($_REQUEST['act'])) {
     }
 }
 
-//for search links
-$numMembers=$wpdb->get_results(
-    "SELECT sl_id FROM " . $wpdb->prefix . "store_locator $where");
-$numMembers2=count($numMembers); 
-$start=(isset($_GET['start'])&&(trim($_GET['start'])!=''))?$_GET['start']:0;
-//edit this to determine how many locations to view per page of 'Manage Locations' page
-$num_per_page=$sl_admin_locations_per_page; 
-if ($numMembers2!=0) {include(SLPLUS_COREDIR.'search-links.php');}
 
 $opt= (isset($_GET['o']) && (trim($_GET['o']) != ''))
 ? $_GET['o'] : "sl_store";
@@ -360,18 +337,38 @@ $dir= (isset($_GET['sortorder']) && (trim($_GET['sortorder'])=='DESC'))
 //
 $slpCleanURL = str_replace("&o=$opt&sortorder=$dir", '', $_SERVER['REQUEST_URI']);    
 
-
-
 //------------------------------------------------------------------------
 // UI
 //------------------------------------------------------------------------
 
+// Pagination
+//
+$totalLocations=$wpdb->get_var("SELECT count(sl_id) FROM ".$wpdb->prefix."store_locator $where");
+$start=(isset($_GET['start'])&&(trim($_GET['start'])!=''))?$_GET['start']:0;
+$num_per_page=$sl_admin_locations_per_page;
+if ($totalLocations>0) {
+    $slplus_plugin->AdminUI->manage_locations_pagination(
+            $totalLocations,
+            $num_per_page,
+            $start
+            );
+}
+
 // Actionbar Section
 //
-print '<div id="slplus_actionbar">';
-print get_string_from_phpexec(SLPLUS_COREDIR.'/templates/managelocations_actionbar.php');
-print '</div>';
-print '<br/>';
+print '<form id="manage_locations_actionbar_form" name="locationForm" method="post">'.
+        '<input name="act" type="hidden">' .
+        '<div id="slplus_actionbar">' .
+            $slplus_plugin->helper->get_string_from_phpexec(SLPLUS_COREDIR.'/templates/managelocations_actionbar.php') .
+        '</div>'
+        ;
+
+// Search Filter, no actions
+// Clear the start, we want all records
+//
+if (isset($_POST['q']) && ($_POST['q'] != '') && ($_POST['act'] == '')) {
+    $start = 0;
+}
 
 // We have matching locations
 //
@@ -427,25 +424,15 @@ if ($slpLocations=$wpdb->get_results(
                 );
 
     }
-
-    // Third party plugin add-ons
-    //
     $slpManageColumns = apply_filters('slp_manage_location_columns', $slpManageColumns);
-    
-    // Render Table Headings
-    //
-    print
-        "<table class='slplus widefat' cellspacing=0>
-            <thead>
-            <tr >
-                <th colspan='1'><input type='checkbox' onclick='checkAll(this,document.forms[\"locationForm\"])' class='button'></th>
-                <th colspan='1'>".__("Actions", SLPLUS_PREFIX)."</th>"
-            ;
-    foreach ($slpManageColumns as $slpField => $slpLabel) {
-        print $slplus_plugin->AdminUI->slpCreateColumnHeader($slpCleanURL,$slpField,$slpLabel,$opt,$dir);
-    }
-    print '<th>Lat</th><th>Lon</th></tr></thead>';
 
+
+    // Get the manage locations table header
+    //
+    $tableHeaderString = $slplus_plugin->AdminUI->manage_locations_table_header($slpManageColumns,$slpCleanURL,$opt,$dir);
+    print  "<div id='location_table_wrapper'>" .
+                "<table id='manage_locations_table' class='slplus wp-list-table widefat fixed posts' cellspacing=0>" .
+                    $tableHeaderString;
 
     // Render The Data
     //
@@ -466,59 +453,11 @@ if ($slpLocations=$wpdb->get_results(
         // Show the edit form in a new row for the location that was selected.
         //
         if (isset($_GET['edit']) && ($locID==$_GET['edit'])) {
-            print "<tr id='slp_location_edit_row' style='background-color:$bgcol'>";
-            print "<td class='slp_location_edit_cell' colspan='".(count($slpManageColumns)+4)."'>
-            <form name='manualAddForm' method=post>
-            <a name='a".$locID."'></a>
-            <table cellpadding='0' class='manual_update_table'>
-            <!--thead><tr><td id='slp_manual_update_table_left_cell'>".__("Type&nbsp;Address", SLPLUS_PREFIX)."</td></tr></thead-->
-            <tr>
-                <td valign='top'>";
-
-            $slpEditForm = '';
-
-
-            execute_and_output_template('edit_location_address.php');
-
-            // Store Pages URLs
-            //
-            if (
-                ($slplus_plugin->license->packages['Store Pages']->isenabled) &&
-                ($sl_value['sl_pages_url'] != '')
-                ){
-                $shortSPurl = preg_replace('/^.*?store_page=/','',$sl_value['sl_pages_url']);
-                $slpEditForm .= "<label for='store_page'>Store Page</label><a href='$sl_value[sl_pages_url]' target='cybersprocket'>$shortSPurl</a><br/>";
-            }
-
-            $slpEditForm .= "<br><nobr>".
-                    "<input type='submit' value='".__("Update", SLPLUS_PREFIX)."' class='button-primary'>".
-                    "<input type='button' class='button' value='".__("Cancel", SLPLUS_PREFIX)."' onclick='location.href=\"".preg_replace('/&edit=$_GET[edit]/', '',$_SERVER['REQUEST_URI'])."\"'>".
-                    "<input type='hidden' name='option_value-$locID' value='$sl_value[sl_option_value]' />" .
-                    "</nobr>";
-            print apply_filters('slp_edit_location_left_column',$slpEditForm);
-            print "</td>";
-
-
-            print "<td id='slp_manual_update_table_right_cell'>";
-            $slpEditForm =
-                    "<div id='slp_edit_right_column'>" .
-                    "<strong>".__("Additional Information", SLPLUS_PREFIX)."</strong><br>
-                    <textarea name='description-$locID' rows='5' cols='17'>$sl_value[sl_description]</textarea>&nbsp;<small>".__("Description", SLPLUS_PREFIX)."</small><br>
-                    <input name='tags-$locID' value='$sl_value[sl_tags]'>&nbsp;<small>"  .__("Tags (seperate with commas)", SLPLUS_PREFIX)."</small><br>		
-                    <input name='url-$locID'  value='$sl_value[sl_url]'>&nbsp;<small>"   .get_option('sl_website_label','Website')."</small><br>
-                    <input name='email-$locID' value='$sl_value[sl_email]'>&nbsp;<small>".__("Email", SLPLUS_PREFIX)."</small><br>
-                    <input name='hours-$locID' value='$sl_value[sl_hours]'>&nbsp;<small>".$slplus_plugin->settings->get_item('label_hours','Hours','_')."</small><br>
-                    <input name='phone-$locID' value='$sl_value[sl_phone]'>&nbsp;<small>".$slplus_plugin->settings->get_item('label_phone','Phone','_')."</small><br>
-                    <input name='fax-$locID'   value='$sl_value[sl_fax]'>&nbsp;<small>"  .$slplus_plugin->settings->get_item('label_fax','Fax','_')."</small><br>
-                    <input name='image-$locID' value='$sl_value[sl_image]'>&nbsp;<small>".__("Image URL (shown with location)", SLPLUS_PREFIX)."</small>" .
-                    '</div>'
-                    ;
-            print apply_filters('slp_edit_location_right_column',$slpEditForm);
-            print "</td>
-                    </tr>
-                </table>
-            </form></td>
-            </tr>";
+            print 
+                "<tr id='slp_location_edit_row'>"               . 
+                "<td class='slp_locationinfoform_cell' colspan='".(count($slpManageColumns)+4)."'>".
+                $slplus_plugin->AdminUI->createString_LocationInfoForm($sl_value, $locID) .
+                '</td></tr>';
 
         // DISPLAY MODE
         //
@@ -581,7 +520,8 @@ if ($slpLocations=$wpdb->get_results(
 
     // Close Out Table
     //
-    print '</table><br/>';
+    print $tableHeaderString;
+    print '</table></div>';
 
 // No Locations Found
 //
@@ -596,5 +536,12 @@ if ($slpLocations=$wpdb->get_results(
               "</div>";
 }
 
-if ($numMembers2!=0) {include(SLPLUS_COREDIR.'/search-links.php');}
+
+if ($totalLocations!=0) {
+    $slplus_plugin->AdminUI->manage_locations_pagination(
+            $totalLocations,
+            $num_per_page,
+            $start
+            );
+}
 print "</form></div>";
