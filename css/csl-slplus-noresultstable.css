@@ -151,7 +151,10 @@ div#addy_in_address.search_item {
 #map_box_map {
     display: none;
 }
-
+div#slp_tagline {
+    text-align: right;
+    padding-right: 3px;
+}
 
 /***** Store Locator Map DIV *****/
 #sl_div {
@@ -261,9 +264,13 @@ table#map_table td {
 	font-size: 11px;
 }
 
-/*-----------------------------------
- * Results Table Under The Map
- */
+ /***********************
+ * Results Table
+ ***********************/
+#results_table td {
+    border: none;
+}
+
 tr#cm_mapTR {
     display:none;
     visibility: hidden;

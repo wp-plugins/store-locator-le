@@ -2,19 +2,16 @@
   global $sl_search_label,
       $sl_radius_label, $r_options,
       $cs_options, $slplus_state_options, $sl_country_options,
-      $fnvars, $slplus_plugin, $slplus_name_label;
-
+      $slplus_plugin, $slplus_name_label;
       $slp_SearchDivs = new SLPlus_UI_DivManager();
 ?>
-
 <form onsubmit='cslmap.searchLocations(); return false;' id='searchForm' action=''>
-  <table  id='search_table' border='0' cellpadding='3px' class='sl_header'><tr>
-  <td valign='top'>
-      <div id='address_search'>
-
+    <table  id='search_table' border='0' cellpadding='3px' class='sl_header'>
+        <tbody id='search_table_body'>
+            <tr id='search_form_table_row'>
+                <td id='search_form_table_cell' valign='top'>
+                    <div id='address_search'>
           <?php
-
-
           //------------------------------------------------
           // Show City Pulldown Is Enabled
           //
@@ -77,20 +74,25 @@ ob_start();
           //------------------------------------------------
           // Show Tag Search Is Enabled
           //
+          /**
+           * @see http://goo.gl/UAXly - only_with_tag - filter map results to only those locations with the tag provided
+           * @see http://goo.gl/UAXly - tags_for_pulldown - list of tags to use in the search form pulldown, overrides admin map settings
+           *
+           */
           if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
-              if ((get_option(SLPLUS_PREFIX.'_show_tag_search',0) ==1) || isset($fnvars['only_with_tag'])) {
+              if ((get_option(SLPLUS_PREFIX.'_show_tag_search',0) ==1) || isset($slplus_plugin->data['only_with_tag'])) {
 
                   ob_start();
           ?>
-                  <div id='search_by_tag' class='search_item' <?php if (isset($fnvars['only_with_tag'])) { print "style='display:none;'"; }?>>
+                  <div id='search_by_tag' class='search_item' <?php if (isset($slplus_plugin->data['only_with_tag'])) { print "style='display:none;'"; }?>>
                       <label for='tag_to_search_for'><?php
                           print get_option(SLPLUS_PREFIX.'_search_tag_label');
                           ?></label>
                       <?php
                           // Tag selections
                           //
-                          if (isset($fnvars['tags_for_pulldown'])) {
-                              $tag_selections = $fnvars['tags_for_pulldown'];
+                          if (isset($slplus_plugin->data['tags_for_pulldown'])) {
+                              $tag_selections = $slplus_plugin->data['tags_for_pulldown'];
                           }
                           else {
                               $tag_selections = get_option(SLPLUS_PREFIX.'_tag_search_selections');
@@ -98,16 +100,16 @@ ob_start();
 
                           // Tag selections
                           //
-                          if (isset($fnvars['only_with_tag'])) {
+                          if (isset($slplus_plugin->data['only_with_tag'])) {
                               $tag_selections = '';
                           }
 
                           // No pre-selected tags, use input box
                           //
                           if ($tag_selections == '') {
-                              print "<input type='". (isset($fnvars['only_with_tag']) ? 'hidden' : 'text') . "' ".
+                              print "<input type='". (isset($slplus_plugin->data['only_with_tag']) ? 'hidden' : 'text') . "' ".
                                       "id='tag_to_search_for' size='50' " .
-                                      "value='" . (isset($fnvars['only_with_tag']) ? $fnvars['only_with_tag'] : '') . "' ".
+                                      "value='" . (isset($slplus_plugin->data['only_with_tag']) ? $slplus_plugin->data['only_with_tag'] : '') . "' ".
                                       "/>";
 
                           // Pulldown for pre-selected list
@@ -233,8 +235,9 @@ ob_start();
           //
           echo apply_filters('slp_search_form_divs','');
           ?>
-      </div>
-    </td>
-  </tr>
-  </table>
-  </form>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</form>

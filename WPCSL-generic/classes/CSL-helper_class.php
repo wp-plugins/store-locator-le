@@ -146,5 +146,52 @@ class wpCSL_helper__slplus {
         $this->SavePostToOptionsTable($whichbox);
     }
 
+    /**
+     * Check if an item exists out there in the "ether".
+     *
+     * @param string $url - preferably a fully qualified URL
+     * @return boolean - true if it is out there somewhere
+     */
+    function webItemExists($url) {
+        if (($url == '') || ($url == null)) { return false; }
+        $response = wp_remote_head( $url, array( 'timeout' => 5 ) );
+        $accepted_status_codes = array( 200, 301, 302 );
+        if ( ! is_wp_error( $response ) && in_array( wp_remote_retrieve_response_code( $response ), $accepted_status_codes ) ) {
+            return true;
+        }
+        return false;
+    }
 
+    /**
+     * Set an extended data attribute if it is not already set.
+     *
+     * Puts info in the data[] named array for the object base on
+     * the results returned by the passed function.
+     *
+     * @param string $element - the key for the data named array
+     * @param mixed $function - the string 'get_option' or a pointer to anon function
+     * @param mixed $params - an array of parameters to pass to get_option or the anon, note: get_option can receive an array of option_name, default value
+     * @return none
+     */
+    function setData($element = null, $function = null, $params=null) {
+        if ($element  === null) { return; }
+        if ($function === null) { return; }
+        if (!isset($this->parent->data[$element] )) {
+
+           // get_option shortcut, fetch the option named by params
+           //
+           if ($function === 'get_option') {
+               if (is_array($params)) {
+                    $this->parent->data[$element] = get_option($params[0],$params[1]);
+                } else {
+                    $this->parent->data[$element] = get_option($params);
+                }
+
+           // If not using get_option, assume $function is an anon and run it
+           //
+           } else {
+                $this->parent->data[$element] = $function($params);
+           }
+       }
+    }
 }

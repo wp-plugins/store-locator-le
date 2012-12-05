@@ -159,6 +159,10 @@ div#addy_in_radius label {
 #map_box_map {
     display: none;
 }
+div#slp_tagline {
+    text-align: right;
+    padding-right: 3px;
+}
 
 
 /***** Store Locator Map DIV *****/
@@ -271,9 +275,13 @@ table#map_table td {
 	font-size: 11px;
 }
 
-/*-----------------------------------
- * Results Table Under The Map
- */
+ /***********************
+ * Results Table
+ ***********************/
+#results_table td {
+    border: none;
+}
+
 .results_entry {
     background-color: #F4F4AA;
     border: 2px solid black;

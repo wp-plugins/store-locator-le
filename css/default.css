@@ -147,7 +147,10 @@
 #map_box_map {
     display: none;
 }
-
+div#slp_tagline {
+    text-align: right;
+    padding-right: 3px;
+}
 
 /***** Store Locator Map DIV *****/
 #sl_div {
@@ -260,7 +263,7 @@
 	background-color:transparent;
 }
 .results_entry:hover {
-	background-color:salmon;
+	background-color:#F4F4AA;
 }
 .results_row_left_column {
 	width:30%;

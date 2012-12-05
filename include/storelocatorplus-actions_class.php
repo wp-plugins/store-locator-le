@@ -56,6 +56,11 @@ if (! class_exists('SLPlus_Actions')) {
             // Already been here?  Get out.
             if (isset($this->parent->settings->sections['How to Use'])) { return; }
 
+            // Update system hook
+            // Premium add-ons can use the admin_init hook to utilize this.
+            //
+            require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-updates_class.php');
+
             // Activation Helpers
             // Updates are handled via WPCSL via namespace style call
             //
@@ -178,10 +183,7 @@ if (! class_exists('SLPlus_Actions')) {
         }
         
         /**
-         * method: init()
-         *
          * Called when the WordPress init action is processed.
-         *
          */
         function init() {
             if (!$this->setParent()) { return; }
@@ -300,17 +302,22 @@ if (! class_exists('SLPlus_Actions')) {
                     //"http://$sl_google_map_domain/maps?file=api&amp;v=2&amp;key=$api_key&amp;sensor=false{$sl_map_character_encoding}"
                     wp_enqueue_script(
                             'google_maps',
-                            'http://'.$sl_google_map_domain.'/maps/api/js?sensor=false&v=3.9&key='.$api_key
+                            'http'.(is_ssl()?'s':'').'://'.$sl_google_map_domain.'/maps/api/js?sensor=false&v=3.9&key='.$api_key
                             );
                 }
                 else {
                     wp_enqueue_script(
                         'google_maps',
-                        'http://'.$sl_google_map_domain.'/maps/api/js?sensor=false&v=3.9'
+                        'http'.(is_ssl()?'s':'').'://'.$sl_google_map_domain.'/maps/api/js?sensor=false&v=3.9'
                     );
                 }
             }
 
+            $sslURL =
+                (is_ssl()?
+                preg_replace('/http:/','https:',SLPLUS_PLUGINURL) :
+                SLPLUS_PLUGINURL
+                );
             wp_enqueue_script(
                     'csl_script',
                     SLPLUS_PLUGINURL.'/core/js/csl.js',
@@ -319,107 +326,10 @@ if (! class_exists('SLPlus_Actions')) {
                     !$force_load
             );
 
-            //--------------------
-            // Localize The Script
-            //--------------------
-            // Prepare some data for JavaScript injection...
-            //
-            $slplus_home_icon = get_option('sl_map_home_icon');
-            $slplus_end_icon  = get_option('sl_map_end_icon');
-            $slplus_home_icon_file = str_replace(SLPLUS_ICONURL,SLPLUS_ICONDIR,$slplus_home_icon);
-            $slplus_end_icon_file  = str_replace(SLPLUS_ICONURL,SLPLUS_ICONDIR,$slplus_end_icon);
-            $slplus_home_size=(function_exists('getimagesize') && file_exists($slplus_home_icon_file))?
-                getimagesize($slplus_home_icon_file) :
-                array(0 => 20, 1 => 34);
-            $slplus_end_size =(function_exists('getimagesize') && file_exists($slplus_end_icon_file)) ?
-                getimagesize($slplus_end_icon_file)  :
-                array(0 => 20, 1 => 34);
-
-            /** 
-             * Results Output String In JavaScript Format
-             *
-             *              {0} aMarker.name,
-             *              {1} parseFloat(aMarker.distance).toFixed(1),
-             *              {2} slplus.distance_unit,
-             *              {3} street,
-             *              {4} street2,
-             *              {5} city_state_zip,
-             *              {6} thePhone,
-             *              {7} theFax,
-             *              {8} link,
-             *              {9} elink,
-             *              {10} slplus.map_domain,
-             *              {11} encodeURIComponent(this.address),
-             *              {12} encodeURIComponent(address),
-             *              {13} slplus.label_directions,
-             *              {14} tagInfo,
-             *              {15} aMarker.id
-             *              {16} aMarker.country
-             *              {17} aMarker.hours
-             */
-            $results_string =
-                    '<center>' .
-                    '<table width="96%" cellpadding="4px" cellspacing="0" class="searchResultsTable" id="slp_results_table">'  .
-                        '<tr class="slp_results_row" id="slp_location_{15}">'  .
-                            '<td class="results_row_left_column" id="slp_left_cell_{15}"><span class="location_name">{0}</span><br/>{1} {2}</td>'  .
-                            '<td class="results_row_center_column" id="slp_center_cell_{15}">' .
-                                '<span class="slp_result_address slp_result_street">{3}</span>'.
-                                '<span class="slp_result_address slp_result_street2">{4}</span>' .
-                                '<span class="slp_result_address slp_result_citystatezip">{5}</span>' .
-                                '<span class="slp_result_address slp_result_country">{16}</span>'.
-                                '<span class="slp_result_address slp_result_phone">{6}</span>' .
-                                '<span class="slp_result_address slp_result_fax">{7}</span>' .
-                            '</td>'   .
-                            '<td class="results_row_right_column" id="slp_right_cell_{15}">{8}{9}'  .
-                                '<a href="http://{10}' .
-                                '/maps?saddr={11}'  .
-                                '&daddr={12}'  .
-                                '" target="_blank" class="storelocatorlink">{13}</a>{14}</td>'  .
-                            '</tr>'  .
-                        '</table>'  .
-                        '</center>';
-
-            // Lets get some variables into our script
-            //
-            $scriptData = array(
-                'core_url'          => SLPLUS_COREURL,
-                'debug_mode'        => (get_option(SLPLUS_PREFIX.'-debugging') == 'on'),
-                'disable_scroll'    => (get_option(SLPLUS_PREFIX.'_disable_scrollwheel')==1),
-                'disable_dir'       => (get_option(SLPLUS_PREFIX.'_disable_initialdirectory' )==1),
-                'distance_unit'     => esc_attr(get_option('sl_distance_unit'),'miles'),
-                'load_locations'    => (get_option('sl_load_locations_default')==1),
-                'label_directions'  => esc_attr(get_option(SLPLUS_PREFIX.'_label_directions',   'Directions')  ),
-                'label_fax'         => esc_attr(get_option(SLPLUS_PREFIX.'_label_fax',          'Fax: ')         ),
-                'label_hours'       => esc_attr(get_option(SLPLUS_PREFIX.'_label_hours',        'Hours: ')       ),
-                'label_phone'       => esc_attr(get_option(SLPLUS_PREFIX.'_label_phone',        'Phone: ')       ),
-                'map_3dcontrol'     => (get_option(SLPLUS_PREFIX.'_disable_largemapcontrol3d')==0),
-                'map_country'       => $slplus_plugin->Actions->SetMapCenter(),
-                'map_domain'        => get_option('sl_google_map_domain','maps.google.com'),
-                'map_home_icon'     => $slplus_home_icon,
-                'map_home_sizew'    => $slplus_home_size[0],
-                'map_home_sizeh'    => $slplus_home_size[1],
-                'map_end_icon'      => $slplus_end_icon,
-                'map_end_sizew'     => $slplus_end_size[0],
-                'map_end_sizeh'     => $slplus_end_size[1],
-                'use_sensor'        => (get_option(SLPLUS_PREFIX."_use_location_sensor",0)==1),
-                'map_scalectrl'     => (get_option(SLPLUS_PREFIX.'_disable_scalecontrol')==0),
-                'map_type'          => get_option('sl_map_type','roadmap'),
-                'map_typectrl'      => (get_option(SLPLUS_PREFIX.'_disable_maptypecontrol')==0),
-                'msg_noresults'     => $slplus_plugin->settings->get_item('message_noresultsfound','No results found.','_'),
-                'results_string'    => apply_filters('slp_javascript_results_string',$results_string),
-                'show_tags'         => (get_option(SLPLUS_PREFIX.'_show_tags')==1),
-                'overview_ctrl'     => get_option('sl_map_overview_control',0),
-                'use_email_form'    => (get_option(SLPLUS_PREFIX.'_use_email_form',0)==1),
-                'use_pages_links'   => ($slplus_plugin->settings->get_item('use_pages_links','off')=='on'),
-                'use_same_window'   => ($slplus_plugin->settings->get_item('use_same_window')=='on'),
-                'website_label'     => esc_attr(get_option('sl_website_label','Website')),
-                'zoom_level'        => get_option('sl_zoom_level',12),
-                'zoom_tweak'        => get_option('sl_zoom_tweak',1)
-                );
-            wp_localize_script('csl_script','slplus',$scriptData);
+            $slplus_plugin->UI->localizeCSLScript();
             wp_localize_script('csl_script','csl_ajax',array('ajaxurl' => admin_url('admin-ajax.php'), 'nonce' => wp_create_nonce('em')));
         }     
-        
+
 
         /**
          * This is called whenever the WordPress shutdown action is called.

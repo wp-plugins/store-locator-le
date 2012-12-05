@@ -10,6 +10,10 @@ div#map {
     border-right: solid 1px #CCCCCC;
     width: auto !important;
 }
+div#slp_tagline {
+    text-align: right;
+    padding-right: 3px;
+}
 table.sl_footer {
     margin-bottom: 12px;
     border-bottom: solid 1px #CCCCCC;

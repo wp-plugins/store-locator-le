@@ -3,7 +3,7 @@
 Plugin Name: Google Maps via Store Locator Plus
 Plugin URI: http://www.charlestonsw.com/products/store-locator-plus/
 Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Gooogle Maps.  This is a highly customizable, easily expandable, enterprise-class location management system.
-Version: 3.7.5
+Version: 3.7.6
 Author: Charleston Software Associates
 Author URI: http://www.charlestonsw.com
 License: GPL3
@@ -23,6 +23,12 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+===
+ * Code Docs Hints (PHPDoc Format)
+ *
+ * Filters are documented with @see http://goo.gl/ooXFC
+ * The plugin object extended data ($slplus_plugin->data[]) elements are documented with @see http://goo.gl/UAXly
 
 */
 

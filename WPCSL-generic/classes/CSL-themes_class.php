@@ -97,6 +97,11 @@ class wpCSL_themes__slplus {
             closedir($dh);
         }
 
+
+        // Remove empties and sort
+        $themeArray = array_filter($themeArray);
+        ksort($themeArray);
+
         // Delete the default theme if we have specific ones
         //
         $resetDefault = false;
@@ -105,7 +110,6 @@ class wpCSL_themes__slplus {
             unset($themeArray['Default']);
             $resetDefault = true;
         }
-        
 
         // We added at least one new theme
         //

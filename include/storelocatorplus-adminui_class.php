@@ -425,92 +425,6 @@ if (! class_exists('SLPlus_AdminUI')) {
                             "&act=createpage&sl_id=$locationID&slp_pageid=$storePageID#a$locationID'
                    ></a>";            
         }  
-        
-        /*****************************************************
-         * method: slpCreatePage()
-         *
-         * Create a new store pages page.
-         */
-         function slpCreatePage($locationID=-1)  {
-            global $slplus_plugin, $wpdb;
-            
-            // If not licensed or incorrect location ID get out of here
-            //
-            if (
-                !$slplus_plugin->license->packages['Store Pages']->isenabled ||
-                ($locationID < 0)
-                ) {
-                return -1;
-            } 
-
-            // Get The Store Data
-            //
-            if ($store=$wpdb->get_row('SELECT * FROM '.$wpdb->prefix."store_locator WHERE sl_id = $locationID", ARRAY_A)) {            
-                
-                $slpStorePage = get_post($store['sl_linked_postid']);
-                if (empty($slpStorePage->ID)) {
-                    $store['sl_linked_postid'] = -1;
-                }
-
-
-                // Create the page
-                //
-                $slpNewListing = array(
-                    'ID'            => (($store['sl_linked_postid'] > 0)?$store['sl_linked_postid']:''),
-                    'post_type'     => 'store_page',
-                    'post_status'   => 'publish',
-                    'post_title'    => $store['sl_store'],
-                    'post_content'  => call_user_func(array('SLPlus_AdminUI','slpCreatePageContent'),$store),
-                    );
-                
-                // Update the row
-                //
-                $wpdb->update($wpdb->prefix."store_locator", $store, array('sl_id' => $locationID));
-
-                return wp_insert_post($slpNewListing);
-             }                
-         }
-         
-        /*****************************************************
-         * method: slpCreatePageContent()
-         *
-         * Creates the content for the page.  If plus pack is installed
-         * it uses the plus template file, otherwise we use the hard-coded 
-         * layout.
-         *
-         */         
-         function slpCreatePageContent($store) {
-             $content = '';
-
-             // Default Content
-             //
-             $content .= "<span class='storename'>".$store['sl_store']."</span>\n";
-             if ($store['sl_image']         !='') { 
-                 $content .= '<img class="alignright size-full" title="'.$store['sl_store'].'" src="'.$store['sl_image'].'"/>'."\n"; 
-             }
-             if ($store['sl_address']       !='') { $content .= $store['sl_address'] . "\n"; }
-             if ($store['sl_address2']      !='') { $content .= $store['sl_address2'] . "\n"; }
-             
-             if ($store['sl_city']          !='') { 
-                $content .= $store['sl_city']; 
-                if ($store['sl_state'] !='') { $content .= ', '; }
-             }
-             if ($store['sl_state']         !='') { $content .= $store['sl_state']; }
-             if ($store['sl_zip']           !='') { $content .= " ".$store['sl_zip']."\n"; }
-             if ($store['sl_country']       !='') { $content .= " ".$store['sl_country']."\n"; }
-             if ($store['sl_description']   !='') { $content .= "<h1>Description</h1>\n<p>". html_entity_decode($store['sl_description']) ."</p>\n"; }
-             
-             $slpContactInfo = '';
-             if ($store['sl_phone'] !='') { $slpContactInfo .= __('Phone: ',SLPLUS_PREFIX).$store['sl_phone'] . "\n"; }
-             if ($store['sl_fax'] !='') { $slpContactInfo .= __('Fax: ',SLPLUS_PREFIX).$store['sl_fax'] . "\n"; }
-             if ($store['sl_email'] !='') { $slpContactInfo .= '<a href="mailto:'.$store['sl_email'].'">'.$store['sl_email']."</a>\n"; }
-             if ($store['sl_url']   !='') { $slpContactInfo .= '<a href="'.$store['sl_url'].'">'.$store['sl_url']."</a>\n"; }
-             if ($slpContactInfo    != '') { 
-                $content .= "<h1>Contact Info</h1>\n<p>".$slpContactInfo."</p>\n"; 
-             }
-
-             return $content;             
-         }
 
          /**
           * method: slp_add_search_form_settings_panel
@@ -553,7 +467,6 @@ if (! class_exists('SLPlus_AdminUI')) {
           */
          function slp_add_results_settings_panel() {
             global $slpMapSettings, $slplus_plugin;
-            global $cl_icon_notification_msg,$cl_icon,$cl_icon2,$cl_icon_str,$cl_icon2_str;
             $slplus_message = ($slplus_plugin->license->packages['Pro Pack']->isenabled) ?
                 __('',SLPLUS_PREFIX) :
                 __('Extended settings are available in the <a href="%s">%s</a> premium add-on.',SLPLUS_PREFIX)
@@ -606,20 +519,20 @@ if (! class_exists('SLPlus_AdminUI')) {
                 "<div class='section_column'>".
                     "<div class='map_designer_settings'>".
                         "<h2>".__('Icons', SLPLUS_PREFIX)."</h2>".
-                        $cl_icon_notification_msg .
+                        $slplus_plugin->data['iconNotice'] .
                         "<div class='form_entry'>".
                             "<label for='icon'>".__('Home Icon', SLPLUS_PREFIX)."</label>".
-                            "<input id='icon' name='icon' dir='rtl' size='45' value='".$cl_icon."' ".
+                            "<input id='icon' name='icon' dir='rtl' size='45' value='".$slplus_plugin->data['homeicon']."' ".
                                     'onchange="document.getElementById(\'prev\').src=this.value">'.
-                            "<img id='prev' src='".$cl_icon."' align='top'><br/>".
-                            $cl_icon_str.
+                            "<img id='prev' src='".$slplus_plugin->data['homeicon']."' align='top'><br/>".
+                            $slplus_plugin->data['homeIconPicker'].
                         "</div>".
                         "<div class='form_entry'>".
                             "<label for='icon2'>".__('Destination Icon', SLPLUS_PREFIX)."</label>".
-                            "<input id='icon2' name='icon2' dir='rtl' size='45' value='".$cl_icon2."' ".
+                            "<input id='icon2' name='icon2' dir='rtl' size='45' value='".$slplus_plugin->data['endicon']."' ".
                                 'onchange="document.getElementById(\'prev2\').src=this.value">'.
-                            "<img id='prev2' src='".$cl_icon2."'align='top'><br/>".
-                            $cl_icon2_str.
+                            "<img id='prev2' src='".$slplus_plugin->data['endicon']."'align='top'><br/>".
+                            $slplus_plugin->data['endIconPicker'].
                         "</div>".
                     "</div>".
                 "</div>"
@@ -731,7 +644,7 @@ if (! class_exists('SLPlus_AdminUI')) {
                        ($_FILES['csvfile']['name']!='')  &&
                         ($_FILES['csvfile']['size'] > 0)
                     ) {
-                    add_filter('upload_mimes', 'custom_upload_mimes');
+                    add_filter('upload_mimes', array('SLPlus_AdminUI','custom_upload_mimes'));
 
                     // Get the type of the uploaded file. This is returned as "type/extension"
                     $arr_file_type = wp_check_filetype(basename($_FILES['csvfile']['name']));
@@ -837,7 +750,12 @@ if (! class_exists('SLPlus_AdminUI')) {
              global $slplus_plugin;
              $slplus_plugin->addform = $addform;
              $slpEditForm = '';
-             
+
+            /**
+             * @see  http://goo.gl/ooXFC 'slp_edit_location_data' filter to manipulate edit location incoming data
+             */
+            $sl_value = apply_filters('slp_edit_location_data',$sl_value);
+
              $content  = ''                                                                     .
                 "<form id='manualAddForm' name='manualAddForm' method='post' enctype='multipart/form-data'>"       .
                 "<a name='a".$locID."'></a>"                                                    .
@@ -868,6 +786,9 @@ if (! class_exists('SLPlus_AdminUI')) {
                         "<input type='hidden' name='option_value-$locID' value='".($addform?'':$sl_value['sl_option_value'])."' />"
                         ;
 
+                /**
+                 * @see  http://goo.gl/ooXFC 'slp_edit_location_left_column' filter to manipulate edit location form, left column
+                 */
                 $content .= apply_filters('slp_edit_location_left_column',$slpEditForm)             .
                     '</td>'                                                                         .
                     "<td id='slp_manual_update_table_right_cell'>"
@@ -904,7 +825,10 @@ if (! class_exists('SLPlus_AdminUI')) {
 
                         '</div>'
                         ;
-                
+
+                /**
+                 * @see  http://goo.gl/ooXFC 'slp_edit_location_right_column' filter to manipulate edit location form, right column
+                 */
                 $content .= apply_filters('slp_edit_location_right_column',$slpEditForm);
                 $content .= '</td></tr></table>';
 
@@ -924,12 +848,22 @@ if (! class_exists('SLPlus_AdminUI')) {
                 return apply_filters('slp_locationinfoform',$content);
          }
 
-         /**
-          * Render an icon selector for the icon images store in the SLP plugin icon directory.
-          * 
-          * @param string $elementToUpate - the name of the input ID to update on click
-          * @return string - the html of the icon selector
-          */
+        /**
+         * Allows WordPress to process csv file types
+         *
+         */
+        function custom_upload_mimes ( $existing_mimes=array() ) {
+            $existing_mimes['csv'] = 'text/csv';
+            return $existing_mimes;
+        }
+
+        /**
+         * Render an icon selector for the icon images store in the SLP plugin icon directory.
+         *
+         * @param type $inputFieldID
+         * @param type $inputImageID
+         * @return string
+         */
          function rendorIconSelector($inputFieldID = null, $inputImageID = null) {
             if (!$this->setParent()) { return 'could not set parent'; }
             if (($inputFieldID == null) || ($inputImageID == null)) { return ''; }
