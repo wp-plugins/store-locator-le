@@ -1,21 +1,12 @@
 <?php
-/****************************************************************************
- ** file: functions.sl.php
- **
- ** The collection of main core functions for Store Locator Plus
- ***************************************************************************/
-
 /**
- * 
+ *
  * @global type $sl_height
  * @global type $sl_width
  * @global type $sl_width_units
  * @global type $sl_height_units
- * @global type $cl_icon
- * @global type $cl_icon2
  * @global type $sl_google_map_domain
  * @global type $sl_google_map_country
- * @global type $sl_theme
  * @global type $sl_location_table_view
  * @global type $sl_search_label
  * @global type $sl_zoom_level
@@ -35,7 +26,7 @@
  */
 function initialize_variables() {
     global $sl_height, $sl_width, $sl_width_units, $sl_height_units;
-    global $cl_icon, $cl_icon2, $sl_google_map_domain, $sl_google_map_country, $sl_theme, $sl_location_table_view;
+    global $sl_google_map_domain, $sl_google_map_country, $sl_location_table_view;
     global $sl_search_label, $sl_zoom_level, $sl_zoom_tweak, $sl_use_name_search, $sl_default_map;
     global $sl_radius_label, $sl_website_label, $sl_num_initial_displayed, $sl_load_locations_default;
     global $sl_distance_unit, $sl_map_overview_control, $sl_admin_locations_per_page, $sl_instruction_message;
@@ -122,11 +113,6 @@ function initialize_variables() {
         $sl_location_table_view="Normal";
         add_option('sl_location_table_view', $sl_location_table_view);
         }
-    $sl_theme=get_option('sl_map_theme');
-    if (empty($sl_theme)) {
-        $sl_theme="";
-        add_option('sl_map_theme', $sl_theme);
-        }
     $sl_google_map_country=get_option('sl_google_map_country');
     if (empty($sl_google_map_country)) {
         $sl_google_map_country="United States";
@@ -136,16 +122,6 @@ function initialize_variables() {
     if (empty($sl_google_map_domain)) {
         $sl_google_map_domain="maps.google.com";
         add_option('sl_google_map_domain', $sl_google_map_domain);
-    }
-    $cl_icon2=get_option('sl_map_end_icon');
-    if (empty($cl_icon2)) {
-        add_option('sl_map_end_icon', SLPLUS_COREURL . 'images/icons/marker.png');
-        $cl_icon2=get_option('sl_map_end_icon');
-    }
-    $cl_icon=get_option('sl_map_home_icon');
-    if (empty($cl_icon)) {
-        add_option('sl_map_home_icon', SLPLUS_COREURL . 'images/icons/arrow.png');
-        $cl_icon=get_option('sl_map_home_icon');
     }
     $sl_height=get_option('sl_map_height');
     if (empty($sl_height)) {
@@ -256,10 +232,9 @@ function do_geocoding($address,$sl_id='') {
                        mysql_real_escape_string($lat), 
                        mysql_real_escape_string($lng)
                        );
-            }
             // Update an existing address
             //
-            else {
+            } else {
                 $query = sprintf("UPDATE " . $wpdb->prefix ."store_locator SET sl_latitude = '%s', sl_longitude = '%s' WHERE sl_id = $sl_id LIMIT 1;", mysql_real_escape_string($lat), mysql_real_escape_string($lng));
             }
             
@@ -268,14 +243,14 @@ function do_geocoding($address,$sl_id='') {
             $update_result = $wpdb->query($query);
             if ($update_result == 0) {
                 $theDBError = htmlspecialchars(mysql_error($wpdb->dbh),ENT_QUOTES);
-                $errorMessage .= __("Could not add/update address.  ", SLPLUS_PREFIX);
+                $errorMessage .= __("Could not set the latitude and/or longitude  ", SLPLUS_PREFIX);
                 if ($theDBError != '') {
                     $errorMessage .= sprintf(
                                             __("Error: %s.", SLPLUS_PREFIX),
                                             $theDBError
                                             );
                 } elseif ($update_result === 0) {
-                    $errorMessage .=  __("It appears the data did not change.", SLPLUS_PREFIX);
+                    $errorMessage .=  __("It appears the address did not change.", SLPLUS_PREFIX);
                 } else {
                     $errorMessage .=  __("No error logged.", SLPLUS_PREFIX);
                     $errorMessage .= "<br/>\n" . __('Query: ', SLPLUS_PREFIX);
@@ -344,23 +319,6 @@ function comma($a) {
     return $a;
 }
 
-
-/**************************************
- ** function: custom_upload_mimes
- **
- ** Allows WordPress to process csv file types
- **
- **/
-function custom_upload_mimes ( $existing_mimes=array() ) {
-
-     // add CSV type
-    $existing_mimes['csv'] = 'text/csv';
-
-    // and return the new full result
-    return $existing_mimes;
-
-}
-
 /**************************************
  ** function: slplus_add_pages_settings()
  **
@@ -398,8 +356,7 @@ function slplus_add_pages_settings() {
  **
  **/
 function slplus_create_country_pd() {
-    global $wpdb;
-    global $slplus_plugin;
+    global $wpdb, $slplus_plugin;
 
     // Pro Pack Enabled
     //
@@ -445,8 +402,7 @@ function slplus_create_country_pd() {
  **
  **/
 function slplus_create_state_pd() {
-    global $wpdb;
-    global $slplus_plugin;
+    global $wpdb, $slplus_plugin;
 
     // Pro Pack Enabled
     //
@@ -537,34 +493,6 @@ function slpreport_downloads() {
     <?php
 }
 
-/**************************************
- ** function: slplus_shortcode_atts()
- **
- ** Set the entire list of accepted attributes.
- ** The shortcode_atts function ensures that all possible
- ** attributes that could be passed are given a value which
- ** makes later processing in the code a bit easier.
- ** This is basically the equivalent of the php array_merge()
- ** function.
- **
- **/
-function slplus_shortcode_atts($attributes) {
-    global $slplus_plugin;
-
-    // Pro Pack Enabled
-    //
-    if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
-        $slpAtts =
-            array(
-                'tags_for_pulldown'=> null,
-                'only_with_tag'    => null,
-                'theme'            => null,
-                );
-        shortcode_atts($slpAtts,$attributes);
-    }
-}
-
-
 
 /**
  * Help deserialize data to array.
@@ -598,64 +526,3 @@ function get_string_from_phpexec($file) {
     global $slplus_plugin;
     return $slplus_plugin->helper->get_string_from_phpexec($file);
 }
-
-
-/**************************************
- ** function: execute_and_output_template()
- **
- ** Executes the included php (or html) file and prints out the results.
- ** Makes for easy include templates that depend on processing logic to be
- ** dumped mid-stream into a WordPress page.  A plugin in a plugin sorta.
- **
- ** Parameters:
- **  $file (string, required) - name of the file in the plugin/templates dir
- **/
-function execute_and_output_template($file) {
-    global $slplus_plugin;
-    $file = SLPLUS_COREDIR.'/templates/'.$file;
-    print $slplus_plugin->helper->get_string_from_phpexec($file);
-}
-
-
-/**************************************
- ** function: slp_createhelpdiv()
- **
- ** Generate the string that displays the help icon and the expandable div
- ** that mimics the WPCSL-Generic forms more info buttons.
- **
- ** Parameters:
- **  $divname (string, required) - the name of the div to toggle
- **  $msg (string, required) - the message to display
- **/
-function slp_createhelpdiv($divname,$msg) {
-    return "<a class='moreinfo_clicker' onclick=\"swapVisibility('".SLPLUS_PREFIX."-help$divname');\" href=\"javascript:;\">".
-        '<div class="'.SLPLUS_PREFIX.'-moreicon" title="click for more info"><br/></div>'.
-        "</a>".
-        "<div id='".SLPLUS_PREFIX."-help$divname' class='input_note' style='display: none;'>".
-            $msg.
-        "</div>"
-        ;
-}
-
-
-/**************************************
- ** function: setup_stylesheet_for_slplus
- **
- ** Setup the CSS for the product pages.
- **/
-function setup_stylesheet_for_slplus() {
-    global $slplus_plugin, $fnvars;
-
-    // Pro Pack - Use Themes System
-    //
-    if ($slplus_plugin->license->AmIEnabled(true, "SLPLUS-PRO")) {
-        $slplus_plugin->themes->assign_user_stylesheet(isset($fnvars['theme'])?$fnvars['theme']:'');
-    } else {
-        wp_deregister_style(SLPLUS_PREFIX.'_user_header_css');
-        wp_dequeue_style(SLPLUS_PREFIX.'_user_header_css');
-        if ( file_exists(SLPLUS_PLUGINDIR.'css/default.css')) {
-            wp_enqueue_style(SLPLUS_PREFIX.'_user_header_css', SLPLUS_PLUGINURL .'/css/default.css');
-        }
-    }
-}
-

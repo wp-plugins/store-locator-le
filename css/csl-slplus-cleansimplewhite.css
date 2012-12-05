@@ -10,6 +10,10 @@ div#map {
     border-right: solid 1px #CCCCCC;
     width: auto !important;
 }
+div#slp_tagline {
+    text-align: right;
+    padding-right: 3px;
+}
 table.sl_footer {
     margin-bottom: 12px;
     border-bottom: solid 1px #CCCCCC;
@@ -61,4 +65,11 @@ span.slp_checkbox_entry {
 
 span.slp_checkbox_entry input[type="checkbox"] {
     vertical-align: text-bottom;
+}
+span.slp_result_address {
+    width: 100%;
+    display: inline-block;
+}
+span.slp_result_phone {
+    padding-top: 6px;
 }

@@ -29,20 +29,16 @@ if ($sl_starting_image != '') {
 }
 ?>
                 <div id='map' style='width:<?php echo $sl_width.$sl_width_units?>; height:<?php echo $sl_height.$sl_height_units?>;'></div>
-                <table cellpadding='0'
-                       class='sl_footer'
-                       width='<?php echo $sl_width.$sl_width_units?>;'
-                       <?php
-                        echo ((get_option('sl_remove_credits',0)==1)?"style='display:none;'":'');
-                       ?>
-                       >
-                <tr class="slp_map_tagline">
-                    <td class='sl_footer_right_column'>
-                        <?php echo __('search provided by', SLPLUS_PREFIX); ?> <a href='<?php echo $slplus_plugin->url; ?>' target='_blank'><?php echo $slplus_plugin->name; ?></a>
-                    </td>
-                </tr>                
-                </table>
-<?php
+                <?php
+                if (!(get_option('sl_remove_credits',0)==1)) {
+                    echo "<div id='slp_tagline'style='width:$sl_width$sl_width_units;'>" .
+                            __('search provided by', SLPLUS_PREFIX) .
+                            "<a href='".$slplus_plugin->url."' target='_blank'>".
+                                $slplus_plugin->name.
+                            "</a>".
+                        '</div>'
+                        ;
+                }
 if ($sl_starting_image != '') {    
 ?>
             </div>
@@ -51,6 +47,10 @@ if ($sl_starting_image != '') {
 ?>
 		</td>
       </tr>
+    </table>
+
+    <!-- Results Table -->
+    <table id='results_table'>
 	  <tr id='cm_mapTR' class='slp_map_search_results'>
         <td width='' valign='top' id='map_sidebar_td'>
             <div id='map_sidebar' style='width:<?php echo $sl_width?><?php echo $sl_width_units?>;'>

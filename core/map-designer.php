@@ -12,6 +12,27 @@
 global $slplus_plugin;
 
 /**************************************
+ ** function: slp_createhelpdiv()
+ **
+ ** Generate the string that displays the help icon and the expandable div
+ ** that mimics the WPCSL-Generic forms more info buttons.
+ **
+ ** Parameters:
+ **  $divname (string, required) - the name of the div to toggle
+ **  $msg (string, required) - the message to display
+ **/
+function slp_createhelpdiv($divname,$msg) {
+    return "<a class='moreinfo_clicker' onclick=\"swapVisibility('".SLPLUS_PREFIX."-help$divname');\" href=\"javascript:;\">".
+        '<div class="'.SLPLUS_PREFIX.'-moreicon" title="click for more info"><br/></div>'.
+        "</a>".
+        "<div id='".SLPLUS_PREFIX."-help$divname' class='input_note' style='display: none;'>".
+            $msg.
+        "</div>"
+        ;
+}
+
+
+/**************************************
  ** function: choose_units
  **
  ** Display the map size units pulldown (%,px,em,pt)
@@ -208,6 +229,8 @@ if (!$_POST) {
         SLPLUS_PREFIX.'_label_hours'            ,
         SLPLUS_PREFIX.'_label_phone'            ,
         
+        SLPLUS_PREFIX.'_message_noresultsfound' ,
+        
         'sl_starting_image'                     ,
         SLPLUS_PREFIX.'_tag_search_selections'  ,
         SLPLUS_PREFIX.'_map_center'             ,
@@ -215,6 +238,7 @@ if (!$_POST) {
         
         SLPLUS_PREFIX.'_search_tag_label'       ,
         SLPLUS_PREFIX.'_state_pd_label'         ,
+        SLPLUS_PREFIX.'_find_button_label'      ,
 
         );
     foreach ($BoxesToHit as $JustAnotherBox) {
@@ -337,33 +361,70 @@ $checked2   	    = (isset($checked2)  ?$checked2  :'');
 $sl_city_checked	= (get_option('sl_use_city_search',0) ==1)?' checked ':'';
 $checked3	        = (get_option('sl_remove_credits',0)  ==1)?' checked ':'';
 
-//---- ICONS ----
-$cl_icon_str   =(isset($cl_icon_str)  ?$cl_icon_str  :'');
-$cl_icon_str .= $slplus_plugin->AdminUI->rendorIconSelector('icon','prev');
-$cl_icon2_str  =(isset($cl_icon2_str) ?$cl_icon2_str :'');
-$cl_icon2_str = preg_replace('/\.icon\.value/','.icon2.value',$cl_icon_str);
-$cl_icon2_str = preg_replace('/getElementById\("prev"\)/','getElementById("prev2")',$cl_icon2_str);
-$cl_icon2_str = preg_replace('/getElementById\("icon"\)/','getElementById("icon2")',$cl_icon2_str);
+/**
+ * @see http://goo.gl/UAXly - endIcon - the default map marker to be used for locations shown on the map
+ * @see http://goo.gl/UAXly - endIconPicker -  the icon selection HTML interface
+ * @see http://goo.gl/UAXly - homeIcon - the default map marker to be used for the starting location during a search
+ * @see http://goo.gl/UAXly - homeIconPicker -  the icon selection HTML interface
+ * @see http://goo.gl/UAXly - iconNotice - the admin panel message if there is a problem with the home or end icon
+ * @see http://goo.gl/UAXly - siteURL - get_site_url() WordPress call
+ */
+if (!isset($slplus_plugin->data['homeIconPicker'] )) {
+    $slplus_plugin->data['homeIconPicker'] = $slplus_plugin->AdminUI->rendorIconSelector('icon','prev');
+}
+if (!isset($slplus_plugin->data['endIconPicker'] )) {
+    $slplus_plugin->data['endIconPicker'] = preg_replace('/\.icon\.value/','.icon2.value',$slplus_plugin->data['homeIconPicker']);
+    $slplus_plugin->data['endIconPicker'] = preg_replace('/getElementById\("prev"\)/','getElementById("prev2")',$slplus_plugin->data['endIconPicker']);
+    $slplus_plugin->data['endIconPicker'] = preg_replace('/getElementById\("icon"\)/','getElementById("icon2")',$slplus_plugin->data['endIconPicker']);
+}
 
 // Icon is the old path, notify them to re-select
 //
-$cl_icon_notification_msg=
-(
-    ( !preg_match('#/core/images/icons/#', get_option('sl_map_home_icon'))
-        && 
-      !preg_match('#/custom-icons/#', get_option('sl_map_home_icon'))
-    )
-        || 
-    ( !preg_match('#/core/images/icons/#', get_option('sl_map_end_icon'))
-        && 
-      !preg_match('#/custom-icons/#', get_option('sl_map_end_icon'))
-    )
-)
-    ? 
-"<div class='highlight' style='background-color:LightYellow;color:red'><span style='color:red'>".
-__("Please re-select your <b>Home Icon</b> and <b>Destination Icon</b> below, so that they show up properly on your map.", SLPLUS_PREFIX).
-"</span></div>" : 
-"" ;
+$slplus_plugin->data['iconNotice'] = '';
+if (!isset($slplus_plugin->data['siteURL'] )) { $slplus_plugin->data['siteURL']  = get_site_url();                  }
+$slplus_plugin->helper->setData(
+          'homeicon',
+          'get_option',
+          array('sl_map_home_icon', SLPLUS_ICONURL . 'sign_yellow_home.png')
+          );
+$slplus_plugin->helper->setData(
+          'endicon',
+          'get_option',
+          array('sl_map_end_icon', SLPLUS_ICONURL . 'a_marker_azure.png')
+          );
+if (!(strpos($slplus_plugin->data['homeicon'],'http')===0)) {
+    $slplus_plugin->data['homeicon'] = $slplus_plugin->data['siteURL']. $slplus_plugin->data['homeicon'];
+}
+if (!(strpos($slplus_plugin->data['endicon'],'http')===0)) {
+    $slplus_plugin->data['endicon'] = $slplus_plugin->data['siteURL']. $slplus_plugin->data['endicon'];
+}
+if (!$slplus_plugin->helper->webItemExists($slplus_plugin->data['homeicon'])) {
+    $slplus_plugin->data['iconNotice'] .=
+        sprintf(
+                __('Your home icon %s cannot be located, please select a new one.', 'csl-slplus'),
+                $slplus_plugin->data['homeicon']
+                )
+                .
+        '<br/>'
+        ;
+}
+if (!$slplus_plugin->helper->webItemExists($slplus_plugin->data['endicon'])) {
+    $slplus_plugin->data['iconNotice'] .=
+        sprintf(
+                __('Your destination icon %s cannot be located, please select a new one.', 'csl-slplus'),
+                $slplus_plugin->data['endicon']
+                )
+                .
+        '<br/>'
+        ;
+}
+if ($slplus_plugin->data['iconNotice'] != '') {
+    $slplus_plugin->data['iconNotice'] =
+        "<div class='highlight' style='background-color:LightYellow;color:red'><span style='color:red'>".
+            $slplus_plugin->data['iconNotice'] .
+        "</span></div>"
+        ;
+}
 
 
 // Instantiate the form rendering object
@@ -399,8 +460,9 @@ $slpMapSettings->add_section(
 //------------------------------------
 // Create The Search Form Settings Panel
 //
-add_action('slp_build_map_settings_panels',array('SLPlus_AdminUI','slp_add_search_form_settings_panel'),1);
-add_action('slp_build_map_settings_panels',array('SLPlus_AdminUI','slp_add_map_settings_panel'),2);
+add_action('slp_build_map_settings_panels',array('SLPlus_AdminUI','slp_add_search_form_settings_panel') ,10);
+add_action('slp_build_map_settings_panels',array('SLPlus_AdminUI','slp_add_map_settings_panel')         ,20);
+add_action('slp_build_map_settings_panels',array('SLPlus_AdminUI','slp_add_results_settings_panel')     ,30);
 
     
 //------------------------------------

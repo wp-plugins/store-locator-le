@@ -210,18 +210,15 @@ class wpCSL_settings__slplus {
                          <div class="cybersprocket-cslinfo">
                          <h4>This plugin has been brought to you by <a href="http://www.charlestonsw.com"
                                 target="_new">Charleston Software Associates</a></h4>
-                         <p>We develop desktop, mobile, and web applications for clients large and small  
-                            from all around the world. We hope our plugin brings you closer to the perfect site.
-                            If there is anything we can do to improve our work or if you wish to hire us to customize
-                            this plugin please call our Charleston South Carolina headquarters or 
-                            <a href="http://www.charlestonsw.com/mindset/contact-us/" target="csa">email us</a>
-                            and let us know.
+                         <p>If there is anything I can do to improve my work or if you wish to hire me to customize
+                            this plugin please
+                            <a href="http://www.charlestonsw.com/mindset/contact-us/" target="csa">email me</a>
+                            and let me know.
                          </p>
                          </div>
                          </div>
-                         ' ;    
+                         ' ;
      }
-    
 
     /**------------------------------------
      ** method: add_section
@@ -262,8 +259,8 @@ class wpCSL_settings__slplus {
     /**------------------------------------
      ** Class: WPCSL_Settings
      **------------------------------------
-     ** Method: add_item 
-     ** 
+     ** Method: add_item
+     **
      ** Parameters:
      **    section name
      **    display name, the label that shows before the input field
@@ -278,7 +275,7 @@ class wpCSL_settings__slplus {
      **/
     function add_item($section, $display_name, $name, $type = 'text',
             $required = false, $description = null, $custom = null,
-            $value = null, $disabled = false
+            $value = null, $disabled = false, $onChange = ''
             ) {
 
         $name = $this->prefix .'-'.$name;
@@ -293,13 +290,13 @@ class wpCSL_settings__slplus {
                        $section
                        )
                 );
-            }            
+            }
             return;
         }
         $this->sections[$section]->add_item(
             array(
                 'prefix' => $this->prefix,
-                'css_prefix' => $this->css_prefix,                
+                'css_prefix' => $this->css_prefix,
                 'display_name' => $display_name,
                 'name' => $name,
                 'type' => $type,
@@ -307,7 +304,8 @@ class wpCSL_settings__slplus {
                 'description' => $description,
                 'custom' => $custom,
                 'value' => $value,
-                'disabled' => $disabled
+                'disabled' => $disabled,
+                'onChange' => $onChange
             )
         );
 
@@ -973,10 +971,8 @@ class wpCSL_settings_item__slplus {
         }
         
         if ($this->description != null) {
-            $this->display_description_text($this->description);
+            $this->display_description_text();
         }
-
-        
         
         $this->footer();
     }
@@ -987,21 +983,26 @@ class wpCSL_settings_item__slplus {
      * string with the markup for that list.
      */
     function create_option_list() {
-        $output_list = array("<select class='csl_select' name=\"{$this->name}\">\n");
+        $content =
+            "<select class='csl_select' ".
+                "name='".$this->name."' ".
+                "onChange='".$this->onChange."' ".
+                "/>"
+                ;
 
         foreach ($this->custom as $key => $value) {
             if (get_option($this->name) === $value) {
-                $output_list[] = "<option class='csl_option' value=\"$value\" " .
+                $content .= "<option class='csl_option' value=\"$value\" " .
                     "selected=\"selected\">$key</option>\n";
             }
             else {
-                $output_list[] = "<option class='csl_option'  value=\"$value\">$key</option>\n";
+                $content .= "<option class='csl_option'  value=\"$value\">$key</option>\n";
             }
         }
 
-        $output_list[] = "</select>\n";
-        
-        return implode('', $output_list);
+        $content .= "</select>\n";
+
+        return $content;
     }
 
     /**------------------------------------
@@ -1030,9 +1031,11 @@ class wpCSL_settings_item__slplus {
     
     /**------------------------------------
      **/
-    function display_description_text($content) {
-        echo '<div class="'.$this->css_prefix.'-moretext">';
-        echo $content;
-        echo '</div>';
+    function display_description_text() {
+        echo 
+            '<div class="'.$this->css_prefix.'-moretext" id="'.$this->name.'-moretext">' .
+                $this->description .
+            '</div>'
+            ;
     }
 }
