@@ -21,6 +21,8 @@ if (defined('SLPLUS_PLUGINDIR')) {
     global $slplus_plugin;
     $slplus_plugin = new wpCSL_plugin__slplus(
         array(
+            'data'                  => array(),
+
             // We don't want default wpCSL objects, let's set our own
             //
             'use_obj_defaults'      => false,
@@ -41,13 +43,14 @@ if (defined('SLPLUS_PLUGINDIR')) {
             'admin_slugs'           => array('slp_general_settings'),
 
             'on_update' => array('SLPlus_Activate', 'update'),
-            'version' => '3.5',
+            'version' => '3.7.6',
 
             'url'                   => 'http://www.charlestonsw.com/product/store-locator-plus-2/',            
-            'support_url'            => 'http://www.charlestonsw.com/support/documentation/store-locator-plus/',
-            'purchase_url'           => 'http://www.charlestonsw.com/product/store-locator-plus-2/',
+            'support_url'           => 'http://www.charlestonsw.com/support/documentation/store-locator-plus/',
+            'purchase_url'          => 'http://www.charlestonsw.com/product/store-locator-plus-2/',
             'rate_url'              => 'http://wordpress.org/extend/plugins/store-locator-le/',
             'forum_url'             => 'http://wordpress.org/support/plugin/store-locator-le',
+            'updater_url'           => 'http://www.charlestonsw.com/updater/index.php',
             
             'basefile'              => SLPLUS_BASENAME,
             'plugin_path'           => SLPLUS_PLUGINDIR,

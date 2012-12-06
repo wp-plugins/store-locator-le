@@ -198,24 +198,31 @@ echo CreateInputDiv(
 if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
     echo CreateInputDiv(
             '_search_tag_label',
-            __('Tags', SLPLUS_PREFIX),
-            __('Search form label to prefix the tag selector.',SLPLUS_PREFIX)
+            __('Tags', 'csl-slplus'),
+            __('Search form label to prefix the tag selector.','csl-slplus')
             );
     echo CreateInputDiv(
             '_state_pd_label',
-            __('State', SLPLUS_PREFIX),
-            __('Search form label to prefix the state selector.',SLPLUS_PREFIX)
+            __('State', 'csl-slplus'),
+            __('Search form label to prefix the state selector.','csl-slplus')
+            );
+    echo CreateInputDiv(
+            '_find_button_label',
+            __('Find Button', 'csl-slplus'),
+            __('The label on the find button, if text mode is selected.','csl-slplus'),
+            SLPLUS_PREFIX,
+            __('Find Locations','csl-slplus')
             );
 }    
 
 
 // Result Labels
 //
-echo '<p class="slp_admin_info"><strong>'.__('Search Results Labels',SLPLUS_PREFIX).'</strong></p>';
+echo '<p class="slp_admin_info"><strong>'.__('Search Results Labels','csl-slplus').'</strong></p>';
 echo CreateInputDiv(
         'sl_website_label',
-        __('Website URL', SLPLUS_PREFIX),
-        __('Search results text for the website link.',SLPLUS_PREFIX),
+        __('Website URL', 'csl-slplus'),
+        __('Search results text for the website link.','csl-slplus'),
         '',
         'website'
         );
@@ -254,4 +261,16 @@ echo CreateInputDiv(
         '',
         __('Enter an address or zip code and click the find locations button.',SLPLUS_PREFIX)
         );
+//----------------------------------------------------------------------
+// Pro Pack Enabled
+//
+if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
+    echo CreateInputDiv(
+            '_message_noresultsfound',
+            __('No Results Message', SLPLUS_PREFIX),
+            __('No results found message that appears under the map.',SLPLUS_PREFIX),
+            SLPLUS_PREFIX,
+            __('Results not found.',SLPLUS_PREFIX)
+            );
+    }
 echo "</div></div>";

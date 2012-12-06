@@ -8,7 +8,7 @@
 * share a code libary and reduce code redundancy.
 * 
 ************************************************************************/
-define('WPCSL__slplus__VERSION', '2.0.13');
+define('WPCSL__slplus__VERSION', '2.0.14');
 
 // (LC) 
 // These helper files should only be loaded if needed by the plugin
