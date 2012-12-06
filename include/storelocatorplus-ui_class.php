@@ -324,8 +324,8 @@ if (! class_exists('SLPlus_UI')) {
             if ($this->parent->license->packages['Pro Pack']->isenabled)  {
                 $this->parent->helper->setData(
                         'theme',
-                        function($_this) { return  $_this->parent->settings->get_item('theme'); },
-                        $this
+                        'get_item',
+                        array('theme','default')
                         );
                 $this->parent->themes->assign_user_stylesheet($this->parent->data['theme']);
             } else {

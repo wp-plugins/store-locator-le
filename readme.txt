@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
 Tags: google maps, store finder, store locator, store locater, google, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus, bing map, bing, yahoo maps, yahoo, mapping, retail
 Requires at least: 3.3
 Tested up to: 3.4.3
-Stable tag: 3.7.6
+Stable tag: 3.7.7
 
 Store Locator Plus makes it easy to put a fully functional store finder on your site.
 The most active store locator plugin with monthly updates!
@@ -129,7 +129,7 @@ Give me a chance to address your concerns if this plugin doesn't earn 5 stars by
 
 = Requirements =
 
-* PHP 5.1+
+* PHP 5.2.4+ (same as WordPress 3.3.2)
 * Wordpress: 3.3.2+
 
 = Main Plugin =
@@ -255,6 +255,10 @@ I update about once per month or more frequently as needed.
 Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
 
 I was listing the entire change log here but with weekly/bi-weekly updates it as getting much too long.
+
+= 3.7.7 (December 2012)  *
+
+* Patch the anonymous function error that breaks SLP on sites using PHP 5.2 or earlier.
 
 = 3.7.6 (End November 2012)
 

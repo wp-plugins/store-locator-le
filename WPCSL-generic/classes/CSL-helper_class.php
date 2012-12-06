@@ -187,6 +187,16 @@ class wpCSL_helper__slplus {
                     $this->parent->data[$element] = get_option($params);
                 }
 
+           // get_item shortcut
+           //
+           } else if ($function === 'get_item') {
+               if (is_array($params)) {
+                    $this->parent->data[$element] = $this->parent->settings->get_item($params[0],$params[1]);
+                } else {
+                    $this->parent->data[$element] = $this->parent->settings->get_item($params);
+                }
+
+
            // If not using get_option, assume $function is an anon and run it
            //
            } else {
