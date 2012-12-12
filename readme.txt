@@ -4,8 +4,8 @@ Contributors: charlestonsw
 Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
 Tags: google maps, store finder, store locator, store locater, google, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus, bing map, bing, yahoo maps, yahoo, mapping, retail
 Requires at least: 3.3
-Tested up to: 3.4.3
-Stable tag: 3.7.7
+Tested up to: 3.5
+Stable tag: 3.7.8
 
 Store Locator Plus makes it easy to put a fully functional store finder on your site.
 The most active store locator plugin with monthly updates!
@@ -256,7 +256,17 @@ Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/su
 
 I was listing the entire change log here but with weekly/bi-weekly updates it as getting much too long.
 
-= 3.7.7 (December 2012)  *
+= 3.7.8 (December 6th 2012) =
+
+* Get IE8 to not stop when location sensor is turned on.
+* Tell people they need Google Maps V3 API Key.
+* Remove warning about themes setting a product object property when it does not exist.
+* New Filters/Hooks:
+** slp_add_search_form_label_setting
+* Patch updater warning on add_new plugin screen.
+* HBTM.
+
+= 3.7.7 (December 2012)  =
 
 * Patch the anonymous function error that breaks SLP on sites using PHP 5.2 or earlier.
 

@@ -113,7 +113,7 @@ if (! class_exists('SLPlus_AdminUI')) {
                 'api_key',
                 'text',
                 false,
-                'Your Google API Key.  You will need to ' .
+                'Your Google Maps V3 API Key.  You will need to ' .
                 '<a href="http://code.google.com/apis/console/" target="newinfo">'.
                 'go to Google</a> to get your Google Maps API Key.'
             );
@@ -473,6 +473,8 @@ if (! class_exists('SLPlus_AdminUI')) {
                 ;
 
 
+            // ===== Location Info
+            //
             // -- Search Results
             //
             $slpDescription =
@@ -514,7 +516,8 @@ if (! class_exists('SLPlus_AdminUI')) {
                 "</div>"
                 ;
 
-            //-- icons
+            // ===== Icons
+            //
             $slpDescription .=
                 "<div class='section_column'>".
                     "<div class='map_designer_settings'>".
@@ -538,7 +541,69 @@ if (! class_exists('SLPlus_AdminUI')) {
                 "</div>"
                 ;
 
+            // ===== Labels
+            //
+            $slpDescription .=
+                "<div class='section_column'>" .
+                    '<h2>'.__('Labels', 'csl-slplus') . '</h2>' .
+                    CreateInputDiv(
+                       'sl_website_label',
+                       __('Website URL', 'csl-slplus'),
+                       __('Search results text for the website link.','csl-slplus'),
+                       '',
+                       'website'
+                       ) .
+                   CreateInputDiv(
+                       '_label_hours',
+                       __('Hours', SLPLUS_PREFIX),
+                       __('Hours label.',SLPLUS_PREFIX),
+                       SLPLUS_PREFIX,
+                       'Hours: '
+                       ) .
+                   CreateInputDiv(
+                       '_label_phone',
+                       __('Phone', SLPLUS_PREFIX),
+                       __('Phone label.',SLPLUS_PREFIX),
+                       SLPLUS_PREFIX,
+                       'Phone: '
+                       ) .
+                   CreateInputDiv(
+                       '_label_fax',
+                       __('Fax', SLPLUS_PREFIX),
+                       __('Fax label.',SLPLUS_PREFIX),
+                       SLPLUS_PREFIX,
+                       'Fax: '
+                       ) .
+                   CreateInputDiv(
+                       '_label_directions',
+                       __('Directions', SLPLUS_PREFIX),
+                       __('Directions label.',SLPLUS_PREFIX),
+                       SLPLUS_PREFIX,
+                       'Directions'
+                       ) .
+                   CreateInputDiv(
+                       'sl_instruction_message',
+                       __('Instructions', SLPLUS_PREFIX),
+                       __('Search results instructions shown if immediately show locations is not selected.',SLPLUS_PREFIX),
+                       '',
+                       __('Enter an address or zip code and click the find locations button.',SLPLUS_PREFIX)
+                       )
+                       ;
+            
+            if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
+                $slpDescription .= CreateInputDiv(
+                        '_message_noresultsfound',
+                        __('No Results Message', SLPLUS_PREFIX),
+                        __('No results found message that appears under the map.',SLPLUS_PREFIX),
+                        SLPLUS_PREFIX,
+                        __('Results not found.',SLPLUS_PREFIX)
+                        );
+            }   
+            $slpDescription .= '</div>';
 
+
+            // Render the results setting
+            //
             $slpMapSettings->add_section(
                 array(
                         'name'          => __('Results',SLPLUS_PREFIX),

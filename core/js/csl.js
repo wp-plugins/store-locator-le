@@ -53,30 +53,53 @@ var csl = {
      */
     LocationServices: function() {
         this.theService = null;
+        this.LocationSupport = true;
+        this.Initialized = false;
         this.location_timeout = null;
         this.lat = 0.00;
         this.lng = 0.00;
 
         this.__init = function() {
+            this.Initialized = true;
             try {
                 if (typeof navigator.geolocation == 'undefined') {
-                    this.theService = google.gears.factory.create('beta.geolocation');
+                    if (google.gears) {
+                        this.theService = google.gears.factory.create('beta.geolocation');
+                    } else {
+                        this.LocationSupport = false;
+                    }
                 }
                 else {
                     this.theService = navigator.geolocation;
                 }
-            } catch (e) {}
+            } catch (e) {
+            }
         };
 
         this.currentLocation = function(callback, errorCallback) {
-            if (this.theService) {
-                    this.location_timeout = setTimeout(errorCallback, 5000);
-                    this.theService.getCurrentPosition(callback, errorCallback, {maximumAge:60000, timeout:5000, enableHighAccuracy:true});
-                }
-            };
 
-            this.__init();
-        },
+            // If location services are not setup, do it
+            //
+            if (!this.Initialized) {
+                this.__init();
+            }
+
+            // If this browser supports location services, use them
+            //
+            if (this.LocationSupport) {
+                if (this.theService) {
+                        this.location_timeout = setTimeout(errorCallback, 5000);
+                        this.theService.getCurrentPosition(callback, errorCallback, {maximumAge:60000, timeout:5000, enableHighAccuracy:true});
+                }
+
+            // Otherwise throw an exception
+            //
+            } else {
+                errorCallback(null);
+            }
+
+        }
+    },
 
     /***************************************************************************
      *
@@ -137,7 +160,7 @@ var csl = {
 			xmlHttp=GetXmlHttpObject();
 			if (xmlHttp==null)
 			{
-				alert ("Browser does not support HTTP Request");
+				alert ("Browser does not support HTTP Request (1)");
 				return false;
 			}
 			var url="/display_document_info.php";
@@ -162,7 +185,7 @@ var csl = {
 			xmlHttp=GetXmlHttpObject();
 			if (xmlHttp==null)
 			{
-				alert ("Browser does not support HTTP Request");
+				alert ("Browser does not support HTTP Request (2)");
 				return false;
 			}
 			var url="/scripts/doc_counter.php";
@@ -1315,17 +1338,30 @@ function InitializeTheMap() {
 
     if (slplus.use_sensor) {
         sensor = new csl.LocationServices();
-        sensor.currentLocation(function(loc) {
-            cslmap.usingSensor = true;
-            clearTimeout(sensor.location_timeout);
-            sensor.lat = loc.coords.latitude;
-            sensor.lng = loc.coords.longitude;
-            cslmap.__buildMap(new google.maps.LatLng(loc.coords.latitude, loc.coords.longitude));
-        },
-        function(error) {
-            clearTimeout(sensor.location_timeout);
-            cslmap.doGeocode();
-        });
+        
+        // If the GPS Sensor is working...
+        //
+        if (sensor.LocationSupport) {
+            sensor.currentLocation(
+                function(loc) {
+                    cslmap.usingSensor = true;
+                    clearTimeout(sensor.location_timeout);
+                    sensor.lat = loc.coords.latitude;
+                    sensor.lng = loc.coords.longitude;
+                    cslmap.__buildMap(new google.maps.LatLng(loc.coords.latitude, loc.coords.longitude));
+                },
+                function(error) {
+                    clearTimeout(sensor.location_timeout);
+                    cslmap.doGeocode();
+                }
+            );
+            
+        // GPS Sensor Not Working (like IE8)
+        //
+        } else {
+            slplus.use_sensor = false;
+            cslmap.doGeocode();            
+        }
     }
     else {
         cslmap.doGeocode();
