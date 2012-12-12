@@ -20,7 +20,7 @@
               ?>
           <div id='addy_in_city'>
               <select id='addressInput2' onchange='aI=document.getElementById("searchForm").addressInput;if(this.value!=""){oldvalue=aI.value;aI.value=this.value;}else{aI.value=oldvalue;}'>
-                  <option value=''>--Search By City--</option>
+                  <option value=''><?php print get_option(SLPLUS_PREFIX.'_search_by_city_pd_label',__('--Search By City--','csl-slplus')); ?></option>
                   <?php echo $cs_options?>
               </select>
           </div>
@@ -41,7 +41,7 @@ ob_start();
                   print get_option(SLPLUS_PREFIX.'_state_pd_label');
                   ?></label>
               <select id='addressInputState' onchange='aI=document.getElementById("searchForm").addressInput;if(this.value!=""){oldvalue=aI.value;aI.value=this.value;}else{aI.value=oldvalue;}'>
-                  <option value=''>--Search By State--</option>
+                  <option value=''><?php print get_option(SLPLUS_PREFIX.'_search_by_state_pd_label',__('--Search By State--','csl-slplus')); ?></option>
                   <?php echo $slplus_state_options?>
               </select>
           </div>
@@ -60,7 +60,7 @@ ob_start();
           ?>
           <div id='addy_in_country'>
               <select id='addressInput3' onchange='aI=document.getElementById("searchForm").addressInput;if(this.value!=""){oldvalue=aI.value;aI.value=this.value;}else{aI.value=oldvalue;}'>
-              <option value=''>--Search By Country--</option>
+              <option value=''><?php print get_option(SLPLUS_PREFIX.'_search_by_country_pd_label',__('--Search By Country--','csl-slplus')); ?></option>
               <?php echo $sl_country_options?>
               </select>
           </div>
