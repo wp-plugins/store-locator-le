@@ -15,8 +15,9 @@ if (! class_exists('SLPlus_AdminUI')) {
         /******************************
          * PUBLIC PROPERTIES & METHODS
          ******************************/
-        public $parent = null;
-       
+        public $addingLocation = false;
+        public $currentLocation = array();
+        public $parent = null;       
         public $styleHandle = 'csl_slplus_admin_css';
 
         /*************************************
@@ -61,7 +62,7 @@ if (! class_exists('SLPlus_AdminUI')) {
             $fields=substr($fields, 0, strlen($fields)-1);
             $sl_values=substr($sl_values, 0, strlen($sl_values)-1);
             $wpdb->query("INSERT into ". $wpdb->prefix . "store_locator ($fields) VALUES ($sl_values);");
-            do_geocoding($theaddress);
+            $this->do_geocoding($theaddress);
 
         }
 
@@ -76,11 +77,12 @@ if (! class_exists('SLPlus_AdminUI')) {
             //-------------------------
             $this->parent->settings->add_section(
                 array(
-                    'name' => 'Navigation',
-                    'div_id' => 'slplus_navbar',
-                    'description' => $this->parent->helper->get_string_from_phpexec(SLPLUS_COREDIR.'/templates/navbar.php'),
-                    'is_topmenu' => true,
-                    'auto' => false,
+                    'name'          => 'Navigation',
+                    'div_id'        => 'slplus_navbar_wrapper',
+                    'description'   => $this->parent->helper->get_string_from_phpexec(SLPLUS_COREDIR.'/templates/navbar.php'),
+                    'innerdiv'      => false,
+                    'is_topmenu'    => true,
+                    'auto'          => false,
                     'headerbar'     => false
                 )
             );
@@ -178,7 +180,13 @@ if (! class_exists('SLPlus_AdminUI')) {
                 )
             );
             if ($this->parent->license->AmIEnabled(true, "SLPLUS-PAGES")) {
-                slplus_add_pages_settings();
+
+                // Setup Store Pages Objects
+                //
+                if (!isset($slplus_plugin->StorePages) || !is_object($slplus_plugin->StorePages)) {
+                    require_once(SLPLUS_PLUGINDIR . '/slp-pages/slp-pages.php');
+                }
+                $this->parent->StorePages->add_pages_settings();
             }
 
             //-------------------------
@@ -231,6 +239,303 @@ if (! class_exists('SLPlus_AdminUI')) {
                     !$this->parent->license->packages['Pro Pack']->isenabled
                     );
         }
+
+        /**
+         *
+         * @param type $a
+         * @return type
+         */
+        function slp_escape($a) {
+            $a=preg_replace("/'/"     , '&#39;'   , $a);
+            $a=preg_replace('/"/'     , '&quot;'  , $a);
+            $a=preg_replace('/>/'     , '&gt;'    , $a);
+            $a=preg_replace('/</'     , '&lt;'    , $a);
+            $a=preg_replace('/,/'     , '&#44;'   , $a);
+            $a=preg_replace('/ & /'   , ' &amp; ' , $a);
+            return $a;
+        }
+
+        /**
+         * GeoCode a given location and update it in the database.
+         * 
+         * @global type $wpdb
+         * @global type $slplus_plugin
+         * @param type $address
+         * @param type $sl_id
+         */
+        function do_geocoding($address,$sl_id='') {
+            global $wpdb, $slplus_plugin;
+
+            $delay = 0;
+            $base_url = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false";
+
+            // Loop through for X retries
+            //
+            $iterations = get_option(SLPLUS_PREFIX.'-goecode_retries');
+            if ($iterations <= 0) { $iterations = 1; }
+            while($iterations){
+                $iterations--;
+
+                // Iterate through the rows, geocoding each address
+                $request_url = $base_url . "&address=" . urlencode($address);
+                $errorMessage = '';
+
+
+                // Use HTTP Handler (WP_HTTP) first...
+                //
+                if (isset($slplus_plugin->http_handler)) {
+                    $result = $slplus_plugin->http_handler->request(
+                                    $request_url,
+                                    array('timeout' => 3)
+                                    );
+                    if ($slplus_plugin->http_result_is_ok($result) ) {
+                        $raw_json = $result['body'];
+                    }
+
+                // Then Curl...
+                //
+                } elseif (extension_loaded("curl") && function_exists("curl_init")) {
+                        $cURL = curl_init();
+                        curl_setopt($cURL, CURLOPT_URL, $request_url);
+                        curl_setopt($cURL, CURLOPT_RETURNTRANSFER, 1);
+                        $raw_json = curl_exec($cURL);
+                        curl_close($cURL);
+
+                // Lastly file_get_contents
+                //
+                } else {
+                     $raw_json = file_get_contents($request_url);
+                }
+
+                // If raw_json exists, parse it
+                //
+                if (isset($raw_json)) {
+                    $json = json_decode($raw_json);
+                    $status = $json->{'status'};
+
+                // no raw json
+                //
+                } else {
+                    $json = '';
+                    $status = '';
+                }
+
+                // Geocode completed successfully
+                //
+                if (strcmp($status, "OK") == 0) {
+                    $iterations = 0;      // Break out of retry loop if we are OK
+                    $delay = 0;
+
+                    // successful geocode
+                    $geocode_pending = false;
+                    $lat = $json->results[0]->geometry->location->lat;
+                    $lng = $json->results[0]->geometry->location->lng;
+                    // Update newly inserted address
+                    //
+                    if ($sl_id=='') {
+                        $query = sprintf("UPDATE " . $wpdb->prefix ."store_locator " .
+                               "SET sl_latitude = '%s', sl_longitude = '%s' " .
+                               "WHERE sl_id = LAST_INSERT_ID()".
+                               " LIMIT 1;",
+                               mysql_real_escape_string($lat),
+                               mysql_real_escape_string($lng)
+                               );
+                    // Update an existing address
+                    //
+                    } else {
+                        $query = sprintf("UPDATE " . $wpdb->prefix ."store_locator SET sl_latitude = '%s', sl_longitude = '%s' WHERE sl_id = $sl_id LIMIT 1;", mysql_real_escape_string($lat), mysql_real_escape_string($lng));
+                    }
+
+                    // Run insert/update
+                    //
+                    $update_result = $wpdb->query($query);
+                    if ($update_result == 0) {
+                        $theDBError = htmlspecialchars(mysql_error($wpdb->dbh),ENT_QUOTES);
+                        $errorMessage .= __("Could not set the latitude and/or longitude  ", SLPLUS_PREFIX);
+                        if ($theDBError != '') {
+                            $errorMessage .= sprintf(
+                                                    __("Error: %s.", SLPLUS_PREFIX),
+                                                    $theDBError
+                                                    );
+                        } elseif ($update_result === 0) {
+                            $errorMessage .=  __(", The latitude and longitude did not change.", SLPLUS_PREFIX);
+                        } else {
+                            $errorMessage .=  __("No error logged.", SLPLUS_PREFIX);
+                            $errorMessage .= "<br/>\n" . __('Query: ', SLPLUS_PREFIX);
+                            $errorMessage .= print_r($wpdb->last_query,true);
+                            $errorMessage .= "<br/>\n" . "Results: " . gettype($update_result) . ' '. $update_result;
+                        }
+
+                    }
+
+                // Geocoding done too quickly
+                //
+                } else if (strcmp($status, "OVER_QUERY_LIMIT") == 0) {
+
+                  // No iterations left, tell user of failure
+                  //
+                  if(!$iterations){
+                    $errorMessage .= sprintf(__("Address %s <font color=red>failed to geocode</font>. ", SLPLUS_PREFIX),$address);
+                    $errorMessage .= sprintf(__("Received status %s.", SLPLUS_PREFIX),$status)."\n<br>";
+                  }
+                  $delay += 100000;
+
+                // Invalid address
+                //
+                } else if (strcmp($status, 'ZERO_RESULTS') == 0) {
+                    $iterations = 0;
+                    $errorMessage .= sprintf(__("Address %s <font color=red>failed to geocode</font>. ", SLPLUS_PREFIX),$address);
+                    $errorMessage .= sprintf(__("Unknown Address! Received status %s.", SLPLUS_PREFIX),$status)."\n<br>";
+
+                // Could Not Geocode
+                //
+                } else {
+                    $geocode_pending = false;
+                    echo sprintf(__("Address %s <font color=red>failed to geocode</font>. ", SLPLUS_PREFIX),$address);
+                    if ($status != '') {
+                        $errorMessage .= sprintf(__("Received data %s.", SLPLUS_PREFIX),'<pre>'.print_r($json,true).'</pre>')."\n";
+                    } else {
+                        $errorMessage .= sprintf(__("Reqeust sent to %s.", SLPLUS_PREFIX),$request_url)."\n<br>";
+                        $errorMessage .= sprintf(__("Received status %s.", SLPLUS_PREFIX),$status)."\n<br>";
+                    }
+                }
+
+                // Show Error Messages
+                //
+                if ($errorMessage != '') {
+                    print '<div class="geocode_error">' .
+                            $errorMessage .
+                            '</div>';
+                }
+
+                usleep($delay);
+            }
+        }
+
+        /**
+         *
+         * @global type $sl_height
+         * @global type $sl_width
+         * @global type $sl_width_units
+         * @global type $sl_height_units
+         * @global type $sl_google_map_domain
+         * @global type $sl_google_map_country
+         * @global type $sl_location_table_view
+         * @global type $sl_search_label
+         * @global type $sl_zoom_level
+         * @global type $sl_zoom_tweak
+         * @global type $sl_use_name_search
+         * @global type $sl_radius_label
+         * @global type $sl_website_label
+         * @global type $sl_num_initial_displayed
+         * @global type $sl_load_locations_default
+         * @global type $sl_distance_unit
+         * @global type $sl_map_overview_control
+         */
+        function initialize_variables() {
+            global $sl_height, $sl_width, $sl_width_units, $sl_height_units;
+            global $sl_google_map_domain, $sl_google_map_country, $sl_location_table_view;
+            global $sl_search_label, $sl_zoom_level, $sl_zoom_tweak, $sl_use_name_search;
+            global $sl_radius_label, $sl_website_label, $sl_num_initial_displayed, $sl_load_locations_default;
+            global $sl_distance_unit, $sl_map_overview_control;
+
+            $sl_map_overview_control=get_option('sl_map_overview_control');
+            if (empty($sl_map_overview_control)) {
+                $sl_map_overview_control="0";
+                add_option('sl_map_overview_control', $sl_map_overview_control);
+                }
+            $sl_distance_unit=get_option('sl_distance_unit');
+            if (empty($sl_distance_unit)) {
+                $sl_distance_unit="miles";
+                add_option('sl_distance_unit', $sl_distance_unit);
+                }
+            $sl_load_locations_default=get_option('sl_load_locations_default');
+            if (empty($sl_load_locations_default)) {
+                $sl_load_locations_default="1";
+                add_option('sl_load_locations_default', $sl_load_locations_default);
+                }
+            $sl_num_initial_displayed=get_option('sl_num_initial_displayed');
+            if (empty($sl_num_initial_displayed)) {
+                $sl_num_initial_displayed="25";
+                add_option('sl_num_initial_displayed', $sl_num_initial_displayed);
+                }
+            $sl_website_label=get_option('sl_website_label');
+            if (empty($sl_website_label)) {
+                $sl_website_label="Website";
+                add_option('sl_website_label', $sl_website_label);
+                }
+            $sl_radius_label=get_option('sl_radius_label');
+            if (empty($sl_radius_label)) {
+                $sl_radius_label="Radius";
+                add_option('sl_radius_label', $sl_radius_label);
+                }
+            $sl_map_type=get_option('sl_map_type');
+            if (isset($sl_map_type)) {
+                $sl_map_type='roadmap';
+                add_option('sl_map_type', $sl_map_type);
+                }
+            $sl_remove_credits=get_option('sl_remove_credits');
+            if (empty($sl_remove_credits)) {
+                $sl_remove_credits="0";
+                add_option('sl_remove_credits', $sl_remove_credits);
+                }
+            $sl_use_name_search=get_option('sl_use_name_search');
+            if (empty($sl_use_name_search)) {
+                $sl_use_name_search="0";
+                add_option('sl_use_name_search', $sl_use_name_search);
+                }
+
+            $sl_zoom_level=get_option('sl_zoom_level','4');
+            add_option('sl_zoom_level', $sl_zoom_level);
+
+            $sl_zoom_tweak=get_option('sl_zoom_tweak','1');
+            add_option('sl_zoom_tweak', $sl_zoom_tweak);
+
+            $sl_search_label=get_option('sl_search_label');
+            if (empty($sl_search_label)) {
+                $sl_search_label="Address";
+                add_option('sl_search_label', $sl_search_label);
+                }
+            $sl_location_table_view=get_option('sl_location_table_view');
+            if (empty($sl_location_table_view)) {
+                $sl_location_table_view="Normal";
+                add_option('sl_location_table_view', $sl_location_table_view);
+                }
+            $sl_google_map_country=get_option('sl_google_map_country');
+            if (empty($sl_google_map_country)) {
+                $sl_google_map_country="United States";
+                add_option('sl_google_map_country', $sl_google_map_country);
+            }
+            $sl_google_map_domain=get_option('sl_google_map_domain');
+            if (empty($sl_google_map_domain)) {
+                $sl_google_map_domain="maps.google.com";
+                add_option('sl_google_map_domain', $sl_google_map_domain);
+            }
+            $sl_height=get_option('sl_map_height');
+            if (empty($sl_height)) {
+                add_option('sl_map_height', '350');
+                $sl_height=get_option('sl_map_height');
+                }
+
+            $sl_height_units=get_option('sl_map_height_units');
+            if (empty($sl_height_units)) {
+                add_option('sl_map_height_units', "px");
+                $sl_height_units=get_option('sl_map_height_units');
+                }
+
+            $sl_width=get_option('sl_map_width');
+            if (empty($sl_width)) {
+                add_option('sl_map_width', "100");
+                $sl_width=get_option('sl_map_width');
+                }
+
+            $sl_width_units=get_option('sl_map_width_units');
+            if (empty($sl_width_units)) {
+                add_option('sl_map_width_units', "%");
+                $sl_width_units=get_option('sl_map_width_units');
+                }
+        }
+
 
         /**
          * Display the manage locations pagination
@@ -389,14 +694,14 @@ if (! class_exists('SLPlus_AdminUI')) {
             // Manage Locations
             //
             add_action(
-                   'admin_print_styles-' . 'store-locator-le/core/view-locations.php',
+                   'admin_print_styles-' . $slugPrefix . 'slp_manage_locations',
                     array($this,'enqueue_admin_stylesheet')
                     );
 
             // Map Settings
             //
             add_action(
-                   'admin_print_styles-' . 'store-locator-le/core/map-designer.php',
+                   'admin_print_styles-' . $slugPrefix . 'slp_map_settings',
                     array($this,'enqueue_admin_stylesheet')
                     );
 
@@ -409,10 +714,12 @@ if (! class_exists('SLPlus_AdminUI')) {
 
         }
 
-        /*************************************
-         * method: slpRenderCreatePageButton()
-         *
+        /**
          * Render The Create Page Button
+         *
+         * @param type $locationID
+         * @param type $storePageID
+         * @return type
          */
         function slpRenderCreatePageButton($locationID=-1,$storePageID=-1) {
             if ($locationID < 0) { return; }            
@@ -426,196 +733,11 @@ if (! class_exists('SLPlus_AdminUI')) {
                    ></a>";            
         }  
 
-         /**
-          * method: slp_add_search_form_settings_panel
-          *
-          * Add the search form panel to the map settings page on the admin UI.
-          */
-         function slp_add_search_form_settings_panel() {
-            global $slpMapSettings;
-            $slpDescription = get_string_from_phpexec(SLPLUS_COREDIR.'/templates/settings_searchform.php');
-            $slpMapSettings->add_section(
-                array(
-                        'name'          => __('Search Form',SLPLUS_PREFIX),
-                        'description'   => $slpDescription,
-                        'auto'          => true
-                    )
-             );
-         }
-
-         /**
-          * method: slp_add_map_settings_panel
-          *
-          * Add the map panel to the map settings page on the admin UI.
-          */
-         function slp_add_map_settings_panel() {
-            global $slpMapSettings;
-            $slpDescription = get_string_from_phpexec(SLPLUS_COREDIR.'/templates/settings_mapform.php');
-            $slpMapSettings->add_section(
-                array(
-                        'name'          => __('Map',SLPLUS_PREFIX),
-                        'description'   => $slpDescription,
-                        'auto'          => true
-                    )
-             );
-         }
-
-         /**
-          * Create the results settings panel
-          *
-          * @global type $slpMapSettings - a wpCSL settings panel object
-          */
-         function slp_add_results_settings_panel() {
-            global $slpMapSettings, $slplus_plugin;
-            $slplus_message = ($slplus_plugin->license->packages['Pro Pack']->isenabled) ?
-                __('',SLPLUS_PREFIX) :
-                __('Extended settings are available in the <a href="%s">%s</a> premium add-on.',SLPLUS_PREFIX)
-                ;
-
-
-            // ===== Location Info
-            //
-            // -- Search Results
-            //
-            $slpDescription =
-                    '<h2>' . __('Location Info',SLPLUS_PREFIX).'</h2>'.
-                    '<p class="slp_admin_info" style="clear:both;"><strong>'.__('Search Results',SLPLUS_PREFIX).'</strong></p>' .
-                    '<p>'.sprintf($slplus_message,$slplus_plugin->purchase_url,'Pro Pack').'</p>'
-                    ;
-            $slpDescription .= CreateInputDiv(
-                        '_maxreturned',
-                        __('Max search results',SLPLUS_PREFIX),
-                        __('How many locations does a search return? Default is 25.',SLPLUS_PREFIX)
-                        );
-
-            //--------
-            // Pro Pack : Search Results Settings
-            //
-            if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
-                $slpDescription .= CreateCheckboxDiv(
-                    '_show_tags',
-                    __('Show Tags In Output',SLPLUS_PREFIX),
-                    __('Show the tags in the location output table and bubble.', SLPLUS_PREFIX)
-                    );
-
-                $slpDescription .= CreateCheckboxDiv(
-                    '_use_email_form',
-                    __('Use Email Form',SLPLUS_PREFIX),
-                    __('Use email form instead of mailto: link when showing email addresses.', SLPLUS_PREFIX)
-                    );
-            }
-
-            // Filter on Results : Search Output Box
-            //
-            $slpDescription = apply_filters('slp_add_results_settings',$slpDescription);
-            $slpDescription =
-                "<div class='section_column'>".
-                    "<div class='map_designer_settings'>".
-                    $slpDescription .
-                    "</div>" .
-                "</div>"
-                ;
-
-            // ===== Icons
-            //
-            $slpDescription .=
-                "<div class='section_column'>".
-                    "<div class='map_designer_settings'>".
-                        "<h2>".__('Icons', SLPLUS_PREFIX)."</h2>".
-                        $slplus_plugin->data['iconNotice'] .
-                        "<div class='form_entry'>".
-                            "<label for='icon'>".__('Home Icon', SLPLUS_PREFIX)."</label>".
-                            "<input id='icon' name='icon' dir='rtl' size='45' value='".$slplus_plugin->data['homeicon']."' ".
-                                    'onchange="document.getElementById(\'prev\').src=this.value">'.
-                            "<img id='prev' src='".$slplus_plugin->data['homeicon']."' align='top'><br/>".
-                            $slplus_plugin->data['homeIconPicker'].
-                        "</div>".
-                        "<div class='form_entry'>".
-                            "<label for='icon2'>".__('Destination Icon', SLPLUS_PREFIX)."</label>".
-                            "<input id='icon2' name='icon2' dir='rtl' size='45' value='".$slplus_plugin->data['endicon']."' ".
-                                'onchange="document.getElementById(\'prev2\').src=this.value">'.
-                            "<img id='prev2' src='".$slplus_plugin->data['endicon']."'align='top'><br/>".
-                            $slplus_plugin->data['endIconPicker'].
-                        "</div>".
-                    "</div>".
-                "</div>"
-                ;
-
-            // ===== Labels
-            //
-            $slpDescription .=
-                "<div class='section_column'>" .
-                    '<h2>'.__('Labels', 'csl-slplus') . '</h2>' .
-                    CreateInputDiv(
-                       'sl_website_label',
-                       __('Website URL', 'csl-slplus'),
-                       __('Search results text for the website link.','csl-slplus'),
-                       '',
-                       'website'
-                       ) .
-                   CreateInputDiv(
-                       '_label_hours',
-                       __('Hours', SLPLUS_PREFIX),
-                       __('Hours label.',SLPLUS_PREFIX),
-                       SLPLUS_PREFIX,
-                       'Hours: '
-                       ) .
-                   CreateInputDiv(
-                       '_label_phone',
-                       __('Phone', SLPLUS_PREFIX),
-                       __('Phone label.',SLPLUS_PREFIX),
-                       SLPLUS_PREFIX,
-                       'Phone: '
-                       ) .
-                   CreateInputDiv(
-                       '_label_fax',
-                       __('Fax', SLPLUS_PREFIX),
-                       __('Fax label.',SLPLUS_PREFIX),
-                       SLPLUS_PREFIX,
-                       'Fax: '
-                       ) .
-                   CreateInputDiv(
-                       '_label_directions',
-                       __('Directions', SLPLUS_PREFIX),
-                       __('Directions label.',SLPLUS_PREFIX),
-                       SLPLUS_PREFIX,
-                       'Directions'
-                       ) .
-                   CreateInputDiv(
-                       'sl_instruction_message',
-                       __('Instructions', SLPLUS_PREFIX),
-                       __('Search results instructions shown if immediately show locations is not selected.',SLPLUS_PREFIX),
-                       '',
-                       __('Enter an address or zip code and click the find locations button.',SLPLUS_PREFIX)
-                       )
-                       ;
-            
-            if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
-                $slpDescription .= CreateInputDiv(
-                        '_message_noresultsfound',
-                        __('No Results Message', SLPLUS_PREFIX),
-                        __('No results found message that appears under the map.',SLPLUS_PREFIX),
-                        SLPLUS_PREFIX,
-                        __('Results not found.',SLPLUS_PREFIX)
-                        );
-            }   
-            $slpDescription .= '</div>';
-
-
-            // Render the results setting
-            //
-            $slpMapSettings->add_section(
-                array(
-                        'name'          => __('Results',SLPLUS_PREFIX),
-                        'description'   => $slpDescription,
-                        'auto'          => true
-                    )
-             );
-         }
-
-        /*****************************
-         * function: url_test()
+        /**
+         * Check if a URL starts with http://
          *
+         * @param type $url
+         * @return type
          */
         function url_test($url) {
             return (strtolower(substr($url,0,7))=="http://");
@@ -644,36 +766,20 @@ if (! class_exists('SLPlus_AdminUI')) {
         }
 
         /**
-         * method: redirectTo_GeneralSettings
-         * 
-         * Bring users to the main SLP settings page.
-         * 
-         */
-        function renderPage_GeneralSettings() {
-            global $slplus_plugin;
-            $slplus_plugin->settings->render_settings_page();
-        }
-
-
-        /**
-         * method: renderPage_AddLocations()
-         *
-         * Draw the add locations page.  Use to be a separate script ./core/add-locations.php
+         * Draw the add locations page.
          *
          * @global type $wpdb
          */
          function renderPage_AddLocations() {
                 global $slplus_plugin,$wpdb;
-                initialize_variables();
+                $this->initialize_variables();
 
                 print "<div class='wrap'>
                             <div id='icon-add-locations' class='icon32'><br/></div>
                             <h2>Store Locator Plus - ".
                             __('Add Locations', SLPLUS_PREFIX).
-                            "</h2>".
-                      '<div id="slplus_navbar">'.
-                      $slplus_plugin->helper->get_string_from_phpexec(SLPLUS_COREDIR.'/templates/navbar.php') .
-                      '</div>'
+                            "</h2>".                      
+                      $slplus_plugin->helper->get_string_from_phpexec(SLPLUS_COREDIR.'/templates/navbar.php')                      
                       ;
 
 
@@ -685,7 +791,7 @@ if (! class_exists('SLPlus_AdminUI')) {
                     foreach ($_POST as $key=>$sl_value) {
                         if (preg_match('#\-$#', $key)) {
                             $fieldList.='sl_'.preg_replace('#\-$#','',$key).',';
-                            $sl_value=comma($sl_value);
+                            $sl_value=$this->slp_escape($sl_value);
                             $sl_valueList.="\"".stripslashes($sl_value)."\",";
                         }
                     }
@@ -741,7 +847,7 @@ if (! class_exists('SLPlus_AdminUI')) {
                                                     $this_addy = '';
                                                     for ($fldno=0; $fldno < $num; $fldno++) {
                                                         $fieldList.=$fldNames[$fldno].',';
-                                                        $sl_valueList.="\"".stripslashes(comma($data[$fldno]))."\",";
+                                                        $sl_valueList.="\"".stripslashes($this->slp_escape($data[$fldno]))."\",";
                                                         if (($fldno>=1) && ($fldno<=6)) {
                                                             $this_addy .= $data[$fldno] . ', ';
                                                         }
@@ -791,7 +897,7 @@ if (! class_exists('SLPlus_AdminUI')) {
                 }
 
                 $base=get_option('siteurl');
-                $slplus_plugin->addform = true;
+                $this->addingLocation = true;
                 print 
                     '<div id="location_table_wrapper">'.
                         "<table id='manage_locations_table' class='slplus wp-list-table widefat fixed posts' cellspacing=0>" .
@@ -804,6 +910,109 @@ if (! class_exists('SLPlus_AdminUI')) {
          }
 
          /**
+          * Return the value of the field specified for the current location.
+          * @param string $fldname - a location field
+          * @return string - value of the field
+          */
+         function getFieldValue($fldname=null) {
+             if (($fldname === null) || ($this->addingLocation)) { return ''; }
+             else { return $this->currentLocation[$fldname]; }
+         }
+
+        /**
+         * Render the edit locations form fields.
+         *
+         * @param named array $sl_value the location data.
+         * @return string HTML of the form inputs
+         */
+        function renderFields_editlocation() {
+            if (!$this->setParent()) { return; }
+
+            $content = '';
+            ob_start();
+            ?>
+            <table>
+                <tr>
+                    <td><div class="add_location_form">
+                        <label  for='store-<?php echo $this->getFieldValue('sl_id')?>'><?php _e('Name of Location', SLPLUS_PREFIX);?></label>
+                        <input name='store-<?php echo $this->getFieldValue('sl_id')?>' value='<?php echo $this->getFieldValue('sl_store')?>'><br/>
+
+                        <label  for='address-<?php echo $this->getFieldValue('sl_id')?>'><?php _e('Street - Line 1', SLPLUS_PREFIX);?></label>
+                        <input name='address-<?php echo $this->getFieldValue('sl_id')?>' value='<?php echo $this->getFieldValue('sl_address')?>'><br/>
+
+                        <label  for='address2-<?php echo $this->getFieldValue('sl_id')?>'><?php _e('Street - Line 2', SLPLUS_PREFIX);?></label>
+                        <input name='address2-<?php echo $this->getFieldValue('sl_id')?>' value='<?php echo $this->getFieldValue('sl_address2')?>'><br/>
+
+                        <label  for='city-<?php echo $this->getFieldValue('sl_id')?>'><?php _e('City, State, ZIP', SLPLUS_PREFIX);?></label>
+                        <input name='city-<?php echo $this->getFieldValue('sl_id')?>'    value='<?php echo $this->getFieldValue('sl_city')?>'     style='width: 21.4em; margin-right: 1em;'>
+                        <input name='state-<?php echo $this->getFieldValue('sl_id')?>'   value='<?php echo $this->getFieldValue('sl_state')?>'    style='width: 7em; margin-right: 1em;'>
+                        <input name='zip-<?php echo $this->getFieldValue('sl_id')?>'     value='<?php echo $this->getFieldValue('sl_zip')?>'      style='width: 7em;'><br/>
+
+                        <label  for='country-<?php echo $this->getFieldValue('sl_id')?>'><?php _e('Country', SLPLUS_PREFIX);?></label>
+                        <input name='country-<?php echo $this->getFieldValue('sl_id')?>' value='<?php echo $this->getFieldValue('sl_country')?>'  style='width: 40em;'><br/>
+
+                        <?php
+                        if ($this->parent->AdminUI->addingLocation === false) {
+                        ?>
+                            <label  for='latitude-<?php echo $this->getFieldValue('sl_id')?>'><?php _e('Latitude (N/S)', SLPLUS_PREFIX);?></label>
+                            <?php if ($this->parent->license->packages['Pro Pack']->isenabled) { ?>
+                                <input name='latitude-<?php echo $this->getFieldValue('sl_id')?>' value='<?php echo $this->getFieldValue('sl_latitude')?>'  style='width: 40em;'><br/>
+                            <?php } else { ?>
+                                <input class='disabled'  name='latitude-<?php echo $this->getFieldValue('sl_id')?>' value='<?php echo __('Changing the latitude is a Pro Pack feature.',SLPLUS_PREFIX).' ('.$this->getFieldValue('sl_latitude').')';?>'  style='width: 40em;'><br/>
+                            <?php } ?>
+
+                            <label  for='longitude-<?php echo $this->getFieldValue('sl_id')?>'><?php _e('Longitude (E/W)', SLPLUS_PREFIX);?></label>
+                            <?php if ($this->parent->license->packages['Pro Pack']->isenabled) { ?>
+                                <input name='longitude-<?php echo $this->getFieldValue('sl_id')?>' value='<?php echo $this->getFieldValue('sl_longitude')?>'  style='width: 40em;'><br/>
+                            <?php } else { ?>
+                                <input class='disabled' name='longitude-<?php echo $this->getFieldValue('sl_id')?>' value='<?php echo __('Changing the longitude is a Pro Pack feature.',SLPLUS_PREFIX).' ('.$this->getFieldValue('sl_longitude').')'; ?>'  style='width: 40em;'><br/>
+                            <?php } ?>
+                        <?php
+                        }
+                        ?>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <?php
+            $content .= ob_get_clean();
+            return $content;
+        }
+
+
+
+        /**
+         * Render the General Settings admin page.
+         *
+         */
+        function renderPage_GeneralSettings() {
+            global $slplus_plugin;
+            $slplus_plugin->settings->render_settings_page();
+        }
+
+
+        /**
+         * Render the Manage Locations admin page.
+         */
+        function renderPage_ManageLocations() {
+            require_once(SLPLUS_PLUGINDIR . '/include/slp-adminui_managelocations_class.php');
+            $this->parent->AdminUI->ManageLocations = new SLPlus_AdminUI_ManageLocations();
+            $this->parent->AdminUI->ManageLocations->render_adminpage();
+        }
+
+        /**
+         * Render the Map Settings admin page.
+         */
+        function renderPage_MapSettings() {
+            require_once(SLPLUS_PLUGINDIR . '/include/slp-adminui_mapsettings_class.php');
+            $this->parent->AdminUI->MapSettings = new SLPlus_AdminUI_MapSettings();
+            $this->parent->AdminUI->MapSettings->render_adminpage();
+
+
+        }
+
+
+         /**
           * Returns the string that is the Location Info Form guts.
           *
           * @global wpCSL_plugin__slplus $slplus_plugin
@@ -812,21 +1021,21 @@ if (! class_exists('SLPlus_AdminUI')) {
           * @param bool $addform - true if rendering add locations form
           */
          function createString_LocationInfoForm($sl_value, $locID, $addform=false) {
-             global $slplus_plugin;
-             $slplus_plugin->addform = $addform;
-             $slpEditForm = '';
+            global $slplus_plugin;
+            $this->addingLocation = $addform;
+            
+            $slpEditForm = '';
+            $this->currentLocation = apply_filters('slp_edit_location_data',$sl_value);
 
             /**
              * @see  http://goo.gl/ooXFC 'slp_edit_location_data' filter to manipulate edit location incoming data
              */
-            $sl_value = apply_filters('slp_edit_location_data',$sl_value);
-
              $content  = ''                                                                     .
                 "<form id='manualAddForm' name='manualAddForm' method='post' enctype='multipart/form-data'>"       .
                 "<a name='a".$locID."'></a>"                                                    .
                 "<table cellpadding='0' class='slp_locationinfoform_table'>"                           .
                 "<tr><td valign='top'>"                                                         .
-                $slplus_plugin->helper->get_string_from_phpexec(SLPLUS_COREDIR.'/templates/'.'edit_location_address.php')
+                $slplus_plugin->AdminUI->renderFields_editlocation()
                 ;
 
                 // Store Pages URLs
@@ -845,10 +1054,19 @@ if (! class_exists('SLPlus_AdminUI')) {
                     $_SERVER['REQUEST_URI']
                     ;
 
+                $alTitle =
+                    ($addform?
+                        __('Add Location',SLPLUS_PREFIX):
+                        sprintf("%s #%d",__('Update Location', SLPLUS_PREFIX),$locID)
+                    );
                 $slpEditForm .= 
-                        "<input type='submit' value='".($slplus_plugin->addform?__('Add',SLPLUS_PREFIX):__('Update', SLPLUS_PREFIX))."' class='button-primary'>".
+                        ($addform? '' : "<span class='slp-edit-location-id'>Location # $locID</span>") .
+                        "<div id='slp_form_buttons'>" .
+                        "<input type='submit' value='".($addform?__('Add',SLPLUS_PREFIX):__('Update', SLPLUS_PREFIX)).
+                            "' alt='$alTitle' title='$alTitle' class='button-primary'>".
                         "<input type='button' class='button' value='".__('Cancel', SLPLUS_PREFIX)."' onclick='location.href=\"".$edCancelURL."\"'>".
-                        "<input type='hidden' name='option_value-$locID' value='".($addform?'':$sl_value['sl_option_value'])."' />"
+                        "<input type='hidden' name='option_value-$locID' value='".($addform?'':$sl_value['sl_option_value'])."' />"  .
+                        "</div>"
                         ;
 
                 /**

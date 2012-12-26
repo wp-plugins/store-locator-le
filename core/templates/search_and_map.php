@@ -1,5 +1,5 @@
 <?php
-global $sl_search_label, $sl_width, $sl_height, $sl_width_units, $sl_height_units, $sl_radius_label, $sl_instruction_message, $slplus_plugin;
+global $sl_search_label, $sl_width, $sl_height, $sl_width_units, $sl_height_units, $sl_radius_label, $slplus_plugin;
 print "<div id='sl_div'>";
 
 // Render the search form
@@ -52,7 +52,7 @@ if ($sl_starting_image != '') {
         <tr id='cm_mapTR' class='slp_map_search_results'>
             <td width='' valign='top' id='map_sidebar_td'>
                 <div id='map_sidebar' style='width:<?php echo $sl_width?><?php echo $sl_width_units?>;'>
-                    <div class='text_below_map'><?php echo $sl_instruction_message?></div>
+                    <div class='text_below_map'><?php echo get_option('sl_instruction_message',__('Enter Your Address or Zip Code Above.','csl-slplus')); ?></div>
                 </div>
             </td>
         </tr>

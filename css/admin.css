@@ -153,8 +153,18 @@ a.moreinfo_clicker {
 /***************************
  * The Navbar
  */
-div #slplus_navbar,
-div #slplus_actionbar
+ div#csa_admin_wrapper.metabox-holder {
+     margin: 0px;
+     padding: 0px;
+ }
+
+ div#slplus_navbar_wrapper {
+     background: none;
+     border: none;
+ }
+
+div#slplus_navbar,
+div#slplus_actionbar
 {
     background: none;
     border: none;
@@ -187,6 +197,11 @@ div #slplus_actionbar
 {
     display: none;
     visibility: hidden;
+}
+
+div#csa_mapsettings_searchform,
+div#csa_plugin_info {
+    margin-top: 18px;
 }
 
 /***************************************
@@ -359,8 +374,9 @@ table.slp_locationinfoform_table td {
     white-space: nowrap;
  }
  div#location_table_wrapper {
-     padding: 0px;
-     margin: -4px 0px 0px;
+    border: 1px solid #CCCCCC;
+    margin: -1px 0 0;
+    padding: 6px;
  }
  a.page-button {
      margin: 0px 2px;
@@ -408,6 +424,14 @@ table.slp_locationinfoform_table td {
  tr td.slp_locationinfoform_cell {
      border: 3px dashed #999999;
  }
+ span.slp-edit-location-id {
+     display: inline-block;
+     margin: 24px 3px;
+     width: 100%;
+     
+     color: #B4B4B4;
+     font-size: 1.5em;
+ }
 
 /***************************
  * Settings: Map
@@ -443,7 +467,7 @@ div.section_column .form_entry {
 }
 
 .section_description INPUT {
-    width: 20em;
+    width: 240px;
 }
 
 .section_description INPUT[type="checkbox"] {
@@ -635,13 +659,24 @@ td.optionpack {
 
 
 
-#rb_details .rb_column, .section_column {
+#rb_details .rb_column {
     float: left;
     border: solid 1px #D0D0FF;
     margin-right: 24px;
     margin-top: 3px;
 }
 
+div.section_column {
+    float: left;
+    width: 520px;
+    margin: 3px 6px 0px 0px;
+
+    border: solid 1px #D0D0FF;
+    overflow: auto;
+}
+div.section_column_intro {
+    padding: 0px 6px;
+}
 
 div.section_column_content {
     padding: 0px 6px;
@@ -651,7 +686,8 @@ p.slp_admin_info {
     clear: both;
 }
 
-#poststuff #rb_details h2, #poststuff .section_column h2 {
+div.section_column h2,
+#rb_details h2 {
     margin-bottom: 3px;  
     margin-top: 0px;
     padding: 0px 6px;

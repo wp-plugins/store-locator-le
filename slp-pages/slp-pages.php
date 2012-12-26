@@ -146,6 +146,31 @@ if ( ! class_exists( 'SLPPages' ) ) {
         //====================================================
 
         /**
+         * Add store pages settings to the admin interface.
+         *
+         * @return string
+         */
+        function add_pages_settings() {
+            if (!$this->setPlugin()) { return ''; }
+                $this->plugin->settings->add_item(
+                    'Store Pages',
+                    __('Pages Replace Websites', SLPLUS_PREFIX),
+                    'use_pages_links',
+                    'checkbox',
+                    false,
+                    __('Use the Store Pages local URL in place of the website URL on the map results list.', SLPLUS_PREFIX)
+                );
+                $this->plugin->settings->add_item(
+                    'Store Pages',
+                    __('Prevent New Window', SLPLUS_PREFIX),
+                    'use_same_window',
+                    'checkbox',
+                    false,
+                    __('Prevent Store Pages web links from opening in a new window.', SLPLUS_PREFIX)
+                );
+        }
+
+        /**
          * Create a new store pages page.
          *
          * @global wpCSL_plugin__slplus $slplus_plugin
@@ -260,6 +285,6 @@ if ( ! class_exists( 'SLPPages' ) ) {
 
     // Instantiate ourselves as an object
     //
-    global$SLPPages;
-    $SLPPages = new SLPPages();
+    global$slplus_plugin;
+    $slplus_plugin->StorePages = new SLPPages();
 }

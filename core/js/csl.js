@@ -1253,9 +1253,11 @@ var csl = {
             //
             String.prototype.format = function() {
              var args = arguments;
-             return this.replace(/{(\d+)}/g, function(match, number) {
+             return this.replace(/{(\d+)(\.(\w+))*}/g, function(match, number, dotsubname, subname) {
                return typeof args[number] != 'undefined'
-                 ? args[number]
+                 ? typeof args[number] != 'object'
+                     ? args[number]
+                     : args[number][subname]
                  : match
                ;
              });
@@ -1283,6 +1285,7 @@ var csl = {
           *              {15} aMarker.id
           *              {16} aMarker.country
           *              {17} aMarker.hours
+          *              {18} aMarker
           */
          var decodedHours = jQuery("<div/>").html(aMarker.hours).text();
  		 div.innerHTML = slplus.results_string.format(
@@ -1303,7 +1306,8 @@ var csl = {
                         tagInfo,
                         aMarker.id,
                         aMarker.country,
-                        decodedHours
+                        decodedHours,
+                        aMarker
                       )
                       ;
 			div.className = 'results_entry';

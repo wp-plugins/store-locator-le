@@ -8,19 +8,17 @@
 * share a code libary and reduce code redundancy.
 * 
 ************************************************************************/
-define('WPCSL__slplus__VERSION', '2.0.14');
+define('WPCSL__slplus__VERSION', '2.0.15');
+define('WPAS_AFFILIATE_ID','3368'); // WP App Store Affiliate ID
 
-// (LC) 
 // These helper files should only be loaded if needed by the plugin
 // that is asking for WPCSL-Generic services.
 //
 // Wrap inside the init and check the class properties first?
 // 
-require_once('CSL-cache_class.php');
 require_once('CSL-helper_class.php');
 require_once('CSL-license_class.php');
 require_once('CSL-notifications_class.php');
-require_once('CSL-products_class.php');
 require_once('CSL-settings_class.php');
 require_once('CSL-themes_class.php');
 
@@ -204,6 +202,7 @@ class wpCSL_plugin__slplus {
         );
         
         if ($this->driver_type != 'none') {
+            require_once('CSL-products_class.php');
             $this->products_config = array(
                 'prefix'            => $this->prefix,
                 'css_prefix'        => $this->css_prefix,
@@ -231,6 +230,7 @@ class wpCSL_plugin__slplus {
          * Cache Object Config (if needed)
          */
         if  ($this->use_obj_defaults || ($this->cache_obj_name != 'none')) {
+            require_once('CSL-cache_class.php');
             $this->cache_config = array(
                 'prefix' => $this->prefix,
                 'path' => $this->cache_path
