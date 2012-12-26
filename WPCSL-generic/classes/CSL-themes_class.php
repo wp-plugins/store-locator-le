@@ -131,38 +131,40 @@ class wpCSL_themes__slplus {
         );        
     }    
     
-    /**************************************
-     ** method: GetThemeInfo
-     ** 
-     ** Extract the label & key from a CSS file header.
-     **
-     **/
-    function GetThemeInfo ($filename) {    
+
+    /**
+     * Extract the label & key from a CSS file header.
+     *
+     * @param string $filename - a fully qualified path to a CSS file
+     * @return mixed - a named array of the data.
+     */
+    function GetThemeInfo ($filename) {
         $dataBack = array();
         if ($filename != '') {
            $default_headers = array(
-                'label' => 'label',
+                'columns' => 'columns',
+                'description' => 'description',
                 'file' => 'file',
-                'columns' => 'columns'
+                'label' => 'label',
                );
-            
-           $dataBack = get_file_data($filename,$default_headers,'');
-           $dataBack['file'] = preg_replace('/.css$/','',$dataBack['file']);       
-        }
-        
-        return $dataBack;
-     }    
 
- 
-    /**************************************
-     ** method: configure_theme
-     ** 
-     ** Configure the plugin theme drivers based on the theme file meta data.
-     **
-     **/
+           $dataBack = get_file_data($filename,$default_headers,'');
+           $dataBack['file'] = preg_replace('/.css$/','',$dataBack['file']);
+        }
+
+        return $dataBack;
+     }
+
+     /**
+      * Configure the plugin theme drivers based on the theme file meta data.
+      *
+      * @param string $themeFile - the base name of the theme file (xyz.css)
+      */
      function configure_theme($themeFile) {
         $newEntry = $this->GetThemeInfo($this->css_dir.$themeFile);
-        $this->products->columns = $newEntry['columns'];
+        if (isset($this->products)) {
+            $this->products->columns = (isset($newEntry['columns'])?$newEntry['columns']:0);
+        }
      }
      
 

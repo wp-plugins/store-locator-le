@@ -1,8 +1,8 @@
 /**
- ** file: bellard.css
- ** label: Bellard
+ ** file: bellard-rt.css
+ ** label: Bellard RT
  ** columns: 1
- ** description: Side-by-Side boxes with simple colors on white.  Requires Google Fonts.
+ ** description: Side-by-Side boxes with simple colors on white.  Requires Google Fonts.  Slightly more narrow than Bellard.  Styled for RT-17 Theme.
  **
  **/
 
@@ -58,16 +58,16 @@ div#addy_in_address {
     font-weight: 400;
     height: 40px;
     margin-right: 15px;
-    width: 490px;
+    width: 431px;
 }
 #addressInput {
-    width: 490px;
+    width: 421px;
 }
 div#radius_in_submit {
     display: inline-block;
 }
 #addressSubmit,
-#addressSubmit:hover,
+#addressSubmit:hover
 {
     background-color: #00D6F2;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00D6F2', endColorstr='#00D6F2'); /* for IE */
@@ -85,21 +85,29 @@ div#radius_in_submit {
     width: 145px;
 }
 
+
  
- /***********************
-  * Map
-  ***********************/
- #map_table {
-    border: none;
-    margin: 0px;
-    padding: 0px;
- }
+/***********************
+ * Map
+ ***********************/
+#map_table {
+   border: none;
+   margin: 0px;
+   padding: 0px;
+   width: 100%;
+}
 #map_table td {
     border: none;
 }
 div#slp_tagline {
     text-align: right;
     padding-right: 3px;
+}
+#map_table_row {
+    width: 100%;
+}
+#map_table_cell {
+    width: 100%;
 }
 
 /***********************
@@ -128,7 +136,7 @@ div.results_entry {
     width: 300px;
 }
 
-table.searchResultsTable {
+div.results_entry table.searchResultsTable {
     display: inline-block;
     position: relative;
     width: 100%;
@@ -176,6 +184,7 @@ span.location_name {
     font-family: 'Oswald', sans-serif;
     font-weight: 400;
     font-size: 25px;
+    line-height: 34px;
     max-width: 290px;
     overflow: hidden;
     white-space: nowrap;
