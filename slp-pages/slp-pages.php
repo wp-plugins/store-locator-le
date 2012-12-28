@@ -58,6 +58,8 @@ if ( ! class_exists( 'SLPPages' ) ) {
             add_action('admin_menu' ,
                     array($this,'admin_menu')
                     );
+
+            add_filter('slp_action_boxes',array($this,'manage_locations_actionbar'));
         }
 
 
@@ -280,6 +282,40 @@ if ( ! class_exists( 'SLPPages' ) ) {
              }
 
              return apply_filters('slp_pages_content',$content);
+         }
+
+         /**
+          * Add the create pages button to box "C" on the action bar
+          *
+          * @param array $actionBoxes - the existing action boxes, 'A'.. each named array element is an array of HTML strings
+          * @return string
+          */
+         function manage_locations_actionbar($actionBoxes) {
+                if (!$this->setPlugin()) { return $actionBoxes; }
+                $actionBoxes['A'][] =
+                       '<p class="centerbutton">' .
+                           '<a class="like-a-button" href="#" ' .
+                               'onclick="doAction(\'recode\',\''.__('Recode selected?',SLPLUS_PREFIX).'\');" '.
+                               'name="recode_selected">'.__("Recode Selected", SLPLUS_PREFIX).
+                           '</a>' .
+                        '</p>'
+                        ;
+                $actionBoxes ['B'][] =
+                    '<div id="tag_actions">' .
+                            '<a  class="like-a-button" href="#" name="tag_selected"    '.
+                                'onclick="doAction(\'add_tag\',\''.__('Tag selected?',SLPLUS_PREFIX).'\');">'.
+                                __('Tag Selected', SLPLUS_PREFIX).
+                            '</a>'.
+                            '<a  class="like-a-button" href="#" name="untag_selected"  ' .
+                                'onclick="doAction(\'remove_tag\',\''. __('Remove tag from selected?',SLPLUS_PREFIX).'\');">'.
+                                __('Untag Selected', SLPLUS_PREFIX).
+                            '</a>'.
+                    '</div>' .
+                    '<div id="tagentry">'.
+                        '<label for="sl_tags">'.__('Tags', SLPLUS_PREFIX).'</label><input name="sl_tags">'.
+                    '</div>'
+                    ;
+                return $actionBoxes;
          }
     }
 

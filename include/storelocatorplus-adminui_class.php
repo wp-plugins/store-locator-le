@@ -273,6 +273,7 @@ if (! class_exists('SLPlus_AdminUI')) {
             //
             $iterations = get_option(SLPLUS_PREFIX.'-goecode_retries');
             if ($iterations <= 0) { $iterations = 1; }
+            $initial_iterations = $iterations;
             while($iterations){
                 $iterations--;
 
@@ -375,8 +376,14 @@ if (! class_exists('SLPlus_AdminUI')) {
                   // No iterations left, tell user of failure
                   //
                   if(!$iterations){
-                    $errorMessage .= sprintf(__("Address %s <font color=red>failed to geocode</font>. ", SLPLUS_PREFIX),$address);
-                    $errorMessage .= sprintf(__("Received status %s.", SLPLUS_PREFIX),$status)."\n<br>";
+                    $errorMessage .= sprintf(__("Address %s <font color=red>failed to geocode</font>. ", 'csl-slplus'),$address);
+                    $errorMessage .= sprintf(__("Received status %s.", 'csl-slplus'),$status)."\n<br>";
+                    $errorMessage .= sprintf(
+                            __("Total attempts %d, waited up to %4.2 seconds between request.", 'csl-slplus'),
+                            $initial_iterations,
+                            $delay/100000
+                            ).
+                            "\n<br>";
                   }
                   $delay += 100000;
 
@@ -384,19 +391,19 @@ if (! class_exists('SLPlus_AdminUI')) {
                 //
                 } else if (strcmp($status, 'ZERO_RESULTS') == 0) {
                     $iterations = 0;
-                    $errorMessage .= sprintf(__("Address %s <font color=red>failed to geocode</font>. ", SLPLUS_PREFIX),$address);
-                    $errorMessage .= sprintf(__("Unknown Address! Received status %s.", SLPLUS_PREFIX),$status)."\n<br>";
+                    $errorMessage .= sprintf(__("Address %s <font color=red>failed to geocode</font>. ", 'csl-slplus'),$address);
+                    $errorMessage .= sprintf(__("Unknown Address! Received status %s.", 'csl-slplus'),$status)."\n<br>";
 
                 // Could Not Geocode
                 //
                 } else {
                     $geocode_pending = false;
-                    echo sprintf(__("Address %s <font color=red>failed to geocode</font>. ", SLPLUS_PREFIX),$address);
+                    echo sprintf(__("Address %s <font color=red>failed to geocode</font>. ", 'csl-slplus'),$address);
                     if ($status != '') {
-                        $errorMessage .= sprintf(__("Received data %s.", SLPLUS_PREFIX),'<pre>'.print_r($json,true).'</pre>')."\n";
+                        $errorMessage .= sprintf(__("Received data %s.", 'csl-slplus'),'<pre>'.print_r($json,true).'</pre>')."\n";
                     } else {
-                        $errorMessage .= sprintf(__("Reqeust sent to %s.", SLPLUS_PREFIX),$request_url)."\n<br>";
-                        $errorMessage .= sprintf(__("Received status %s.", SLPLUS_PREFIX),$status)."\n<br>";
+                        $errorMessage .= sprintf(__("Reqeust sent to %s.", 'csl-slplus'),$request_url)."\n<br>";
+                        $errorMessage .= sprintf(__("Received status %s.", 'csl-slplus'),$status)."\n<br>";
                     }
                 }
 

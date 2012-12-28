@@ -62,6 +62,8 @@ if ( ! class_exists( 'SLPPro' ) ) {
             // Filters
             //
             add_filter('slp_shortcode_atts',array($this,'extend_main_shortcode'));
+
+            add_filter('slp_action_boxes',array($this,'manage_locations_actionbar'));
         }
 
 
@@ -250,6 +252,27 @@ if ( ! class_exists( 'SLPPro' ) ) {
                     $valid_atts
                 );
         }
+
+         /**
+          * Add Pro Pack action buttons to the action bar
+          *
+          * @param array $actionBoxes - the existing action boxes, 'A'.. each named array element is an array of HTML strings
+          * @return string
+          */
+         function manage_locations_actionbar($actionBoxes) {
+                if (!$this->setPlugin()) { return $actionBoxes; }
+                $actionBoxes['C'][] =
+                        '<p class="centerbutton">' .
+                            "<a class='like-a-button' href='#' "            .
+                                    "onclick=\"doAction('createpage','"     .
+                                        __('Create Pages?',SLPLUS_PREFIX)   .
+                                        "')\" name='createpage_selected'>"  .
+                                        __('Create Pages', SLPLUS_PREFIX)   .
+                             '</a>'                                         .
+                        '</p>'
+                ;
+                return $actionBoxes;
+         }
 
         /**
          * Report Downloads admin header, setup JavaScript.

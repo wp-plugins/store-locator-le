@@ -353,9 +353,11 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
                             }
                         }
                     }
-                }
+                } //--- Create Page Action
 
-            }
+                do_action('slp_managelocations_action');
+                
+            } //--- REQUEST['act'] is set
 
 
             //------------------------------------------------------------------------

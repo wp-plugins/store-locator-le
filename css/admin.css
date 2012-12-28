@@ -244,6 +244,10 @@ div#tag_block {
 }
 div#slplus_actionbar div#tag_actions {
     clear: both;
+    width: 360px;
+}
+div#slplus_actionbar div#tag_actions A{
+    display: inline-block;
 }
 div#slplus_actionbar div#tagentry {
     clear:both;
@@ -279,7 +283,7 @@ div.filterbox
     text-align: center;
     padding: 0px;
     margin: 0px;
-    width: 180px;
+    min-width: 180px;
     height: 70px;
     vertical-align: top;
 }

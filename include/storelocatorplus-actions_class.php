@@ -220,7 +220,7 @@ if (! class_exists('SLPlus_Actions')) {
         function getCompoundOption($optionName,$default='') {
             if (!$this->setParent()) { return; }
             $matches = array();
-            if (preg_match('/^(.*?)\[(.*?)\]/',$optionName,&$matches) === 1) {
+            if (preg_match('/^(.*?)\[(.*?)\]/',$optionName,$matches) === 1) {
                 if (!isset($this->parent->mapsettingsData[$matches[1]])) {
                     $this->parent->mapsettingsData[$matches[1]] = get_option($matches[1],$default);
                 }
