@@ -2,7 +2,7 @@
   global $sl_search_label,
       $sl_radius_label, $r_options,
       $cs_options, $slplus_state_options, $sl_country_options,
-      $slplus_plugin, $slplus_name_label;
+      $slplus_plugin;
       $slp_SearchDivs = new SLPlus_UI_DivManager();
 ?>
 <form onsubmit='cslmap.searchLocations(); return false;' id='searchForm' action=''>
@@ -20,7 +20,7 @@
               ?>
           <div id='addy_in_city'>
               <select id='addressInput2' onchange='aI=document.getElementById("searchForm").addressInput;if(this.value!=""){oldvalue=aI.value;aI.value=this.value;}else{aI.value=oldvalue;}'>
-                  <option value=''>--Search By City--</option>
+                  <option value=''><?php print get_option(SLPLUS_PREFIX.'_search_by_city_pd_label',__('--Search By City--','csl-slplus')); ?></option>
                   <?php echo $cs_options?>
               </select>
           </div>
@@ -41,7 +41,7 @@ ob_start();
                   print get_option(SLPLUS_PREFIX.'_state_pd_label');
                   ?></label>
               <select id='addressInputState' onchange='aI=document.getElementById("searchForm").addressInput;if(this.value!=""){oldvalue=aI.value;aI.value=this.value;}else{aI.value=oldvalue;}'>
-                  <option value=''>--Search By State--</option>
+                  <option value=''><?php print get_option(SLPLUS_PREFIX.'_search_by_state_pd_label',__('--Search By State--','csl-slplus')); ?></option>
                   <?php echo $slplus_state_options?>
               </select>
           </div>
@@ -60,7 +60,7 @@ ob_start();
           ?>
           <div id='addy_in_country'>
               <select id='addressInput3' onchange='aI=document.getElementById("searchForm").addressInput;if(this.value!=""){oldvalue=aI.value;aI.value=this.value;}else{aI.value=oldvalue;}'>
-              <option value=''>--Search By Country--</option>
+              <option value=''><?php print get_option(SLPLUS_PREFIX.'_search_by_country_pd_label',__('--Search By Country--','csl-slplus')); ?></option>
               <?php echo $sl_country_options?>
               </select>
           </div>
@@ -125,48 +125,34 @@ ob_start();
                     global $slp_thishtml_40;
                     $slp_thishtml_40 = ob_get_clean();
                     add_filter('slp_search_form_divs',array($slp_SearchDivs,'buildDiv40'),40);
-              }
+                }
 
-              // ----------------------------------------------
-              // We are showing the name search
-              //
-              if (get_option(SLPLUS_PREFIX.'_show_search_by_name') == 1) {
-                  ob_start();
-                  ?>
-                  <div id='name_search_div' class='search_item'>
-                      <label for='nameSearch'><?php echo $slplus_name_label?></label>
-                      <input type='text' id='nameSearch' size='50' />
-                  </div>
-                  <?php
-                    global $slp_thishtml_50;
-                    $slp_thishtml_50 = ob_get_clean();
-                    add_filter('slp_search_form_divs',array($slp_SearchDivs,'buildDiv50'),50);
-              }
-          }
-          ?>
+                /*
+                 * Name Search
+                 */
+                global $slp_thishtml_50;
+                $slp_thishtml_50 = $slplus_plugin->UI->create_input_div(
+                        'nameSearch',
+                        get_option('sl_name_label',__('Name of Store','csl-slplus')),
+                        '',
+                        (get_option(SLPLUS_PREFIX.'_show_search_by_name',0) == 0),
+                        'nameSearch'
+                        );
+                add_filter('slp_search_form_divs',array($slp_SearchDivs,'buildDiv50'),50);
+            }
 
-          <?php
-            //------------------------------------------------
-            // We are not hiding the address input
-            //
-            ob_start();
-            if (get_option(SLPLUS_PREFIX.'_hide_address_entry') == 0) {
-            ?>
-                <div id='addy_in_address' class='search_item'>
-                    <label for="addressInput"><?php echo $sl_search_label?></label>
-                    <input type='text' id='addressInput' size='50' />
-               </div>
-           <?php
-           } else {
-           ?>
-            <div id='addy_in_address' class='search_item'>
-                <input type='hidden' id='addressInput' value='' />
-            </div>
-         <?php
-         }
-        global $slp_thishtml_60;
-        $slp_thishtml_60 = ob_get_clean();
-        add_filter('slp_search_form_divs',array($slp_SearchDivs,'buildDiv60'),60);
+            /*
+             * Address input
+             */
+            global $slp_thishtml_60;
+            $slp_thishtml_60 = $slplus_plugin->UI->create_input_div(
+                    'addressInput',
+                    $sl_search_label,
+                    '',
+                    (get_option(SLPLUS_PREFIX.'_hide_address_entry',0) == 1),
+                    'add_in_address'
+                    );
+            add_filter('slp_search_form_divs',array($slp_SearchDivs,'buildDiv60'),60);
           ?>
 
           <?php
