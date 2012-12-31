@@ -3,7 +3,7 @@
  * Plugin Name: Store Locator Plus : Store Pages
  * Plugin URI: http://www.charlestonsw.com/product/store-locator-plus-store-pages/
  * Description: A premium add-on pack for Store Locator Plus that creates custom pages for your locations.
- * Version: 0.1
+ * Version: 3.8.2
  * Author: Charleston Software Associates
  * Author URI: http://charlestonsw.com/
  * Requires at least: 3.3

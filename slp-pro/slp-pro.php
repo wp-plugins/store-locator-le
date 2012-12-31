@@ -3,7 +3,7 @@
  * Plugin Name: Store Locator Plus : Pro Pack
  * Plugin URI: http://www.charlestonsw.com/product/store-locator-plus/
  * Description: A premium add-on pack for Store Locator Plus that provides more admin power tools for wrangling locations.
- * Version: 0.1
+ * Version: 3.8.2
  * Author: Charleston Software Associates
  * Author URI: http://charlestonsw.com/
  * Requires at least: 3.3

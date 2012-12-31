@@ -111,11 +111,11 @@ if (! class_exists('SLPlus_AdminUI')) {
 
              $this->parent->settings->add_item(
                 'Google Communication',
-                'Google API Key',
+                __('Google API Key','csl-slplus'),
                 'api_key',
                 'text',
                 false,
-                'Your Google Maps V3 API Key.  You will need to ' .
+                'Your Google Maps V3 API Key.  Used for searches only. You will need to ' .
                 '<a href="http://code.google.com/apis/console/" target="newinfo">'.
                 'go to Google</a> to get your Google Maps API Key.'
             );
@@ -123,7 +123,7 @@ if (! class_exists('SLPlus_AdminUI')) {
 
              $this->parent->settings->add_item(
                 'Google Communication',
-                'Geocode Retries',
+                __('Geocode Retries','csl-slplus'),
                 'goecode_retries',
                 'list',
                 false,
@@ -257,6 +257,9 @@ if (! class_exists('SLPlus_AdminUI')) {
 
         /**
          * GeoCode a given location and update it in the database.
+         *
+         * Google Server-Side API geocoding is documented here:
+         * https://developers.google.com/maps/documentation/geocoding/index
          * 
          * @global type $wpdb
          * @global type $slplus_plugin
@@ -267,7 +270,11 @@ if (! class_exists('SLPlus_AdminUI')) {
             global $wpdb, $slplus_plugin;
 
             $delay = 0;
-            $base_url = "http://maps.googleapis.com/maps/api/geocode/json?sensor=false";
+            $request_url =
+                'http://maps.googleapis.com/maps/api/geocode/json'.
+                '?sensor=false' .
+                '&address=' . urlencode($address)
+                ;
 
             // Loop through for X retries
             //
@@ -278,7 +285,6 @@ if (! class_exists('SLPlus_AdminUI')) {
                 $iterations--;
 
                 // Iterate through the rows, geocoding each address
-                $request_url = $base_url . "&address=" . urlencode($address);
                 $errorMessage = '';
 
 
