@@ -3,7 +3,7 @@
 Plugin Name: Google Maps via Store Locator Plus
 Plugin URI: http://www.charlestonsw.com/products/store-locator-plus/
 Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Gooogle Maps.  This is a highly customizable, easily expandable, enterprise-class location management system.
-Version: 3.7.7
+Version: 3.8.2
 Author: Charleston Software Associates
 Author URI: http://www.charlestonsw.com
 License: GPL3
@@ -32,7 +32,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 */
 
-if (isset($_SERVER['SERVER_NAME']) && ($_SERVER['SERVER_NAME']==='wpdev.cybersprocket.com')){
+if (isset($_SERVER['SERVER_NAME']) && ($_SERVER['SERVER_NAME']==='d.csa.com')){
     error_reporting(E_ALL);
 }
 
@@ -104,7 +104,6 @@ if (defined('SLPLUS_PREFIX') === false) {
 //
 global $slplus_plugin;
 include_once(SLPLUS_PLUGINDIR . '/include/config.php'	);
-include_once(SLPLUS_COREDIR   . 'functions.sl.php'	);
 
 // Errors?
 //
@@ -126,6 +125,9 @@ require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-activation_class.php'
 require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-ui_class.php');
 $slplus_plugin->UI = new SLPlus_UI(array('parent'=>$slplus_plugin));
 
+// TODO Pro Pack Temp Include
+require_once(SLPLUS_PLUGINDIR . '/slp-pro/slp-pro.php');
+
 require_once(SLPLUS_PLUGINDIR . '/include/mobile-listener.php');
 
 require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-ajax_handler_class.php');
@@ -144,7 +146,9 @@ add_action('shutdown'           ,array($slplus_plugin->Actions,'shutdown')      
 //
 add_action('admin_menu'         ,array($slplus_plugin->Actions,'admin_menu')           );
 add_action('admin_init'         ,array($slplus_plugin->Actions,'admin_init'),10        );
-add_action('admin_head'         , 'slpreport_downloads'                         );
+if (isset($slplus_plugin->ProPack)) {
+    add_action('admin_head'         ,array($slplus_plugin->ProPack,'report_downloads')     );
+}
 
 // Short Codes
 //
