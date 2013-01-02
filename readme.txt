@@ -4,8 +4,8 @@ Contributors: charlestonsw
 Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
 Tags: google maps, store finder, store locator, store locater, google, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus, bing map, bing, yahoo maps, yahoo, mapping, retail
 Requires at least: 3.3
-Tested up to: 3.4.3
-Stable tag: 3.7.7
+Tested up to: 3.5
+Stable tag: 3.8.3
 
 Store Locator Plus makes it easy to put a fully functional store finder on your site.
 The most active store locator plugin with monthly updates!
@@ -70,6 +70,7 @@ Premium add-on packages are available to extend the capabilities of this plugin.
 ** Categorize your stores.
 ** Show markers and icons for each category.
 ** Show the category selection/filter on the search form.
+* [Widget Pack](http://www.charlestonsw.com/product/store-locator-plus-widget-pack/) : Our first 3rd party add-on. Put location search in your widget-hole.
 
 If you are a plugin developer you will be interested in the new "Roll Your Own" program where you can create SLP based premium (or free) add-ons of your own.   Create something great and list it on our site!
 
@@ -191,6 +192,7 @@ Current premium add-ons:
 * [Pro Pack](http://www.charlestonsw.com/product/store-locator-plus) : More control over the map, search form, loading locations.
 * [Store Pages](http://www.charlestonsw.com/product/store-locator-plus-store-pages) : Create SEO friendly WordPress pages for your store locations.
 * [Tagalong](http://www.charlestonsw.com/product/store-locator-plus-tagalong/) : Add custom map markers based on location categories.
+* [Widget Pack](http://www.charlestonsw.com/product/store-locator-plus-widget-pack/) : SLP sidebar widgets.
 
 = Who is Charleston Software Associates? =
 
@@ -256,95 +258,37 @@ Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/su
 
 I was listing the entire change log here but with weekly/bi-weekly updates it as getting much too long.
 
-= 3.7.7 (December 2012)  *
+= 3.8.3 (January 2013) =
 
-* Patch the anonymous function error that breaks SLP on sites using PHP 5.2 or earlier.
+* Map settings panel updates to prep for Enhanced Maps.
+* Add the on/off slider button method for new UI elements including the map on/off toggle on Enhanced Maps.
 
-= 3.7.6 (End November 2012)
+= 3.8.2 (December 31 2012) =
 
-* Directions start from entered address, or GPS location if location sensor is used.
-* Fixed hide radius option.   Radius allows a single entry, which becomes the default setting.
-* Update the Map Settings icon check.  Now recognizes remote icon URLs as valid entries.
-* Update the default theme to use a yellow v. salmon  highlight.
-* Multiple CSS/HTML docucment structure changes, test this update before installing if you've tweaked the CSS.
-** Results under map now in own table with ID.
-** Most results entries have their own span class with ID.
-* Add built-in WordPress update for premium add-ons.
-* Revise geocoding error messages.
-* Further performance improvement, smaller global function footprint.
-* More minor performance tweaks with less data I/O and less memory usage on the admin interface.
-* New Hooks/Filters for 3rd party add-ons
-** slp_edit_location_data - allow plugins to get ahold of the incoming location data prior to editing
-** slp_edit_location_redirect - prevent page redirect when updating location data (good for seeing edit error messages)
-** slp_pages_insert_post - allow plugins (Tagalong) to change the default store pages attributes
-** slp_pages_content - allow plugins to change how store pages content is built
-* [Enhanced Results](http://www.charlestonsw.com/product/store-locator-plus-enhanced-results) : Hours field can now render HTML (like <br/>)
-* [Pro Pack](http://www.charlestonsw.com/products/store-locator-plus/) - gets a couple more themes
-* [Pro Pack](http://www.charlestonsw.com/products/store-locator-plus/) - new shortcode attributes endicon and homeicon, requires Force Load JavaScript to be  disabled (WP 3.3 compatible themes only)
-* [Pro Pack](http://www.charlestonsw.com/products/store-locator-plus/) - theme selector cleaned up a bit, sorted and empties removed
-* [Pro Pack](http://www.charlestonsw.com/products/store-locator-plus/) - find locations text has been set to 'Find Locations' for the text button
-* [Store Pages](http://www.charlestonsw.com/product/store-locator-plus-store-pages) : Start moving all Store Pages related hooks into a completely separate class.
-** This will make it far easier to extend this premium add-on and have other add-ons (like Tagalong) interact with it.
-** Store Pages CreatePage() now accepts a keepcontent and post_status flag.
-** CreatePage() post_status of 'prior' keeps the previous publication state of a store page
+* Simplify geocoding calls.
+* Fix warnings for non Pro Pack users.
+* Rework Map Settings panel.
+* Add filters to map settings admin panel in preparation for Enhanced Maps plugin.
 
-= 3.7.5 (Turkey Day Aftermath) =
+= 3.8.1 (Christmas 1012) =
 
-* Make the search filter on manage locations work from page 2+ as well.
-* Fix cancel button on edit/manage locations.
-* Update the manage locations action/filter bar UI (prepare for more functions in tagalong/bulk processing).
-* Update the manage locations pagination interface, similar to WordPress admin panel UI.
-* Add filter: "slp_action_box_3_content" to allow add-ons to tweak that UI location.
+* Fix premature headers error messages on some installs (could cause site/plugin failure)
+* Fix call time reference warning message.
+* Improved over query limit messaging.
+* Update the manage locations action bar processing.
 
-= 3.7.4 (Mid-November 2012) =
+= 3.8 (Late-December 2012) =
 
-* Change to under-map results HTML structure, address blocks now use span with classes.
-** More control for 3rd party add-ons, removing extra <br/> tags in output.
-** Update some of the CSS templates to tweak new span classes to adjust output display.
-* Make store hours available to 3rd party add-ons.
-* JavaScript load/search tests for valid servers response.
-** Logs to console if SLP server does not return properly JSONP response.
-* Tested for WordPress 3.4.3 compatibility.
-* [Enhanced Results](http://www.charlestonsw.com/product/store-locator-plus-enhanced-results/) add-on has option to turn on the hours display under the map.
-
-= 3.7.3 (November 12 2012) =
-
-* Make has_cap() not crash WPMU installs.
-
-= 3.7.2 (November 9 2012) =
-
-* Wrap tag output in info bubble in div and span with tags.
-** Make it easier to "iconify" the tags with CSS.
-* Add more help to the starting image setting.
-* Consolidate and remove un-needed files, decreasing install package size.
-* Add CSS elements and filters for add/edit locations for better third party controls.
-* Style add locations page after manage locations edit page.
-* [Pro Pack](http://www.charlestonsw.com/products/store-locator-plus/) Patch: Using only_with_tag in the Pro Pack no longer requires you check off "Tag Input" under Map Settings/Search Form/Tags for the tag filter to work.
-* [Pro Pack](http://www.charlestonsw.com/products/store-locator-plus/) Added setting to customize "no results found" message that appears after a search with no results returned.
-
-= 3.7.1 (Early November 2012) =
-
-* Detect directory read error (permission/missing directory) for icons.
-* Add "turn of google maps js" for themes that  have a google maps call built-in.  Enabling this can break SLP.
-
-= 3.7 (November 2012) =
-
-* Prevent JavaScript warning if force load javascript is on and user is on a non-SLP map page.
-* Fix JavaScript error on some sites where a timing issue created a JavaScript error on formParams.
-* Further package reduction: merge csl-ajax-search file into ajax handler class.
-* Add SLP version to JSONP response to aid debugging.
-* Country added to JSONP output.
-* Default results output now shows country (if set) with address.
-* Envato Theme Forest Patch - fix open HTML under map
-** I've been told there is [a problem Envato knows about](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/troubleshooting/known-conflicts/) that they can't fix.
-** This update MIGHT work around their bug by stripping all newline whitespace out of SLP HTML BEFORE they bastardize it.
-* Prevent duplicate form entries on search form.
-** Some themes or plugins are causing the form field trigger to be called twice.  Very strange (and non-standard) behavior.
-** Do not use do_shortcode() in your custom themes.  It does bad things.
-* [Pro Pack](http://www.charlestonsw.com/product/store-locator-plus/)
-** New custom css entry on general settings makes it easy to tweak the look of the SLP listings.
-** Find Locations button text can be changed from admin panel
-* [Enhanced Results](http://www.charlestonsw.com/product/store-locator-plus-enhanced-results/)
-** Option to turn on telephone URI
-** Option to show/hide distance (default:show)
-** Option to show/hide country (default:show)
+* WordPress 3.5 testing.
+* Change admin page button bar to use standard WordPress style tabs.
+* Increase admin page performance, remove excess JavaScript from multiple locations.
+* Decrease memory footprint eliminating framework classes that are not used.
+* Added the Fournier theme for the Pro Pack / Enhanced Results add-ons.
+* Significant rework to the admin pages.  Far better isolation of code and memory management.
+* Added slp_shortcode_atts filter to allow add-ons to extend shortcode attributes.
+* Added slp_map_domains filter.
+* Added slp_map_encodings filter.
+* [Enhanced Results](http://www.charlestonsw.com/product/store-locator-plus-enhanced-results) Updates:
+** Added the [Results String](http://www.charlestonsw.com/support/documentation/store-locator-plus/enhanced-results-add-on/) setting, highly customized results formats.
+* [Enhanced Search](http://www.charlestonsw.com/product/store-locator-plus-enhanced-search) Updates:
+** Added placeholder option for name and address search field.  These are the instructions that appear in a field and disappear when clicked. HTML5 only.
