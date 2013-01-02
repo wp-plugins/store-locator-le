@@ -33,6 +33,86 @@ if (! class_exists('SLPlus_UI')) {
             }
         }
 
+
+        /**
+         * Set the plugin property to point to the primary plugin object.
+         *
+         * Returns false if we can't get to the main plugin object.
+         *
+         * @global wpCSL_plugin__slplus $slplus_plugin
+         * @return boolean true if plugin property is valid
+         */
+        function setPlugin() {
+            if (!isset($this->plugin) || ($this->plugin == null)) {
+                global $slplus_plugin;
+                $this->plugin = $slplus_plugin;
+            }
+            return (isset($this->plugin) && ($this->plugin != null));
+        }
+
+        /**
+         * Return the HTML for a slider button.
+         *
+         * The setting parameter will be used for several things:
+         * the div ID will be "settingid_div"
+         * the assumed matching label option will be "settingid_label" for WP get_option()
+         * the a href ID will be "settingid_toggle"
+         *
+         * @param string $setting - the ID for the setting
+         * @param string $label - the default label to show
+         * @param boolean $isChecked - default on/off state of checkbox
+         * @param string $onClick - the onClick javascript
+         * @return string - the slider HTML
+         */
+        function CreateSliderButton($setting=null, $label='', $isChecked = true, $onClick='') {
+            if ($setting === null) { return ''; }
+            if (!$this->setPlugin()) { return ''; }
+
+            $label   = $this->plugin->settings->get_item($setting.'_label',$label);
+            $checked = ($isChecked ? 'checked' : '');
+            $onClick = (($onClick === '') ? '' : ' onClick="'.$onClick.'"');
+
+            $content =
+                "<div id='{$setting}_div' class='onoffswitch-block'>" .
+                "<span class='onoffswitch-pretext'>$label</span>" .
+                "<div class='onoffswitch'>" .
+                "<input type='checkbox' name='onoffswitch' class='onoffswitch-checkbox' id='{$setting}-checkbox' $checked>" .
+                "<label class='onoffswitch-label' for='{$setting}-checkbox'  $onClick>" .
+                '<div class="onoffswitch-inner"></div>'.
+                "<div class='onoffswitch-switch'></div>".
+                '</label>'.
+                '</div>' .
+                '</div>';
+             return $content;
+        }
+
+
+        /**
+         * Returns true if the shortcode attribute='true' or settings is set to 1 (checkbox enabled)
+         *
+         * If the shortcode attribute = true
+         * OR
+         * attribute is not set (null) AND
+         * the setting is checked
+         *
+         *
+         * @param string $attribute - the key for the shortcode attribute
+         * @param string $setting - the key for the admin panel setting
+         * @return boolean
+         */
+        function ShortcodeOrSettingEnabled($attribute,$setting) {
+            if (!$this->setPlugin()) { return false; }
+
+            return (
+                    (strcasecmp($this->plugin->data[$attribute],'true')==0)
+                    ||
+                    (($this->plugin->data[$attribute] === null) &&
+                     (($this->plugin->settings->get_item($setting,0) == 1))
+                    )
+               );
+
+            }
+
         /**
          * Create a search form input div.
          */
@@ -187,7 +267,8 @@ if (! class_exists('SLPlus_UI')) {
 
             // Search / Map Actions
             //
-            add_action('slp_render_search_form',array('SLPlus_UI','slp_render_search_form'));
+            add_action('slp_render_search_form' ,array('SLPlus_UI','slp_render_search_form'));
+            add_action('slp_render_map'         ,array('SLPlus_UI','render_the_map'));
 
             //todo: make sure map type gets set to a sane value before getting here. Maybe not...
             //todo: if we allow map setting overrides via shortcode attributes we will need
@@ -197,7 +278,11 @@ if (! class_exists('SLPlus_UI')) {
             // Localize the CSL Script
             $this->localizeCSLScript();
 
-            return $this->rawDeal($this->parent->helper->get_string_from_phpexec(SLPLUS_COREDIR . 'templates/search_and_map.php'));
+            return
+                '<div id="sl_div">' .
+                    $this->rawDeal($this->parent->helper->get_string_from_phpexec(SLPLUS_COREDIR . 'templates/search_and_map.php')) .
+                '</div>'
+                ;
         }
 
 
@@ -390,6 +475,75 @@ if (! class_exists('SLPlus_UI')) {
             global $slplus_plugin;
             echo apply_filters('slp_search_form_html',$slplus_plugin->helper->get_string_from_phpexec(SLPLUS_COREDIR . 'templates/search_form.php'));
         }
+
+        /**
+         * Render the SLP map
+         *
+         */
+        function render_the_map() {
+            global $sl_width, $sl_height, $sl_width_units, $sl_height_units, $slplus_plugin;
+
+            // Start the map table
+            //
+            $content =  
+                '<table id="map_table" width="100%" cellspacing="0px" cellpadding="0px">' .
+                '<tbody id="map_table_body">' .
+                '<tr id="map_table_row">'.
+                '<td id="map_table_cell" width="100%" valign="top">'
+                ;
+
+            // If starting image is set, create the overlay div.
+            //
+            $startingImage=get_option('sl_starting_image','');
+            if ($startingImage != '') {
+                $startingImage =
+                    ((preg_match('/^http/',$startingImage) <= 0) ?SLPLUS_PLUGINURL:'').
+                    $startingImage
+                    ;
+
+                $content .=
+                    "<div id='map_box_image' " .
+                        "style='width:$sl_width$sl_width_units; height:$sl_height$sl_height_units;'>" .
+                    "<img src='$startingImage'>".
+                    '</div>' .
+                    '<div id="map_box_map">'
+                    ;
+            }
+            
+            // The Map Div
+            //
+            $content .=
+                "<div id='map' ".
+                    "style='width:$sl_width$sl_width_units; height:$sl_height$sl_height_units;'>".
+                '</div>'
+                ;
+
+            // Credits Line
+            if (!(get_option('sl_remove_credits',0)==1)) {
+                $content .=
+                    "<div id='slp_tagline'style='width:$sl_width$sl_width_units;'>" .
+                        __('search provided by', 'csl-slplus') .
+                        "<a href='".$slplus_plugin->url."' target='_blank'>".
+                            $slplus_plugin->name.
+                        "</a>".
+                    '</div>'
+                    ;
+            }
+
+            // If starting image is set, close the overlay div.
+            //
+            if ($startingImage != '') {
+                $content .= '</div>';
+            }
+            
+            // Close the table
+            //
+            $content .= '</td></tr></tbody></table>';
+
+            // Render
+            //
+            echo apply_filters('slp_map_html',$content);
+            }
 
         /**
          * Puts the tag list on the search form for users to select tags.

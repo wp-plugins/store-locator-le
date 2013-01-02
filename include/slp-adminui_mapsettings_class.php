@@ -62,17 +62,14 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
         // HELPER FUNCTIONS
         //=======================================
 
-        /**************************************
-         ** function: slp_createhelpdiv()
-         **
-         ** Generate the string that displays the help icon and the expandable div
-         ** that mimics the WPCSL-Generic forms more info buttons.
-         **
-         ** Parameters:
-         **  $divname (string, required) - the name of the div to toggle
-         **  $msg (string, required) - the message to display
-         **/
-        function slp_createhelpdiv($divname,$msg) {
+        /**
+         * Create a help div next to a settings entry.
+         *
+         * @param string $divname - name of the div
+         * @param string $msg - the message to dislpay
+         * @return string - the HTML
+         */
+        function CreateHelpDiv($divname,$msg) {
             return "<a class='moreinfo_clicker' onclick=\"swapVisibility('".SLPLUS_PREFIX."-help$divname');\" href=\"javascript:;\">".
                 '<div class="'.SLPLUS_PREFIX.'-moreicon" title="click for more info"><br/></div>'.
                 "</a>".
@@ -80,48 +77,20 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                     $msg.
                 "</div>"
                 ;
-        }
+
+            }
 
         /**
-         * function: SavePostToOptionsTable
+         * Generate the HTML for a checkbox settings interface element.
+         *
+         * @param string $boxname - the name of the checkbox (db option name)
+         * @param string $label - default '', the label to go in front of the checkbox
+         * @param string $msg - default '', the help message
+         * @param string $prefix - defaults to SLPLUS_PREFIX, can be ''
+         * @param boolean $disabled - defaults to false
+         * @param mixed $default
+         * @return type
          */
-        function SavePostToOptionsTable($optionname,$default=null) {
-            if ($default != null) {
-                if (!isset($_POST[$optionname])) {
-                    $_POST[$optionname] = $default;
-                }
-            }
-            if (isset($_POST[$optionname])) {
-                update_option($optionname,$_POST[$optionname]);
-            }
-        }
-
-        /**************************************
-         ** function: SaveCheckboxToDB
-         **
-         ** Update the checkbox setting in the database.
-         **
-         ** Parameters:
-         **  $boxname (string, required) - the name of the checkbox (db option name)
-         **  $prefix (string, optional) - defaults to SLPLUS_PREFIX, can be ''
-         **/
-        function SaveCheckboxToDB($boxname,$prefix = SLPLUS_PREFIX, $separator='-') {
-            $whichbox = $prefix.$separator.$boxname;
-            $_POST[$whichbox] = isset($_POST[$whichbox])?1:0;
-            $this->SavePostToOptionsTable($whichbox,0);
-        }
-
-        /**************************************
-        ** function: CreateCheckboxDiv
-         **
-         ** Update the checkbox setting in the database.
-         **
-         ** Parameters:
-         **  $boxname (string, required) - the name of the checkbox (db option name)
-         **  $label (string, optional) - default '', the label to go in front of the checkbox
-         **  $message (string, optional) - default '', the help message
-         **  $prefix (string, optional) - defaults to SLPLUS_PREFIX, can be ''
-         **/
         function CreateCheckboxDiv($boxname,$label='',$msg='',$prefix=SLPLUS_PREFIX, $disabled=false, $default=0) {
             $whichbox = $prefix.$boxname;
             return
@@ -136,14 +105,20 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                         ($disabled?"disabled='disabled'":' ') .
                     ">".
                     "</div>".
-                    $this->slp_createhelpdiv($boxname,$msg) .
+                    $this->CreateHelpDiv($boxname,$msg) .
                 "</div>"
                 ;
-        }
-
+            }
 
         /**
-         * function: CreateInputDiv
+         * Generate the HTML for an input settings interface element.
+         *
+         * @param type $boxname
+         * @param type $label
+         * @param type $msg
+         * @param type $prefix
+         * @param type $default
+         * @return type
          */
         function CreateInputDiv($boxname,$label='',$msg='',$prefix=SLPLUS_PREFIX, $default='') {
             $whichbox = $prefix.$boxname;
@@ -153,13 +128,21 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                         "<label for='$whichbox'>$label:</label>".
                         "<input  name='$whichbox' value='".$this->parent->Actions->getCompoundOption($whichbox,$default)."'>".
                     "</div>".
-                    $this->slp_createhelpdiv($boxname,$msg).
+                    $this->CreateHelpDiv($boxname,$msg).
                  "</div>"
                 ;
         }
 
         /**
-         * function: CreatePulldownDiv
+         * Generate the HTML for a Pulldown settings interface element.
+         * 
+         * @param type $boxname
+         * @param type $values
+         * @param type $label
+         * @param type $msg
+         * @param type $prefix
+         * @param type $default
+         * @return string
          */
         function CreatePulldownDiv($boxname,$values,$label='',$msg='',$prefix=SLPLUS_PREFIX, $default='') {
             $whichbox = $prefix.$boxname;
@@ -180,7 +163,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
 
             $content.=      "</select>".
                         "</div>".
-                        $this->slp_createhelpdiv($boxname,$msg).
+                        $this->CreateHelpDiv($boxname,$msg).
                     "</div>"
                     ;
 
@@ -188,7 +171,23 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
         }
 
         /**
-         * function: CreateTextAreaDiv
+         * Generate the HTML for a sub-heading label in a settings panel.
+         * 
+         * @param type $label
+         */
+        function CreateSubheadingLabel($label) {
+            return "<p class='slp_admin_info'><strong>$label</strong></p>";
+            }
+
+        /**
+         * Generate the HTML for a text area settings interface element.
+         * 
+         * @param type $boxname
+         * @param type $label
+         * @param type $msg
+         * @param type $prefix
+         * @param type $default
+         * @return type
          */
         function CreateTextAreaDiv($boxname,$label='',$msg='',$prefix=SLPLUS_PREFIX, $default='') {
             $whichbox = $prefix.$boxname;
@@ -198,10 +197,40 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                         "<label for='$whichbox'>$label:</label>".
                         "<textarea  name='$whichbox'>".stripslashes(esc_textarea(get_option($whichbox,$default)))."</textarea>".
                     "</div>".
-                    $this->slp_createhelpdiv($boxname,$msg).
+                    $this->CreateHelpDiv($boxname,$msg).
                  "</div>"
                 ;
 
+        }
+
+        /**
+         * Save a POST variable to the WP options table.
+         *
+         * @param string $optionname
+         * @param string $default
+         */
+        function SavePostToOptionsTable($optionname,$default=null) {
+            if ($default != null) {
+                if (!isset($_POST[$optionname])) {
+                    $_POST[$optionname] = $default;
+                }
+            }
+            if (isset($_POST[$optionname])) {
+                update_option($optionname,$_POST[$optionname]);
+            }
+        }
+
+        /**
+         * Save a checkbox form variable to the WP options table.
+         *
+         * @param string $boxname - the name of the checkbox (db option name)
+         * @param string $prefix - defaults to SLPLUS_PREFIX, can be ''
+         * @param string $separator - the option name separator
+         */
+        function SaveCheckboxToDB($boxname,$prefix = SLPLUS_PREFIX, $separator='-') {
+            $whichbox = $prefix.$separator.$boxname;
+            $_POST[$whichbox] = isset($_POST[$whichbox])?1:0;
+            $this->SavePostToOptionsTable($whichbox,0);
         }
 
 
@@ -221,14 +250,12 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                 __('Extended settings are available in the <a href="%s">%s</a> premium add-on.',SLPLUS_PREFIX)
                ;
 
+
             // Features
             //
             $slpDescription =
-                "<div class='section_column'>".
-                "<div class='map_designer_settings'>".
-                "<h2>".__('Features', SLPLUS_PREFIX)."</h2>".
                 "<div class='section_column_content'>" .
-                '<p class="slp_admin_info"><strong>'.__('Initial Look and Feel',SLPLUS_PREFIX).'</strong></p>' .
+                $this->CreateSubheadingLabel(__('Initial Look and Feel','csl-slplus')) .
                 "<div class='form_entry'>" .
                 "<label for='sl_remove_credits'>".__('Remove Credits', SLPLUS_PREFIX)."</label>" .
                 "<input name='sl_remove_credits' value='1' type='checkbox' $checked3>" .
@@ -275,7 +302,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
 
                 // Features : Country
                 $slpDescription .=
-                    '<p class="slp_admin_info" style="clear:both;"><strong>'.__('Country',SLPLUS_PREFIX).'</strong></p>' .
+                    $this->CreateSubheadingLabel(__('Country','csl-slplus')) .
                     "<div class='form_entry'>" .
                     "<label for='google_map_domain'>". __("Map Domain", SLPLUS_PREFIX) . "</label>" .
                     "<select name='google_map_domain'>"
@@ -294,15 +321,12 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                     $selected=(get_option('sl_map_character_encoding')==$sl_value)?" selected " : "";
                     $slpDescription .= "<option value='$sl_value' $selected>$key</option>\n";
                 }
-                $slpDescription .= "</select></div></div></div></div>";
+                $slpDescription .= "</select></div></div>";
                 $mapSettings['features'] = apply_filters('slp_map_features_settings',$slpDescription);
 
                 // Settings
                 //
                 $slpDescription =
-                    "<div class='section_column'>" .
-                    "<div class='map_designer_settings'>" .
-                    "<h2>".__('Settings', SLPLUS_PREFIX)."</h2>" .
                     "<div class='section_column_content'>" .
                     '<p class="slp_admin_info" style="clear:both;"><strong>'.__('Dimensions',SLPLUS_PREFIX).'</strong></p>' .
                     $slplus_plugin->AdminUI->MapSettings->CreatePulldownDiv(
@@ -381,16 +405,13 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                             )
                         ;
                 }
-                $slpDescription .= "</div></div></div></div>";
+                $slpDescription .= "</div></div>";
                 $mapSettings['settings'] = apply_filters('slp_map_settings_settings',$slpDescription);
 
 
             // ===== Icons
             //
             $slpDescription =
-                "<div class='section_column'>".
-                    "<div class='map_designer_settings'>".
-                        "<h2>".__('Icons', SLPLUS_PREFIX)."</h2>".
                         $this->parent->data['iconNotice'] .
                         "<div class='form_entry'>".
                             "<label for='icon'>".__('Home Icon', SLPLUS_PREFIX)."</label>".
@@ -404,9 +425,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                             "<input id='icon2' name='icon2' dir='rtl' size='45' value='".$this->parent->data['endicon']."' ".
                                 'onchange="document.getElementById(\'prev2\').src=this.value">'.
                             "<img id='prev2' src='".$this->parent->data['endicon']."'align='top'><br/>".
-                            $this->parent->data['endIconPicker'].
-                        "</div>".
-                    "</div>"
+                            $this->parent->data['endIconPicker']
                 ;
             $mapSettings['icons'] = apply_filters('slp_map_icons_settings',$slpDescription);
 
@@ -414,9 +433,24 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
             $slpDescription =
                 "<div id='map_settings'>" .
                     sprintf('<p style="display:block; clear: both;">'.$slplus_message.'</p>',$slplus_plugin->purchase_url,'Pro Pack') .
-                    $mapSettings['features'] .
-                    $mapSettings['settings'] .
-                    $mapSettings['icons'] .
+                    $this->CreateSettingsGroup(
+                                        'map_features',
+                                        __('Features','csl-slplus'),
+                                        '',
+                                        $mapSettings['features']
+                                        ) .
+                    $this->CreateSettingsGroup(
+                                        'map_settings',
+                                        __('Settings','csl-slplus'),
+                                        '',
+                                        $mapSettings['settings']
+                                        ) .
+                    $this->CreateSettingsGroup(
+                                        'map_icons',
+                                        __('Icons','csl-slplus'),
+                                        '',
+                                        $mapSettings['icons']
+                                        ) .
                 "</div>"
                 ;
 
@@ -556,96 +590,86 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                 if ($_POST['height_units'] == '%') {
                     $_POST['height'] = max(0,min($_POST['height'],100));
                 }
-                update_option('sl_map_height_units', $_POST['height_units']);
-                update_option('sl_map_height', $_POST['height']);
 
                 // Width if % set range 0..100
                 if ($_POST['width_units'] == '%') {
                     $_POST['width'] = max(0,min($_POST['width'],100));
                 }
-                update_option('sl_map_width_units', $_POST['width_units']);
-                update_option('sl_map_width', $_POST['width']);
 
-                update_option('sl_map_home_icon', $_POST['icon']);
-                update_option('sl_map_end_icon', $_POST['icon2']);
-
-
-                // Text boxes
+                // Standard Input Saves
                 //
-                $BoxesToHit = array(
-                    'sl_language'                           ,
-                    'sl_map_character_encoding'             ,
-                    'sl_map_radii'                          ,
-                    'sl_instruction_message'                ,
-                    'sl_zoom_level'                         ,
-                    'sl_zoom_tweak'                         ,
-                    'sl_map_type'                           ,
-                    'sl_num_initial_displayed'              ,
-                    'sl_distance_unit'                      ,
-                    'sl_name_label'                         ,
-                    'sl_radius_label'                       ,
-                    'sl_search_label'                       ,
-                    'sl_website_label'                      ,
-
-                    SLPLUS_PREFIX.'_label_directions'       ,
-                    SLPLUS_PREFIX.'_label_fax'              ,
-                    SLPLUS_PREFIX.'_label_hours'            ,
-                    SLPLUS_PREFIX.'_label_phone'            ,
-
-                    SLPLUS_PREFIX.'_message_noresultsfound' ,
-
-                    'sl_starting_image'                     ,
-                    SLPLUS_PREFIX.'_tag_search_selections'  ,
-                    SLPLUS_PREFIX.'_map_center'             ,
-                    SLPLUS_PREFIX.'_maxreturned'            ,
-
-                    SLPLUS_PREFIX.'_search_tag_label'       ,
-                    SLPLUS_PREFIX.'_state_pd_label'         ,
-                    SLPLUS_PREFIX.'_find_button_label'      ,
-
+                $BoxesToHit = 
+                    apply_filters('slp_save_map_settings_inputs',
+                        array(
+                            'sl_language'                           ,
+                            'sl_map_character_encoding'             ,
+                            'sl_map_radii'                          ,
+                            'sl_instruction_message'                ,
+                            'sl_zoom_level'                         ,
+                            'sl_zoom_tweak'                         ,
+                            'sl_map_height_units'                   ,
+                            'sl_map_height'                         ,
+                            'sl_map_width_units'                    ,
+                            'sl_map_width'                          ,
+                            'sl_map_home_icon'                      ,
+                            'sl_map_end_icon'                       ,
+                            'sl_map_type'                           ,
+                            'sl_num_initial_displayed'              ,
+                            'sl_distance_unit'                      ,
+                            'sl_name_label'                         ,
+                            'sl_radius_label'                       ,
+                            'sl_search_label'                       ,
+                            'sl_starting_image'                     ,
+                            'sl_website_label'                      ,
+                            SLPLUS_PREFIX.'_label_directions'       ,
+                            SLPLUS_PREFIX.'_label_fax'              ,
+                            SLPLUS_PREFIX.'_label_hours'            ,
+                            SLPLUS_PREFIX.'_label_phone'            ,
+                            SLPLUS_PREFIX.'_message_noresultsfound' ,
+                            SLPLUS_PREFIX.'_tag_search_selections'  ,
+                            SLPLUS_PREFIX.'_map_center'             ,
+                            SLPLUS_PREFIX.'_maxreturned'            ,
+                            SLPLUS_PREFIX.'_search_tag_label'       ,
+                            SLPLUS_PREFIX.'_state_pd_label'         ,
+                            SLPLUS_PREFIX.'_find_button_label'      ,
+                        )
                     );
                 foreach ($BoxesToHit as $JustAnotherBox) {
                     $this->SavePostToOptionsTable($JustAnotherBox);
                 }
 
-
-                // Checkboxes with custom names
+                // Checkboxes
                 //
-                $BoxesToHit = array(
-                    SLPLUS_PREFIX.'-force_load_js',
-                    'sl_use_city_search',
-                    'sl_use_country_search',
-                    'sl_load_locations_default',
-                    'sl_map_overview_control',
-                    'sl_remove_credits',
-                    'slplus_show_state_pd',
-                    );
+                $BoxesToHit = 
+                    apply_filters('slp_save_map_settings_checkboxes',
+                        array(
+                            SLPLUS_PREFIX.'_show_tag_search'            ,
+                            SLPLUS_PREFIX.'_show_tag_any'               ,
+                            SLPLUS_PREFIX.'_email_form'                 ,
+                            SLPLUS_PREFIX.'_show_tags'                  ,
+                            SLPLUS_PREFIX.'_disable_find_image'         ,
+                            SLPLUS_PREFIX.'_disable_initialdirectory'   ,
+                            SLPLUS_PREFIX.'_disable_largemapcontrol3d'  ,
+                            SLPLUS_PREFIX.'_disable_scalecontrol'       ,
+                            SLPLUS_PREFIX.'_disable_scrollwheel'        ,
+                            SLPLUS_PREFIX.'_disable_search'             ,
+                            SLPLUS_PREFIX.'_disable_maptypecontrol'     ,
+                            SLPLUS_PREFIX.'_hide_radius_selections'     ,
+                            SLPLUS_PREFIX.'_hide_address_entry'         ,
+                            SLPLUS_PREFIX.'_show_search_by_name'        ,
+                            SLPLUS_PREFIX.'_use_email_form'             ,
+                            SLPLUS_PREFIX.'_use_location_sensor'        ,
+                            SLPLUS_PREFIX.'-force_load_js'              ,
+                            'sl_use_city_search'                        ,
+                            'sl_use_country_search'                     ,
+                            'sl_load_locations_default'                 ,
+                            'sl_map_overview_control'                   ,
+                            'sl_remove_credits'                         ,
+                            'slplus_show_state_pd'                      ,
+                            )
+                        );
                 foreach ($BoxesToHit as $JustAnotherBox) {
                     $this->SaveCheckBoxToDB($JustAnotherBox, '','');
-                }
-
-                // Checkboxes with normal names
-                //
-                $BoxesToHit = array(
-                    'show_tag_search',
-                    'show_tag_any',
-                    'email_form',
-                    'show_tags',
-                    'disable_find_image',
-                    'disable_initialdirectory',
-                    'disable_largemapcontrol3d',
-                    'disable_scalecontrol',
-                    'disable_scrollwheel',
-                    'disable_search',
-                    'disable_maptypecontrol',
-                    'hide_radius_selections',
-                    'hide_address_entry',
-                    'show_search_by_name',
-                    'use_email_form',
-                    'use_location_sensor',
-                    );
-                foreach ($BoxesToHit as $JustAnotherBox) {
-                    $this->SaveCheckBoxToDB($JustAnotherBox, SLPLUS_PREFIX, '_');
                 }
 
                 do_action('slp_save_map_settings');
@@ -1101,7 +1125,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
             do_action('slp_add_search_form_label_setting');
             $settingsHTML .= ob_get_clean() . '</div>';
 
-            $slpDescription .= $this->createSettingsGroup(
+            $slpDescription .= $this->CreateSettingsGroup(
                                     'search_labels',
                                     __('Labels','csl-slplus'),
                                     '',
@@ -1126,7 +1150,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
           * @param string $intro - the text to put directly under the header
           * @param string $content - the settings HTML
           */
-         function createSettingsGroup($slug=null, $header='Settings',$intro='',$content='') {
+         function CreateSettingsGroup($slug=null, $header='Settings',$intro='',$content='') {
              if ($slug === null) { return ''; }
 
              $content = 
