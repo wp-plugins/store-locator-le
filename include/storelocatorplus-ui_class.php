@@ -543,7 +543,7 @@ if (! class_exists('SLPlus_UI')) {
             // Render
             //
             echo apply_filters('slp_map_html',$content);
-            }
+        }
 
         /**
          * Puts the tag list on the search form for users to select tags.
