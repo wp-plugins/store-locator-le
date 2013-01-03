@@ -163,6 +163,7 @@ class wpCSL_settings__slplus {
         
                 $this->add_section(array(
                         'name' => 'Plugin Info',
+                        'div_id' => 'csa_plugin_info',
                         'description' => $this->get_broadcast(),
                         'auto' => false
                     )
@@ -411,7 +412,7 @@ class wpCSL_settings__slplus {
 
         // Show the plugin environment and info section on every plugin
         //
-        if ($this->render_csl_blocks) {
+        if ($this->render_csl_blocks && isset($this->sections['Plugin Info'])) {
             $this->sections['Plugin Info']->display();
         }
 
@@ -435,7 +436,7 @@ class wpCSL_settings__slplus {
 
         // Show the plugin environment and info section on every plugin
         //
-        if ($this->render_csl_blocks) {
+        if ($this->render_csl_blocks && isset($this->sections['Plugin Environment'])) {
             $this->sections['Plugin Environment']->display();
         }
         $this->render_javascript();
@@ -707,12 +708,9 @@ class wpCSL_settings__slplus {
                 '</div>';
     }
     
-    
-
-    /**------------------------------------
-     ** method: header
-     **
-     **/
+    /**
+     * Output the settings page header HTML
+     */
     function header() {
         echo "<div class='wrap'>\n";
         screen_icon(preg_replace('/\W/','_',$this->name));
@@ -720,20 +718,23 @@ class wpCSL_settings__slplus {
         echo "<form method='post' action='".$this->form_action."'>\n";
         echo settings_fields($this->prefix.'-settings');
 
-        echo "\n<div id=\"poststuff\" class=\"metabox-holder\">
-     <div class=\"meta-box-sortables\">
-       <script type=\"text/javascript\">
+        echo '<div id="csa_admin_wrapper" class="metabox-holder">' .
+                '<div class="meta-box-sortables">'
+           ;
+?>
+<script type="text/javascript">
          jQuery(document).ready(function($) {
              $('.postbox').children('h3, .handlediv').click(function(){
                  $(this).siblings('.inside').toggle();
              });
-         });         
+         });
          jQuery(document).ready(function($) {
-             $('.".$this->css_prefix."-moreicon').click(function(){
-                 $(this).siblings('.".$this->css_prefix."-moretext').toggle();
+             $('.<?php echo $this->css_prefix;?>-moreicon').click(function(){
+                 $(this).siblings('.<?php echo $this->css_prefix; ?>-moretext').toggle();
              });
-         });         
-       </script>\n";
+         });
+</script>
+<?php
     }
 
     /**------------------------------------
@@ -807,7 +808,8 @@ class wpCSL_settings_section__slplus {
     /**------------------------------------
      **/
     function __construct($params) {
-        $this->headerbar = true;        
+        $this->headerbar = true;
+        $this->innerdiv  = true;
         foreach ($params as $name => $value) {
             $this->$name = $value;
         }
@@ -866,19 +868,23 @@ class wpCSL_settings_section__slplus {
                <a name=\"".strtolower(strtr($this->name, ' ', '_'))."\"></a>
              </h3>";
         }             
-         
-         echo"<div class=\"inside\" " . (isset($this->start_collapsed) && $this->start_collapsed ? 'style="display:none;"' : '') . ">
-            <div class='section_description'>{$this->description}</div>
-    <table class=\"form-table\" style=\"margin-top: 0pt;\">\n";
 
+        if ($this->innerdiv) {
+            echo"<div class=\"inside\" " . (isset($this->start_collapsed) && $this->start_collapsed ? 'style="display:none;"' : '') .
+                 "><div class='section_description'>";
+         }
+         echo $this->description;
+         if ($this->innerdiv) {         
+            echo '</div><table class="form-table" style="margin-top: 0pt;">';
+         }
     }
 
     /**------------------------------------
      **/
     function footer() {
-        echo "</table>
-         </div>
-       </div>\n";
+        if ($this->innerdiv) {
+            echo '</table></div></div>';
+        }
     }
 
 }

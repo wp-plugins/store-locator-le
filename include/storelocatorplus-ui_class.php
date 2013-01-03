@@ -16,6 +16,7 @@ if (! class_exists('SLPlus_UI')) {
          * PUBLIC PROPERTIES & METHODS
          ******************************/
         private $usingThemeForest = false;
+        public  $resultsString = '';
 
         /*************************************
          * The Constructor
@@ -30,6 +31,102 @@ if (! class_exists('SLPlus_UI')) {
                     $this->$name = $sl_value;
                 }
             }
+        }
+
+
+        /**
+         * Set the plugin property to point to the primary plugin object.
+         *
+         * Returns false if we can't get to the main plugin object.
+         *
+         * @global wpCSL_plugin__slplus $slplus_plugin
+         * @return boolean true if plugin property is valid
+         */
+        function setPlugin() {
+            if (!isset($this->plugin) || ($this->plugin == null)) {
+                global $slplus_plugin;
+                $this->plugin = $slplus_plugin;
+            }
+            return (isset($this->plugin) && ($this->plugin != null));
+        }
+
+        /**
+         * Return the HTML for a slider button.
+         *
+         * The setting parameter will be used for several things:
+         * the div ID will be "settingid_div"
+         * the assumed matching label option will be "settingid_label" for WP get_option()
+         * the a href ID will be "settingid_toggle"
+         *
+         * @param string $setting - the ID for the setting
+         * @param string $label - the default label to show
+         * @param boolean $isChecked - default on/off state of checkbox
+         * @param string $onClick - the onClick javascript
+         * @return string - the slider HTML
+         */
+        function CreateSliderButton($setting=null, $label='', $isChecked = true, $onClick='') {
+            if ($setting === null) { return ''; }
+            if (!$this->setPlugin()) { return ''; }
+
+            $label   = $this->plugin->settings->get_item($setting.'_label',$label);
+            $checked = ($isChecked ? 'checked' : '');
+            $onClick = (($onClick === '') ? '' : ' onClick="'.$onClick.'"');
+
+            $content =
+                "<div id='{$setting}_div' class='onoffswitch-block'>" .
+                "<span class='onoffswitch-pretext'>$label</span>" .
+                "<div class='onoffswitch'>" .
+                "<input type='checkbox' name='onoffswitch' class='onoffswitch-checkbox' id='{$setting}-checkbox' $checked>" .
+                "<label class='onoffswitch-label' for='{$setting}-checkbox'  $onClick>" .
+                '<div class="onoffswitch-inner"></div>'.
+                "<div class='onoffswitch-switch'></div>".
+                '</label>'.
+                '</div>' .
+                '</div>';
+             return $content;
+        }
+
+
+        /**
+         * Returns true if the shortcode attribute='true' or settings is set to 1 (checkbox enabled)
+         *
+         * If the shortcode attribute = true
+         * OR
+         * attribute is not set (null) AND
+         * the setting is checked
+         *
+         *
+         * @param string $attribute - the key for the shortcode attribute
+         * @param string $setting - the key for the admin panel setting
+         * @return boolean
+         */
+        function ShortcodeOrSettingEnabled($attribute,$setting) {
+            if (!$this->setPlugin()) { return false; }
+
+            return (
+                    (strcasecmp($this->plugin->data[$attribute],'true')==0)
+                    ||
+                    (($this->plugin->data[$attribute] === null) &&
+                     (($this->plugin->settings->get_item($setting,0) == 1))
+                    )
+               );
+
+            }
+
+        /**
+         * Create a search form input div.
+         */
+        function create_input_div($fldID=null,$label='',$placeholder='',$hidden=false,$divID=null) {
+            if ($fldID === null) { return; }
+            if ($divID === null) { $divID = $fldID; }
+
+            $content =
+                ($hidden?'':"<div id='$divID' class='search_item'>") .
+                    (($hidden || ($label === '')) ? '' : "<label for='$fldID'>$label</label>") .
+                    "<input type='".($hidden?'hidden':'text')."' id='$fldID' placeholder='$placeholder' size='50' value='' />" .
+                ($hidden?'':"</div>")
+                ;
+            return $content;
         }
         
         /**
@@ -48,49 +145,52 @@ if (! class_exists('SLPlus_UI')) {
                    );
         }
 
-
-        /**************************************
-         ** function: render_shortcode
-         **
-         ** Process the store locator shortcode.
-         **
-         **/
+        /**
+         * Process the store locator plus shortcode.
+         *
+         * Variables this function uses and passes to the template
+         * we need a better way to pass vars to the template parser so we don't
+         * carry around the weight of these global definitions.
+         * the other option is to unset($GLOBAL['<varname>']) at then end of this
+         * function call.
+         *
+         * We now use $slplus_plugin->data to hold attribute data.
+         *
+         *
+         * @global type $wpdb
+         * @global type $slplus_plugin
+         * @global type $sl_search_label
+         * @global type $sl_width
+         * @global type $sl_height
+         * @global type $sl_width_units
+         * @global type $sl_height_units
+         * @global type $sl_radius_label
+         * @global type $r_options
+         * @global type $cs_options
+         * @global type $sl_country_options
+         * @global type $slplus_state_options
+         * @param type $attributes
+         * @param type $content
+         * @return string HTML the shortcode will render
+         */
          function render_shortcode($attributes, $content = null) {
-            // Variables this function uses and passes to the template
-            // we need a better way to pass vars to the template parser so we don't
-            // carry around the weight of these global definitions.
-            // the other option is to unset($GLOBAL['<varname>']) at then end of this
-            // function call.
-            //
-            // We now use $slplus_plugin->data to hold attribute data.
-            //
             global  $wpdb, $slplus_plugin,
                 $sl_search_label, $sl_width, $sl_height, $sl_width_units, $sl_height_units,
-                $sl_radius_label, $r_options, $sl_instruction_message, $cs_options, $slplus_name_label,
+                $sl_radius_label, $r_options, $cs_options,
                 $sl_country_options, $slplus_state_options;
 
-            //----------------------
-            // Attribute Processing
-            //
-            // The allowed attributes go in the shortcode_atts array.
-            //
-            if ($this->parent->license->packages['Pro Pack']->isenabled) {
-                $attributes =
-                    shortcode_atts(
-                        array(
-                            'endicon'          => null,
-                            'homeicon'         => null,
-                            'only_with_tag'    => null,
-                            'tags_for_pulldown'=> null,
-                            'theme'            => null,
-                        ),
-                        $attributes
-                        );
-                $slplus_plugin->data = array_merge(
-                        $slplus_plugin->data,
-                        (array) $attributes
-                        );
-            }
+
+            // Get Approved Shortcode Attributes
+            $attributes =
+                shortcode_atts(
+                    apply_filters('slp_shortcode_atts',array()),
+                    $attributes
+                   );
+            $slplus_plugin->data =
+                array_merge(
+                    $slplus_plugin->data,
+                    (array) $attributes
+                );
 
             $sl_height         = get_option('sl_map_height','500');
             $sl_height_units   = get_option('sl_map_height_units','px');
@@ -98,10 +198,6 @@ if (! class_exists('SLPlus_UI')) {
             $unit_display      = get_option('sl_distance_unit','mi');
             $sl_width          = get_option('sl_map_width','100');
             $sl_width_units    = get_option('sl_map_width_units','%');
-            $slplus_name_label = get_option('sl_name_label');
-
-            $sl_instruction_message = get_option('sl_instruction_message',__('Enter Your Address or Zip Code Above.',SLPLUS_PREFIX));
-
 
             $r_options      =(isset($r_options)         ?$r_options      :'');
             $cs_options     =(isset($cs_options)        ?$cs_options     :'');
@@ -148,17 +244,8 @@ if (! class_exists('SLPlus_UI')) {
                     }
                 }
             }
-
-            //----------------------
-            // Create Country Pulldown
-            //
-            if ($this->parent->license->packages['Pro Pack']->isenabled) {
-                $sl_country_options = slplus_create_country_pd();
-                $slplus_state_options = slplus_create_state_pd();
-            } else {
-                $sl_country_options = '';
-                $slplus_state_options = '';
-            }
+            $sl_country_options     = (isset($this->parent->ProPack) ? $this->parent->ProPack->create_country_pd() : '');
+            $slplus_state_options   = (isset($this->parent->ProPack) ? $this->parent->ProPack->create_state_pd()   : '');
 
             $columns = 1;
             $columns += (get_option('sl_use_city_search',0)!=1) ? 1 : 0;
@@ -180,7 +267,8 @@ if (! class_exists('SLPlus_UI')) {
 
             // Search / Map Actions
             //
-            add_action('slp_render_search_form',array('SLPlus_UI','slp_render_search_form'));
+            add_action('slp_render_search_form' ,array('SLPlus_UI','slp_render_search_form'));
+            add_action('slp_render_map'         ,array('SLPlus_UI','render_the_map'));
 
             //todo: make sure map type gets set to a sane value before getting here. Maybe not...
             //todo: if we allow map setting overrides via shortcode attributes we will need
@@ -190,7 +278,11 @@ if (! class_exists('SLPlus_UI')) {
             // Localize the CSL Script
             $this->localizeCSLScript();
 
-            return $this->rawDeal($this->parent->helper->get_string_from_phpexec(SLPLUS_COREDIR . 'templates/search_and_map.php'));
+            return
+                '<div id="sl_div">' .
+                    $this->rawDeal($this->parent->helper->get_string_from_phpexec(SLPLUS_COREDIR . 'templates/search_and_map.php')) .
+                '</div>'
+                ;
         }
 
 
@@ -221,56 +313,7 @@ if (! class_exists('SLPlus_UI')) {
                 getimagesize($slplus_end_icon_file)  :
                 array(0 => 20, 1 => 34);
 
-            /**
-             * Results Output String In JavaScript Format
-             *
-             *              {0} aMarker.name,
-             *              {1} parseFloat(aMarker.distance).toFixed(1),
-             *              {2} slplus.distance_unit,
-             *              {3} street,
-             *              {4} street2,
-             *              {5} city_state_zip,
-             *              {6} thePhone,
-             *              {7} theFax,
-             *              {8} link,
-             *              {9} elink,
-             *              {10} slplus.map_domain,
-             *              {11} encodeURIComponent(this.address),
-             *              {12} encodeURIComponent(address),
-             *              {13} slplus.label_directions,
-             *              {14} tagInfo,
-             *              {15} aMarker.id
-             *              {16} aMarker.country
-             *              {17} aMarker.hours
-             */
-            $results_string =
-                '<center>' .
-                    '<table width="96%" cellpadding="4px" cellspacing="0" class="searchResultsTable" id="slp_results_table_{15}">'  .
-                        '<tr class="slp_results_row" id="slp_location_{15}">'  .
-                            '<td class="results_row_left_column" id="slp_left_cell_{15}">'.
-                                '<span class="location_name">{0}</span>'.
-                                '<span class="location_distance"><br/>{1} {2}</span>'.
-                            '</td>'  .
-                            '<td class="results_row_center_column" id="slp_center_cell_{15}">' .
-                                '<span class="slp_result_address slp_result_street">{3}</span>'.
-                                '<span class="slp_result_address slp_result_street2">{4}</span>' .
-                                '<span class="slp_result_address slp_result_citystatezip">{5}</span>' .
-                                '<span class="slp_result_address slp_result_country">{16}</span>'.
-                                '<span class="slp_result_address slp_result_phone">{6}</span>' .
-                                '<span class="slp_result_address slp_result_fax">{7}</span>' .
-                            '</td>'   .
-                            '<td class="results_row_right_column" id="slp_right_cell_{15}">' .
-                                '<span class="slp_result_contact slp_result_website">{8}</span>' .
-                                '<span class="slp_result_contact slp_result_email">{9}</span>' .
-                                '<span class="slp_result_contact slp_result_directions"><a href="http://{10}' .
-                                '/maps?saddr={11}'  .
-                                '&daddr={12}'  .
-                                '" target="_blank" class="storelocatorlink">{13}</a></span>'.
-                                '<span class="slp_result_contact slp_result_tags">{14}</span>'.
-                            '</td>'  .
-                        '</tr>'  .
-                    '</table>'  .
-                '</center>';
+            $this->setResultsString();
 
 
             // Lets get some variables into our script
@@ -300,7 +343,7 @@ if (! class_exists('SLPlus_UI')) {
                 'map_type'          => get_option('sl_map_type','roadmap'),
                 'map_typectrl'      => (get_option(SLPLUS_PREFIX.'_disable_maptypecontrol')==0),
                 'msg_noresults'     => $slplus_plugin->settings->get_item('message_noresultsfound','No results found.','_'),
-                'results_string'    => apply_filters('slp_javascript_results_string',$results_string),
+                'results_string'    => apply_filters('slp_javascript_results_string',$this->resultsString),
                 'show_tags'         => (get_option(SLPLUS_PREFIX.'_show_tags')==1),
                 'overview_ctrl'     => get_option('sl_map_overview_control',0),
                 'use_email_form'    => (get_option(SLPLUS_PREFIX.'_use_email_form',0)==1),
@@ -311,6 +354,64 @@ if (! class_exists('SLPlus_UI')) {
                 'zoom_tweak'        => get_option('sl_zoom_tweak',1)
                 );
             wp_localize_script('csl_script','slplus',$scriptData);
+        }
+
+        /**
+         * Set the default results string for stuff under the map.
+         *
+         * Results Output String In JavaScript Format
+         *
+         *              {0} aMarker.name,
+         *              {1} parseFloat(aMarker.distance).toFixed(1),
+         *              {2} slplus.distance_unit,
+         *              {3} street,
+         *              {4} street2,
+         *              {5} city_state_zip,
+         *              {6} thePhone,
+         *              {7} theFax,
+         *              {8} link,
+         *              {9} elink,
+         *              {10} slplus.map_domain,
+         *              {11} encodeURIComponent(this.address),
+         *              {12} encodeURIComponent(address),
+         *              {13} slplus.label_directions,
+         *              {14} tagInfo,
+         *              {15} aMarker.id
+         *              {16} aMarker.country
+         *              {17} aMarker.hours
+         *
+         */
+        function setResultsString() {
+            if ($this->resultsString === '') {
+                $this->resultsString =
+                    '<center>' .
+                        '<table width="96%" cellpadding="4px" cellspacing="0" class="searchResultsTable" id="slp_results_table_{15}">'  .
+                            '<tr class="slp_results_row" id="slp_location_{15}">'  .
+                                '<td class="results_row_left_column" id="slp_left_cell_{15}">'.
+                                    '<span class="location_name">{0}</span>'.
+                                    '<span class="location_distance"><br/>{1} {2}</span>'.
+                                '</td>'  .
+                                '<td class="results_row_center_column" id="slp_center_cell_{15}">' .
+                                    '<span class="slp_result_address slp_result_street">{3}</span>'.
+                                    '<span class="slp_result_address slp_result_street2">{4}</span>' .
+                                    '<span class="slp_result_address slp_result_citystatezip">{5}</span>' .
+                                    '<span class="slp_result_address slp_result_country">{16}</span>'.
+                                    '<span class="slp_result_address slp_result_phone">{6}</span>' .
+                                    '<span class="slp_result_address slp_result_fax">{7}</span>' .
+                                '</td>'   .
+                                '<td class="results_row_right_column" id="slp_right_cell_{15}">' .
+                                    '<span class="slp_result_contact slp_result_website">{8}</span>' .
+                                    '<span class="slp_result_contact slp_result_email">{9}</span>' .
+                                    '<span class="slp_result_contact slp_result_directions"><a href="http://{10}' .
+                                    '/maps?saddr={11}'  .
+                                    '&daddr={12}'  .
+                                    '" target="_blank" class="storelocatorlink">{13}</a></span>'.
+                                    '<span class="slp_result_contact slp_result_tags">{14}</span>'.
+                                '</td>'  .
+                            '</tr>'  .
+                        '</table>'  .
+                    '</center>';
+            }
         }
 
         /**
@@ -367,21 +468,88 @@ if (! class_exists('SLPlus_UI')) {
             return str_replace(array("\r","\n"),'',$inStr);
         }
 
-
-        /*************************************
-         * method: slp_render_search_form()
-         *
+        /**
          * Render the search form for the map.
          */
         function slp_render_search_form() {
-            echo apply_filters('slp_search_form_html',get_string_from_phpexec(SLPLUS_COREDIR . 'templates/search_form.php'));
+            global $slplus_plugin;
+            echo apply_filters('slp_search_form_html',$slplus_plugin->helper->get_string_from_phpexec(SLPLUS_COREDIR . 'templates/search_form.php'));
         }
 
-
-        /*************************************
-         * method: slp_render_search_form_tag_list()
+        /**
+         * Render the SLP map
          *
+         */
+        function render_the_map() {
+            global $sl_width, $sl_height, $sl_width_units, $sl_height_units, $slplus_plugin;
+
+            // Start the map table
+            //
+            $content =  
+                '<table id="map_table" width="100%" cellspacing="0px" cellpadding="0px">' .
+                '<tbody id="map_table_body">' .
+                '<tr id="map_table_row">'.
+                '<td id="map_table_cell" width="100%" valign="top">'
+                ;
+
+            // If starting image is set, create the overlay div.
+            //
+            $startingImage=get_option('sl_starting_image','');
+            if ($startingImage != '') {
+                $startingImage =
+                    ((preg_match('/^http/',$startingImage) <= 0) ?SLPLUS_PLUGINURL:'').
+                    $startingImage
+                    ;
+
+                $content .=
+                    "<div id='map_box_image' " .
+                        "style='width:$sl_width$sl_width_units; height:$sl_height$sl_height_units;'>" .
+                    "<img src='$startingImage'>".
+                    '</div>' .
+                    '<div id="map_box_map">'
+                    ;
+            }
+            
+            // The Map Div
+            //
+            $content .=
+                "<div id='map' ".
+                    "style='width:$sl_width$sl_width_units; height:$sl_height$sl_height_units;'>".
+                '</div>'
+                ;
+
+            // Credits Line
+            if (!(get_option('sl_remove_credits',0)==1)) {
+                $content .=
+                    "<div id='slp_tagline'style='width:$sl_width$sl_width_units;'>" .
+                        __('search provided by', 'csl-slplus') .
+                        "<a href='".$slplus_plugin->url."' target='_blank'>".
+                            $slplus_plugin->name.
+                        "</a>".
+                    '</div>'
+                    ;
+            }
+
+            // If starting image is set, close the overlay div.
+            //
+            if ($startingImage != '') {
+                $content .= '</div>';
+            }
+            
+            // Close the table
+            //
+            $content .= '</td></tr></tbody></table>';
+
+            // Render
+            //
+            echo apply_filters('slp_map_html',$content);
+        }
+
+        /**
          * Puts the tag list on the search form for users to select tags.
+         *
+         * @param type $tags
+         * @param type $showany
          */
         function slp_render_search_form_tag_list($tags,$showany = false) {
             print "<select id='tag_to_search_for' >";

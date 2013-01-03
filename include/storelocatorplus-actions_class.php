@@ -18,6 +18,7 @@ if (! class_exists('SLPlus_Actions')) {
         /**
          * PUBLIC PROPERTIES & METHODS
          */
+        public $initialized = false;
         public $parent = null;
 
         /**
@@ -41,6 +42,20 @@ if (! class_exists('SLPlus_Actions')) {
             }
             return (isset($this->parent) && ($this->parent != null));
         }
+
+        /**
+         * Attach and instantiated AdminUI object to the main plugin object.
+         *
+         * @return boolean - true unless the main plugin is not found
+         */
+        function attachAdminUI() {
+            if (!$this->setParent()) { return false; }
+            if (!isset($this->parent->AdminUI) || !is_object($this->parent->AdminUI)) {
+                require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-adminui_class.php');
+                $this->parent->AdminUI = new SLPlus_AdminUI();     // Lets invoke this and make it an object
+            }
+            return true;
+        }
         
         /**
          * method: admin_init()
@@ -52,9 +67,10 @@ if (! class_exists('SLPlus_Actions')) {
          */
         function admin_init() {
             if (!$this->setParent()) { return; }
-        
+
             // Already been here?  Get out.
-            if (isset($this->parent->settings->sections['How to Use'])) { return; }
+            if ($this->initialized)  { return; }            
+            $this->initialized = true;
 
             // Update system hook
             // Premium add-ons can use the admin_init hook to utilize this.
@@ -70,8 +86,7 @@ if (! class_exists('SLPlus_Actions')) {
 
             // Admin UI Helpers
             //
-            require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-adminui_class.php');
-            $this->parent->AdminUI = new SLPlus_AdminUI();     // Lets invoke this and make it an object
+            $this->attachAdminUI();
             $this->parent->AdminUI->set_style_as_needed();
             $this->parent->AdminUI->build_basic_admin_settings();
         }
@@ -87,16 +102,16 @@ if (! class_exists('SLPlus_Actions')) {
                 (!function_exists('add_slplus_roles_and_caps') || current_user_can('manage_slp'))
                 )
             {
-
-                global $slplus_plugin;
+                if (!$this->setParent()) { return; }
+                $this->attachAdminUI();
                 
                 // The main hook for the menu
                 //
                 add_menu_page(
-                    $slplus_plugin->name,
-                    $slplus_plugin->name,
+                    $this->parent->name,
+                    $this->parent->name,
                     'administrator',
-                    $slplus_plugin->prefix,
+                    $this->parent->prefix,
                     array('SLPlus_AdminUI','renderPage_GeneralSettings'),
                     SLPLUS_COREURL . 'images/icon_from_jpg_16x16.png'
                     );
@@ -107,28 +122,32 @@ if (! class_exists('SLPlus_Actions')) {
                     array(
                         'label'             => __('General Settings',SLPLUS_PREFIX),
                         'slug'              => 'slp_general_settings',
-                        'class'             => 'SLPlus_AdminUI',
+                        'class'             => $this->parent->AdminUI,
                         'function'          => 'renderPage_GeneralSettings'
                     ),
                     array(
                         'label'             => __('Add Locations',SLPLUS_PREFIX),
                         'slug'              => 'slp_add_locations',
-                        'class'             => 'SLPlus_AdminUI',
+                        'class'             => $this->parent->AdminUI,
                         'function'          => 'renderPage_AddLocations'
                     ),
                     array(
                         'label' => __('Manage Locations',SLPLUS_PREFIX),
-                        'url'   => SLPLUS_COREDIR.'view-locations.php'
+                        'slug'              => 'slp_manage_locations',
+                        'class'             => $this->parent->AdminUI,
+                        'function'          => 'renderPage_ManageLocations'
                     ),
                     array(
                         'label' => __('Map Settings',SLPLUS_PREFIX),
-                        'url'   => SLPLUS_COREDIR.'map-designer.php'
+                        'slug'              => 'slp_map_settings',
+                        'class'             => $this->parent->AdminUI,
+                        'function'          => 'renderPage_MapSettings'
                     )
                 );
 
                 // Pro Pack menu items
                 //
-                if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
+                if ($this->parent->license->packages['Pro Pack']->isenabled) {
                     $menuItems = array_merge(
                                 $menuItems,
                                 array(
@@ -155,7 +174,7 @@ if (! class_exists('SLPlus_Actions')) {
                     //
                     if (isset($menuItem['class'])) {
                         add_submenu_page(
-                            $slplus_plugin->prefix,
+                            $this->parent->prefix,
                             $menuItem['label'],
                             $menuItem['label'],
                             'administrator',
@@ -167,7 +186,7 @@ if (! class_exists('SLPlus_Actions')) {
                     //
                     } else {
                         add_submenu_page(
-                            $slplus_plugin->prefix,
+                            $this->parent->prefix,
                             $menuItem['label'],
                             $menuItem['label'],
                             'administrator',
@@ -178,7 +197,41 @@ if (! class_exists('SLPlus_Actions')) {
 
                 // Remove the duplicate menu entry
                 //
-                remove_submenu_page($slplus_plugin->prefix, $slplus_plugin->prefix);
+                remove_submenu_page($this->parent->prefix, $this->parent->prefix);
+            }
+        }
+
+
+        /**
+         * Retrieves map setting options, whether serialized or not.
+         *
+         * Simple options (non-serialized) return with a normal get_option() call result.
+         *
+         * Complex options (serialized) save any fetched result in $this->settingsData.
+         * Doing so provides a basic cache so we don't keep hammering the database when
+         * getting our map settings.  Legacy code expects a 1:1 relationship for options
+         * to settings.   This mechanism ensures on database read/page render for the
+         * complex options v. one database read/serialized element.
+         *
+         * @param string $optionName - the option name
+         * @param mixed $default - what the default value should be
+         * @return mixed the value of the option as saved in the database
+         */
+        function getCompoundOption($optionName,$default='') {
+            if (!$this->setParent()) { return; }
+            $matches = array();
+            if (preg_match('/^(.*?)\[(.*?)\]/',$optionName,$matches) === 1) {
+                if (!isset($this->parent->mapsettingsData[$matches[1]])) {
+                    $this->parent->mapsettingsData[$matches[1]] = get_option($matches[1],$default);
+                }
+                return 
+                    isset($this->parent->mapsettingsData[$matches[1]][$matches[2]]) ?
+                    $this->parent->mapsettingsData[$matches[1]][$matches[2]] :
+                    ''
+                    ;
+
+            } else {
+                return get_option($optionName,$default);
             }
         }
         

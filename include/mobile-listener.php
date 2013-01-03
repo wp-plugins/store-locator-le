@@ -125,7 +125,6 @@ if (! class_exists('csl_mobile_listener')) {
 	            $password=DB_PASSWORD;
 	            $database=DB_NAME;
 	            $host=DB_HOST;
-	            //include("database-info.php");
 	            $dbPrefix = $wpdb->prefix;
 
 	            //-----------------
