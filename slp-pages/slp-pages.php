@@ -304,6 +304,7 @@ if ( ! class_exists( 'SLPPages' ) ) {
                 ;
                 return $actionBoxes;
          }
+    }
 
     // Instantiate ourselves as an object
     //
