@@ -246,13 +246,13 @@ var csl = {
 			} else {
                 var shadowKey = this.__iconUrl;
                 if (typeof cslmap.shadows[shadowKey] === 'undefined') {
-                    var shadow = this.__iconUrl.replace('.png', '_shadow.png');
+                    var shadow = this.__iconUrl.replace('/_(.*?)\.png/', '_shadow.png');
                     jQuery.ajax(
                         {
                             url: shadow,
                             type: 'HEAD',
                             async: false,
-                            error: function() { cslmap.shadows[shadowKey] = cslmap.coreurl+'images/icons/blank.png'; },
+                            error: function() { cslmap.shadows[shadowKey] = slplus.plugin_url+'/images/icons/blank.png'; },
                             success: function() { cslmap.shadows[shadowKey] = shadow; }
                         }
                     );
@@ -499,7 +499,6 @@ var csl = {
   	  	this.__init = function() {
 
             if (typeof slplus != 'undefined') {
-                this.coreurl = slplus.core_url;
                 this.address = slplus.map_country;
                 this.zoom = slplus.zoom_level;
                 this.mapType = slplus.map_type;

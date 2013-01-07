@@ -160,10 +160,6 @@ if (! class_exists('SLPlus_UI')) {
          * @global type $wpdb
          * @global type $slplus_plugin
          * @global type $sl_search_label
-         * @global type $sl_width
-         * @global type $sl_height
-         * @global type $sl_width_units
-         * @global type $sl_height_units
          * @global type $sl_radius_label
          * @global type $r_options
          * @global type $cs_options
@@ -175,8 +171,7 @@ if (! class_exists('SLPlus_UI')) {
          */
          function render_shortcode($attributes, $content = null) {
             global  $wpdb, $slplus_plugin,
-                $sl_search_label, $sl_width, $sl_height, $sl_width_units, $sl_height_units,
-                $sl_radius_label, $r_options, $cs_options,
+                $sl_search_label, $sl_radius_label, $r_options, $cs_options,
                 $sl_country_options, $slplus_state_options;
 
 
@@ -192,12 +187,8 @@ if (! class_exists('SLPlus_UI')) {
                     (array) $attributes
                 );
 
-            $sl_height         = get_option('sl_map_height','500');
-            $sl_height_units   = get_option('sl_map_height_units','px');
             $sl_search_label   = get_option('sl_search_label',__('Address',SLPLUS_PREFIX));
             $unit_display      = get_option('sl_distance_unit','mi');
-            $sl_width          = get_option('sl_map_width','100');
-            $sl_width_units    = get_option('sl_map_width_units','%');
 
             $r_options      =(isset($r_options)         ?$r_options      :'');
             $cs_options     =(isset($cs_options)        ?$cs_options     :'');
@@ -292,24 +283,15 @@ if (! class_exists('SLPlus_UI')) {
          * @global type $slplus_plugin
          */
         function localizeCSLScript() {
-            global $slplus_plugin;
+            if (!$this->setPlugin()) { return false; }
+            $this->plugin->helper->loadPluginData();
 
-            $this->parent->helper->setData(
-                      'homeicon',
-                      'get_option',
-                      array('sl_map_home_icon', SLPLUS_ICONURL . 'sign_yellow_home.png')
-                      );
-            $this->parent->helper->setData(
-                      'endicon',
-                      'get_option',
-                      array('sl_map_end_icon', SLPLUS_ICONURL . 'a_marker_azure.png')
-                      );
-            $slplus_home_icon_file = str_replace(SLPLUS_ICONURL,SLPLUS_ICONDIR,$slplus_plugin->data['homeicon']);
-            $slplus_end_icon_file  = str_replace(SLPLUS_ICONURL,SLPLUS_ICONDIR,$slplus_plugin->data['endicon']);
-            $slplus_plugin->data['home_size'] =(function_exists('getimagesize') && file_exists($slplus_home_icon_file))?
+            $slplus_home_icon_file = str_replace(SLPLUS_ICONURL,SLPLUS_ICONDIR,$this->plugin->data['sl_map_home_icon']);
+            $slplus_end_icon_file  = str_replace(SLPLUS_ICONURL,SLPLUS_ICONDIR,$this->plugin->data['sl_map_end_icon']);
+            $this->plugin->data['home_size'] =(function_exists('getimagesize') && file_exists($slplus_home_icon_file))?
                 getimagesize($slplus_home_icon_file) :
                 array(0 => 20, 1 => 34);
-            $slplus_plugin->data['end_size']  =(function_exists('getimagesize') && file_exists($slplus_end_icon_file)) ?
+            $this->plugin->data['end_size']  =(function_exists('getimagesize') && file_exists($slplus_end_icon_file)) ?
                 getimagesize($slplus_end_icon_file)  :
                 array(0 => 20, 1 => 34);
 
@@ -319,6 +301,7 @@ if (! class_exists('SLPlus_UI')) {
             // Lets get some variables into our script
             //
             $scriptData = array(
+                'plugin_url'        => SLPLUS_PLUGINURL,
                 'core_url'          => SLPLUS_COREURL,
                 'debug_mode'        => (get_option(SLPLUS_PREFIX.'-debugging') == 'on'),
                 'disable_scroll'    => (get_option(SLPLUS_PREFIX.'_disable_scrollwheel')==1),
@@ -330,25 +313,25 @@ if (! class_exists('SLPlus_UI')) {
                 'label_hours'       => esc_attr(get_option(SLPLUS_PREFIX.'_label_hours',        'Hours: ')       ),
                 'label_phone'       => esc_attr(get_option(SLPLUS_PREFIX.'_label_phone',        'Phone: ')       ),
                 'map_3dcontrol'     => (get_option(SLPLUS_PREFIX.'_disable_largemapcontrol3d')==0),
-                'map_country'       => $slplus_plugin->Actions->SetMapCenter(),
+                'map_country'       => $this->plugin->Actions->SetMapCenter(),
                 'map_domain'        => get_option('sl_google_map_domain','maps.google.com'),
-                'map_home_icon'     => $slplus_plugin->data['homeicon'],
-                'map_home_sizew'    => $slplus_plugin->data['home_size'][0],
-                'map_home_sizeh'    => $slplus_plugin->data['home_size'][1],
-                'map_end_icon'      => $slplus_plugin->data['endicon'],
-                'map_end_sizew'     => $slplus_plugin->data['end_size'][0],
-                'map_end_sizeh'     => $slplus_plugin->data['end_size'][1],
+                'map_home_icon'     => $this->plugin->data['sl_map_home_icon'],
+                'map_home_sizew'    => $this->plugin->data['home_size'][0],
+                'map_home_sizeh'    => $this->plugin->data['home_size'][1],
+                'map_end_icon'      => $this->plugin->data['sl_map_end_icon'],
+                'map_end_sizew'     => $this->plugin->data['end_size'][0],
+                'map_end_sizeh'     => $this->plugin->data['end_size'][1],
                 'use_sensor'        => (get_option(SLPLUS_PREFIX."_use_location_sensor",0)==1),
                 'map_scalectrl'     => (get_option(SLPLUS_PREFIX.'_disable_scalecontrol')==0),
                 'map_type'          => get_option('sl_map_type','roadmap'),
                 'map_typectrl'      => (get_option(SLPLUS_PREFIX.'_disable_maptypecontrol')==0),
-                'msg_noresults'     => $slplus_plugin->settings->get_item('message_noresultsfound','No results found.','_'),
+                'msg_noresults'     => $this->plugin->settings->get_item('message_noresultsfound','No results found.','_'),
                 'results_string'    => apply_filters('slp_javascript_results_string',$this->resultsString),
                 'show_tags'         => (get_option(SLPLUS_PREFIX.'_show_tags')==1),
                 'overview_ctrl'     => get_option('sl_map_overview_control',0),
                 'use_email_form'    => (get_option(SLPLUS_PREFIX.'_use_email_form',0)==1),
-                'use_pages_links'   => ($slplus_plugin->settings->get_item('use_pages_links','off')=='on'),
-                'use_same_window'   => ($slplus_plugin->settings->get_item('use_same_window')=='on'),
+                'use_pages_links'   => ($this->plugin->settings->get_item('use_pages_links','off')=='on'),
+                'use_same_window'   => ($this->plugin->settings->get_item('use_same_window')=='on'),
                 'website_label'     => esc_attr(get_option('sl_website_label','Website')),
                 'zoom_level'        => get_option('sl_zoom_level',12),
                 'zoom_tweak'        => get_option('sl_zoom_tweak',1)
@@ -418,16 +401,13 @@ if (! class_exists('SLPlus_UI')) {
          * Setup the CSS for the product pages.
          */
         function setup_stylesheet_for_slplus() {
+            if (!$this->setPlugin()) { return false; }
+            $this->plugin->helper->loadPluginData();
 
           /**
            * @see http://goo.gl/UAXly - theme - the file name for a SLPlus display theme from ./core/css
            */
             if ($this->parent->license->packages['Pro Pack']->isenabled)  {
-                $this->parent->helper->setData(
-                        'theme',
-                        'get_item',
-                        array('theme','default')
-                        );
                 $this->parent->themes->assign_user_stylesheet($this->parent->data['theme']);
             } else {
                 wp_deregister_style(SLPLUS_PREFIX.'_user_header_css');
@@ -481,7 +461,9 @@ if (! class_exists('SLPlus_UI')) {
          *
          */
         function render_the_map() {
-            global $sl_width, $sl_height, $sl_width_units, $sl_height_units, $slplus_plugin;
+            global $slplus_plugin;
+
+             $slplus_plugin->helper->loadPluginData();
 
             // Start the map table
             //
@@ -502,8 +484,16 @@ if (! class_exists('SLPlus_UI')) {
                     ;
 
                 $content .=
-                    "<div id='map_box_image' " .
-                        "style='width:$sl_width$sl_width_units; height:$sl_height$sl_height_units;'>" .
+                    '<div id="map_box_image" ' .
+                        'style="'.
+                            "width:". $slplus_plugin->data['sl_map_width'].
+                                      $slplus_plugin->data['sl_map_width_units'] .
+                                      ';'.
+                            "height:".$slplus_plugin->data['sl_map_height'].
+                                      $slplus_plugin->data['sl_map_height_units'].
+                                      ';'.
+                        '"'.
+                    '>'.
                     "<img src='$startingImage'>".
                     '</div>' .
                     '<div id="map_box_map">'
@@ -513,19 +503,33 @@ if (! class_exists('SLPlus_UI')) {
             // The Map Div
             //
             $content .=
-                "<div id='map' ".
-                    "style='width:$sl_width$sl_width_units; height:$sl_height$sl_height_units;'>".
+                '<div id="map" ' .
+                    'style="'.
+                        "width:". $slplus_plugin->data['sl_map_width'].
+                                  $slplus_plugin->data['sl_map_width_units'] .
+                                  ';'.
+                        "height:".$slplus_plugin->data['sl_map_height'].
+                                  $slplus_plugin->data['sl_map_height_units'].
+                                  ';'.
+                    '"'.
+                '>'.
                 '</div>'
                 ;
 
             // Credits Line
             if (!(get_option('sl_remove_credits',0)==1)) {
                 $content .=
-                    "<div id='slp_tagline'style='width:$sl_width$sl_width_units;'>" .
-                        __('search provided by', 'csl-slplus') .
-                        "<a href='".$slplus_plugin->url."' target='_blank'>".
-                            $slplus_plugin->name.
-                        "</a>".
+                    '<div id="slp_tagline" ' .
+                        'style="'.
+                            "width:". $slplus_plugin->data['sl_map_width'].
+                                      $slplus_plugin->data['sl_map_width_units'] .
+                                      ';'.
+                        '"'.
+                    '>'.
+                    __('search provided by', 'csl-slplus') .
+                    "<a href='". $slplus_plugin->url."' target='_blank'>".
+                         $slplus_plugin->name.
+                    "</a>".
                     '</div>'
                     ;
             }

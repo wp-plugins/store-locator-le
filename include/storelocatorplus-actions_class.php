@@ -231,7 +231,8 @@ if (! class_exists('SLPlus_Actions')) {
                     ;
 
             } else {
-                return get_option($optionName,$default);
+                return $this->parent->helper->getData($optionName,'get_option',array($optionName,$default));
+                //return get_option($optionName,$default);
             }
         }
         

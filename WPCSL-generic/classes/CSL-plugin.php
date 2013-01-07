@@ -8,8 +8,10 @@
 * share a code libary and reduce code redundancy.
 * 
 ************************************************************************/
-define('WPCSL__slplus__VERSION', '2.0.15');
-define('WPAS_AFFILIATE_ID','3368'); // WP App Store Affiliate ID
+if (!defined('WPCSL__slplus__VERSION')) { define('WPCSL__slplus__VERSION', '2.0.15'); }
+
+// WP App Store Affiliate ID
+if (!defined('WPAS_AFFILIATE_ID')) { define('WPAS_AFFILIATE_ID','3368'); }
 
 // These helper files should only be loaded if needed by the plugin
 // that is asking for WPCSL-Generic services.

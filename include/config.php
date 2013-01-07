@@ -21,7 +21,45 @@ if (defined('SLPLUS_PLUGINDIR')) {
     global $slplus_plugin;
     $slplus_plugin = new wpCSL_plugin__slplus(
         array(
+
+            // Plugin data elements, helps make data lookups more efficient
+            //
+            // 'data' is where actual values are stored
+            // 'dataElements' is used to fetch/initialize values whenever helper->loadPluginData() is called
+            //
             'data'                  => array(),
+            'dataElements'          =>
+                array(
+                      array(
+                        'sl_map_end_icon'                   ,
+                        'get_option'                ,
+                        array('sl_map_end_icon'         ,SLPLUS_ICONURL.'bulb_azure.png'    )
+                      ),
+                      array('sl_map_home_icon'              ,
+                          'get_option'              ,
+                          array('sl_map_home_icon'      ,SLPLUS_ICONURL.'box_yellow_home.png'  )
+                      ),
+                      array('sl_map_height'         ,
+                          'get_option'              ,
+                          array('sl_map_height'         ,'480'                                  )
+                      ),
+                      array('sl_map_height_units'   ,
+                          'get_option'              ,
+                          array('sl_map_height_units'   ,'px'                                   )
+                      ),
+                      array('sl_map_width'          ,
+                          'get_option'              ,
+                          array('sl_map_width'          ,'100'                                  )
+                      ),
+                      array('sl_map_width_units'    ,
+                          'get_option'              ,
+                          array('sl_map_width_units'    ,'%'                                    )
+                      ),
+                      array('theme'                 ,
+                          'get_item'                ,
+                          array('theme'                 ,'default'                              )
+                      ),
+                ),
 
             // We don't want default wpCSL objects, let's set our own
             //
@@ -43,7 +81,7 @@ if (defined('SLPLUS_PLUGINDIR')) {
             'admin_slugs'           => array('slp_general_settings'),
 
             'on_update' => array('SLPlus_Activate', 'update'),
-            'version' => '3.7.6',
+            'version' => '3.8.6',
 
             'url'                   => 'http://www.charlestonsw.com/product/store-locator-plus-2/',            
             'support_url'           => 'http://www.charlestonsw.com/support/documentation/store-locator-plus/',
@@ -73,7 +111,7 @@ if (defined('SLPLUS_PLUGINDIR')) {
     
     // Setup our optional packages
     //
-    add_options_packages_for_slplus();       
+    add_options_packages_for_slplus();
 }    
 
 /**************************************

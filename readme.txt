@@ -1,11 +1,11 @@
-=== Google Maps via Store Locator Plus ===
-Plugin Name: Google Maps via Store Locator Plus
+=== Store Locator Plus ===
+Plugin Name:  Store Locator Plus
 Contributors: charlestonsw
 Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
 Tags: google maps, store finder, store locator, store locater, google, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus, bing map, bing, yahoo maps, yahoo, mapping, retail
 Requires at least: 3.3
 Tested up to: 3.5
-Stable tag: 3.8.5
+Stable tag: 3.8.6
 
 Store Locator Plus makes it easy to put a fully functional store finder on your site.
 The most active store locator plugin with monthly updates!
@@ -158,9 +158,11 @@ Users that opt not to purchase the Pro Pack can still customize the look by edit
 
 = Special Thanks =
 
-Thanks to [Nicolas Mollet](http://mapicons.nicolasmollet.com/) for some of the great icons.
+Thanks to [Nicolas Mollet](http://mapicons.nicolasmollet.com/) and Icons-Land (http://www.icons-land.com/) via Icon Finder for some of the great icons.
 
 [Massive Creative](http://www.massivecreativeinc.com) for some of our banners and other creative work.
+
+Thanks to [Google](http://www.google.com) for the maps engine as well as some of the icons.  Some of the Google open-source icons are found [at this unofficial list](http://www.visual-case.it/cgi-bin/vc/GMapsIcons.pl).
 
 
 == Frequently Asked Questions ==
@@ -250,6 +252,35 @@ The website offers [more screen shots](http://www.charlestonsw.com/product/store
 
 More screenshots are available via [the CSA website](http://www.charlestonsw.com/products/store-locator-plus/).
 
+== Update Notice ==
+
+3.8.6 update notice.
+
+I have been chasing down some nasty icon (map marker) setting bugs.
+Turns out the icons were stored in TWO locations.
+Most icons were in both places.
+Most places in the code referenced a single location (under ./core/images/icons).
+Not EVERYPLACE in the code did so.
+
+Rather than hold up 3.8.6 to make a "perfect patch" I have released this version
+with the ability to change/save new home/end icons, save the map height and width,
+and a few other settings.
+
+YOU WILL LIKELY NEED TO RE-SET YOUR HOME AND END ICONS.
+
+I cleaned things up and moved all the map marker icons to ./images/icons.
+
+I also fixed the "save custom icons" which runs automatically when updating to a new version.
+If you store custom icons in ./core/images/icons or ./images/icons they are now copied to
+./wp-content/uploads/slp/saved-icons/.    This may result in a duplicate list of icons in
+your icon selector on map settings.   I will at least prevent icons that are in the core
+plugin from being copied over in a future release.  For now you may see double icons
+in the list.  I think this is better than not saving them at all (older versions) or
+not letting people save their map width/height and/or change the map marker icons.
+
+Again: YOU WILL LIKELY NEED TO RE-SET YOUR HOME AND END ICONS.
+
+
 == Changelog ==
 
 I update about once per month or more frequently as needed.
@@ -258,11 +289,25 @@ Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/su
 
 I was listing the entire change log here but with weekly/bi-weekly updates it as getting much too long.
 
-= 3.8.5 (January 2013) =
+= 3.8.6 (January 7th 2013) =
 
-* Fix bug in store pages syntax error in slp-pages.php on line 310. (Brace went missing wtf).
+* Fix save map height.
+* Fix save map height units.
+* Fix save map width.
+* Fix save map width units.
+* Fix home marker saving.
+* Fix end marker saving.
+* Save icons/images/languages now go in ./wp-content/uploads/slp/
+* Fix saving of icons when upgrading.  May cause duplicate icons to be listed after first update.
+* Clean up the map marker icon set.
+* Add some new icons.
 
-= 3.8.4 (January 2013) =
+
+= 3.8.5 (January 3rd 2013) =
+
+* Fix syntax error in slp-pages.php
+
+= 3.8.4 (January 1st 2013) =
 
 * Fix remove credits not saving.
 * Fix an error in how Pro Pack was being loaded.  Unmatched } caused erratic behavior.

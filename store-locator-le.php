@@ -1,14 +1,14 @@
 <?php
 /*
-Plugin Name: Google Maps via Store Locator Plus
+Plugin Name: Store Locator Plus
 Plugin URI: http://www.charlestonsw.com/products/store-locator-plus/
 Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Gooogle Maps.  This is a highly customizable, easily expandable, enterprise-class location management system.
-Version: 3.8.5
+Version: 3.8.6
 Author: Charleston Software Associates
 Author URI: http://www.charlestonsw.com
 License: GPL3
 
-Copyright 2012  Charleston Software Associates (info@charlestonsw.com)
+Copyright 2013  Charleston Software Associates (info@charlestonsw.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ if (defined('SLPLUS_COREDIR') === false) {
     define('SLPLUS_COREDIR', SLPLUS_PLUGINDIR . 'core/');
 }
 if (defined('SLPLUS_ICONDIR') === false) {
-    define('SLPLUS_ICONDIR', SLPLUS_COREDIR . 'images/icons/');
+    define('SLPLUS_ICONDIR', SLPLUS_PLUGINDIR . 'images/icons/');
 }
 
 
@@ -59,7 +59,7 @@ if (defined('SLPLUS_COREURL') === false) {
     define('SLPLUS_COREURL', SLPLUS_PLUGINURL . '/core/');
 }
 if (defined('SLPLUS_ICONURL') === false) {
-    define('SLPLUS_ICONURL', SLPLUS_COREURL . 'images/icons/');
+    define('SLPLUS_ICONURL', SLPLUS_PLUGINURL . '/images/icons/');
 }
 if (defined('SLPLUS_ADMINPAGE') === false) {
     define('SLPLUS_ADMINPAGE', admin_url() . 'admin.php?page=' . SLPLUS_COREDIR );
@@ -78,11 +78,9 @@ if (defined('SLPLUS_BASENAME') === false) {
 if (defined('SLPLUS_UPLOADDIR') === false) {
     $upload_dir = wp_upload_dir('slp');
     $error = $upload_dir['error'];
-    if ( $error === '') {
-        $upload_path = preg_replace('/\/slp\/$/','/sl-uploads/',$upload_dir['path']);
-        $upload_url  = preg_replace('/\/slp\/$/','/sl-uploads/',$upload_dir['url']);
-        define('SLPLUS_UPLOADDIR', $upload_path);
-        define('SLPLUS_UPLOADURL', $upload_url);
+    if (empty($error)) {
+        define('SLPLUS_UPLOADDIR', $upload_dir['path']);
+        define('SLPLUS_UPLOADURL', $upload_dir['url']);
     } else {
         $error = preg_replace(
                 '/Unable to create directory /',
