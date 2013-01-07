@@ -3,7 +3,7 @@
  * Plugin Name: Store Locator Plus : Store Pages
  * Plugin URI: http://www.charlestonsw.com/product/store-locator-plus-store-pages/
  * Description: A premium add-on pack for Store Locator Plus that creates custom pages for your locations.
- * Version: 0.1
+ * Version: 3.8.2
  * Author: Charleston Software Associates
  * Author URI: http://charlestonsw.com/
  * Requires at least: 3.3
@@ -58,6 +58,8 @@ if ( ! class_exists( 'SLPPages' ) ) {
             add_action('admin_menu' ,
                     array($this,'admin_menu')
                     );
+
+            add_filter('slp_action_boxes',array($this,'manage_locations_actionbar'));
         }
 
 
@@ -144,6 +146,31 @@ if ( ! class_exists( 'SLPPages' ) ) {
         //====================================================
         // Store Pages Custom Methods
         //====================================================
+
+        /**
+         * Add store pages settings to the admin interface.
+         *
+         * @return string
+         */
+        function add_pages_settings() {
+            if (!$this->setPlugin()) { return ''; }
+                $this->plugin->settings->add_item(
+                    'Store Pages',
+                    __('Pages Replace Websites', SLPLUS_PREFIX),
+                    'use_pages_links',
+                    'checkbox',
+                    false,
+                    __('Use the Store Pages local URL in place of the website URL on the map results list.', SLPLUS_PREFIX)
+                );
+                $this->plugin->settings->add_item(
+                    'Store Pages',
+                    __('Prevent New Window', SLPLUS_PREFIX),
+                    'use_same_window',
+                    'checkbox',
+                    false,
+                    __('Prevent Store Pages web links from opening in a new window.', SLPLUS_PREFIX)
+                );
+        }
 
         /**
          * Create a new store pages page.
@@ -256,10 +283,31 @@ if ( ! class_exists( 'SLPPages' ) ) {
 
              return apply_filters('slp_pages_content',$content);
          }
+
+         /**
+          * Add Pro Pack action buttons to the action bar
+          *
+          * @param array $actionBoxes - the existing action boxes, 'A'.. each named array element is an array of HTML strings
+          * @return string
+          */
+         function manage_locations_actionbar($actionBoxes) {
+                if (!$this->setPlugin()) { return $actionBoxes; }
+                $actionBoxes['C'][] =
+                        '<p class="centerbutton">' .
+                            "<a class='like-a-button' href='#' "            .
+                                    "onclick=\"doAction('createpage','"     .
+                                        __('Create Pages?',SLPLUS_PREFIX)   .
+                                        "')\" name='createpage_selected'>"  .
+                                        __('Create Pages', SLPLUS_PREFIX)   .
+                             '</a>'                                         .
+                        '</p>'
+                ;
+                return $actionBoxes;
+         }
     }
 
     // Instantiate ourselves as an object
     //
-    global$SLPPages;
-    $SLPPages = new SLPPages();
+    global$slplus_plugin;
+    $slplus_plugin->StorePages = new SLPPages();
 }

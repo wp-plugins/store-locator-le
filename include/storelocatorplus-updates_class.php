@@ -86,7 +86,7 @@ if (! class_exists('SLPlus_Updates')) {
          */
         public function check_info($false, $action, $arg)
         {
-            if ($arg->slug === $this->slug) {
+            if (isset($this->slug) && isset($arg->slug) && ($arg->slug === $this->slug)) {
                 $information = $this->getRemote_information();
                 return $information;
             }

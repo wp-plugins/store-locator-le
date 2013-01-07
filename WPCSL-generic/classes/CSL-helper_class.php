@@ -171,9 +171,9 @@ class wpCSL_helper__slplus {
      * @param string $element - the key for the data named array
      * @param mixed $function - the string 'get_option' or a pointer to anon function
      * @param mixed $params - an array of parameters to pass to get_option or the anon, note: get_option can receive an array of option_name, default value
-     * @return none
+     * @return the value
      */
-    function setData($element = null, $function = null, $params=null) {
+    function getData($element = null, $function = null, $params=null) {
         if ($element  === null) { return; }
         if ($function === null) { return; }
         if (!isset($this->parent->data[$element] )) {
@@ -203,5 +203,30 @@ class wpCSL_helper__slplus {
                 $this->parent->data[$element] = $function($params);
            }
        }
+       return $this->parent->data[$element];
+    }
+
+    /**
+     * Initialize the plugin data.
+     *
+     * Loop through the getData() method passing in each element of the plugin dataElements array.
+     * Each entry of dataElements() must contain 3 parts:
+     *    [0] = key name for the plugin data element
+     *    [1] = function type 'get_option' or 'get_item'
+     *    [2] = the name of the option/item as a single string
+     *            OR
+     *          an array with the name of the option/item first, the default value second
+     *
+     */
+    function loadPluginData() {
+        if (!isset($this->parent->dataElements)) {
+            $this->parent->dataElements = array();
+        }
+        $this->parent->dataElements = apply_filters('wpcsl_loadplugindata__slplus',$this->parent->dataElements);
+        if (count($this->parent->dataElements) > 0) {
+            foreach ($this->parent->dataElements as $element) {
+                $this->getData($element[0],$element[1],$element[2]);
+            }
+        }
     }
 }

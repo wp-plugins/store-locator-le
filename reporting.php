@@ -97,11 +97,12 @@ $slpReportSettings = new wpCSL_settings__slplus(
 //-------------------------
 // Navbar Section
 //-------------------------    
+global $slplus_plugin;
 $slpReportSettings->add_section(
     array(
         'name' => 'Navigation',
         'div_id' => 'slplus_navbar',
-        'description' => get_string_from_phpexec(SLPLUS_COREDIR.'/templates/navbar.php'),
+        'description' => $slplus_plugin->helper->get_string_from_phpexec(SLPLUS_COREDIR.'/templates/navbar.php'),
         'is_topmenu' => true,
         'auto' => false,
         'headerbar'     => false              

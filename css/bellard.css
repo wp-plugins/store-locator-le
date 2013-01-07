@@ -1,9 +1,71 @@
 /**
  ** file: bellard.css
- ** label: Bellard Theme
+ ** label: Bellard
+ ** columns: 1
  ** description: Side-by-Side boxes with simple colors on white.  Requires Google Fonts.
  **
  **/
+
+/* Slider from proto.io/freebies/onoff/
+*/
+.onoffswitch-block {
+    display: inline-block;
+    float: right;
+    margin-right: 8px;
+}
+.onoffswitch-pretext {
+    display: linline-block;
+    padding-right: 12px;
+    vertical-align: super;
+}
+    .onoffswitch {
+    display: inline-block;
+    position: relative; width: 56px;
+    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+    }
+    .onoffswitch-checkbox {
+    display: none;
+    }
+    .onoffswitch-label {
+    display: block; overflow: hidden; cursor: pointer;
+    border: 2px solid #999999; border-radius: 20px;
+    }
+    .onoffswitch-inner {
+    width: 200%; margin-left: -100%;
+    -moz-transition: margin 0.3s ease-in 0s; -webkit-transition: margin 0.3s ease-in 0s;
+    -o-transition: margin 0.3s ease-in 0s; transition: margin 0.3s ease-in 0s;
+    }
+    .onoffswitch-inner:before, .onoffswitch-inner:after {
+    float: left; width: 50%; height: 17px; padding: 0; line-height: 17px;
+    font-size: 10px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+    }
+    .onoffswitch-inner:before {
+    content: "ON";
+    padding-left: 8px;
+    background-color: #2FCCFF; color: #FFFFFF;
+    }
+    .onoffswitch-inner:after {
+    content: "OFF";
+    padding-right: 8px;
+    background-color: #EEEEEE; color: #999999;
+    text-align: right;
+    }
+    .onoffswitch-switch {
+    width: 8px; margin: 4.5px;
+    background: #FFFFFF;
+    border: 2px solid #999999; border-radius: 20px;
+    position: absolute; top: 0; bottom: 0; right: 35px;
+    -moz-transition: all 0.3s ease-in 0s; -webkit-transition: all 0.3s ease-in 0s;
+    -o-transition: all 0.3s ease-in 0s; transition: all 0.3s ease-in 0s;
+    }
+    .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+    margin-left: 0;
+    }
+    .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+    right: 0px;
+    }
+
 
 /***********************
  * Search Form
@@ -65,8 +127,13 @@ div#addy_in_address {
 div#radius_in_submit {
     display: inline-block;
 }
-#addressSubmit {
+#addressSubmit,
+#addressSubmit:hover,
+{
     background-color: #00D6F2;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00D6F2', endColorstr='#00D6F2'); /* for IE */
+    background: -webkit-gradient(linear, left top, left bottom, from(#00D6F2), to(#00D6F2)); /* for webkit browsers */
+    background: -moz-linear-gradient(top,  #00D6F2,  #00D6F2); /* for firefox 3.6+ */
     border: medium none;
     color: #FFFFFF;
     cursor: pointer;
@@ -125,6 +192,7 @@ div.results_entry {
 table.searchResultsTable {
     display: inline-block;
     position: relative;
+    width: 100%;
 }
 
 #results_table .results_row_left_column {
