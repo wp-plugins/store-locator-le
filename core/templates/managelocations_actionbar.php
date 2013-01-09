@@ -14,6 +14,8 @@
      $altViewText = __('Switch to expanded view?',SLPLUS_PREFIX);
      $viewText = __('Expanded View',SLPLUS_PREFIX);
  }
+
+ $actionBoxes = array();
 ?>
 <script type="text/javascript">
 function doAction(theAction,thePrompt) {
@@ -29,64 +31,31 @@ function doAction(theAction,thePrompt) {
 <div id="action_buttons">
     <div id="action_bar_header"><h3><?php print __('Actions and Filters',SLPLUS_PREFIX); ?></h3></div>
     <div class="boxbar">
-        <div id="other_actions"  class='actionbox'>
-            <p class="centerbutton"><a class='like-a-button' href="#" onclick="doAction('delete','<?php echo __('Delete selected?',SLPLUS_PREFIX);?>')" name="delete_selected"><?php echo __("Delete Selected", SLPLUS_PREFIX); ?></a></p>
-                <?php
-                //----------
-                // Pro Pack
-                //
-                if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
-                    ?>
-                     <p class="centerbutton"><a class='like-a-button' href="#" onclick="doAction('recode','<?php echo __('Recode selected?',SLPLUS_PREFIX);?>')" name="delete_selected"><?php echo __("Recode Selected", SLPLUS_PREFIX); ?></a></p>
-                <?php
-                }
+<?php
+
+    // Basic Delete Icon
+    //
+    $actionBoxes['A'][] =
+            '<p class="centerbutton">' .
+                '<a class="like-a-button" href="#" ' .
+                        'onclick="doAction(\'delete\',\''.__('Delete selected?',SLPLUS_PREFIX).'\');" ' .
+                        'name="delete_selected">'.__("Delete Selected", SLPLUS_PREFIX).
+                '</a>'.
+            '</p>'
+            ;
+
+    // Loop through the action boxes content array
+    //
+    $actionBoxes = apply_filters('slp_action_boxes',$actionBoxes);
+    ksort($actionBoxes);
+    foreach ($actionBoxes as $boxNumber => $actionBoxLine) {
+        print "<div id='box_$boxNumber' class='actionbox'>";
+        foreach ($actionBoxLine as $LineHTML) {
+            print $LineHTML;
+        }
         print '</div>';
-
-        //----------
-        // Pro Pack
-        //
-        if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
-            print '<div id="tag_block" class="actionbox">';
-        ?>
-                <div id="tag_actions">
-                    <ul>
-                        <a href="#" name="tag_selected"    onclick="doAction('add_tag','<?php echo __('Tag selected?',SLPLUS_PREFIX);?>');"   ><li class='like-a-button'><?php echo __('Tag Selected', SLPLUS_PREFIX);?></li></a>
-                        <a href="#" name="untag_selected"  onclick="doAction('remove_tag','<?php echo __('Remove tag from selected?',SLPLUS_PREFIX);?>');"><li class='like-a-button'><?php echo __('Untag Selected', SLPLUS_PREFIX);?></li></a>
-                    </ul>
-                </div>
-                <div id="tagentry">
-                    <label for="sl_tags"><?php echo __('Tags', SLPLUS_PREFIX); ?></label><input name='sl_tags'>
-                </div>
-        <?php
-            print '</div>';
-        }
-
-        //----------
-        // Store Pages
-        //
-
-        $actionBoxContent =
-            '<div id="action_box_3" class="actionbox">'       .
-                '<p class="centerbutton">'
-            ;
-        if ($slplus_plugin->license->packages['Store Pages']->isenabled) {
-            $actionBoxContent .=
-                    "<a class='like-a-button' href='#' "            .
-                            "onclick=\"doAction('createpage','"     .
-                                __('Create Pages?',SLPLUS_PREFIX)   .
-                                "')\" name='createpage_selected'>"  .
-                                __('Create Pages', SLPLUS_PREFIX)   .
-                             '</a>'
-                    ;
-        }
-
-        $actionBoxContent .=
-                '</p>'                                              .
-            '</div>'
-            ;
-
-        print apply_filters('slp_action_box_3_content',$actionBoxContent);
-
+    }
+ 
         print '<div id="search_block" class="searchlocations filterbox">';
         ?>
                 <p class="centerbutton"><input class='like-a-button' type='submit' value='<?php print __("Search Locations", SLPLUS_PREFIX); ?>'></p>

@@ -157,40 +157,35 @@ echo CreateInputDiv(
         }
 
         do_action('slp_add_search_form_tag_setting');
-?>
-        </div>
-    </div>
 
-    <!-- Labels Section -->
-    <div class='section_column'>                     
-        <h2><?php _e("Labels", SLPLUS_PREFIX); ?></h2>
-
-<?php
+echo '</div></div>';
 
 // Search Form Labels
 //
-echo '<p class="slp_admin_info"><strong>'.__('Search Form Labels',SLPLUS_PREFIX).'</strong></p>';
-echo CreateInputDiv(
+echo "<div class='section_column'>" .
+     '<h2>'.__('Labels', 'csl-slplus') . '</h2>' .
+    CreateInputDiv(
         'sl_search_label',
         __('Address', SLPLUS_PREFIX),
         __('Search form address label.',SLPLUS_PREFIX),
         '',
         'Address / Zip'
-        );
-echo CreateInputDiv(
+        ) .
+    CreateInputDiv(
         'sl_name_label',
         __('Name', SLPLUS_PREFIX),
         __('Search form name label.',SLPLUS_PREFIX),
         '',
         'Name'
-        );
-echo CreateInputDiv(
+        ) .
+    CreateInputDiv(
         'sl_radius_label',
         __('Radius', SLPLUS_PREFIX),
         __('Search form radius label.',SLPLUS_PREFIX),
         '',
         'Within'
-        );
+        )
+    ;
 
 //----------------------------------------------------------------------
 // Pro Pack Enabled
@@ -203,7 +198,7 @@ if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
             );
     echo CreateInputDiv(
             '_state_pd_label',
-            __('State', 'csl-slplus'),
+            __('State Label', 'csl-slplus'),
             __('Search form label to prefix the state selector.','csl-slplus')
             );
     echo CreateInputDiv(
@@ -215,62 +210,6 @@ if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
             );
 }    
 
+do_action('slp_add_search_form_label_setting');
 
-// Result Labels
-//
-echo '<p class="slp_admin_info"><strong>'.__('Search Results Labels','csl-slplus').'</strong></p>';
-echo CreateInputDiv(
-        'sl_website_label',
-        __('Website URL', 'csl-slplus'),
-        __('Search results text for the website link.','csl-slplus'),
-        '',
-        'website'
-        );
-echo CreateInputDiv(
-        '_label_hours',
-        __('Hours', SLPLUS_PREFIX),
-        __('Hours label.',SLPLUS_PREFIX),
-        SLPLUS_PREFIX,
-        'Hours: '
-        );
-echo CreateInputDiv(
-        '_label_phone',
-        __('Phone', SLPLUS_PREFIX),
-        __('Phone label.',SLPLUS_PREFIX),
-        SLPLUS_PREFIX,
-        'Phone: '
-        );
-echo CreateInputDiv(
-        '_label_fax',
-        __('Fax', SLPLUS_PREFIX),
-        __('Fax label.',SLPLUS_PREFIX),
-        SLPLUS_PREFIX,
-        'Fax: '
-        );
-echo CreateInputDiv(
-        '_label_directions',
-        __('Directions', SLPLUS_PREFIX),
-        __('Directions label.',SLPLUS_PREFIX),
-        SLPLUS_PREFIX,
-        'Directions'
-        );
-echo CreateInputDiv(
-        'sl_instruction_message',
-        __('Instructions', SLPLUS_PREFIX),
-        __('Search results instructions shown if immediately show locations is not selected.',SLPLUS_PREFIX),
-        '',
-        __('Enter an address or zip code and click the find locations button.',SLPLUS_PREFIX)
-        );
-//----------------------------------------------------------------------
-// Pro Pack Enabled
-//
-if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {
-    echo CreateInputDiv(
-            '_message_noresultsfound',
-            __('No Results Message', SLPLUS_PREFIX),
-            __('No results found message that appears under the map.',SLPLUS_PREFIX),
-            SLPLUS_PREFIX,
-            __('Results not found.',SLPLUS_PREFIX)
-            );
-    }
 echo "</div></div>";
