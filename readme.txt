@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
 Tags: google maps, store finder, store locator, store locater, google, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus, bing map, bing, yahoo maps, yahoo, mapping, retail
 Requires at least: 3.3
 Tested up to: 3.5
-Stable tag: 3.8.6
+Stable tag: 3.8.7
 
 Store Locator Plus makes it easy to put a fully functional store finder on your site.
 The most active store locator plugin with monthly updates!
@@ -164,6 +164,8 @@ Thanks to [Nicolas Mollet](http://mapicons.nicolasmollet.com/) and Icons-Land (h
 
 Thanks to [Google](http://www.google.com) for the maps engine as well as some of the icons.  Some of the Google open-source icons are found [at this unofficial list](http://www.visual-case.it/cgi-bin/vc/GMapsIcons.pl).
 
+Thanks to "PennyGrit" for pointing out security issues so I can patch them before the exploit gets into the wild.
+
 
 == Frequently Asked Questions ==
 
@@ -288,6 +290,11 @@ I update about once per month or more frequently as needed.
 Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
 
 I was listing the entire change log here but with weekly/bi-weekly updates it as getting much too long.
+
+= 3.8.7 (January 9th 2013) =
+
+* Security patch for slp-pro.php to prevent open query/injection attack.
+* Icon save/select eliminate duplicates. Base file name must be unique.  Base plugin icons take precedence.
 
 = 3.8.6 (January 7th 2013) =
 

@@ -748,10 +748,10 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
              * @see http://goo.gl/UAXly - siteURL - get_site_url() WordPress call
              */
             if (!isset($this->parent->data['homeIconPicker'] )) {
-                $this->parent->data['homeIconPicker'] = $this->parent->AdminUI->rendorIconSelector('sl_map_home_icon','home_icon_preview');
+                $this->parent->data['homeIconPicker'] = $this->parent->AdminUI->CreateIconSelector('sl_map_home_icon','home_icon_preview');
             }
             if (!isset($this->parent->data['endIconPicker'] )) {
-                $this->parent->data['endIconPicker'] = $this->parent->AdminUI->rendorIconSelector('sl_map_end_icon','end_icon_preview');
+                $this->parent->data['endIconPicker'] = $this->parent->AdminUI->CreateIconSelector('sl_map_end_icon','end_icon_preview');
             }
 
             // Icon is the old path, notify them to re-select

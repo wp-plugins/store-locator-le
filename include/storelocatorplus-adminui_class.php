@@ -17,7 +17,8 @@ if (! class_exists('SLPlus_AdminUI')) {
          ******************************/
         public $addingLocation = false;
         public $currentLocation = array();
-        public $parent = null;       
+        public $parent = null;
+        public $plugin = null;
         public $styleHandle = 'csl_slplus_admin_css';
 
         /*************************************
@@ -44,6 +45,7 @@ if (! class_exists('SLPlus_AdminUI')) {
             if (!isset($this->parent) || ($this->parent == null)) {
                 global $slplus_plugin;
                 $this->parent = $slplus_plugin;
+                $this->plugin = $slplus_plugin;
             }
             return (isset($this->parent) && ($this->parent != null));
         }
@@ -1127,56 +1129,101 @@ if (! class_exists('SLPlus_AdminUI')) {
         }
 
         /**
-         * Render an icon selector for the icon images store in the SLP plugin icon directory.
+         * Return the icon selector HTML for the icon images in saved icons and default icon directories.
          *
          * @param type $inputFieldID
          * @param type $inputImageID
          * @return string
          */
-         function rendorIconSelector($inputFieldID = null, $inputImageID = null) {
+         function CreateIconSelector($inputFieldID = null, $inputImageID = null) {
             if (!$this->setParent()) { return 'could not set parent'; }
             if (($inputFieldID == null) || ($inputImageID == null)) { return ''; }
+
+
             $htmlStr = '';
+            $files=array();
+            $fqURL=array();
 
-            $directories = apply_filters('slp_icon_directories',array(SLPLUS_ICONDIR, SLPLUS_UPLOADDIR."/saved-icons/"));
-            foreach ($directories as $directory) {
-                if (is_dir($directory)) {
-                    if ($iconDir=opendir($directory)) {
-                        $iconURL = (($directory === SLPLUS_ICONDIR)?SLPLUS_ICONURL:SLPLUS_UPLOADURL.'/saved-icons/');
-                        $files=array();
-                        while ($files[] = readdir($iconDir));
-                        sort($files);
-                        closedir($iconDir);
 
-                        foreach ($files as $an_icon) {
-                            if (
-                                (preg_match('/\.(png|gif|jpg)/i', $an_icon) > 0) &&
-                                (preg_match('/shadow\.(png|gif|jpg)/i', $an_icon) <= 0)
-                                ) {
-                                $htmlStr .=
-                                    "<div class='slp_icon_selector_box'>".
-                                        "<img class='slp_icon_selector'
-                                             src='".$iconURL.$an_icon."'
-                                             onclick='".
-                                                "document.getElementById(\"".$inputFieldID."\").value=this.src;".
-                                                "document.getElementById(\"".$inputImageID."\").src=this.src;".
-                                             "'>".
-                                     "</div>"
-                                     ;
-                            }
+            // If we already got a list of icons and URLS, just use those
+            //
+            if (
+                isset($this->plugin->data['iconselector_files']) &&
+                isset($this->plugin->data['iconselector_urls'] ) 
+               ) {
+                $files = $this->plugin->data['iconselector_files'];
+                $fqURL = $this->plugin->data['iconselector_urls'];
+
+            // If not, build the icon info but remember it for later
+            // this helps cut down looping directory info twice (time consuming)
+            // for things like home and end icon processing.
+            //
+            } else {
+
+                // Load the file list from our directories
+                //
+                // using the same array for all allows us to collapse files by
+                // same name, last directory in is highest precedence.
+                $iconAssets = apply_filters('slp_icon_directories',
+                        array(
+                                array('dir'=>SLPLUS_UPLOADDIR.'saved-icons/',
+                                      'url'=>SLPLUS_UPLOADURL.'saved-icons/'
+                                     ),
+                                array('dir'=>SLPLUS_ICONDIR,
+                                      'url'=>SLPLUS_ICONURL
+                                     )
+                            )
+                        );
+                $fqURLIndex = 0;
+                foreach ($iconAssets as $icon) {
+                    if (is_dir($icon['dir'])) {
+                        if ($iconDir=opendir($icon['dir'])) {
+                            $fqURL[] = $icon['url'];
+                            while ($filename = readdir($iconDir)) {
+                                if (strpos($filename,'.')===0) { continue; }
+                                $files[$filename] = $fqURLIndex;
+                            };
+                            closedir($iconDir);
+                            $fqURLIndex++;
+                        } else {
+                            $this->parent->notifications->add_notice(
+                                    9,
+                                    sprintf(
+                                            __('Could not read icon directory %s',SLPLUS_PREFIX),
+                                            $directory
+                                            )
+                                    );
+                             $this->parent->notifications->display();
                         }
-                    } else {
-                        $this->parent->notifications->add_notice(
-                                9,
-                                sprintf(
-                                        __('Could not read icon directory %s',SLPLUS_PREFIX),
-                                        $directory
-                                        )
-                                );
-                         $this->parent->notifications->display();
-                    }
-               }
+                   }
+                }
+                ksort($files);
+                $this->plugin->data['iconselector_files'] = $files;
+                $this->plugin->data['iconselector_urls']  = $fqURL;
             }
+
+            // Build our icon array now that we have a full file list.
+            //
+            foreach ($files as $filename => $fqURLIndex) {
+                if (
+                    (preg_match('/\.(png|gif|jpg)/i', $filename) > 0) &&
+                    (preg_match('/shadow\.(png|gif|jpg)/i', $filename) <= 0)
+                    ) {
+                    $htmlStr .=
+                        "<div class='slp_icon_selector_box'>".
+                            "<img class='slp_icon_selector'
+                                 src='".$fqURL[$fqURLIndex].$filename."'
+                                 onclick='".
+                                    "document.getElementById(\"".$inputFieldID."\").value=this.src;".
+                                    "document.getElementById(\"".$inputImageID."\").src=this.src;".
+                                 "'>".
+                         "</div>"
+                         ;
+                }
+            }
+
+            // Wrap it in a div
+            //
             if ($htmlStr != '') {
                 $htmlStr = '<div id="'.$inputFieldID.'_icon_row" class="slp_icon_row">'.$htmlStr.'</div>';
 

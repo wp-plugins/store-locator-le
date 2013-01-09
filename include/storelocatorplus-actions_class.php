@@ -343,7 +343,6 @@ if (! class_exists('SLPlus_Actions')) {
                     );
 
             $sl_google_map_domain=get_option('sl_google_map_domain','maps.google.com');
-            $sl_map_character_encoding='&oe='.get_option('sl_map_character_encoding','utf8');    
 
             //------------------------
             // Register our scripts for later enqueue when needed
@@ -353,6 +352,7 @@ if (! class_exists('SLPlus_Actions')) {
                 if (isset($api_key))
                 {
                      //todo:character encoding ???
+                     // $sl_map_character_encoding='&oe='.get_option('sl_map_character_encoding','utf8');
                     //"http://$sl_google_map_domain/maps?file=api&amp;v=2&amp;key=$api_key&amp;sensor=false{$sl_map_character_encoding}"
                     wp_enqueue_script(
                             'google_maps',
