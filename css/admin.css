@@ -499,10 +499,9 @@ div.section_column .form_entry {
 }
 
 div.slp_icon_row {
-    margin: 6px 3px 24px 150px;
+    margin: 0px;
     overflow: auto;
-    width: 360px;
-    height: 110px;
+    height: 140px;
 }
 
 div.slp_icon_selector_box {
