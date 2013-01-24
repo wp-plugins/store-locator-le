@@ -6,7 +6,7 @@
  *****************************************************************/
 
 /***************************
-  * Cyber Sprocket Labs Namespace
+  * CSA Labs Namespace
   *
   * For stuff to do awesome stuff like save lobby jones if he got stuck in a tree.
   *
@@ -744,7 +744,11 @@ var csl = {
 
 			//check for results
 			if (markerList.length == 0) {
+                            if ( (typeof this.homePoint != 'undefined') &&
+                                 (this.homePoint != null)
+                               ) {
 				this.gmap.panTo(this.homePoint);
+                            }
                 var sidebar = document.getElementById('map_sidebar');
 				sidebar.innerHTML = '<div class="no_results_found"><h2>'+slplus.msg_noresults+'</h2></div>';
                 jQuery('#map_sidebar').trigger('contentchanged');
@@ -849,7 +853,6 @@ var csl = {
                         //the map has been created so shift the center of the map
                         else {
                             //move the center of the map
-                            //this.gmap.panTo(results[0].geometry.location);
                             _this.homePoint = results[0].geometry.location;
                             _this.homeAdress = results[0].formatted_address;
 

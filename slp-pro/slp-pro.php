@@ -30,7 +30,7 @@ if ( !in_array( 'store-locator-le/store-locator-le.php', apply_filters( 'active_
 //
 if ( ! class_exists( 'SLPPro' ) ) {
 
-    /**
+    /**bulk
      * Main SLP Pro Class
      */
     class SLPPro {
@@ -61,9 +61,9 @@ if ( ! class_exists( 'SLPPro' ) ) {
 
             // Filters
             //
-            add_filter('slp_shortcode_atts',array($this,'extend_main_shortcode'));
-
-            add_filter('slp_action_boxes',array($this,'manage_locations_actionbar'));
+            add_filter('slp_add_location_form_footer'   ,array($this,'bulk_upload_form')            );
+            add_filter('slp_shortcode_atts'             ,array($this,'extend_main_shortcode')       );
+            add_filter('slp_action_boxes'               ,array($this,'manage_locations_actionbar')  );
         }
 
 
@@ -151,13 +151,46 @@ if ( ! class_exists( 'SLPPro' ) ) {
         // Pro Pack Custom Methods
         //====================================================
 
+        /**
+         * Add the bulk upload form to add locations.
+         *
+         * @param string $HTML - html of the existing add locations form suffix, typcially ''
+         * @return string - complete HTML to put in the footer.
+         */
+        function bulk_upload_form($HTML) {
+            if (!$this->setPlugin()) { return ''; }
+            return ( $HTML .
+                        '<div class="slp_bulk_upload_div section_column">' .
+                        '<h2>'.__('Bulk Upload', 'slplus-pro').'</h2>'.
+                        '<div class="section_description">'.
+                        '<p>'.
+                            sprintf(__('See the %s for more details on the import format.','slplus-pro'),
+                                    '<a href="http://www.charlestonsw.com/support/documentation/store-locator-plus/pro-pack-add-on/bulk-data-import/">' .
+                                    __('online documentation','slplus-pro') .
+                                    '</a>'
+                                    ).
+                        '</p>' .
+                        '<input type="file" name="csvfile" value="" id="bulk_file" size="50">' .
+                        $this->plugin->helper->CreateCheckboxDiv(
+                            '-bulk_skip_first_line',
+                            __('Skip First Line','slplus-pro'),
+                            __('Skip the first line of the import file.','slplus-pro'),
+                            SLPLUS_PREFIX,
+                            false,
+                            0
+                        ).
+                        "<div class='form_entry'><input type='submit' value='".__('Upload Locations', 'slplus-pro')."' class='button-primary'></div>".
+                        '</div>' .
+                        '</div>'
+                    );
+        }
 
-        /**************************************
-         ** function: slplus_create_country_pd()
-         **
-         ** Create the county pulldown list, mark the checked item.
-         **
-         **/
+        /**
+         * Create the county pulldown list, mark the checked item.
+         * 
+         * @global type $wpdb
+         * @return string
+         */
         function create_country_pd() {
             if (!$this->setPlugin()) { return ''; }
 

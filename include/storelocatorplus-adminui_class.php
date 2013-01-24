@@ -709,7 +709,7 @@ if (! class_exists('SLPlus_AdminUI')) {
          * @param type $storePageID
          * @return type
          */
-        function slpRenderCreatePageButton($locationID=-1,$storePageID=-1) {
+        static function slpRenderCreatePageButton($locationID=-1,$storePageID=-1) {
             if ($locationID < 0) { return; }            
             $slpPageClass = (($storePageID>0)?'haspage_icon' : 'createpage_icon');
             print "<a   class='action_icon $slpPageClass' 
@@ -809,13 +809,18 @@ if (! class_exists('SLPlus_AdminUI')) {
                     $arr_file_type = wp_check_filetype(basename($_FILES['csvfile']['name']));
                     if ($arr_file_type['type'] == 'text/csv') {
 
-                                // Save the file to disk
-                                //
-                                $updir = wp_upload_dir();
-                                $updir = $updir['basedir'].'/slplus_csv';
-                                if(!is_dir($updir)) {
-                                    mkdir($updir,0755);
-                                }
+                        // Remember the options for next time.
+                        //
+                        $this->plugin->helper->SaveCheckboxToDB('bulk_skip_first_line');
+
+                        // Save the file to disk
+                        //
+                        $updir = wp_upload_dir();
+                        $updir = $updir['basedir'].'/slplus_csv';
+                        if(!is_dir($updir)) {
+                            mkdir($updir,0755);
+                        }
+
                                 if (move_uploaded_file($_FILES['csvfile']['tmp_name'],
                                         $updir.'/'.$_FILES['csvfile']['name'])) {
                                         $reccount = 0;
@@ -827,7 +832,14 @@ if (! class_exists('SLPlus_AdminUI')) {
                                                             'sl_zip','sl_country','sl_tags','sl_description','sl_url',
                                                             'sl_hours','sl_phone','sl_email','sl_image','sl_fax');
                                             $maxcols = count($fldNames);
+                                            $skippedFirst = false;
                                             while (($data = fgetcsv($handle)) !== FALSE) {
+                                                if (!$skippedFirst &&
+                                                    ($_POST['csl-slplus-bulk_skip_first_line'] == 1)
+                                                    ){
+                                                    $skippedFirst = true;
+                                                    continue;
+                                                    }
                                                 $num = count($data);
                                                 if ($num <= $maxcols) {
                                                     $fieldList = '';
@@ -1105,13 +1117,8 @@ if (! class_exists('SLPlus_AdminUI')) {
 
                 // Bulk upload form
                 //
-                if ($addform && ($slplus_plugin->license->packages['Pro Pack']->isenabled)) {
-                    $content .=
-                        '<div class="slp_bulk_upload_div">' .
-                        '<h2>'.__('Bulk Upload', SLPLUS_PREFIX).'</h2>'.
-                        '<input type="file" name="csvfile" value="" id="bulk_file" size="60"><br/>' .
-                        "<input type='submit' value='".__("Upload Locations", SLPLUS_PREFIX)."' class='button-primary'>".
-                        '</div>';
+                if ($addform) {
+                    $content .= apply_filters('slp_add_location_form_footer', '');
                 }
 
                 $content .= '</form>';

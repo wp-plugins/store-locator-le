@@ -65,54 +65,6 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
         //=======================================
 
         /**
-         * Create a help div next to a settings entry.
-         *
-         * @param string $divname - name of the div
-         * @param string $msg - the message to dislpay
-         * @return string - the HTML
-         */
-        function CreateHelpDiv($divname,$msg) {
-            return "<a class='moreinfo_clicker' onclick=\"swapVisibility('".SLPLUS_PREFIX."-help$divname');\" href=\"javascript:;\">".
-                '<div class="'.SLPLUS_PREFIX.'-moreicon" title="click for more info"><br/></div>'.
-                "</a>".
-                "<div id='".SLPLUS_PREFIX."-help$divname' class='input_note' style='display: none;'>".
-                    $msg.
-                "</div>"
-                ;
-
-            }
-
-        /**
-         * Generate the HTML for a checkbox settings interface element.
-         *
-         * @param string $boxname - the name of the checkbox (db option name)
-         * @param string $label - default '', the label to go in front of the checkbox
-         * @param string $msg - default '', the help message
-         * @param string $prefix - defaults to SLPLUS_PREFIX, can be ''
-         * @param boolean $disabled - defaults to false
-         * @param mixed $default
-         * @return type
-         */
-        function CreateCheckboxDiv($boxname,$label='',$msg='',$prefix=SLPLUS_PREFIX, $disabled=false, $default=0) {
-            $whichbox = $prefix.$boxname;
-            return
-                "<div class='form_entry'>".
-                    "<div class='".SLPLUS_PREFIX."-input'>" .
-                    "<label  for='$whichbox' ".
-                        ($disabled?"class='disabled '":' ').
-                        ">$label:</label>".
-                    "<input name='$whichbox' value='1' ".
-                        "type='checkbox' ".
-                        ((get_option($whichbox,$default) ==1)?' checked ':' ').
-                        ($disabled?"disabled='disabled'":' ') .
-                    ">".
-                    "</div>".
-                    $this->CreateHelpDiv($boxname,$msg) .
-                "</div>"
-                ;
-            }
-
-        /**
          * Generate the HTML for an input settings interface element.
          *
          * @param type $boxname
@@ -130,7 +82,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                         "<label for='$whichbox'>$label:</label>".
                         "<input  name='$whichbox' value='".$this->parent->Actions->getCompoundOption($whichbox,$default)."'>".
                     "</div>".
-                    $this->CreateHelpDiv($boxname,$msg).
+                    $this->plugin->helper->CreateHelpDiv($boxname,$msg).
                  "</div>"
                 ;
         }
@@ -165,7 +117,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
 
             $content.=      "</select>".
                         "</div>".
-                        $this->CreateHelpDiv($boxname,$msg).
+                        $this->plugin->helper->CreateHelpDiv($boxname,$msg).
                     "</div>"
                     ;
 
@@ -226,42 +178,12 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                         "<label for='$whichbox'>$label:</label>".
                         "<textarea  name='$whichbox'>".stripslashes(esc_textarea(get_option($whichbox,$default)))."</textarea>".
                     "</div>".
-                    $this->CreateHelpDiv($boxname,$msg).
+                    $this->plugin->helper->CreateHelpDiv($boxname,$msg).
                  "</div>"
                 ;
 
         }
-
-        /**
-         * Save a checkbox form variable to the WP options table.
-         *
-         * @param string $boxname - the name of the checkbox (db option name)
-         * @param string $prefix - defaults to SLPLUS_PREFIX, can be ''
-         * @param string $separator - the option name separator
-         */
-        function SaveCheckboxToDB($boxname,$prefix = SLPLUS_PREFIX, $separator='-') {
-            $whichbox = $prefix.$separator.$boxname;
-            $_POST[$whichbox] = isset($_POST[$whichbox])?1:0;
-            $this->SavePostToOptionsTable($whichbox,0);
-        }
-
-        /**
-         * Save a POST variable to the WP options table.
-         *
-         * @param string $optionname
-         * @param string $default
-         */
-        function SavePostToOptionsTable($optionname,$default=null) {
-            if ($default != null) {
-                if (!isset($_POST[$optionname])) {
-                    $_POST[$optionname] = $default;
-                }
-            }
-            if (isset($_POST[$optionname])) {
-                update_option($optionname,$_POST[$optionname]);
-            }
-        }
-
+        
         /**
          * Execute the save settings action.
          *
@@ -323,7 +245,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                         )
                     );
                 foreach ($BoxesToHit as $JustAnotherBox) {
-                    $this->SavePostToOptionsTable($JustAnotherBox);
+                    $this->plugin->helper->SavePostToOptionsTable($JustAnotherBox);
                 }
 
                 // Checkboxes
@@ -357,7 +279,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                             )
                         );
                 foreach ($BoxesToHit as $JustAnotherBox) {
-                    $this->SaveCheckBoxToDB($JustAnotherBox, '','');
+                    $this->plugin->helper->SaveCheckBoxToDB($JustAnotherBox, '','');
                 }
         }
 
@@ -385,7 +307,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
 
                 $this->CreateSubheadingLabel(__('Look and Feel','csl-slplus')) .
 
-                $this->CreateCheckboxDiv(
+                $this->plugin->helper->CreateCheckboxDiv(
                         'sl_remove_credits',
                         __('Remove Credits','csl-slplus'),
                         __('Remove the search provided by tagline under the map.','csl-slplus'),
@@ -394,7 +316,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                         0
                         ).
 
-                $this->CreateCheckboxDiv(
+                $this->plugin->helper->CreateCheckboxDiv(
                     '-force_load_js',
                     __('Force Load JavaScript','csl-slplus'),
                     __('Force the JavaScript for Store Locator Plus to load on every page with early loading. ' .
@@ -404,7 +326,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                     1
                     ).
 
-                $this->CreateCheckboxDiv(
+                $this->plugin->helper->CreateCheckboxDiv(
                         'sl_load_locations_default',
                         __('Immediately Show Locations', 'csl-slplus'),
                         __('Display locations as soon as map loads, based on map center and default radius','csl-slplus'),
@@ -431,7 +353,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                                 __('If set, this image will be displayed until a search is performed.  Enter the full URL for the image.',SLPLUS_PREFIX),
                                 ''
                                 ) .
-                            $this->CreateCheckboxDiv(
+                            $this->plugin->helper->CreateCheckboxDiv(
                                 '_disable_initialdirectory',
                                 __('Disable Initial Directory',SLPLUS_PREFIX),
                                 __('Do not display the listings under the map when "immediately show locations" is checked.', SLPLUS_PREFIX)
@@ -544,28 +466,28 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                                 ''
                                 ) .
                         '<p class="slp_admin_info" style="clear:both;"><strong>'.__('Controls',SLPLUS_PREFIX).'</strong></p>' .
-                        $this->CreateCheckboxDiv(
+                        $this->plugin->helper->CreateCheckboxDiv(
                             'sl_map_overview_control',
                             __('Show Map Inset Box',SLPLUS_PREFIX),
                             __('When checked the map inset is shown.', SLPLUS_PREFIX),
                             ''
                             ) .
-                        $this->CreateCheckboxDiv(
+                        $this->plugin->helper->CreateCheckboxDiv(
                             '_disable_scrollwheel',
                             __('Disable Scroll Wheel',SLPLUS_PREFIX),
                             __('Disable the scrollwheel zoom on the maps interface.', SLPLUS_PREFIX)
                             ) .
-                        $this->CreateCheckboxDiv(
+                        $this->plugin->helper->CreateCheckboxDiv(
                             '_disable_largemapcontrol3d',
                             __('Hide map 3d control',SLPLUS_PREFIX),
                             __('Turn the large map 3D control off.', SLPLUS_PREFIX)
                             ) .
-                        $this->CreateCheckboxDiv(
+                        $this->plugin->helper->CreateCheckboxDiv(
                             '_disable_scalecontrol',
                             __('Hide map scale',SLPLUS_PREFIX),
                             __('Turn the map scale off.', SLPLUS_PREFIX)
                             ) .
-                        $this->CreateCheckboxDiv(
+                        $this->plugin->helper->CreateCheckboxDiv(
                             '_disable_maptypecontrol',
                             __('Hide map type',SLPLUS_PREFIX),
                             __('Turn the map type selector off.', SLPLUS_PREFIX)
@@ -853,13 +775,13 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
             // Pro Pack : Search Results Settings
             //
             if ($this->parent->license->packages['Pro Pack']->isenabled) {
-                $slpDescription .= $this->CreateCheckboxDiv(
+                $slpDescription .= $this->plugin->helper->CreateCheckboxDiv(
                     '_show_tags',
                     __('Show Tags In Output',SLPLUS_PREFIX),
                     __('Show the tags in the location output table and bubble.', SLPLUS_PREFIX)
                     );
 
-                $slpDescription .= $this->CreateCheckboxDiv(
+                $slpDescription .= $this->plugin->helper->CreateCheckboxDiv(
                     '_use_email_form',
                     __('Use Email Form',SLPLUS_PREFIX),
                     __('Use email form instead of mailto: link when showing email addresses.', SLPLUS_PREFIX)
@@ -1000,7 +922,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                 ;
 
             $slpDescription .=
-                $this->CreateCheckboxDiv(
+                $this->plugin->helper->CreateCheckboxDiv(
                     '_hide_radius_selections',
                     __('Hide radius selection','csl-slplus'),
                     __('Hides the radius selection from the user, the default radius will be used.', 'csl-slplus') . $ppFeatureMsg,
@@ -1008,7 +930,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                     !$this->parent->license->packages['Pro Pack']->isenabled
                     ) .
 
-                $this->CreateCheckboxDiv(
+                $this->plugin->helper->CreateCheckboxDiv(
                     '_show_search_by_name',
                     __('Show search by name box', 'csl-slplus'),
                     __('Shows the name search entry box to the user.', 'csl-slplus') . $ppFeatureMsg,
@@ -1016,7 +938,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                     !$this->parent->license->packages['Pro Pack']->isenabled
                     ) .
 
-                $this->CreateCheckboxDiv(
+                $this->plugin->helper->CreateCheckboxDiv(
                     '_hide_address_entry',
                     __('Hide address entry box','csl-slplus'),
                     __('Hides the address entry box from the user.', 'csl-slplus') . $ppFeatureMsg,
@@ -1024,7 +946,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                     !$this->parent->license->packages['Pro Pack']->isenabled
                     ) .
 
-                $this->CreateCheckboxDiv(
+                $this->plugin->helper->CreateCheckboxDiv(
                     '_use_location_sensor',
                     __('Use location sensor', 'csl-slplus'),
                     __('This turns on the location sensor (GPS) to set the default search address.  This can be slow to load and customers are prompted whether or not to allow location sensing.', 'csl-slplus') . $ppFeatureMsg,
@@ -1032,7 +954,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                     !$this->parent->license->packages['Pro Pack']->isenabled
                     ) .
 
-                $this->CreateCheckboxDiv(
+                $this->plugin->helper->CreateCheckboxDiv(
                     'sl_use_city_search',
                     __('Show City Pulldown','csl-slplus'),
                     __('Displays the city pulldown on the search form. It is built from the unique city names in your location list.','csl-slplus') . $ppFeatureMsg,
@@ -1040,7 +962,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                     !$this->parent->license->packages['Pro Pack']->isenabled
                     ) .
 
-                $this->CreateCheckboxDiv(
+                $this->plugin->helper->CreateCheckboxDiv(
                     'sl_use_country_search',
                     __('Show Country Pulldown','csl-slplus'),
                     __('Displays the country pulldown on the search form. It is built from the unique country names in your location list.','csl-slplus') . $ppFeatureMsg,
@@ -1048,7 +970,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                     !$this->parent->license->packages['Pro Pack']->isenabled
                     ) .
 
-                $this->CreateCheckboxDiv(
+                $this->plugin->helper->CreateCheckboxDiv(
                     'slplus_show_state_pd',
                     __('Show State Pulldown','csl-slplus'),
                     __('Displays the state pulldown on the search form. It is built from the unique state names in your location list.','csl-slplus') . $ppFeatureMsg,
@@ -1056,7 +978,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                     !$this->parent->license->packages['Pro Pack']->isenabled
                     ) .
 
-                $this->CreateCheckboxDiv(
+                $this->plugin->helper->CreateCheckboxDiv(
                     '_disable_search',
                     __('Hide Find Locations button','csl-slplus'),
                     __('Remove the "Find Locations" button from the search form.', 'csl-slplus') . $ppFeatureMsg,
@@ -1064,7 +986,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                     !$this->parent->license->packages['Pro Pack']->isenabled
                     ) .
 
-                $this->CreateCheckboxDiv(
+                $this->plugin->helper->CreateCheckboxDiv(
                     '_disable_find_image',
                     __('Use Find Location Text Button','csl-slplus'),
                     __('Use a standard text button for "Find Locations" instead of the provided button images.', SLPLUS_PREFIX) . $ppFeatureMsg,
@@ -1091,7 +1013,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
             // Pro Pack Enabled
             //
             if ($this->parent->license->packages['Pro Pack']->isenabled) {
-                $slpDescription .= $this->CreateCheckboxDiv(
+                $slpDescription .= $this->plugin->helper->CreateCheckboxDiv(
                     '_show_tag_search',
                     __('Tag Input',SLPLUS_PREFIX),
                     __('Show the tag entry box on the search form.', SLPLUS_PREFIX)
@@ -1102,7 +1024,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                         __("Enter a comma (,) separated list of tags to show in the search pulldown, mark the default selection with parenthesis '( )'. This is a default setting that can be overriden on each page within the shortcode.",SLPLUS_PREFIX)
                         );
 
-                $slpDescription .= $this->CreateCheckboxDiv(
+                $slpDescription .= $this->plugin->helper->CreateCheckboxDiv(
                     '_show_tag_any',
                     __('Add "any" to tags pulldown',SLPLUS_PREFIX),
                     __('Add an "any" selection on the tag pulldown list thus allowing the user to show all locations in the area, not just those matching a selected tag.', SLPLUS_PREFIX)

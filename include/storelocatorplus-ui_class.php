@@ -529,6 +529,7 @@ if (! class_exists('SLPlus_UI')) {
                         '"'.
                     '>'.
                     __('search provided by', 'csl-slplus') .
+                    ' ' .
                     "<a href='". $slplus_plugin->url."' target='_blank'>".
                          $slplus_plugin->name.
                     "</a>".
