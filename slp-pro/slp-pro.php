@@ -179,10 +179,140 @@ if ( ! class_exists( 'SLPPro' ) ) {
                             false,
                             0
                         ).
+                        $this->plugin->helper->CreateCheckboxDiv(
+                            '-bulk_skip_duplicates',
+                            __('Skip Duplicates','slplus-pro'),
+                            __('Checks the name, street, city, state, zip, and country for duplicate entries.  Skips if already in database.  Takes longer to load locations.','slplus-pro'),
+                            SLPLUS_PREFIX,
+                            false,
+                            0
+                        ).
+
                         "<div class='form_entry'><input type='submit' value='".__('Upload Locations', 'slplus-pro')."' class='button-primary'></div>".
                         '</div>' .
                         '</div>'
                     );
+        }
+
+        /**
+         * Process the bulk upload files.
+         *
+         */
+        function bulk_upload_processing() {
+            if (!$this->setPlugin()) { return false; }
+
+            add_filter('upload_mimes', array($this,'custom_upload_mimes'));
+            $this->plugin->helper->SaveCheckboxToDB('bulk_skip_first_line');
+            $this->plugin->helper->SaveCheckboxToDB('bulk_skip_duplicates');
+
+            // Get the type of the uploaded file. This is returned as "type/extension"
+            $arr_file_type = wp_check_filetype(basename($_FILES['csvfile']['name']));
+
+            // File is CSV
+            //
+            if ($arr_file_type['type'] == 'text/csv') {
+
+                // Save the file to disk
+                //
+                $updir = wp_upload_dir();
+                $updir = $updir['basedir'].'/slplus_csv';
+                if(!is_dir($updir)) {
+                    mkdir($updir,0755);
+                }
+
+                // If we can put in the uploads directory, continue...
+                //
+                if (move_uploaded_file($_FILES['csvfile']['tmp_name'],$updir.'/'.$_FILES['csvfile']['name'])) {
+                    $reccount = 0;
+                    $adle_setting = ini_get('auto_detect_line_endings');
+                    ini_set('auto_detect_line_endings', true);
+
+                    // If we can open the file...
+                    //
+                    if (($handle = fopen($updir.'/'.$_FILES['csvfile']['name'], "r")) !== FALSE) {
+                        $fldNames = array('sl_store','sl_address','sl_address2','sl_city','sl_state',
+                                        'sl_zip','sl_country','sl_tags','sl_description','sl_url',
+                                        'sl_hours','sl_phone','sl_email','sl_image','sl_fax');
+                        $maxcols = count($fldNames);
+                        $skippedFirst = false;
+                        $skipDupes    = ($_POST['csl-slplus-bulk_skip_duplicates'] == 1);
+                        $dupeCount    = 0;
+
+                        // Loop through all records
+                        //
+                        while (($data = fgetcsv($handle)) !== FALSE) {
+
+                            // Skip First Line
+                            //
+                            if (!$skippedFirst &&
+                                ($_POST['csl-slplus-bulk_skip_first_line'] == 1)
+                                ){
+                                $skippedFirst = true;
+                                continue;
+                            }
+
+                            $num = count($data);
+                            if ($num <= $maxcols) {
+                                $fieldList = '';
+                                $sl_valueList = '';
+                                $this_addy = '';
+                                for ($fldno=0; $fldno < $num; $fldno++) {
+                                    $fieldList.=$fldNames[$fldno].',';
+                                    $sl_valueList.="\"".stripslashes($this->plugin->AdminUI->slp_escape($data[$fldno]))."\",";
+                                    if (($fldno>=1) && ($fldno<=6)) {
+                                        $this_addy .= $data[$fldno] . ', ';
+                                    }
+                                }
+                                $this_addy = substr($this_addy, 0, strlen($this_addy)-2);
+                                $resultOfAdd = $this->plugin->AdminUI->add_this_addy($fieldList,$sl_valueList,$this_addy,$skipDupes,stripslashes($this->plugin->AdminUI->slp_escape($data[0])));
+                                sleep(0.5);
+                                if ($resultOfAdd == 'duplicate') { $dupeCount++; }
+                                $reccount++;
+                            } else {
+                                 print "<div class='updated fade'>".
+                                    __('The CSV file has too many fields.',
+                                        SLPLUS_PREFIX
+                                        );
+                                 print ' ';
+                                 printf(__('Got %d expected less than %d.', SLPLUS_PREFIX),
+                                    $num,$maxcols);
+                                 print '</div>';
+                            }
+                        }
+                        fclose($handle);
+                    }
+                    ini_set('auto_detect_line_endings', $adle_setting);
+
+                    // Tell them how many locations were added
+                    //
+                    if ($reccount > 0) {
+                        print "<div class='updated fade'>".
+                                sprintf("%d",$reccount) ." " .
+                                __("locations processed.",SLPLUS_PREFIX) .
+                                '</div>';
+                    }
+                    if ($dupeCount > 0) {
+                        print "<div class='updated fade'>".
+                                sprintf("%d",$dupeCount) ." " .
+                                __("duplicates not added.",SLPLUS_PREFIX) .
+                                '</div>';
+                    }
+
+                // Could not save
+                } else {
+                    print "<div class='updated fade'>".
+                        __("File could not be saved, check the plugin directory permissions:",SLPLUS_PREFIX) .
+                            "<br/>" . $updir.
+                        '.</div>';
+                }
+
+            // Not CSV Format Warning
+            } else {
+                print "<div class='updated fade'>".
+                    __("Uploaded file needs to be in CSV format.",SLPLUS_PREFIX) .
+                    " Type was " . $arr_file_type['type'] .
+                    '.</div>';
+            }
         }
 
         /**
@@ -228,7 +358,6 @@ if ( ! class_exists( 'SLPPro' ) ) {
          * Create the state pulldown list, mark the checked item.
          *
          * @global type $wpdb
-         * @global type $slplus_plugin
          * @return string
          */
         function create_state_pd() {
@@ -262,6 +391,18 @@ if ( ! class_exists( 'SLPPro' ) ) {
             }
             return $myOptions;
         }
+
+        /**
+         * Allows WordPress to process csv file types
+         *
+         * @param array $existing_mimes
+         * @return string
+         */
+        function custom_upload_mimes ( $existing_mimes=array() ) {
+            $existing_mimes['csv'] = 'text/csv';
+            return $existing_mimes;
+        }
+
 
         /**
          * Extends the main SLP shortcode approved attributes list, setting defaults.
