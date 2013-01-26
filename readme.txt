@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
 Tags: google maps, store finder, store locator, store locater, google, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus, bing map, bing, yahoo maps, yahoo, mapping, retail
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 3.8.11
+Stable tag: 3.8.12
 
 Store Locator Plus makes it easy to put a fully functional store finder on your site.
 The most active store locator plugin with monthly updates!
@@ -291,9 +291,16 @@ Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/su
 
 I was listing the entire change log here but with weekly/bi-weekly updates it as getting much too long.
 
+= 3.8.12 (January XX 2013) =
+
+* Roles & Capabilities updates, must now be administrator to see SLP sidebar menu entries.
+* [Pro Pack](http://www.charlestonsw.com/product/store-locator-plus) : Fix name field searches.
+* Start getting search form to send ALL form vars for better back end search functions in the future.
+
 = 3.8.11 (January 25 2013) =
 
 * [Pro Pack](http://www.charlestonsw.com/product/store-locator-plus) : Add "skip duplicates" on bulk upload.
+* WP 3.5.1 compatibility testing
 
 = 3.8.10 (January 23 2013) =
 

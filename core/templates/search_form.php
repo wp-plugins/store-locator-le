@@ -134,7 +134,7 @@ ob_start();
                         get_option('sl_name_label',__('Name of Store','csl-slplus')),
                         '',
                         (get_option(SLPLUS_PREFIX.'_show_search_by_name',0) == 0),
-                        'nameSearch'
+                        'div_nameSearch'
                         );
                 add_filter('slp_search_form_divs',array($slp_SearchDivs,'buildDiv50'),50);
             }

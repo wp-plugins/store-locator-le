@@ -1079,55 +1079,69 @@ var csl = {
   	  	 * returns: none
   	  	 */
 		this.loadMarkers = function(center, radius, tags) {
-			//determines if we need to invent real variables (usually only done at the beginning)
-			var realsearch = true;
-			if (this.forceAll) {
-				realsearch = false;
-				radius = null;
-				center = null;
-				this.forceAll = false;
-			}
-			this.debugSearch('doing search@' + center + ' for radius of ' + radius);
-			if (center == null) {
-				center = this.gmap.getCenter();
-			}
-			if (radius == null) {
-				radius = 40000;
-			}
-			this.lastCenter = center;
-			this.lastRadius = radius;
-			if (tags == null) { tags = ''; }
-			this.debugSearch('searching: ' + center.lat() +','+ center.lng());
-			var name = this.saneValue('nameSearch', '');
-			var action = null;
-			if (realsearch) {
-                var formObj = jQuery('#searchForm').formParams();
-				action = {action:'csl_ajax_search',lat:center.lat(),lng:center.lng(),radius:radius, tags: tags, name:name, address:this.saneValue('addressInput', 'no address entered'),formflds:formObj};
-			}
-			else {
-				action = {action:'csl_ajax_onload',lat:center.lat(),lng:center.lng(),tags:tags };
-			}
-			this.debugSearch(action);
-			var _this = this;
-			var ajax = new csl.Ajax();
-			if (!realsearch) {
-				ajax.send(action, function (response) {
-                    if (typeof response.response != 'undefined') {
-                        _this.dropMarkers.call(_this, response.response);
-                    } else {
-                        if (window.console) { console.log('SLP server did not send back a valid JSONP response on load.'); }
+
+                    //determines if we need to invent real variables (usually only done at the beginning)
+                    var realsearch = true;
+                    if (this.forceAll) {
+                        realsearch = false;
+                        radius = null;
+                        center = null;
+                        this.forceAll = false;
                     }
-				});
-			}
-			else {
-				ajax.send(action, function (response) {
-                    if (typeof response.response != 'undefined') {                    
-    					_this.bounceMarkers.call(_this, response.response);
+                    this.debugSearch('doing search@' + center + ' for radius of ' + radius);
+                    if (center == null) { center = this.gmap.getCenter(); }
+                    if (radius == null) { radius = 40000; }
+                    this.lastCenter = center;
+                    this.lastRadius = radius;
+                    if (tags == null) { tags = ''; }
+                    this.debugSearch('searching: ' + center.lat() +','+ center.lng());
+
+                    var _this = this;
+                    var ajax = new csl.Ajax();
+
+                    // On Load
+                    if (!realsearch) {
+                        var action = {
+                            action  : 'csl_ajax_onload',
+                            lat     : center.lat(),
+                            lng     : center.lng(),
+                            tags    : tags
+                         };
+
+                        this.debugSearch(action);
+
+                        ajax.send(action, function (response) {
+                                if (typeof response.response != 'undefined') {
+                                    _this.dropMarkers.call(_this, response.response);
+                                } else {
+                                    if (window.console) { console.log('SLP server did not send back a valid JSONP response on load.'); }
+                                }
+                            });
+
+                    // Search
                     } else {
-                        if (window.console) { console.log('SLP server did not send back a valid JSONP response on search.'); }
+                        var name = this.saneValue('nameSearch', '');
+                        var action = {
+                            action  : 'csl_ajax_search',
+                            address : this.saneValue('addressInput', 'no address entered'),
+                            formdata: jQuery('#searchForm').serialize(),
+                            lat     : center.lat(),
+                            lng     : center.lng(),
+                            name    : name,
+                            radius  : radius,
+                            tags    : tags,
+                        };
+
+                        this.debugSearch(action);
+
+                        ajax.send(action, function (response) {
+                                if (typeof response.response != 'undefined') {
+                                                    _this.bounceMarkers.call(_this, response.response);
+                                } else {
+                                    if (window.console) { console.log('SLP server did not send back a valid JSONP response on search.'); }
+                                }
+                            });
                     }
-				});
-			}
 		}
 
 		/***************************
@@ -1156,10 +1170,10 @@ var csl = {
   	  	 * returns: none
   	  	 */
 		this.searchLocations = function() {
-			var address = this.saneValue('addressInput', '');
-            jQuery('#map_box_image').hide();
-			jQuery('#map_box_map').show();
-            google.maps.event.trigger(this.gmap, 'resize');
+                    var address = this.saneValue('addressInput', '');
+                    jQuery('#map_box_image').hide();
+		    jQuery('#map_box_map').show();
+                    google.maps.event.trigger(this.gmap, 'resize');
 
 			// Address was given, use it...
 			//

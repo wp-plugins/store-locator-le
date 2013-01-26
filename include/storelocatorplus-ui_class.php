@@ -123,7 +123,7 @@ if (! class_exists('SLPlus_UI')) {
             $content =
                 ($hidden?'':"<div id='$divID' class='search_item'>") .
                     (($hidden || ($label === '')) ? '' : "<label for='$fldID'>$label</label>") .
-                    "<input type='".($hidden?'hidden':'text')."' id='$fldID' placeholder='$placeholder' size='50' value='' />" .
+                    "<input type='".($hidden?'hidden':'text')."' id='$fldID' name='$fldID' placeholder='$placeholder' size='50' value='' />" .
                 ($hidden?'':"</div>")
                 ;
             return $content;

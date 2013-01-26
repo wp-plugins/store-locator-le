@@ -39,6 +39,7 @@ if (! class_exists('SLPlus_Actions')) {
             if (!isset($this->parent) || ($this->parent == null)) {
                 global $slplus_plugin;
                 $this->parent = $slplus_plugin;
+                $this->plugin = $slplus_plugin;
             }
             return (isset($this->parent) && ($this->parent != null));
         }
@@ -98,11 +99,9 @@ if (! class_exists('SLPlus_Actions')) {
          *
          */
         function admin_menu() {
-            if (
-                (!function_exists('add_slplus_roles_and_caps') || current_user_can('manage_slp'))
-                )
-            {
-                if (!$this->setParent()) { return; }
+            if (!$this->setParent()) { return; }
+
+            if (current_user_can('manage_slp')) {
                 $this->attachAdminUI();
                 
                 // The main hook for the menu
@@ -110,7 +109,7 @@ if (! class_exists('SLPlus_Actions')) {
                 add_menu_page(
                     $this->parent->name,
                     $this->parent->name,
-                    'administrator',
+                    'manage_slp',
                     $this->parent->prefix,
                     array('SLPlus_AdminUI','renderPage_GeneralSettings'),
                     SLPLUS_COREURL . 'images/icon_from_jpg_16x16.png'
@@ -177,7 +176,7 @@ if (! class_exists('SLPlus_Actions')) {
                             $this->parent->prefix,
                             $menuItem['label'],
                             $menuItem['label'],
-                            'administrator',
+                            'manage_slp',
                             $menuItem['slug'],
                             array($menuItem['class'],$menuItem['function'])
                             );
@@ -189,7 +188,7 @@ if (! class_exists('SLPlus_Actions')) {
                             $this->parent->prefix,
                             $menuItem['label'],
                             $menuItem['label'],
-                            'administrator',
+                            'manage_slp',
                             $menuItem['url']
                             );
                     }
@@ -260,6 +259,7 @@ if (! class_exists('SLPlus_Actions')) {
                     'description'       => __('Store Locator Plus location pages.',SLPLUS_PREFIX),
                     'menu_postion'      => 20,   
                     'menu_icon'         => SLPLUS_COREURL . 'images/icon_from_jpg_16x16.png',
+                    'show_in_menu'      => current_user_can('manage_slp'),
                     'capability_type'   => 'page',
                     'supports'          =>
                         array(
