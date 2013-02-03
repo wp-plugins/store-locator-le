@@ -22,7 +22,7 @@ if (defined('SLPLUS_PLUGINDIR')) {
     $slplus_plugin = new wpCSL_plugin__slplus(
         array(
             'on_update' => array('SLPlus_Activate', 'update'),
-            'version' => '3.8.12',
+            'version' => '3.8.13',
 
 
             // Plugin data elements, helps make data lookups more efficient
@@ -33,6 +33,11 @@ if (defined('SLPLUS_PLUGINDIR')) {
             'data'                  => array(),
             'dataElements'          =>
                 array(
+                      array(
+                        'sl_admin_locations_per_page',
+                        'get_option',
+                        array('sl_admin_locations_per_page','25')
+                      ),
                       array(
                         'sl_map_end_icon'                   ,
                         'get_option'                ,
@@ -104,7 +109,8 @@ if (defined('SLPLUS_PLUGINDIR')) {
                     'plus_pack_enabled' => get_option(SLPLUS_PREFIX.'-SLPLUS-isenabled'),
                     ),
             
-            'has_packages'           => true,            
+            'has_packages'           => true,
+            'debug_instructions'     => __('Turn debugging off via General Settings in the Plugin Environment panel.','csa-slplus')
         )
     );   
     

@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
 Tags: google maps, store finder, store locator, store locater, google, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus, bing map, bing, yahoo maps, yahoo, mapping, retail
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 3.8.12
+Stable tag: 3.8.13
 
 Store Locator Plus makes it easy to put a fully functional store finder on your site.
 The most active store locator plugin with monthly updates!
@@ -291,25 +291,40 @@ Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/su
 
 I was listing the entire change log here but with weekly/bi-weekly updates it as getting much too long.
 
-= 3.8.12 (January XX 2013) =
+= 3.8.13 (January 30th 2013) =
 
-* Roles & Capabilities updates, must now be administrator to see SLP sidebar menu entries.
-* [Pro Pack](http://www.charlestonsw.com/product/store-locator-plus) : Fix name field searches.
-* Start getting search form to send ALL form vars for better back end search functions in the future.
+* Add: Country to Manage Locations searches.
+* Add: Country to Manage Locations Recode Selected.
+* Add: Country to the Manage Locations normal view.
+* Add: Debugging output to Manage Locations tab (if debug mode is on)
+* Add: Israel to map domains.
+* Change: Move tags column in Manage Locations to expanded view mode.
+* Fix: Manage Locations delete single location then multiple locations did not work.
+* Fix: Manage Locations pagination on sub-directory installs on shared hosts.
+* Fix: Manage Locations edit keeps the search filter in place so editing page 2..n locations works.
+* Improve: Saving after editing a location keeps the pagination and search filter in place.
+* Improve: Manage Locations search locations performance.
+* Improve: Add location ID on recode location error messages.
+
+= 3.8.12 (January 27 2013) =
+
+* Fix: Roles & Capabilities updates, must now be administrator to see SLP sidebar menu entries.
+* Fix: [Pro Pack](http://www.charlestonsw.com/product/store-locator-plus) : name field searches.
+* Update: Start getting search form to send ALL form vars for better back end search functions in the future.
 
 = 3.8.11 (January 25 2013) =
 
-* [Pro Pack](http://www.charlestonsw.com/product/store-locator-plus) : Add "skip duplicates" on bulk upload.
-* WP 3.5.1 compatibility testing
+* Add: [Pro Pack](http://www.charlestonsw.com/product/store-locator-plus) : "skip duplicates" on bulk upload.
+* Test: WP 3.5.1 compatibility
 
 = 3.8.10 (January 23 2013) =
 
-* [Pro Pack](http://www.charlestonsw.com/product/store-locator-plus) : Add "skip first line" to bulk upload.
-* Trap JavaScript panTo error if home point on map is not defined.
+* Add: [Pro Pack](http://www.charlestonsw.com/product/store-locator-plus) : "skip first line" to bulk upload.
+* Fix: JavaScript panTo error if home point on map is not defined.
 
 = 3.8.9 (January 21 2013) =
 
-* Added Bahamas as a Google Maps domain
+* Add: Bahamas as a Google Maps domain
 
 = 3.8.8 (January 11th 2013) =
 

@@ -379,6 +379,7 @@ if (! class_exists('SLPlus_AdminUI')) {
                     $update_result = $wpdb->query($query);
                     if ($update_result == 0) {
                         $theDBError = htmlspecialchars(mysql_error($wpdb->dbh),ENT_QUOTES);
+                        $errorMessage .= (($sl_id!='')?'Location #'.$sl_id.' : ' : '');
                         $errorMessage .= __("Could not set the latitude and/or longitude  ", SLPLUS_PREFIX);
                         if ($theDBError != '') {
                             $errorMessage .= sprintf(
@@ -457,7 +458,6 @@ if (! class_exists('SLPlus_AdminUI')) {
          * @global type $sl_use_name_search
          * @global type $sl_radius_label
          * @global type $sl_website_label
-         * @global type $sl_num_initial_displayed
          * @global type $sl_load_locations_default
          * @global type $sl_distance_unit
          * @global type $sl_map_overview_control
@@ -465,7 +465,7 @@ if (! class_exists('SLPlus_AdminUI')) {
         function initialize_variables() {
             global $sl_google_map_domain, $sl_google_map_country, $sl_location_table_view,
                 $sl_search_label, $sl_zoom_level, $sl_zoom_tweak, $sl_use_name_search,
-                $sl_radius_label, $sl_website_label, $sl_num_initial_displayed, $sl_load_locations_default,
+                $sl_radius_label, $sl_website_label, $sl_load_locations_default,
                 $sl_distance_unit, $sl_map_overview_control;
 
             $sl_map_overview_control=get_option('sl_map_overview_control');
@@ -482,11 +482,6 @@ if (! class_exists('SLPlus_AdminUI')) {
             if (empty($sl_load_locations_default)) {
                 $sl_load_locations_default="1";
                 add_option('sl_load_locations_default', $sl_load_locations_default);
-                }
-            $sl_num_initial_displayed=get_option('sl_num_initial_displayed');
-            if (empty($sl_num_initial_displayed)) {
-                $sl_num_initial_displayed="25";
-                add_option('sl_num_initial_displayed', $sl_num_initial_displayed);
                 }
             $sl_website_label=get_option('sl_website_label');
             if (empty($sl_website_label)) {
@@ -599,7 +594,7 @@ if (! class_exists('SLPlus_AdminUI')) {
                         $curr_page=$_SERVER['QUERY_STRING']."&start=$pos";
                     }
                     if (($start-($k-1)*$num_per_page)<0 || ($start-($k-1)*$num_per_page)>=$num_per_page) {
-                        $pagesString .= "<a class='page-button' href=\"{$_SERVER['PHP_SELF']}?$curr_page\" >";
+                        $pagesString .= "<a class='page-button' href=\"{$_SERVER['SCRIPT_NAME']}?$curr_page\" >";
                     } else {
                         $pagesString .= "<a class='page-button thispage' href='#'>";
                     }
@@ -963,6 +958,7 @@ if (! class_exists('SLPlus_AdminUI')) {
              */
              $content  = ''                                                                     .
                 "<form id='manualAddForm' name='manualAddForm' method='post' enctype='multipart/form-data'>"       .
+                "<input type='hidden' name='locationID' id='locationID' value='$locID' />" .
                 "<a name='a".$locID."'></a>"                                                    .
                 "<table cellpadding='0' class='slp_locationinfoform_table'>"                           .
                 "<tr><td valign='top'>"                                                         .

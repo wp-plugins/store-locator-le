@@ -58,7 +58,20 @@
 /*----------------------------------
  * WPCSL Magic
  */
-
+ div.debugging {
+     margin: 12px;
+     padding: 6px;
+     background-color: #EEE;
+     border: solid 1px #888;
+     font-family: "Courier", sans-serif;
+ }
+ div.debugging_wrap {
+     margin: 2px;
+     padding: 3px;
+     background-color: #F4F4F4;
+     border: solid 1px #888;
+     font-family: "Courier", sans-serif;
+ }
 div.csl-slplus-input {
     float: left;
 }
@@ -256,7 +269,7 @@ div#list_options select {
     padding: 0px;
     margin: 0px;
 }
-input#search-q {
+input#searchfor {
     width: 140px;
 }
 p.centerbutton {

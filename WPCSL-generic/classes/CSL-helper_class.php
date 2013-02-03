@@ -71,8 +71,41 @@ class wpCSL_helper__slplus {
         }
         print $this->get_string_from_phpexec($dir.'templates/'.$file);
     }
-    
-    
+
+    /**
+     * Render a debugging div.
+     *
+     * @param string $message - what you want to say
+     * @param string $instructions - additonal notes, like how to turn off debugging
+     */
+    /**
+     * Render a debugging div.
+     *
+     * @param string $message - what you want to say
+     * @param string $instructions - additonal notes, like how to turn off debugging
+     */
+    function bugout($message='',$instructions='', $title='', $file='',$line='') {
+        if (($message != '') && ($this->parent->debugging)) {
+            print "<div class='debugging_wrap' ".
+                    'onClick="jQuery(\'#bugout_'.$this->bugoutDivCount.'\').toggle(\'slow\');" ' .
+                    '>' .
+                    (($title!='')?"$title - ":'').
+                    __('Click me to see the debugging goodness...', 'wpcsl') . '<br/>'
+                    ;
+            print "<div class='debugging' id='bugout_".$this->bugoutDivCount."' name='bugout_".$this->bugoutDivCount."' style='display:none;'>";
+            if ($instructions == '') {
+                $instructions = $this->parent->debug_instructions;
+            }
+            if ($instructions != '') {
+                print $instructions . "<br/>\n";
+            }
+            if (($file != '') && ($line != '')) {
+                print "From $file at $line";
+            }
+            print $message . '</div></div>';
+            $this->bugoutDivCount++;
+        }
+    }
     
 
     /**

@@ -1,8 +1,6 @@
 /*****************************************************************
  * file: csl.js
  *
- * A centralized javascript code to be compatible with all CSL plugins so we can virtually save cats from trees.
- *
  *****************************************************************/
 
 /***************************
