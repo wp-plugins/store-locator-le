@@ -17,6 +17,9 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
          ******************************/
         public $parent = null;
         public $settings = null;
+        public $baseAdminURL = '';
+        public $cleanAdminURL = '';
+        public $hangoverURL = '';
 
         /**
          * Called when this object is created.
@@ -28,6 +31,42 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
                 die('could not set parent');
                 return;
                 }
+                
+            // Set our base Admin URL
+            //
+            if (isset($_SERVER['REQUEST_URI'])) {
+                $this->cleanAdminURL =
+                    isset($_SERVER['QUERY_STRING'])?
+                        str_replace('?'.$_SERVER['QUERY_STRING'], '', $_SERVER['REQUEST_URI']) :
+                        $_SERVER['REQUEST_URI']
+                        ;
+
+                $queryParams = array();
+
+                // Base Admin URL = must have params
+                //
+                if (isset($_REQUEST['page'])) {
+                    $queryParams['page'] = $_REQUEST['page'];
+                }
+                $this->baseAdminURL = $this->cleanAdminURL . '?' . build_query($queryParams);
+
+
+                // Hangover URL = params we like to carry around sometimes
+                //
+                if (isset($_REQUEST['searchfor'])) {
+                    $queryParams['searchfor'] = $_REQUEST['searchfor'];
+                }
+                $this->hangoverURL = $this->cleanAdminURL . '?' . build_query($queryParams);
+
+                $this->plugin->helper->bugout('<pre>'.
+                        'cleanAdminURL: '.$this->cleanAdminURL."\n".
+                        'baseAdminURL:  '.$this->baseAdminURL ."\n".
+                        'hangoverURL:   '.$this->hangoverURL.
+                        '</pre>',
+                        '','Manage Locations UI',__FILE__,__LINE__
+                        );
+            }
+
         }
 
         /**
@@ -42,10 +81,194 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
             if (!isset($this->parent) || ($this->parent == null)) {
                 global $slplus_plugin;
                 $this->parent = $slplus_plugin;
+                $this->plugin = $slplus_plugin;
             }
             return (isset($this->parent) && ($this->parent != null));
         }
 
+        /**
+         * Delete a location.
+         * 
+         * @global type $wpdb - the WP database connection
+         * @param type $locationID - the ID of the location to delete
+         */
+        function location_delete($locationID=null) {
+            global $wpdb;
+            if ($locationID === null) { return; }
+
+            $delQueries = array();
+
+            // Multiple locations
+            //
+            if (is_array($locationID)==1) {
+                $id_string="";
+                $idCount = 0;
+                foreach ($locationID as $sl_value) {
+                    $idCount++;
+                    $id_string.="$sl_value,";
+
+                    // Got 100?  Push a delete string on the stack
+                    //
+                    if ($idCount == 100) {
+                        $idCount = 0;
+                        $id_string=substr($id_string, 0, strlen($id_string)-1);
+                        array_push($delQueries,"DELETE FROM ".$wpdb->prefix."store_locator WHERE sl_id IN ($id_string)");
+                        $id_string='';
+                    }
+                }
+
+                // Clean up any stragglers
+                //
+                $id_string=substr($id_string, 0, strlen($id_string)-1);
+
+            // Single Item Delete
+            //
+            } else {
+                $id_string=$locationID;
+            }
+
+            // push the last one on the stack
+            //
+            if ($id_string != ''){
+                array_push($delQueries,"DELETE FROM ".$wpdb->prefix."store_locator WHERE sl_id IN ($id_string)");
+            }
+
+            // Run deletions
+            //
+            foreach ($delQueries as $delQuery) {
+                $delete_result = $wpdb->query($delQuery);
+                $this->parent->helper->bugout("<pre>Delete Instruction:\n$delQuery\nResult:".print_r($delete_result,true)."</pre>",'','Delete Queries',__FILE__,__LINE__);
+                if ($delete_result == 0) {
+                    $errorMessage .= __("Could not delete the locations.  ", 'csa-slplus');
+                    $theDBError = htmlspecialchars(mysql_error($wpdb->dbh),ENT_QUOTES);
+                    if ($theDBError != '') {
+                        $errorMessage .= sprintf(
+                                                __("Error: %s.", 'csa-slplus'),
+                                                $theDBError
+                                                );
+                    } elseif ($delete_result === 0) {
+                        $errorMessage .=  __("It appears the delete was for no records.", 'csa-slplus');
+                    } else {
+                        $errorMessage .=  __("No error logged.", 'csa-slplus');
+                        $errorMessage .= "<br/>\n" . __('Query: ', 'csa-slplus');
+                        $errorMessage .= print_r($wpdb->last_query,true);
+                        $errorMessage .= "<br/>\n" . "Results: " . gettype($delete_result) . ' '. $delete_result;
+                    }
+
+                }
+
+            }            
+        }
+
+        /**
+         * Save a location.
+         */
+        function location_save() {
+            global $wpdb;
+            if (is_numeric($_REQUEST['locationID'])) {
+
+                // Get our original address first
+                //
+                $old_address=$wpdb->get_results("SELECT * FROM ".$wpdb->prefix."store_locator WHERE sl_id={$_REQUEST['locationID']}", ARRAY_A);
+                if (!isset($old_address[0]['sl_address']))  { $old_address[0]['sl_address'] = '';}
+                if (!isset($old_address[0]['sl_address2'])) { $old_address[0]['sl_address2']= '';}
+                if (!isset($old_address[0]['sl_city']))     { $old_address[0]['sl_city']    = '';}
+                if (!isset($old_address[0]['sl_state']))    { $old_address[0]['sl_state']   = '';}
+                if (!isset($old_address[0]['sl_zip'])) 	    { $old_address[0]['sl_zip']     = '';}
+
+                // Update The Location Data
+                //
+                $field_value_str = '';
+                foreach ($_POST as $key=>$sl_value) {
+                    if (preg_match('#\-'.$_REQUEST['locationID'].'#', $key)) {
+                        $slpFieldName = preg_replace('#\-'.$_REQUEST['locationID'].'#', '', $key);
+                        if (!$this->parent->license->packages['Pro Pack']->isenabled) {
+                            if ( ($slpFieldName == 'latitude') || ($slpFieldName == 'longitude')) {
+                                continue;
+                            }
+                        }
+                        $field_value_str.="sl_".$slpFieldName."='".trim($this->parent->AdminUI->slp_escape($sl_value))."', ";
+                        $_POST[$slpFieldName]=$sl_value;
+                    }
+                }
+                $field_value_str=substr($field_value_str, 0, strlen($field_value_str)-2);
+                $field_value_str = apply_filters('slp_update_location_data',$field_value_str,$_REQUEST['locationID']);
+                $wpdb->query("UPDATE ".$wpdb->prefix."store_locator SET $field_value_str WHERE sl_id={$_REQUEST['locationID']}");
+
+                // Check our address
+                //
+                if (!isset($_POST['address'])   ) { $_POST['address'] = '';     }
+                if (!isset($_POST['address2'])  ) { $_POST['address2'] = '';    }
+                if (!isset($_POST['city'])      ) { $_POST['city'] = '';        }
+                if (!isset($_POST['state'])     ) { $_POST['state'] = '';       }
+                if (!isset($_POST['zip'])       ) { $_POST['zip'] = '';         }
+                $the_address=
+                        $_POST['address']   .' '    .
+                        $_POST['address2']  .', '   .
+                        $_POST['city']      .', '   .
+                        $_POST['state']     .' '    .
+                        $_POST['zip'];
+
+                // RE-geocode if the address changed
+                // or if the lat/long is not set
+                //
+                if (   ($the_address!=
+                        $old_address[0]['sl_address'].' '.$old_address[0]['sl_address2'].', '.$old_address[0]['sl_city'].', '.
+                        $old_address[0]['sl_state'].' '.$old_address[0]['sl_zip']
+                        ) ||
+                        ($old_address[0]['sl_latitude']=="" || $old_address[0]['sl_longitude']=="")
+                        ) {
+                    $this->parent->AdminUI->do_geocoding($the_address,$_REQUEST['locationID']);
+                }
+
+                // Redirect to the edit page
+                //
+                $pageRedirect = "<script>location.replace('".$this->hangoverURL."');</script>";
+                print apply_filters('slp_edit_location_redirect',$pageRedirect);
+            }
+        }
+
+        /**
+         * Tag a location
+         * 
+         * @param mixed $locationID - a single location ID (int) or an array of them.
+         */
+        function location_tag($locationID) {
+            global $wpdb;
+            
+            //adding or removing tags for specified a locations
+            //
+            if (is_array($locationID)) {
+                $id_string='';
+                foreach ($locationID as $sl_value) {
+                    $id_string.="$sl_value,";
+                }
+                $id_string=substr($id_string, 0, strlen($id_string)-1);
+            } else {
+                $id_string=$locationID;
+            }
+
+            // If we have some store IDs
+            //
+            if ($id_string != '') {
+                //adding tags
+                if ($_REQUEST['act']=="add_tag") {
+                    $wpdb->query("UPDATE ".$wpdb->prefix."store_locator SET ".
+                            "sl_tags=CONCAT_WS(',',sl_tags,'".strtolower($_REQUEST['sl_tags'])."') ".
+                            "WHERE sl_id IN ($id_string)"
+                            );
+
+                //removing tags
+                } elseif ($_REQUEST['act']=="remove_tag") {
+                    if (empty($_REQUEST['sl_tags'])) {
+                        //if no tag is specified, all tags will be removed from selected locations
+                        $wpdb->query("UPDATE ".$wpdb->prefix."store_locator SET sl_tags='' WHERE sl_id IN ($id_string)");
+                    } else {
+                        $wpdb->query("UPDATE ".$wpdb->prefix."store_locator SET sl_tags=REPLACE(sl_tags, ',{$_REQUEST['sl_tags']},', '') WHERE sl_id IN ($id_string)");
+                    }
+                }
+            }
+        }
 
         /**
          * Render the manage locations admin page.
@@ -53,6 +276,7 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
          */
         function render_adminpage() {
             if (!$this->setParent()) { return; }
+            $this->plugin->helper->loadPluginData();
             global $wpdb;
 
             // Script
@@ -85,7 +309,7 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
             print "<div class='wrap'>
                         <div id='icon-edit-locations' class='icon32'><br/></div>
                         <h2>".
-                        __('Store Locator Plus - Manage Locations', SLPLUS_PREFIX).
+                        __('Store Locator Plus - Manage Locations', 'csa-slplus').
                         "</h2>" .
                   $this->parent->helper->get_string_from_phpexec(SLPLUS_COREDIR.'/templates/navbar.php')
                   ;
@@ -95,193 +319,46 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
             //
             $sl_hidden='';
             foreach($_REQUEST as $key=>$val) {
-                if ($key!="q" && $key!="o" && $key!="sortorder" && $key!="start" && $key!="act" && $key!='sl_tags' && $key!='sl_id') {
+                if ($key!="searchfor" && $key!="o" && $key!="sortorder" && $key!="start" && $key!="act" && $key!='sl_tags' && $key!='sl_id') {
                     $sl_hidden.="<input type='hidden' value='$val' name='$key'>\n";
                 }
             }
             $this->parent->AdminUI->initialize_variables();
-
-            // If delete link is clicked
-            if (isset($_GET['delete']) && ($_GET['delete']!='')) {
-                $wpdb->query("DELETE FROM ".$wpdb->prefix."store_locator ".
-                    "WHERE sl_id='".$_GET['delete']."'");
-            }
-
-            //------------------------------------------------------------------------
-            // EDITING
-            //------------------------------------------------------------------------
-            if ($_POST                                                  &&
-                (isset($_GET['edit']) && $_GET['edit'])                 &&
-                (!isset($_POST['act']) || (isset($_POST['act']) && ($_POST['act']!="delete")))
-                ) {
-
-                // Get our original address first
-                //
-                $old_address=$wpdb->get_results("SELECT * FROM ".$wpdb->prefix."store_locator WHERE sl_id=$_GET[edit]", ARRAY_A);
-                if (!isset($old_address[0]['sl_address']))  { $old_address[0]['sl_address'] = '';   }
-                if (!isset($old_address[0]['sl_address2'])) { $old_address[0]['sl_address2'] = '';  }
-                if (!isset($old_address[0]['sl_city'])) 	{ $old_address[0]['sl_city'] = ''; 	    }
-                if (!isset($old_address[0]['sl_state'])) 	{ $old_address[0]['sl_state'] = ''; 	}
-                if (!isset($old_address[0]['sl_zip'])) 	    { $old_address[0]['sl_zip'] = ''; 		}
-
-                // Update The Location Data
-                //
-                $field_value_str = '';
-                foreach ($_POST as $key=>$sl_value) {
-                    if (preg_match('#\-'.$_GET['edit'].'#', $key)) {
-                        $slpFieldName = preg_replace('#\-'.$_GET['edit'].'#', '', $key);
-                        if (!$this->parent->license->packages['Pro Pack']->isenabled) {
-                            if ( ($slpFieldName == 'latitude') || ($slpFieldName == 'longitude')) {
-                                continue;
-                            }
-                        }
-                        $field_value_str.="sl_".$slpFieldName."='".trim($this->parent->AdminUI->slp_escape($sl_value))."', ";
-                        $_POST[$slpFieldName]=$sl_value;
-                    }
-                }
-                $field_value_str=substr($field_value_str, 0, strlen($field_value_str)-2);
-                $field_value_str = apply_filters('slp_update_location_data',$field_value_str,$_GET['edit']);
-                $wpdb->query("UPDATE ".$wpdb->prefix."store_locator SET $field_value_str WHERE sl_id=$_GET[edit]");
-
-                // Check our address
-                //
-                if (!isset($_POST['address'])   ) { $_POST['address'] = '';     }
-                if (!isset($_POST['address2'])  ) { $_POST['address2'] = '';    }
-                if (!isset($_POST['city'])      ) { $_POST['city'] = '';        }
-                if (!isset($_POST['state'])     ) { $_POST['state'] = '';       }
-                if (!isset($_POST['zip'])       ) { $_POST['zip'] = '';         }
-                $the_address=
-                        $_POST['address']   .' '    .
-                        $_POST['address2']  .', '   .
-                        $_POST['city']      .', '   .
-                        $_POST['state']     .' '    .
-                        $_POST['zip'];
-
-                // RE-geocode if the address changed
-                // or if the lat/long is not set
-                //
-                if (   ($the_address!=
-                        $old_address[0]['sl_address'].' '.$old_address[0]['sl_address2'].', '.$old_address[0]['sl_city'].', '.
-                        $old_address[0]['sl_state'].' '.$old_address[0]['sl_zip']
-                        ) ||
-                        ($old_address[0]['sl_latitude']=="" || $old_address[0]['sl_longitude']=="")
-                        ) {
-                    $this->parent->AdminUI->do_geocoding($the_address,$_GET['edit']);
-                }
-
-                // Redirect to the edit page
-                //
-                $pageRedirect = "<script>location.replace('".preg_replace('/&edit='.$_GET['edit'].'/', '',$_SERVER['REQUEST_URI'])."');</script>";
-                print apply_filters('slp_edit_location_redirect',$pageRedirect);
-            }
+            $this->parent->helper->bugout("<pre>REQUEST\n".print_r($_REQUEST,true)."</pre>",'','REQUEST',__FILE__,__LINE__);
+            $this->parent->helper->bugout("<pre>SERVER\n".print_r($_SERVER,true)."</pre>",'','SERVER',__FILE__,__LINE__);
 
             //------------------------------------------------------------------------
             // ACTION HANDLER
             // If post action is set
             //------------------------------------------------------------------------
             if ($_POST) {extract($_POST);}
+
             if (isset($_REQUEST['act'])) {
 
-                // Delete Action
-                if ($_REQUEST['act']=="delete") {
-                    if (isset($sl_id)) {
+                // SAVE
+                if ($_REQUEST['act']=='save') {
+                    $this->location_save();
 
-                        // use this to delete 100 at a time
-                        //
-                        $delQueries = array();
+                // DELETE
+                //
+                // location ID is either a single int coming in via REQUEST[delete]
+                // or
+                // a single int coming in from a lone checkbox in POST[sl_id]
+                // or
+                // an array of ints coming in from multiple checkboxes in POST[sl_id]
+                //
+                } elseif ($_REQUEST['act']=='delete'){
+                   $locationID =
+                        (isset($_REQUEST['delete'])&& is_numeric($_REQUEST['delete'])) ?
+                           $_REQUEST['delete']  :
+                           (isset($_POST['sl_id']) ? $_POST['sl_id'] : null)
+                        ;
+                   $this->location_delete($locationID);
 
-                        if (is_array($sl_id)==1) {
-                            $id_string="";
-                            $idCount = 0;
-                            foreach ($sl_id as $sl_value) {
-                                $idCount++;
-                                $id_string.="$sl_value,";
-
-                                // Got 100?  Push a delete string on the stack
-                                //
-                                if ($idCount == 100) {
-                                    $idCount = 0;
-                                    $id_string=substr($id_string, 0, strlen($id_string)-1);
-                                    array_push($delQueries,"DELETE FROM ".$wpdb->prefix."store_locator WHERE sl_id IN ($id_string)");
-                                    $id_string='';
-                                }
-                            }
-
-                            // Clean up any stragglers
-                            //
-                            $id_string=substr($id_string, 0, strlen($id_string)-1);
-
-                        // Single Item Delete
-                        //
-                        } else {
-                            $id_string=$sl_id;
-                        }
-
-                        // push the last one on the stack
-                        //
-                        if ($id_string != ''){
-                            array_push($delQueries,"DELETE FROM ".$wpdb->prefix."store_locator WHERE sl_id IN ($id_string)");
-                        }
-
-                        // Run deletions
-                        //
-                        foreach ($delQueries as $delQuery) {
-                            $delete_result = $wpdb->query($delQuery);
-                            if ($delete_result == 0) {
-                                $errorMessage .= __("Could not delete the locations.  ", SLPLUS_PREFIX);
-                                $theDBError = htmlspecialchars(mysql_error($wpdb->dbh),ENT_QUOTES);
-                                if ($theDBError != '') {
-                                    $errorMessage .= sprintf(
-                                                            __("Error: %s.", SLPLUS_PREFIX),
-                                                            $theDBError
-                                                            );
-                                } elseif ($delete_result === 0) {
-                                    $errorMessage .=  __("It appears the delete was for no records.", SLPLUS_PREFIX);
-                                } else {
-                                    $errorMessage .=  __("No error logged.", SLPLUS_PREFIX);
-                                    $errorMessage .= "<br/>\n" . __('Query: ', SLPLUS_PREFIX);
-                                    $errorMessage .= print_r($wpdb->last_query,true);
-                                    $errorMessage .= "<br/>\n" . "Results: " . gettype($delete_result) . ' '. $delete_result;
-                                }
-
-                            }
-
-                        }
-                    }
-
-                // Tagging Action
+                // TAG
+                //
                 }  elseif (preg_match('#tag#i', $_REQUEST['act'])) {
-
-                    //adding or removing tags for specified a locations
-                    if (isset($sl_id)) {
-                        if (is_array($sl_id)) {
-                            $id_string='';
-                            foreach ($sl_id as $sl_value) {
-                                $id_string.="$sl_value,";
-                            }
-                            $id_string=substr($id_string, 0, strlen($id_string)-1);
-                        } else {
-                            $id_string=$sl_id;
-                        }
-
-                        // If we have some store IDs
-                        //
-                        if ($id_string != '') {
-                            //adding tags
-                            if ($act=="add_tag") {
-                                $wpdb->query("UPDATE ".$wpdb->prefix."store_locator SET sl_tags=CONCAT(sl_tags, ',".strtolower($sl_tags).", ') WHERE sl_id IN ($id_string)");
-
-                            //removing tags
-                            } elseif ($act=="remove_tag") {
-                                if (empty($sl_tags)) {
-                                    //if no tag is specified, all tags will be removed from selected locations
-                                    $wpdb->query("UPDATE ".$wpdb->prefix."store_locator SET sl_tags='' WHERE sl_id IN ($id_string)");
-                                } else {
-                                    $wpdb->query("UPDATE ".$wpdb->prefix."store_locator SET sl_tags=REPLACE(sl_tags, ',$sl_tags,', '') WHERE sl_id IN ($id_string)");
-                                }
-                            }
-                        }
-                    }
+                    if (isset($_REQUEST['sl_id'])) { $this->location_tag($_REQUEST['sl_id']); }
 
                 // Locations Per Page Action
                 } elseif ($_REQUEST['act']=="locationsPerPage") {
@@ -317,8 +394,9 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
                                 if (!isset($address['sl_city'])) 	{ $address['sl_city'] = ''; 	}
                                 if (!isset($address['sl_state'])) 	{ $address['sl_state'] = ''; 	}
                                 if (!isset($address['sl_zip'])) 	{ $address['sl_zip'] = ''; 		}
+                                if (!isset($address['sl_country'])) 	{ $address['sl_country'] = ''; 		}
 
-                                $this->parent->AdminUI->do_geocoding("$address[sl_address] $address[sl_address2], $address[sl_city], $address[sl_state] $address[sl_zip]",$thisLocation);
+                                $this->parent->AdminUI->do_geocoding("$address[sl_address] $address[sl_address2], $address[sl_city], $address[sl_state] $address[sl_zip] $address[sl_country]",$thisLocation);
                         }
                     }
 
@@ -380,17 +458,9 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
             //------------------------------------------------------------------------
             // QUERY BUILDING
             //------------------------------------------------------------------------
-            $qry = isset($_REQUEST['q']) ? $_REQUEST['q'] : '';
+            $qry = isset($_REQUEST['searchfor']) ? $_REQUEST['searchfor'] : '';
             $where=($qry!='')?
-                    " WHERE ".
-                    "sl_store    LIKE '%$qry%' OR ".
-                    "sl_address  LIKE '%$qry%' OR ".
-                    "sl_address2 LIKE '%$qry%' OR ".
-                    "sl_city     LIKE '%$qry%' OR ".
-                    "sl_state    LIKE '%$qry%' OR ".
-                    "sl_zip      LIKE '%$qry%' OR ".
-                    "sl_tags     LIKE '%$qry%' "
-                    :
+                    " WHERE CONCAT_WS(';',sl_store,sl_address,sl_address2,sl_city,sl_state,sl_zip,sl_country,sl_tags) LIKE '%$qry%'" :
                     '' ;
 
             /* Uncoded items */
@@ -419,18 +489,17 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
             //
             $totalLocations=$wpdb->get_var("SELECT count(sl_id) FROM ".$wpdb->prefix."store_locator $where");
             $start=(isset($_GET['start'])&&(trim($_GET['start'])!=''))?$_GET['start']:0;
-            $num_per_page=get_option('sl_admin_locations_per_page','50');
             if ($totalLocations>0) {
                 $this->parent->AdminUI->manage_locations_pagination(
                         $totalLocations,
-                        $num_per_page,
+                        $this->plugin->data['sl_admin_locations_per_page'],
                         $start
                         );
             }
 
             // Actionbar Section
             //
-            print '<form id="manage_locations_actionbar_form" name="locationForm" method="post">'.
+            print '<form id="manage_locations_actionbar_form" name="locationForm" method="post" action="'.$this->baseAdminURL.'">'.
                     '<input name="act" type="hidden">' .
                     '<div id="slplus_actionbar">' .
                         $this->parent->helper->get_string_from_phpexec(SLPLUS_COREDIR.'/templates/managelocations_actionbar.php') .
@@ -440,16 +509,17 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
             // Search Filter, no actions
             // Clear the start, we want all records
             //
-            if (isset($_POST['q']) && ($_POST['q'] != '') && ($_POST['act'] == '')) {
+            if (isset($_POST['searchfor']) && ($_POST['searchfor'] != '') && ($_POST['act'] == '')) {
                 $start = 0;
             }
+
 
             // We have matching locations
             //
             if ($slpLocations=$wpdb->get_results(
                     "SELECT * FROM " .$wpdb->prefix."store_locator " .
                             "$where ORDER BY $opt $dir ".
-                            "LIMIT $start,$num_per_page",
+                            "LIMIT $start,".$this->plugin->data['sl_admin_locations_per_page'],
                     ARRAY_A
                     )
                 ) {
@@ -457,14 +527,14 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
                 // Setup Table Columns
                 //
                 $slpManageColumns = array(
-                        'sl_id'         =>  __('ID'       ,SLPLUS_PREFIX),
-                        'sl_store'      =>  __('Name'     ,SLPLUS_PREFIX),
-                        'sl_address'    =>  __('Street'   ,SLPLUS_PREFIX),
-                        'sl_address2'   =>  __('Street2'  ,SLPLUS_PREFIX),
-                        'sl_city'       =>  __('City'     ,SLPLUS_PREFIX),
-                        'sl_state'      =>  __('State'    ,SLPLUS_PREFIX),
-                        'sl_zip'        =>  __('Zip'      ,SLPLUS_PREFIX),
-                        'sl_tags'       =>  __('Tags'     ,SLPLUS_PREFIX),
+                        'sl_id'         =>  __('ID'       ,'csa-slplus'),
+                        'sl_store'      =>  __('Name'     ,'csa-slplus'),
+                        'sl_address'    =>  __('Street'   ,'csa-slplus'),
+                        'sl_address2'   =>  __('Street2'  ,'csa-slplus'),
+                        'sl_city'       =>  __('City'     ,'csa-slplus'),
+                        'sl_state'      =>  __('State'    ,'csa-slplus'),
+                        'sl_zip'        =>  __('Zip'      ,'csa-slplus'),
+                        'sl_country'    =>  __('Country'  ,'csa-slplus'),
                     );
 
                 // Expanded View
@@ -472,8 +542,9 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
                 if (get_option('sl_location_table_view')!="Normal") {
                     $slpManageColumns = array_merge($slpManageColumns,
                                 array(
-                                    'sl_description'    => __('Description'  ,SLPLUS_PREFIX),
-                                    'sl_url'            => get_option('sl_website_label','Website'),
+                                    'sl_tags'       => __('Tags'     ,'csa-slplus'),
+                                    'sl_description'=> __('Description'  ,'csa-slplus'),
+                                    'sl_url'        => get_option('sl_website_label','Website'),
                                 )
                             );
 
@@ -482,18 +553,18 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
                     if ($this->parent->license->packages['Store Pages']->isenabled) {
                         $slpManageColumns = array_merge($slpManageColumns,
                                     array(
-                                        'sl_pages_url'      => __('Pages URL'          ,SLPLUS_PREFIX),
+                                        'sl_pages_url'      => __('Pages URL'          ,'csa-slplus'),
                                     )
                                 );
                     }
 
                     $slpManageColumns = array_merge($slpManageColumns,
                                 array(
-                                    'sl_email'       => __('Email'        ,SLPLUS_PREFIX),
+                                    'sl_email'       => __('Email'        ,'csa-slplus'),
                                     'sl_hours'       => $this->parent->settings->get_item('label_hours','Hours','_'),
                                     'sl_phone'       => $this->parent->settings->get_item('label_phone','Phone','_'),
                                     'sl_fax'         => $this->parent->settings->get_item('label_fax'  ,'Fax'  ,'_'),
-                                    'sl_image'       => __('Image'        ,SLPLUS_PREFIX),
+                                    'sl_image'       => __('Image'        ,'csa-slplus'),
                                 )
                             );
 
@@ -530,6 +601,7 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
                         print
                             "<tr id='slp_location_edit_row'>"               .
                             "<td class='slp_locationinfoform_cell' colspan='".(count($slpManageColumns)+4)."'>".
+                            '<input type="hidden" id="act" name="act" value="save"/>'. 
                             $this->parent->AdminUI->createString_LocationInfoForm($sl_value, $locID) .
                             '</td></tr>';
 
@@ -543,30 +615,29 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
                             "http://".$sl_value['sl_url'] :
                             $sl_value['sl_url'] ;
                         $sl_value['sl_url']=($sl_value['sl_url']!="")?
-                            "<a href='$sl_value[sl_url]' target='blank'>".__("View", SLPLUS_PREFIX)."</a>" :
+                            "<a href='$sl_value[sl_url]' target='blank'>".__("View", 'csa-slplus')."</a>" :
                             "" ;
                         $sl_value['sl_email']=($sl_value['sl_email']!="")?
-                            "<a href='mailto:$sl_value[sl_email]' target='blank'>".__("Email", SLPLUS_PREFIX)."</a>" :
+                            "<a href='mailto:$sl_value[sl_email]' target='blank'>".__("Email", 'csa-slplus')."</a>" :
                             "" ;
                         $sl_value['sl_image']=($sl_value['sl_image']!="")?
-                            "<a href='$sl_value[sl_image]' target='blank'>".__("View", SLPLUS_PREFIX)."</a>" :
+                            "<a href='$sl_value[sl_image]' target='blank'>".__("View", 'csa-slplus')."</a>" :
                             "" ;
                         $sl_value['sl_description']=($sl_value['sl_description']!="")?
                             "<a onclick='alert(\"".$this->parent->AdminUI->slp_escape($sl_value['sl_description'])."\")' href='#'>".
-                            __("View", SLPLUS_PREFIX)."</a>" :
+                            __("View", 'csa-slplus')."</a>" :
                             "" ;
 
                         print
                         "<tr style='background-color:$bgcol'>" .
                             "<th><input type='checkbox' name='sl_id[]' value='$locID'></th>" .
                             "<th class='thnowrap'>".
-                            "<a class='action_icon edit_icon' alt='".__('edit',SLPLUS_PREFIX)."' title='".__('edit',SLPLUS_PREFIX)."'
-                                href='".preg_replace('/&edit='.(isset($_GET['edit'])?$_GET['edit']:'').'/', '',$_SERVER['REQUEST_URI']).
-                            "&edit=" . $locID ."#a$locID'></a>".
+                            "<a class='action_icon edit_icon' alt='".__('edit','csa-slplus')."' title='".__('edit','csa-slplus')."'
+                                href='".$this->hangoverURL."&act=edit&edit=$locID#a$locID'></a>".
                             "&nbsp;" .
-                            "<a class='action_icon delete_icon' alt='".__('delete',SLPLUS_PREFIX)."' title='".__('delete',SLPLUS_PREFIX)."'
-                                href='".$_SERVER['REQUEST_URI']."&delete=$locID' " .
-                                "onclick=\"confirmClick('".sprintf(__('Delete %s?',SLPLUS_PREFIX),$sl_value['sl_store'])."', this.href); return false;\"></a>";
+                            "<a class='action_icon delete_icon' alt='".__('delete','csa-slplus')."' title='".__('delete','csa-slplus')."'
+                                href='".$_SERVER['REQUEST_URI']."&act=delete&delete=$locID' " .
+                                "onclick=\"confirmClick('".sprintf(__('Delete %s?','csa-slplus'),$sl_value['sl_store'])."', this.href); return false;\"></a>";
 
                         // Store Pages Active?
                         // Show the create page button & fix up the sl_pages_url data
@@ -604,8 +675,8 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
                     print "<div class='csa_info_msg'>".
                             (
                              ($qry!='')?
-                                    __("Search Locations returned no matches.", SLPLUS_PREFIX) :
-                                    __("No locations have been created yet.", SLPLUS_PREFIX)
+                                    __("Search Locations returned no matches.", 'csa-slplus') :
+                                    __("No locations have been created yet.", 'csa-slplus')
                             ) .
                           "</div>";
             }
@@ -614,7 +685,7 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
             if ($totalLocations!=0) {
                 $this->parent->AdminUI->manage_locations_pagination(
                         $totalLocations,
-                        $num_per_page,
+                        $this->plugin->data['sl_admin_locations_per_page'],
                         $start
                         );
             }

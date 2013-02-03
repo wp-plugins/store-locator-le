@@ -52,6 +52,8 @@ if (! class_exists('SLPlus_AdminUI')) {
 
         /**
          * Add an address into the SLP locations database.
+         *
+         * Returns 'added' or 'duplicate'
          * 
          * @global type $wpdb
          * @param type $fields
@@ -59,13 +61,30 @@ if (! class_exists('SLPlus_AdminUI')) {
          * @param type $theaddress
          *
          */
-        function add_this_addy($fields,$sl_values,$theaddress) {
+        function add_this_addy($fields,$sl_values,$theaddress,$skipdupes=false,$storename='') {
             global $wpdb;
             $fields=substr($fields, 0, strlen($fields)-1);
             $sl_values=substr($sl_values, 0, strlen($sl_values)-1);
+
+            // Dupe check?
+            //
+            if ($skipdupes) {
+                $checkDupeQuery =
+                'SELECT 1 FROM '. $wpdb->prefix . 'store_locator ' .
+                    ' WHERE ' .
+                        "CONCAT_WS(', ',sl_store,sl_address,sl_address2,sl_city,sl_state,sl_zip,sl_country)".
+                        "='$storename, $theaddress' " .
+                      'LIMIT 1'
+                        ;
+                $wpdb->query($checkDupeQuery);
+                if ($wpdb->num_rows == 1) {
+                    return 'duplicate';
+                }
+            }
+
             $wpdb->query("INSERT into ". $wpdb->prefix . "store_locator ($fields) VALUES ($sl_values);");
             $this->do_geocoding($theaddress);
-
+            return 'added';
         }
 
         /**
@@ -360,6 +379,7 @@ if (! class_exists('SLPlus_AdminUI')) {
                     $update_result = $wpdb->query($query);
                     if ($update_result == 0) {
                         $theDBError = htmlspecialchars(mysql_error($wpdb->dbh),ENT_QUOTES);
+                        $errorMessage .= (($sl_id!='')?'Location #'.$sl_id.' : ' : '');
                         $errorMessage .= __("Could not set the latitude and/or longitude  ", SLPLUS_PREFIX);
                         if ($theDBError != '') {
                             $errorMessage .= sprintf(
@@ -438,7 +458,6 @@ if (! class_exists('SLPlus_AdminUI')) {
          * @global type $sl_use_name_search
          * @global type $sl_radius_label
          * @global type $sl_website_label
-         * @global type $sl_num_initial_displayed
          * @global type $sl_load_locations_default
          * @global type $sl_distance_unit
          * @global type $sl_map_overview_control
@@ -446,7 +465,7 @@ if (! class_exists('SLPlus_AdminUI')) {
         function initialize_variables() {
             global $sl_google_map_domain, $sl_google_map_country, $sl_location_table_view,
                 $sl_search_label, $sl_zoom_level, $sl_zoom_tweak, $sl_use_name_search,
-                $sl_radius_label, $sl_website_label, $sl_num_initial_displayed, $sl_load_locations_default,
+                $sl_radius_label, $sl_website_label, $sl_load_locations_default,
                 $sl_distance_unit, $sl_map_overview_control;
 
             $sl_map_overview_control=get_option('sl_map_overview_control');
@@ -463,11 +482,6 @@ if (! class_exists('SLPlus_AdminUI')) {
             if (empty($sl_load_locations_default)) {
                 $sl_load_locations_default="1";
                 add_option('sl_load_locations_default', $sl_load_locations_default);
-                }
-            $sl_num_initial_displayed=get_option('sl_num_initial_displayed');
-            if (empty($sl_num_initial_displayed)) {
-                $sl_num_initial_displayed="25";
-                add_option('sl_num_initial_displayed', $sl_num_initial_displayed);
                 }
             $sl_website_label=get_option('sl_website_label');
             if (empty($sl_website_label)) {
@@ -580,7 +594,7 @@ if (! class_exists('SLPlus_AdminUI')) {
                         $curr_page=$_SERVER['QUERY_STRING']."&start=$pos";
                     }
                     if (($start-($k-1)*$num_per_page)<0 || ($start-($k-1)*$num_per_page)>=$num_per_page) {
-                        $pagesString .= "<a class='page-button' href=\"{$_SERVER['PHP_SELF']}?$curr_page\" >";
+                        $pagesString .= "<a class='page-button' href=\"{$_SERVER['SCRIPT_NAME']}?$curr_page\" >";
                     } else {
                         $pagesString .= "<a class='page-button thispage' href='#'>";
                     }
@@ -709,7 +723,7 @@ if (! class_exists('SLPlus_AdminUI')) {
          * @param type $storePageID
          * @return type
          */
-        function slpRenderCreatePageButton($locationID=-1,$storePageID=-1) {
+        static function slpRenderCreatePageButton($locationID=-1,$storePageID=-1) {
             if ($locationID < 0) { return; }            
             $slpPageClass = (($storePageID>0)?'haspage_icon' : 'createpage_icon');
             print "<a   class='action_icon $slpPageClass' 
@@ -799,89 +813,13 @@ if (! class_exists('SLPlus_AdminUI')) {
 
                 /** Bulk Upload
                  **/
-                } elseif ( isset($_FILES['csvfile']['name']) &&
-                       ($_FILES['csvfile']['name']!='')  &&
-                        ($_FILES['csvfile']['size'] > 0)
-                    ) {
-                    add_filter('upload_mimes', array('SLPlus_AdminUI','custom_upload_mimes'));
-
-                    // Get the type of the uploaded file. This is returned as "type/extension"
-                    $arr_file_type = wp_check_filetype(basename($_FILES['csvfile']['name']));
-                    if ($arr_file_type['type'] == 'text/csv') {
-
-                                // Save the file to disk
-                                //
-                                $updir = wp_upload_dir();
-                                $updir = $updir['basedir'].'/slplus_csv';
-                                if(!is_dir($updir)) {
-                                    mkdir($updir,0755);
-                                }
-                                if (move_uploaded_file($_FILES['csvfile']['tmp_name'],
-                                        $updir.'/'.$_FILES['csvfile']['name'])) {
-                                        $reccount = 0;
-
-                                        $adle_setting = ini_get('auto_detect_line_endings');
-                                        ini_set('auto_detect_line_endings', true);
-                                        if (($handle = fopen($updir.'/'.$_FILES['csvfile']['name'], "r")) !== FALSE) {
-                                            $fldNames = array('sl_store','sl_address','sl_address2','sl_city','sl_state',
-                                                            'sl_zip','sl_country','sl_tags','sl_description','sl_url',
-                                                            'sl_hours','sl_phone','sl_email','sl_image','sl_fax');
-                                            $maxcols = count($fldNames);
-                                            while (($data = fgetcsv($handle)) !== FALSE) {
-                                                $num = count($data);
-                                                if ($num <= $maxcols) {
-                                                    $fieldList = '';
-                                                    $sl_valueList = '';
-                                                    $this_addy = '';
-                                                    for ($fldno=0; $fldno < $num; $fldno++) {
-                                                        $fieldList.=$fldNames[$fldno].',';
-                                                        $sl_valueList.="\"".stripslashes($this->slp_escape($data[$fldno]))."\",";
-                                                        if (($fldno>=1) && ($fldno<=6)) {
-                                                            $this_addy .= $data[$fldno] . ', ';
-                                                        }
-                                                    }
-                                                    $this_addy = substr($this_addy, 0, strlen($this_addy)-2);
-                                                    $slplus_plugin->AdminUI->add_this_addy($fieldList,$sl_valueList,$this_addy);
-                                                    sleep(0.5);
-                                                    $reccount++;
-                                                } else {
-                                                     print "<div class='updated fade'>".
-                                                        __('The CSV file has too many fields.',
-                                                            SLPLUS_PREFIX
-                                                            );
-                                                     print ' ';
-                                                     printf(__('Got %d expected less than %d.', SLPLUS_PREFIX),
-                                                        $num,$maxcols);
-                                                     print '</div>';
-                                                }
-                                            }
-                                            fclose($handle);
-                                        }
-                                        ini_set('auto_detect_line_endings', $adle_setting);
-
-
-                                        if ($reccount > 0) {
-                                            print "<div class='updated fade'>".
-                                                    sprintf("%d",$reccount) ." " .
-                                                    __("locations added succesfully.",SLPLUS_PREFIX) . '</div>';
-                                        }
-
-                                // Could not save
-                                } else {
-                                        print "<div class='updated fade'>".
-                                        __("File could not be saved, check the plugin directory permissions:",SLPLUS_PREFIX) .
-                                            "<br/>" . $updir.
-
-                                '.</div>';
-                        }
-
-                        // Not CSV Format Warning
-                    } else {
-                        print "<div class='updated fade'>".
-                            __("Uploaded file needs to be in CSV format.",SLPLUS_PREFIX) .
-                            " Type was " . $arr_file_type['type'] .
-                            '.</div>';
-                    }
+                } elseif ( 
+                    isset($this->plugin->ProPack)     &&
+                    isset($_FILES['csvfile']['name']) &&
+                    ($_FILES['csvfile']['name']!='')  &&
+                    ($_FILES['csvfile']['size'] > 0)
+                   ) {
+                    $this->plugin->ProPack->bulk_upload_processing();
                 }
 
                 $base=get_option('siteurl');
@@ -1020,6 +958,7 @@ if (! class_exists('SLPlus_AdminUI')) {
              */
              $content  = ''                                                                     .
                 "<form id='manualAddForm' name='manualAddForm' method='post' enctype='multipart/form-data'>"       .
+                "<input type='hidden' name='locationID' id='locationID' value='$locID' />" .
                 "<a name='a".$locID."'></a>"                                                    .
                 "<table cellpadding='0' class='slp_locationinfoform_table'>"                           .
                 "<tr><td valign='top'>"                                                         .
@@ -1105,28 +1044,14 @@ if (! class_exists('SLPlus_AdminUI')) {
 
                 // Bulk upload form
                 //
-                if ($addform && ($slplus_plugin->license->packages['Pro Pack']->isenabled)) {
-                    $content .=
-                        '<div class="slp_bulk_upload_div">' .
-                        '<h2>'.__('Bulk Upload', SLPLUS_PREFIX).'</h2>'.
-                        '<input type="file" name="csvfile" value="" id="bulk_file" size="60"><br/>' .
-                        "<input type='submit' value='".__("Upload Locations", SLPLUS_PREFIX)."' class='button-primary'>".
-                        '</div>';
+                if ($addform) {
+                    $content .= apply_filters('slp_add_location_form_footer', '');
                 }
 
                 $content .= '</form>';
 
                 return apply_filters('slp_locationinfoform',$content);
          }
-
-        /**
-         * Allows WordPress to process csv file types
-         *
-         */
-        function custom_upload_mimes ( $existing_mimes=array() ) {
-            $existing_mimes['csv'] = 'text/csv';
-            return $existing_mimes;
-        }
 
         /**
          * Return the icon selector HTML for the icon images in saved icons and default icon directories.
