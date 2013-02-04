@@ -3,11 +3,11 @@
  * Plugin Name: Store Locator Plus : Pro Pack
  * Plugin URI: http://www.charlestonsw.com/product/store-locator-plus/
  * Description: A premium add-on pack for Store Locator Plus that provides more admin power tools for wrangling locations.
- * Version: 3.8.2
+ * Version: 3.8.14
  * Author: Charleston Software Associates
  * Author URI: http://charlestonsw.com/
  * Requires at least: 3.3
- * Test up to : 3.5
+ * Test up to : 3.5.2
  *
  * Text Domain: csl-slplus
  * Domain Path: /languages/
@@ -230,9 +230,19 @@ if ( ! class_exists( 'SLPPro' ) ) {
                     // If we can open the file...
                     //
                     if (($handle = fopen($updir.'/'.$_FILES['csvfile']['name'], "r")) !== FALSE) {
-                        $fldNames = array('sl_store','sl_address','sl_address2','sl_city','sl_state',
-                                        'sl_zip','sl_country','sl_tags','sl_description','sl_url',
-                                        'sl_hours','sl_phone','sl_email','sl_image','sl_fax');
+
+                        // Array #s for Fields
+                        //'sl_store'   [ 0],'sl_address'  [ 1],'sl_address2'[ 2],'sl_city'       [ 3],'sl_state'[ 4],
+                        //'sl_zip'     [ 5],'sl_country'  [ 6],'sl_tags'    [ 7],'sl_description'[ 8],'sl_url'  [ 9],
+                        //'sl_hours'   [10],'sl_phone'    [11],'sl_email'   [12],'sl_image'      [13],'sl_fax'  [14],
+                        //'sl_latitude'[15],'sl_longitude'[16],'sl_private' [17],'sl_neat_title' [18]
+                        //
+                        $fldNames = array(
+                                'sl_store','sl_address','sl_address2','sl_city','sl_state',
+                                'sl_zip','sl_country','sl_tags','sl_description','sl_url',
+                                'sl_hours','sl_phone','sl_email','sl_image','sl_fax',
+                                'sl_latitude','sl_longitude','sl_private','sl_neat_title'
+                            );
                         $maxcols = count($fldNames);
                         $skippedFirst = false;
                         $skipDupes    = ($_POST['csl-slplus-bulk_skip_duplicates'] == 1);
@@ -264,7 +274,14 @@ if ( ! class_exists( 'SLPPro' ) ) {
                                     }
                                 }
                                 $this_addy = substr($this_addy, 0, strlen($this_addy)-2);
-                                $resultOfAdd = $this->plugin->AdminUI->add_this_addy($fieldList,$sl_valueList,$this_addy,$skipDupes,stripslashes($this->plugin->AdminUI->slp_escape($data[0])));
+                                $resultOfAdd = $this->plugin->AdminUI->add_this_addy(
+                                        $fieldList,
+                                        $sl_valueList,
+                                        $this_addy,
+                                        $skipDupes,
+                                        stripslashes($this->plugin->AdminUI->slp_escape($data[0])),
+                                        (is_numeric($data[15]) && is_numeric($data[16]))
+                                        );
                                 sleep(0.5);
                                 if ($resultOfAdd == 'duplicate') { $dupeCount++; }
                                 $reccount++;

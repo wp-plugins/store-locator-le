@@ -61,7 +61,7 @@ if (! class_exists('SLPlus_AdminUI')) {
          * @param type $theaddress
          *
          */
-        function add_this_addy($fields,$sl_values,$theaddress,$skipdupes=false,$storename='') {
+        function add_this_addy($fields,$sl_values,$theaddress,$skipdupes=false,$storename='',$skipGeocode=false) {
             global $wpdb;
             $fields=substr($fields, 0, strlen($fields)-1);
             $sl_values=substr($sl_values, 0, strlen($sl_values)-1);
@@ -83,7 +83,9 @@ if (! class_exists('SLPlus_AdminUI')) {
             }
 
             $wpdb->query("INSERT into ". $wpdb->prefix . "store_locator ($fields) VALUES ($sl_values);");
-            $this->do_geocoding($theaddress);
+            if (!$skipGeocode) {
+                $this->do_geocoding($theaddress);
+            }
             return 'added';
         }
 
