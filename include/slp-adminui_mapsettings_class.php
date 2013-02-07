@@ -212,7 +212,6 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                     apply_filters('slp_save_map_settings_inputs',
                         array(
                             'sl_language'                           ,
-                            'sl_map_character_encoding'             ,
                             'sl_map_radii'                          ,
                             'sl_instruction_message'                ,
                             'sl_zoom_level'                         ,
@@ -238,6 +237,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                             SLPLUS_PREFIX.'_message_noresultsfound' ,
                             SLPLUS_PREFIX.'_tag_search_selections'  ,
                             SLPLUS_PREFIX.'_map_center'             ,
+                            SLPLUS_PREFIX.'-map_language'           ,
                             SLPLUS_PREFIX.'_maxreturned'            ,
                             SLPLUS_PREFIX.'_search_tag_label'       ,
                             SLPLUS_PREFIX.'_state_pd_label'         ,
@@ -372,13 +372,17 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                     $slpDescription .= "<option value='$key:$sl_value' $selected>$key ($sl_value)</option>\n";
                 }
                 $slpDescription .=
-                    "</select></div>" .
+                    "</select></div>";
+
+                // Language Selection
+                //
+                $slpDescription .=
                     "<div class='form_entry'>" .
-                    "<label for='sl_map_character_encoding'>".__('Character Encoding', 'csa-slplus')."</label>" .
-                    "<select name='sl_map_character_encoding'>"
+                    "<label for='".SLPLUS_PREFIX."-map_language'>".__('Map Language', 'csa-slplus')."</label>" .
+                    "<select name='".SLPLUS_PREFIX."-map_language'>"
                     ;
-                foreach ($this->get_map_encodings() as $key=>$sl_value) {
-                    $selected=(get_option('sl_map_character_encoding')==$sl_value)?" selected " : "";
+                foreach ($this->get_map_languages() as $key=>$sl_value) {
+                    $selected=($this->plugin->helper->getData('map_language','get_item',null,'en')==$sl_value)?" selected " : "";
                     $slpDescription .= "<option value='$sl_value' $selected>$key</option>\n";
                 }
                 $slpDescription .= "</select></div></div>";
@@ -611,34 +615,68 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
          }
 
          /**
-          * Return the list of Google map character encodings.
+          * Return the list of Google map languages.
           *
-          * @return named array - list of encodings, key is the name, value is the Google encoding notation
+          * @return named array - list of languages, key is the name, value is the Google language
 
           */
-         function get_map_encodings() {
+         function get_map_languages() {
              return apply_filters(
-                     'slp_map_encodings',
+                     'slp_map_languages',
                         array(
-                        'Default (UTF-8)'                               =>'utf-8',
-                        'Western European (ISO-8859-1)'                 =>'iso-8859-1',
-                        'Western/Central European (ISO-8859-2)'         =>'iso-8859-2',
-                        'Western/Southern European (ISO-8859-3)'        =>'iso-8859-3',
-                        'Western European/Baltic Countries (ISO-8859-4)'=>'iso-8859-4',
-                        'Russian (Cyrillic)'                            =>'iso-8859-5',
-                        'Arabic (ISO-8859-6)'                           =>'iso-8859-6',
-                        'Greek (ISO-8859-7)'                            =>'iso-8859-7',
-                        'Hebrew (ISO-8859-8)'                           =>'iso-8859-8',
-                        'Western European Amended Turkish (ISO-8859-9)' =>'iso-8859-9',
-                        'Western European Nordic Characters (ISO-8859-10)'=>'iso-8859-10',
-                        'Thai (ISO-8859-11)'                            =>'iso-8859-11',
-                        'Baltic languages & Polish (ISO-8859-13)'       =>'iso-8859-13',
-                        'Celtic languages (ISO-8859-14)'                =>'iso-8859-14',
-                        'Japanese (Shift JIS)'                          =>'shift_jis',
-                        'Simplified Chinese (China)(GB 2312)'           =>'gb2312',
-                        'Traditional Chinese (Taiwan)(Big 5)'           =>'big5',
-                        'Hong Kong (HKSCS)'                             =>'hkscs',
-                        'Korea (EUS-KR)'                                =>'eus-kr',
+                            __('English'                  ,'csa-slplus') => 'en',
+                            __('Arabic'                   ,'csa-slplus') => 'ar',
+                            __('Basque'                   ,'csa-slplus') => 'eu',
+                            __('Bulgarian'                ,'csa-slplus') => 'bg',
+                            __('Bengali'                  ,'csa-slplus') => 'bn',
+                            __('Catalan'                  ,'csa-slplus') => 'ca',
+                            __('Czech'                    ,'csa-slplus') => 'cs',
+                            __('Danish'                   ,'csa-slplus') => 'da',
+                            __('German'                   ,'csa-slplus') => 'de',
+                            __('Greek'                    ,'csa-slplus') => 'el',
+                            __('English (Australian)'     ,'csa-slplus') => 'en-AU',
+                            __('English (Great Britain)'  ,'csa-slplus') => 'en-GB',
+                            __('Spanish'                  ,'csa-slplus') => 'es',
+                            __('Farsi'                    ,'csa-slplus') => 'fa',
+                            __('Finnish'                  ,'csa-slplus') => 'fi',
+                            __('Filipino'                 ,'csa-slplus') => 'fil',
+                            __('French'                   ,'csa-slplus') => 'fr',
+                            __('Galician'                 ,'csa-slplus') => 'gl',
+                            __('Gujaratia'                ,'csa-slplus') => 'gu',
+                            __('Hindi'                    ,'csa-slplus') => 'hi',
+                            __('Croatian'                 ,'csa-slplus') => 'hr',
+                            __('Hungarian'                ,'csa-slplus') => 'hu',
+                            __('Indonesian'               ,'csa-slplus') => 'id',
+                            __('Italian'                  ,'csa-slplus') => 'it',
+                            __('Hebrew'                   ,'csa-slplus') => 'iw',
+                            __('Japanese'                 ,'csa-slplus') => 'ja',
+                            __('Kannada'                  ,'csa-slplus') => 'kn',
+                            __('Korean'                   ,'csa-slplus') => 'ko',
+                            __('Lithuanian'               ,'csa-slplus') => 'lt',
+                            __('Latvian'                  ,'csa-slplus') => 'lv',
+                            __('Malayalam'                ,'csa-slplus') => 'ml',
+                            __('Marthi'                   ,'csa-slplus') => 'mr',
+                            __('Dutch'                    ,'csa-slplus') => 'nl',
+                            __('Norwegian'                ,'csa-slplus') => 'no',
+                            __('Polish'                   ,'csa-slplus') => 'pl',
+                            __('Portuguese'               ,'csa-slplus') => 'pt',
+                            __('Portuguese (Brazil)'      ,'csa-slplus') => 'pt-BR',
+                            __('Portuguese (Portugal)'    ,'csa-slplus') => 'pt-PT',
+                            __('Romanian'                 ,'csa-slplus') => 'ro',
+                            __('Russian'                  ,'csa-slplus') => 'ru',
+                            __('Slovak'                   ,'csa-slplus') => 'sk',
+                            __('Slovenian'                ,'csa-slplus') => 'sl',
+                            __('Serbian'                  ,'csa-slplus') => 'sr',
+                            __('Swedish'                  ,'csa-slplus') => 'sv',
+                            __('Taglog'                   ,'csa-slplus') => 'tl',
+                            __('Tamil'                    ,'csa-slplus') => 'ta',
+                            __('Telugu'                   ,'csa-slplus') => 'te',
+                            __('Thai'                     ,'csa-slplus') => 'th',
+                            __('Turkish'                  ,'csa-slplus') => 'tr',
+                            __('Ukrainian'                ,'csa-slplus') => 'uk',
+                            __('Vietnamese'               ,'csa-slplus') => 'vi',
+                            __('Chinese (Simplified)'     ,'csa-slplus') => 'zh-CN',
+                            __('Chinese (Traditional)'    ,'csa-slplus') => 'zh-TW'
                         )
                     );
          }

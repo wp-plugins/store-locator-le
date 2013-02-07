@@ -20,6 +20,7 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
         public $baseAdminURL = '';
         public $cleanAdminURL = '';
         public $hangoverURL = '';
+        public $hiddenInputs = '';
 
         /**
          * Called when this object is created.
@@ -270,6 +271,111 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
             }
         }
 
+
+        /**
+         * Render the manage location action bar
+         * 
+         */
+        function render_actionbar() {
+            if (!$this->setParent()) { return; }
+
+            $this->plugin->helper->loadPluginData();
+
+
+             if (get_option('sl_location_table_view') == 'Expanded') {
+                 $altViewText = __('Switch to normal view?','csa-slplus');
+                 $viewText = __('Normal View','csa-slplus');
+             } else {
+                 $altViewText = __('Switch to expanded view?','csa-slplus');
+                 $viewText = __('Expanded View','csa-slplus');
+             }
+
+             $actionBoxes = array();
+            ?>
+            <script type="text/javascript">
+            function doAction(theAction,thePrompt) {
+                if((thePrompt == '') || confirm(thePrompt)){
+                    LF=document.forms['locationForm'];
+                    LF.act.value=theAction;
+                    LF.submit();
+                }else{
+                    return false;
+                }
+            }
+            </script>
+            <?php
+            print '<div id="action_buttons">'.
+                '<div id="action_bar_header">'.
+                '<h3>'.__('Actions and Filters','csa-slplus').'</h3>'.
+                '</div>'.
+                '<div class="boxbar">'
+                ;
+
+            // Basic Delete Icon
+            //
+            $actionBoxes['A'][] =
+                    '<p class="centerbutton">' .
+                        '<a class="like-a-button" href="#" ' .
+                                'onclick="doAction(\'delete\',\''.__('Delete selected?','csa-slplus').'\');" ' .
+                                'name="delete_selected">'.__("Delete Selected", 'csa-slplus').
+                        '</a>'.
+                    '</p>'
+                    ;
+
+            // Search Locations Button
+            //
+            $actionBoxes['N'][] =
+                    '<p class="centerbutton">'.
+                        "<input class='like-a-button' type='submit' ".
+                            "value='".__('Search Locations', 'csa-slplus')."'>".
+                    '</p>'.
+                    "<input id='searchfor' " .
+                        "value='".(isset($_REQUEST['searchfor'])?$_REQUEST['searchfor']:'')."' name='searchfor'>" .
+                    $this->hiddenInputs
+                ;
+
+            // Expanded/Normal View
+            //
+            $pdString = '';
+            $opt_arr=array(10,25,50,100,200,300,400,500,1000,2000,4000,5000,10000);
+            foreach ($opt_arr as $sl_value) {
+                $selected=($this->plugin->data['sl_admin_locations_per_page']==$sl_value)? " selected " : "";
+                $pdString .= "<option value='$sl_value' $selected>$sl_value</option>";
+            }
+            $actionBoxes['O'][] =
+                    '<p class="centerbutton">' .
+                        '<a class="like-a-button" href="#" ' .
+                            'onclick="doAction(\'changeview\',\'$altViewText\');">'.
+                            $viewText .
+                        '</a>'.
+                    '</p>' .
+                    __('Show ', 'csa-slplus') .
+                    '<select name="sl_admin_locations_per_page" onchange="doAction(\'locationsPerPage\',\'\');">' .
+                        $pdString .
+                    '</select>'.
+                    __(' locations', 'csa-slplus') . '.'
+                    ;
+
+            // Loop through the action boxes content array
+            //
+            $actionBoxes = apply_filters('slp_action_boxes',$actionBoxes);
+            ksort($actionBoxes);
+            foreach ($actionBoxes as $boxNumber => $actionBoxLine) {
+                print "<div id='box_$boxNumber' class='actionbox'>";
+                foreach ($actionBoxLine as $LineHTML) {
+                    print $LineHTML;
+                }
+                print '</div>';
+            }
+
+            do_action('slp_add_manage_locations_action_box');
+
+            print
+                '</div>' .
+            '</div>'
+            ;
+        }
+
         /**
          * Render the manage locations admin page.
          *
@@ -317,10 +423,10 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
 
             // Form and variable setup for processing
             //
-            $sl_hidden='';
+            $this->hiddenInputs = '';
             foreach($_REQUEST as $key=>$val) {
                 if ($key!="searchfor" && $key!="o" && $key!="sortorder" && $key!="start" && $key!="act" && $key!='sl_tags' && $key!='sl_id') {
-                    $sl_hidden.="<input type='hidden' value='$val' name='$key'>\n";
+                    $this->hiddenInputs.="<input type='hidden' value='$val' name='$key'>\n";
                 }
             }
             $this->parent->AdminUI->initialize_variables();
@@ -460,14 +566,13 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
             //------------------------------------------------------------------------
             $qry = isset($_REQUEST['searchfor']) ? $_REQUEST['searchfor'] : '';
             $where=($qry!='')?
-                    " WHERE CONCAT_WS(';',sl_store,sl_address,sl_address2,sl_city,sl_state,sl_zip,sl_country,sl_tags) LIKE '%$qry%'" :
+                    " CONCAT_WS(';',sl_store,sl_address,sl_address2,sl_city,sl_state,sl_zip,sl_country,sl_tags) LIKE '%$qry%'" :
                     '' ;
 
             /* Uncoded items */
             if (isset($_REQUEST['act'])) {
                 if ($_REQUEST['act'] == 'show_uncoded') {
-                    if ($where == '') { $where = 'WHERE '; }
-                    $where .= ' sl_latitude IS NULL or sl_longitude IS NULL';
+                    $where .= " sl_latitude NOT REGEXP '^[0-9]|-' or sl_longitude NOT REGEXP '^[0-9]|-'";
                 }
             }
 
@@ -487,7 +592,9 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
 
             // Pagination
             //
+            if (trim($where) != false) { $where = "WHERE $where"; }
             $totalLocations=$wpdb->get_var("SELECT count(sl_id) FROM ".$wpdb->prefix."store_locator $where");
+            $this->parent->helper->bugout("SELECT count(sl_id) FROM ".$wpdb->prefix."store_locator $where", '', 'SQL Count', __FILE__, __LINE__);
             $start=(isset($_GET['start'])&&(trim($_GET['start'])!=''))?$_GET['start']:0;
             if ($totalLocations>0) {
                 $this->parent->AdminUI->manage_locations_pagination(
@@ -502,7 +609,7 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
             print '<form id="manage_locations_actionbar_form" name="locationForm" method="post" action="'.$this->baseAdminURL.'">'.
                     '<input name="act" type="hidden">' .
                     '<div id="slplus_actionbar">' .
-                        $this->parent->helper->get_string_from_phpexec(SLPLUS_COREDIR.'/templates/managelocations_actionbar.php') .
+                        $this->render_actionbar() .
                     '</div>'
                     ;
 

@@ -100,7 +100,7 @@ class wpCSL_helper__slplus {
                 print $instructions . "<br/>\n";
             }
             if (($file != '') && ($line != '')) {
-                print "From $file at $line";
+                print "From $file at $line<br/>\n";
             }
             print $message . '</div></div>';
             $this->bugoutDivCount++;
@@ -248,12 +248,15 @@ class wpCSL_helper__slplus {
      * Puts info in the data[] named array for the object base on
      * the results returned by the passed function.
      *
+     * If $params is null and function is get_item the param will fetch the option = to the element name.
+     *
      * @param string $element - the key for the data named array
      * @param mixed $function - the string 'get_option' or a pointer to anon function
      * @param mixed $params - an array of parameters to pass to get_option or the anon, note: get_option can receive an array of option_name, default value
+     * @param mixed $default - default value for 'get_item' calls
      * @return the value
      */
-    function getData($element = null, $function = null, $params=null) {
+    function getData($element = null, $function = null, $params=null, $default=null) {
         if ($element  === null) { return; }
         if ($function === null) { return; }
         if (!isset($this->parent->data[$element] )) {
@@ -273,7 +276,8 @@ class wpCSL_helper__slplus {
                if (is_array($params)) {
                     $this->parent->data[$element] = $this->parent->settings->get_item($params[0],$params[1]);
                 } else {
-                    $this->parent->data[$element] = $this->parent->settings->get_item($params);
+                    if ($params === null) { $params = $element; }
+                    $this->parent->data[$element] = $this->parent->settings->get_item($params,$default);
                 }
 
 
