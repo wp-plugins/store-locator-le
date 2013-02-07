@@ -250,7 +250,7 @@ if (! class_exists('SLPlus_Activate')) {
          */
         function emptydir($dirname=null, $filepattern='*') {
            if ($dirname === null) { return; }
-           // array_map('unlink', glob($dirname.$filepattern));
+           array_map('unlink', glob($dirname.$filepattern));
         }
 
         /*************************************

@@ -3,7 +3,7 @@
 Plugin Name: Store Locator Plus
 Plugin URI: http://www.charlestonsw.com/products/store-locator-plus/
 Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Gooogle Maps.  This is a highly customizable, easily expandable, enterprise-class location management system.
-Version: 3.8.16
+Version: 3.8.17
 Author: Charleston Software Associates
 Author URI: http://www.charlestonsw.com
 License: GPL3
@@ -101,10 +101,6 @@ if (defined('SLPLUS_PREFIX') === false) {
     define('SLPLUS_PREFIX', 'csl-slplus');
 }
 
-// Include our needed files
-//
-include_once(SLPLUS_PLUGINDIR . '/include/config.php'	);
-
 //====================================================================
 // Main Plugin Configuration ($slplus_plugin)
 //====================================================================
@@ -131,7 +127,7 @@ if (defined('SLPLUS_PLUGINDIR')) {
     $slplus_plugin = new wpCSL_plugin__slplus(
         array(
             'on_update' => array('SLPlus_Activate', 'update'),
-            'version' => '3.8.16',
+            'version' => '3.8.17',
 
 
             // Plugin data elements, helps make data lookups more efficient
@@ -227,11 +223,15 @@ if (defined('SLPLUS_PLUGINDIR')) {
     // Pro Pack
     //
     require_once(SLPLUS_PLUGINDIR . '/slp-pro/slp-pro.php');
-    $slplus_plugin->ProPack->add_package();
+    if (isset($slplus_plugin->ProPack)) {
+        $slplus_plugin->ProPack->add_package();
+    }
 
     // Store Pages
     require_once(SLPLUS_PLUGINDIR . '/slp-pages/slp-pages.php');
-    $slplus_plugin->StorePages->add_package();
+    if (isset($slplus_plugin->StorePages)) {
+        $slplus_plugin->StorePages->add_package();
+    }
 }
 
 //====================================================================
