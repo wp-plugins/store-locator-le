@@ -7,7 +7,7 @@
  * over time.
  *
  * @author Lance Cleveland <lance@lancecleveland.com>
- * @copyright (c) 2012, Lance Cleveland
+ * @copyright (c) 2013, Lance Cleveland
  *
  * @since 2.0.0
  * @version 2.0.13
@@ -66,13 +66,46 @@ class wpCSL_helper__slplus {
      * @param type $dir - optional directory path, defaults to plugin_dir_path
      */
     function execute_and_output_template($file,$dir=null) {
-        if ($dir == null) {
+        if ($dir === null) {
             $dir = $this->parent->plugin_path;
         }
         print $this->get_string_from_phpexec($dir.'templates/'.$file);
     }
-    
-    
+
+    /**
+     * Render a debugging div.
+     *
+     * @param string $message - what you want to say
+     * @param string $instructions - additonal notes, like how to turn off debugging
+     */
+    /**
+     * Render a debugging div.
+     *
+     * @param string $message - what you want to say
+     * @param string $instructions - additonal notes, like how to turn off debugging
+     */
+    function bugout($message='',$instructions='', $title='', $file='',$line='') {
+        if (($message != '') && ($this->parent->debugging)) {
+            print "<div class='debugging_wrap' ".
+                    'onClick="jQuery(\'#bugout_'.$this->bugoutDivCount.'\').toggle(\'slow\');" ' .
+                    '>' .
+                    (($title!='')?"$title - ":'').
+                    __('Click me to see the debugging goodness...', 'wpcsl') . '<br/>'
+                    ;
+            print "<div class='debugging' id='bugout_".$this->bugoutDivCount."' name='bugout_".$this->bugoutDivCount."' style='display:none;'>";
+            if ($instructions == '') {
+                $instructions = $this->parent->debug_instructions;
+            }
+            if ($instructions != '') {
+                print $instructions . "<br/>\n";
+            }
+            if (($file != '') && ($line != '')) {
+                print "From $file at $line<br/>\n";
+            }
+            print $message . '</div></div>';
+            $this->bugoutDivCount++;
+        }
+    }
     
 
     /**
@@ -83,7 +116,7 @@ class wpCSL_helper__slplus {
      * @param type $dir - optional directory path, defaults to plugin_dir_path
      */
     function convert_text_to_html($file='readme.txt',$dir=null) {
-        if ($dir == null) {
+        if ($dir === null) {
             $dir = $this->parent->plugin_path;
         }
         ob_start();
@@ -101,7 +134,54 @@ class wpCSL_helper__slplus {
     }
  
 
+        /**
+         * Create a help div next to a settings entry.
+         *
+         * @param string $divname - name of the div
+         * @param string $msg - the message to dislpay
+         * @return string - the HTML
+         */
+        function CreateHelpDiv($divname,$msg) {
+            return "<a class='moreinfo_clicker' onclick=\"jQuery('div#".$this->parent->css_prefix."-help$divname').toggle('slow');\" href=\"javascript:;\">".
+                '<div class="'.$this->parent->css_prefix.'-moreicon" title="click for more info"><br/></div>'.
+                "</a>".
+                "<div id='".$this->parent->css_prefix."-help$divname' class='input_note' style='display: none;'>".
+                    $msg.
+                "</div>"
+                ;
 
+            }
+
+        /**
+         * Generate the HTML for a checkbox settings interface element.
+         *
+         * @param string $boxname - the name of the checkbox (db option name)
+         * @param string $label - default '', the label to go in front of the checkbox
+         * @param string $msg - default '', the help message
+         * @param string $prefix - defaults to SLPLUS_PREFIX, can be ''
+         * @param boolean $disabled - defaults to false
+         * @param mixed $default
+         * @return type
+         */
+        function CreateCheckboxDiv($boxname,$label='',$msg='',$prefix=null, $disabled=false, $default=0) {
+            if ($prefix === null) { $prefix = $this->parent->prefix; }
+            $whichbox = $prefix.$boxname;
+            return
+                "<div class='form_entry'>".
+                    "<div class='".$this->parent->css_prefix."-input'>" .
+                    "<label  for='$whichbox' ".
+                        ($disabled?"class='disabled '":' ').
+                        ">$label:</label>".
+                    "<input name='$whichbox' value='1' ".
+                        "type='checkbox' ".
+                        ((get_option($whichbox,$default) ==1)?' checked ':' ').
+                        ($disabled?"disabled='disabled'":' ') .
+                    ">".
+                    "</div>".
+                    $this->CreateHelpDiv($boxname,$msg) .
+                "</div>"
+                ;
+            }
 
     /**
      * function: SavePostToOptionsTable
@@ -153,7 +233,7 @@ class wpCSL_helper__slplus {
      * @return boolean - true if it is out there somewhere
      */
     function webItemExists($url) {
-        if (($url == '') || ($url == null)) { return false; }
+        if (($url == '') || ($url === null)) { return false; }
         $response = wp_remote_head( $url, array( 'timeout' => 5 ) );
         $accepted_status_codes = array( 200, 301, 302 );
         if ( ! is_wp_error( $response ) && in_array( wp_remote_retrieve_response_code( $response ), $accepted_status_codes ) ) {
@@ -168,12 +248,15 @@ class wpCSL_helper__slplus {
      * Puts info in the data[] named array for the object base on
      * the results returned by the passed function.
      *
+     * If $params is null and function is get_item the param will fetch the option = to the element name.
+     *
      * @param string $element - the key for the data named array
      * @param mixed $function - the string 'get_option' or a pointer to anon function
      * @param mixed $params - an array of parameters to pass to get_option or the anon, note: get_option can receive an array of option_name, default value
+     * @param mixed $default - default value for 'get_item' calls
      * @return the value
      */
-    function getData($element = null, $function = null, $params=null) {
+    function getData($element = null, $function = null, $params=null, $default=null) {
         if ($element  === null) { return; }
         if ($function === null) { return; }
         if (!isset($this->parent->data[$element] )) {
@@ -193,7 +276,8 @@ class wpCSL_helper__slplus {
                if (is_array($params)) {
                     $this->parent->data[$element] = $this->parent->settings->get_item($params[0],$params[1]);
                 } else {
-                    $this->parent->data[$element] = $this->parent->settings->get_item($params);
+                    if ($params === null) { $params = $element; }
+                    $this->parent->data[$element] = $this->parent->settings->get_item($params,$default);
                 }
 
 
