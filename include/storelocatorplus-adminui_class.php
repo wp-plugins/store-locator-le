@@ -52,6 +52,8 @@ if (! class_exists('SLPlus_AdminUI')) {
 
         /**
          * Add an address into the SLP locations database.
+         *
+         * Returns 'added' or 'duplicate'
          * 
          * @global type $wpdb
          * @param type $fields
@@ -59,13 +61,32 @@ if (! class_exists('SLPlus_AdminUI')) {
          * @param type $theaddress
          *
          */
-        function add_this_addy($fields,$sl_values,$theaddress) {
+        function add_this_addy($fields,$sl_values,$theaddress,$skipdupes=false,$storename='',$skipGeocode=false) {
             global $wpdb;
             $fields=substr($fields, 0, strlen($fields)-1);
             $sl_values=substr($sl_values, 0, strlen($sl_values)-1);
-            $wpdb->query("INSERT into ". $wpdb->prefix . "store_locator ($fields) VALUES ($sl_values);");
-            $this->do_geocoding($theaddress);
 
+            // Dupe check?
+            //
+            if ($skipdupes) {
+                $checkDupeQuery =
+                'SELECT 1 FROM '. $wpdb->prefix . 'store_locator ' .
+                    ' WHERE ' .
+                        "CONCAT_WS(', ',sl_store,sl_address,sl_address2,sl_city,sl_state,sl_zip,sl_country)".
+                        "='$storename, $theaddress' " .
+                      'LIMIT 1'
+                        ;
+                $wpdb->query($checkDupeQuery);
+                if ($wpdb->num_rows == 1) {
+                    return 'duplicate';
+                }
+            }
+
+            $wpdb->query("INSERT into ". $wpdb->prefix . "store_locator ($fields) VALUES ($sl_values);");
+            if (!$skipGeocode) {
+                $this->do_geocoding($theaddress);
+            }
+            return 'added';
         }
 
         /**
@@ -113,7 +134,7 @@ if (! class_exists('SLPlus_AdminUI')) {
 
              $this->parent->settings->add_item(
                 'Google Communication',
-                __('Google API Key','csl-slplus'),
+                __('Google API Key','csa-slplus'),
                 'api_key',
                 'text',
                 false,
@@ -125,7 +146,7 @@ if (! class_exists('SLPlus_AdminUI')) {
 
              $this->parent->settings->add_item(
                 'Google Communication',
-                __('Geocode Retries','csl-slplus'),
+                __('Geocode Retries','csa-slplus'),
                 'goecode_retries',
                 'list',
                 false,
@@ -133,7 +154,7 @@ if (! class_exists('SLPlus_AdminUI')) {
                     'Higher numbers mean slower bulk uploads ('.
                     '<a href="%s">plus version</a>'.
                     '), lower numbers makes it more likely the location will not be set during bulk uploads.',
-                     SLPLUS_PREFIX),
+                     'csa-slplus'),
                      'http://www.charlestonsw.com/product/store-locator-plus/'
                      ),                        
                 array (
@@ -157,22 +178,22 @@ if (! class_exists('SLPlus_AdminUI')) {
                 'no_google_js',
                 'checkbox',
                 false,
-                __('Check this box if your Theme or another plugin is providing Google Maps and generating warning messages.  THIS MAY BREAK THIS PLUGIN.', SLPLUS_PREFIX)
+                __('Check this box if your Theme or another plugin is providing Google Maps and generating warning messages.  THIS MAY BREAK THIS PLUGIN.', 'csa-slplus')
             );
 
             //--------------------------
             // Store Pages
             //
-            $slp_rep_desc = __('These settings affect how the Store Pages add-on behaves. ', SLPLUS_PREFIX);
+            $slp_rep_desc = __('These settings affect how the Store Pages add-on behaves. ', 'csa-slplus');
             if (!$this->parent->license->AmIEnabled(true, "SLPLUS-PAGES")) {
                 $slp_rep_desc .= '<br/><br/>'.
                     __('This is a <a href="http://www.charlestonsw.com/product/store-locator-plus-store-pages/">Store Pages</a>'.
                     ' feature.  It provides a way to auto-create individual WordPress pages' .
-                    ' for each of your locations. ', SLPLUS_PREFIX);
+                    ' for each of your locations. ', 'csa-slplus');
             } else {
                 $slp_rep_desc .= '<span style="float:right;">(<a href="#" onClick="'.
                         'jQuery.post(ajaxurl,{action: \'license_reset_pages\'},function(response){alert(response);});'.
-                        '">'.__('Delete license',SLPLUS_PREFIX).'</a>)</span>';
+                        '">'.__('Delete license','csa-slplus').'</a>)</span>';
             }
             $slp_rep_desc .= '<br/><br/>';
             $this->parent->settings->add_section(
@@ -182,12 +203,6 @@ if (! class_exists('SLPlus_AdminUI')) {
                 )
             );
             if ($this->parent->license->AmIEnabled(true, "SLPLUS-PAGES")) {
-
-                // Setup Store Pages Objects
-                //
-                if (!isset($slplus_plugin->StorePages) || !is_object($slplus_plugin->StorePages)) {
-                    require_once(SLPLUS_PLUGINDIR . '/slp-pages/slp-pages.php');
-                }
                 $this->parent->StorePages->add_pages_settings();
             }
 
@@ -197,15 +212,15 @@ if (! class_exists('SLPlus_AdminUI')) {
             $proPackMsg = (
                     $this->parent->license->packages['Pro Pack']->isenabled            ?
                     '' :
-                    __('This is a <a href="http://www.charlestonsw.com/product/store-locator-plus/">Pro Pack</a>  feature. ', SLPLUS_PREFIX)
+                    __('This is a <a href="http://www.charlestonsw.com/product/store-locator-plus/">Pro Pack</a>  feature. ', 'csa-slplus')
                     );
-            $slp_rep_desc = __('These settings affect how the Pro Pack add-on behaves. ', SLPLUS_PREFIX);
+            $slp_rep_desc = __('These settings affect how the Pro Pack add-on behaves. ', 'csa-slplus');
             if (!$this->parent->license->AmIEnabled(true, "SLPLUS-PRO")) {
                 $slp_rep_desc .= '<br/><br/>'.$proPackMsg;
             } else {
                 $slp_rep_desc .= '<span style="float:right;">(<a href="#" onClick="'.
                         'jQuery.post(ajaxurl,{action: \'license_reset_propack\'},function(response){alert(response);});'.
-                        '">'.__('Delete license',SLPLUS_PREFIX).'</a>)</span>';
+                        '">'.__('Delete license','csa-slplus').'</a>)</span>';
             }
             $slp_rep_desc .= '<br/><br/>';
             $this->parent->settings->add_section(
@@ -217,23 +232,23 @@ if (! class_exists('SLPlus_AdminUI')) {
             if ($this->parent->license->AmIEnabled(true, "SLPLUS-PRO")) {
                 $this->parent->settings->add_item(
                     'Pro Pack',
-                    __('Enable reporting', SLPLUS_PREFIX),
+                    __('Enable reporting', 'csa-slplus'),
                     'reporting_enabled',
                     'checkbox',
                     false,
                     __('Enables tracking of searches and returned results.  The added overhead ' .
-                    'can increase how long it takes to return location search results.', SLPLUS_PREFIX)
+                    'can increase how long it takes to return location search results.', 'csa-slplus')
                 );
             }
             // Custom CSS Field
             //
             $this->parent->settings->add_item(
                     'Pro Pack',
-                    __('Custom CSS',SLPLUS_PREFIX),
+                    __('Custom CSS','csa-slplus'),
                     'custom_css',
                     'textarea',
                     false,
-                    __('Enter your custom CSS, preferably for SLPLUS styling only but it can be used for any page element as this will go in your page header.',SLPLUS_PREFIX)
+                    __('Enter your custom CSS, preferably for SLPLUS styling only but it can be used for any page element as this will go in your page header.','csa-slplus')
                     .$proPackMsg
                         ,
                     null,
@@ -262,6 +277,16 @@ if (! class_exists('SLPlus_AdminUI')) {
          *
          * Google Server-Side API geocoding is documented here:
          * https://developers.google.com/maps/documentation/geocoding/index
+         *
+         * Required Google Geocoding API Params:
+         * address
+         * sensor=true|false
+         *
+         * Optional Google Goecoding API Params:
+         * bounds
+         * language
+         * region
+         * components
          * 
          * @global type $wpdb
          * @global type $slplus_plugin
@@ -271,10 +296,13 @@ if (! class_exists('SLPlus_AdminUI')) {
         function do_geocoding($address,$sl_id='') {
             global $wpdb, $slplus_plugin;
 
+            $language = '&language='.$slplus_plugin->helper->getData('map_language','get_item',null,'en');
+
             $delay = 0;
             $request_url =
                 'http://maps.googleapis.com/maps/api/geocode/json'.
                 '?sensor=false' .
+                $language .
                 '&address=' . urlencode($address)
                 ;
 
@@ -360,17 +388,18 @@ if (! class_exists('SLPlus_AdminUI')) {
                     $update_result = $wpdb->query($query);
                     if ($update_result == 0) {
                         $theDBError = htmlspecialchars(mysql_error($wpdb->dbh),ENT_QUOTES);
-                        $errorMessage .= __("Could not set the latitude and/or longitude  ", SLPLUS_PREFIX);
+                        $errorMessage .= (($sl_id!='')?'Location #'.$sl_id.' : ' : '');
+                        $errorMessage .= __("Could not set the latitude and/or longitude  ", 'csa-slplus');
                         if ($theDBError != '') {
                             $errorMessage .= sprintf(
-                                                    __("Error: %s.", SLPLUS_PREFIX),
+                                                    __("Error: %s.", 'csa-slplus'),
                                                     $theDBError
                                                     );
                         } elseif ($update_result === 0) {
-                            $errorMessage .=  __(", The latitude and longitude did not change.", SLPLUS_PREFIX);
+                            $errorMessage .=  __(", The latitude and longitude did not change.", 'csa-slplus');
                         } else {
-                            $errorMessage .=  __("No error logged.", SLPLUS_PREFIX);
-                            $errorMessage .= "<br/>\n" . __('Query: ', SLPLUS_PREFIX);
+                            $errorMessage .=  __("No error logged.", 'csa-slplus');
+                            $errorMessage .= "<br/>\n" . __('Query: ', 'csa-slplus');
                             $errorMessage .= print_r($wpdb->last_query,true);
                             $errorMessage .= "<br/>\n" . "Results: " . gettype($update_result) . ' '. $update_result;
                         }
@@ -384,10 +413,11 @@ if (! class_exists('SLPlus_AdminUI')) {
                   // No iterations left, tell user of failure
                   //
                   if(!$iterations){
-                    $errorMessage .= sprintf(__("Address %s <font color=red>failed to geocode</font>. ", 'csl-slplus'),$address);
-                    $errorMessage .= sprintf(__("Received status %s.", 'csl-slplus'),$status)."\n<br>";
+                    $errorMessage .= sprintf(__("Address %s <font color=red>failed to geocode</font>. ", 'csa-slplus'),$address);
+                    $errorMessage .= sprintf(__("URL %s.", 'csa-slplus'),$request_url)."\n<br>";
+                    $errorMessage .= sprintf(__("Received status %s.", 'csa-slplus'),$status)."\n<br>";
                     $errorMessage .= sprintf(
-                            __("Total attempts %d, waited up to %4.2 seconds between request.", 'csl-slplus'),
+                            __("Total attempts %d, waited up to %4.2 seconds between request.", 'csa-slplus'),
                             $initial_iterations,
                             $delay/100000
                             ).
@@ -399,19 +429,21 @@ if (! class_exists('SLPlus_AdminUI')) {
                 //
                 } else if (strcmp($status, 'ZERO_RESULTS') == 0) {
                     $iterations = 0;
-                    $errorMessage .= sprintf(__("Address %s <font color=red>failed to geocode</font>. ", 'csl-slplus'),$address);
-                    $errorMessage .= sprintf(__("Unknown Address! Received status %s.", 'csl-slplus'),$status)."\n<br>";
+                    $errorMessage .= sprintf(__("Address %s <font color=red>failed to geocode</font>. ", 'csa-slplus'),$address);
+                    $errorMessage .= sprintf(__("URL %s.", 'csa-slplus'),$request_url)."\n<br>";
+                    $errorMessage .= sprintf(__("Unknown Address! Received status %s.", 'csa-slplus'),$status)."\n<br>";
 
                 // Could Not Geocode
                 //
                 } else {
                     $geocode_pending = false;
-                    echo sprintf(__("Address %s <font color=red>failed to geocode</font>. ", 'csl-slplus'),$address);
+                    echo sprintf(__("Address %s <font color=red>failed to geocode</font>. ", 'csa-slplus'),$address);
                     if ($status != '') {
-                        $errorMessage .= sprintf(__("Received data %s.", 'csl-slplus'),'<pre>'.print_r($json,true).'</pre>')."\n";
+                        $errorMessage .= sprintf(__("URL %s.", 'csa-slplus'),$request_url)."\n<br>";
+                        $errorMessage .= sprintf(__("Received data %s.", 'csa-slplus'),'<pre>'.print_r($json,true).'</pre>')."\n";
                     } else {
-                        $errorMessage .= sprintf(__("Reqeust sent to %s.", 'csl-slplus'),$request_url)."\n<br>";
-                        $errorMessage .= sprintf(__("Received status %s.", 'csl-slplus'),$status)."\n<br>";
+                        $errorMessage .= sprintf(__("Reqeust sent to %s.", 'csa-slplus'),$request_url)."\n<br>";
+                        $errorMessage .= sprintf(__("Received status %s.", 'csa-slplus'),$status)."\n<br>";
                     }
                 }
 
@@ -419,6 +451,12 @@ if (! class_exists('SLPlus_AdminUI')) {
                 //
                 if ($errorMessage != '') {
                     print '<div class="geocode_error">' .
+                            '<strong>'.
+                            sprintf(
+                                __('Read <a href="%s">this</a> if you are having geocoding issues.','csa_slplus'),
+                                'http://www.charlestonsw.com/support/documentation/store-locator-plus/troubleshooting/geocoding-errors/'
+                                ).
+                            "</strong><br/>\n" .
                             $errorMessage .
                             '</div>';
                 }
@@ -438,7 +476,6 @@ if (! class_exists('SLPlus_AdminUI')) {
          * @global type $sl_use_name_search
          * @global type $sl_radius_label
          * @global type $sl_website_label
-         * @global type $sl_num_initial_displayed
          * @global type $sl_load_locations_default
          * @global type $sl_distance_unit
          * @global type $sl_map_overview_control
@@ -446,7 +483,7 @@ if (! class_exists('SLPlus_AdminUI')) {
         function initialize_variables() {
             global $sl_google_map_domain, $sl_google_map_country, $sl_location_table_view,
                 $sl_search_label, $sl_zoom_level, $sl_zoom_tweak, $sl_use_name_search,
-                $sl_radius_label, $sl_website_label, $sl_num_initial_displayed, $sl_load_locations_default,
+                $sl_radius_label, $sl_website_label, $sl_load_locations_default,
                 $sl_distance_unit, $sl_map_overview_control;
 
             $sl_map_overview_control=get_option('sl_map_overview_control');
@@ -463,11 +500,6 @@ if (! class_exists('SLPlus_AdminUI')) {
             if (empty($sl_load_locations_default)) {
                 $sl_load_locations_default="1";
                 add_option('sl_load_locations_default', $sl_load_locations_default);
-                }
-            $sl_num_initial_displayed=get_option('sl_num_initial_displayed');
-            if (empty($sl_num_initial_displayed)) {
-                $sl_num_initial_displayed="25";
-                add_option('sl_num_initial_displayed', $sl_num_initial_displayed);
                 }
             $sl_website_label=get_option('sl_website_label');
             if (empty($sl_website_label)) {
@@ -542,9 +574,9 @@ if (! class_exists('SLPlus_AdminUI')) {
             $cleared=preg_replace('/q=$qry/', '', $_SERVER['REQUEST_URI']);
 
             $extra_text=(trim($qry)!='')    ?
-                __("for your search of", SLPLUS_PREFIX).
+                __("for your search of", 'csa-slplus').
                     " <strong>\"$qry\"</strong>&nbsp;|&nbsp;<a href='$cleared'>".
-                    __("Clear&nbsp;Results", SLPLUS_PREFIX)."</a>" :
+                    __("Clear&nbsp;Results", 'csa-slplus')."</a>" :
                 "" ;
 
             // URL Regex Replace
@@ -580,7 +612,7 @@ if (! class_exists('SLPlus_AdminUI')) {
                         $curr_page=$_SERVER['QUERY_STRING']."&start=$pos";
                     }
                     if (($start-($k-1)*$num_per_page)<0 || ($start-($k-1)*$num_per_page)>=$num_per_page) {
-                        $pagesString .= "<a class='page-button' href=\"{$_SERVER['PHP_SELF']}?$curr_page\" >";
+                        $pagesString .= "<a class='page-button' href=\"{$_SERVER['SCRIPT_NAME']}?$curr_page\" >";
                     } else {
                         $pagesString .= "<a class='page-button thispage' href='#'>";
                     }
@@ -617,7 +649,7 @@ if (! class_exists('SLPlus_AdminUI')) {
                     '<div id="slp_pagination_pages" class="tablenav-pages">'    .
                         '<span class="displaying-num">'                         .
                                 $totalLocations                                 .
-                                ' '.__('locations',SLPLUS_PREFIX)               .
+                                ' '.__('locations','csa-slplus')               .
                             '</span>'                                           .
                             '<span class="pagination-links">'                   .
                             $pagesString                                        .
@@ -638,7 +670,7 @@ if (! class_exists('SLPlus_AdminUI')) {
                     "<thead>
                     <tr >
                         <th colspan='1'><input type='checkbox' onclick='checkAll(this,document.forms[\"locationForm\"])' class='button'></th>
-                        <th colspan='1'>".__("Actions", SLPLUS_PREFIX)."</th>"
+                        <th colspan='1'>".__("Actions", 'csa-slplus')."</th>"
                     ;
             foreach ($slpManageColumns as $slpField => $slpLabel) {
                 $tableHeaderString .= $this->slpCreateColumnHeader($slpCleanURL,$slpField,$slpLabel,$opt,$dir);
@@ -709,12 +741,12 @@ if (! class_exists('SLPlus_AdminUI')) {
          * @param type $storePageID
          * @return type
          */
-        function slpRenderCreatePageButton($locationID=-1,$storePageID=-1) {
+        static function slpRenderCreatePageButton($locationID=-1,$storePageID=-1) {
             if ($locationID < 0) { return; }            
             $slpPageClass = (($storePageID>0)?'haspage_icon' : 'createpage_icon');
             print "<a   class='action_icon $slpPageClass' 
-                        alt='".__('create page',SLPLUS_PREFIX)."' 
-                        title='".__('create page',SLPLUS_PREFIX)."' 
+                        alt='".__('create page','csa-slplus')."'
+                        title='".__('create page','csa-slplus')."'
                         href='".
                             preg_replace('/&createpage=/'.(isset($_GET['createpage'])?$_GET['createpage']:''), "",$_SERVER['REQUEST_URI']).
                             "&act=createpage&sl_id=$locationID&slp_pageid=$storePageID#a$locationID'
@@ -765,7 +797,7 @@ if (! class_exists('SLPlus_AdminUI')) {
                 print "<div class='wrap'>
                             <div id='icon-add-locations' class='icon32'><br/></div>
                             <h2>Store Locator Plus - ".
-                            __('Add Locations', SLPLUS_PREFIX).
+                            __('Add Locations', 'csa-slplus').
                             "</h2>".                      
                       $slplus_plugin->helper->get_string_from_phpexec(SLPLUS_COREDIR.'/templates/navbar.php')                      
                       ;
@@ -795,93 +827,17 @@ if (! class_exists('SLPlus_AdminUI')) {
                     $slplus_plugin->AdminUI->add_this_addy($fieldList,$sl_valueList,$this_addy);
                     print "<div class='updated fade'>".
                             $_POST['store-'] ." " .
-                            __("Added Succesfully",SLPLUS_PREFIX) . '.</div>';
+                            __("Added Succesfully",'csa-slplus') . '.</div>';
 
                 /** Bulk Upload
                  **/
-                } elseif ( isset($_FILES['csvfile']['name']) &&
-                       ($_FILES['csvfile']['name']!='')  &&
-                        ($_FILES['csvfile']['size'] > 0)
-                    ) {
-                    add_filter('upload_mimes', array('SLPlus_AdminUI','custom_upload_mimes'));
-
-                    // Get the type of the uploaded file. This is returned as "type/extension"
-                    $arr_file_type = wp_check_filetype(basename($_FILES['csvfile']['name']));
-                    if ($arr_file_type['type'] == 'text/csv') {
-
-                                // Save the file to disk
-                                //
-                                $updir = wp_upload_dir();
-                                $updir = $updir['basedir'].'/slplus_csv';
-                                if(!is_dir($updir)) {
-                                    mkdir($updir,0755);
-                                }
-                                if (move_uploaded_file($_FILES['csvfile']['tmp_name'],
-                                        $updir.'/'.$_FILES['csvfile']['name'])) {
-                                        $reccount = 0;
-
-                                        $adle_setting = ini_get('auto_detect_line_endings');
-                                        ini_set('auto_detect_line_endings', true);
-                                        if (($handle = fopen($updir.'/'.$_FILES['csvfile']['name'], "r")) !== FALSE) {
-                                            $fldNames = array('sl_store','sl_address','sl_address2','sl_city','sl_state',
-                                                            'sl_zip','sl_country','sl_tags','sl_description','sl_url',
-                                                            'sl_hours','sl_phone','sl_email','sl_image','sl_fax');
-                                            $maxcols = count($fldNames);
-                                            while (($data = fgetcsv($handle)) !== FALSE) {
-                                                $num = count($data);
-                                                if ($num <= $maxcols) {
-                                                    $fieldList = '';
-                                                    $sl_valueList = '';
-                                                    $this_addy = '';
-                                                    for ($fldno=0; $fldno < $num; $fldno++) {
-                                                        $fieldList.=$fldNames[$fldno].',';
-                                                        $sl_valueList.="\"".stripslashes($this->slp_escape($data[$fldno]))."\",";
-                                                        if (($fldno>=1) && ($fldno<=6)) {
-                                                            $this_addy .= $data[$fldno] . ', ';
-                                                        }
-                                                    }
-                                                    $this_addy = substr($this_addy, 0, strlen($this_addy)-2);
-                                                    $slplus_plugin->AdminUI->add_this_addy($fieldList,$sl_valueList,$this_addy);
-                                                    sleep(0.5);
-                                                    $reccount++;
-                                                } else {
-                                                     print "<div class='updated fade'>".
-                                                        __('The CSV file has too many fields.',
-                                                            SLPLUS_PREFIX
-                                                            );
-                                                     print ' ';
-                                                     printf(__('Got %d expected less than %d.', SLPLUS_PREFIX),
-                                                        $num,$maxcols);
-                                                     print '</div>';
-                                                }
-                                            }
-                                            fclose($handle);
-                                        }
-                                        ini_set('auto_detect_line_endings', $adle_setting);
-
-
-                                        if ($reccount > 0) {
-                                            print "<div class='updated fade'>".
-                                                    sprintf("%d",$reccount) ." " .
-                                                    __("locations added succesfully.",SLPLUS_PREFIX) . '</div>';
-                                        }
-
-                                // Could not save
-                                } else {
-                                        print "<div class='updated fade'>".
-                                        __("File could not be saved, check the plugin directory permissions:",SLPLUS_PREFIX) .
-                                            "<br/>" . $updir.
-
-                                '.</div>';
-                        }
-
-                        // Not CSV Format Warning
-                    } else {
-                        print "<div class='updated fade'>".
-                            __("Uploaded file needs to be in CSV format.",SLPLUS_PREFIX) .
-                            " Type was " . $arr_file_type['type'] .
-                            '.</div>';
-                    }
+                } elseif ( 
+                    isset($this->plugin->ProPack)     &&
+                    isset($_FILES['csvfile']['name']) &&
+                    ($_FILES['csvfile']['name']!='')  &&
+                    ($_FILES['csvfile']['size'] > 0)
+                   ) {
+                    $this->plugin->ProPack->bulk_upload_processing();
                 }
 
                 $base=get_option('siteurl');
@@ -922,38 +878,38 @@ if (! class_exists('SLPlus_AdminUI')) {
             <table>
                 <tr>
                     <td><div class="add_location_form">
-                        <label  for='store-<?php echo $this->getFieldValue('sl_id')?>'><?php _e('Name of Location', SLPLUS_PREFIX);?></label>
+                        <label  for='store-<?php echo $this->getFieldValue('sl_id')?>'><?php _e('Name of Location', 'csa-slplus');?></label>
                         <input name='store-<?php echo $this->getFieldValue('sl_id')?>' value='<?php echo $this->getFieldValue('sl_store')?>'><br/>
 
-                        <label  for='address-<?php echo $this->getFieldValue('sl_id')?>'><?php _e('Street - Line 1', SLPLUS_PREFIX);?></label>
+                        <label  for='address-<?php echo $this->getFieldValue('sl_id')?>'><?php _e('Street - Line 1', 'csa-slplus');?></label>
                         <input name='address-<?php echo $this->getFieldValue('sl_id')?>' value='<?php echo $this->getFieldValue('sl_address')?>'><br/>
 
-                        <label  for='address2-<?php echo $this->getFieldValue('sl_id')?>'><?php _e('Street - Line 2', SLPLUS_PREFIX);?></label>
+                        <label  for='address2-<?php echo $this->getFieldValue('sl_id')?>'><?php _e('Street - Line 2', 'csa-slplus');?></label>
                         <input name='address2-<?php echo $this->getFieldValue('sl_id')?>' value='<?php echo $this->getFieldValue('sl_address2')?>'><br/>
 
-                        <label  for='city-<?php echo $this->getFieldValue('sl_id')?>'><?php _e('City, State, ZIP', SLPLUS_PREFIX);?></label>
+                        <label  for='city-<?php echo $this->getFieldValue('sl_id')?>'><?php _e('City, State, ZIP', 'csa-slplus');?></label>
                         <input name='city-<?php echo $this->getFieldValue('sl_id')?>'    value='<?php echo $this->getFieldValue('sl_city')?>'     style='width: 21.4em; margin-right: 1em;'>
                         <input name='state-<?php echo $this->getFieldValue('sl_id')?>'   value='<?php echo $this->getFieldValue('sl_state')?>'    style='width: 7em; margin-right: 1em;'>
                         <input name='zip-<?php echo $this->getFieldValue('sl_id')?>'     value='<?php echo $this->getFieldValue('sl_zip')?>'      style='width: 7em;'><br/>
 
-                        <label  for='country-<?php echo $this->getFieldValue('sl_id')?>'><?php _e('Country', SLPLUS_PREFIX);?></label>
+                        <label  for='country-<?php echo $this->getFieldValue('sl_id')?>'><?php _e('Country', 'csa-slplus');?></label>
                         <input name='country-<?php echo $this->getFieldValue('sl_id')?>' value='<?php echo $this->getFieldValue('sl_country')?>'  style='width: 40em;'><br/>
 
                         <?php
                         if ($this->parent->AdminUI->addingLocation === false) {
                         ?>
-                            <label  for='latitude-<?php echo $this->getFieldValue('sl_id')?>'><?php _e('Latitude (N/S)', SLPLUS_PREFIX);?></label>
+                            <label  for='latitude-<?php echo $this->getFieldValue('sl_id')?>'><?php _e('Latitude (N/S)', 'csa-slplus');?></label>
                             <?php if ($this->parent->license->packages['Pro Pack']->isenabled) { ?>
                                 <input name='latitude-<?php echo $this->getFieldValue('sl_id')?>' value='<?php echo $this->getFieldValue('sl_latitude')?>'  style='width: 40em;'><br/>
                             <?php } else { ?>
-                                <input class='disabled'  name='latitude-<?php echo $this->getFieldValue('sl_id')?>' value='<?php echo __('Changing the latitude is a Pro Pack feature.',SLPLUS_PREFIX).' ('.$this->getFieldValue('sl_latitude').')';?>'  style='width: 40em;'><br/>
+                                <input class='disabled'  name='latitude-<?php echo $this->getFieldValue('sl_id')?>' value='<?php echo __('Changing the latitude is a Pro Pack feature.','csa-slplus').' ('.$this->getFieldValue('sl_latitude').')';?>'  style='width: 40em;'><br/>
                             <?php } ?>
 
-                            <label  for='longitude-<?php echo $this->getFieldValue('sl_id')?>'><?php _e('Longitude (E/W)', SLPLUS_PREFIX);?></label>
+                            <label  for='longitude-<?php echo $this->getFieldValue('sl_id')?>'><?php _e('Longitude (E/W)', 'csa-slplus');?></label>
                             <?php if ($this->parent->license->packages['Pro Pack']->isenabled) { ?>
                                 <input name='longitude-<?php echo $this->getFieldValue('sl_id')?>' value='<?php echo $this->getFieldValue('sl_longitude')?>'  style='width: 40em;'><br/>
                             <?php } else { ?>
-                                <input class='disabled' name='longitude-<?php echo $this->getFieldValue('sl_id')?>' value='<?php echo __('Changing the longitude is a Pro Pack feature.',SLPLUS_PREFIX).' ('.$this->getFieldValue('sl_longitude').')'; ?>'  style='width: 40em;'><br/>
+                                <input class='disabled' name='longitude-<?php echo $this->getFieldValue('sl_id')?>' value='<?php echo __('Changing the longitude is a Pro Pack feature.','csa-slplus').' ('.$this->getFieldValue('sl_longitude').')'; ?>'  style='width: 40em;'><br/>
                             <?php } ?>
                         <?php
                         }
@@ -1020,6 +976,7 @@ if (! class_exists('SLPlus_AdminUI')) {
              */
              $content  = ''                                                                     .
                 "<form id='manualAddForm' name='manualAddForm' method='post' enctype='multipart/form-data'>"       .
+                "<input type='hidden' name='locationID' id='locationID' value='$locID' />" .
                 "<a name='a".$locID."'></a>"                                                    .
                 "<table cellpadding='0' class='slp_locationinfoform_table'>"                           .
                 "<tr><td valign='top'>"                                                         .
@@ -1044,15 +1001,15 @@ if (! class_exists('SLPlus_AdminUI')) {
 
                 $alTitle =
                     ($addform?
-                        __('Add Location',SLPLUS_PREFIX):
-                        sprintf("%s #%d",__('Update Location', SLPLUS_PREFIX),$locID)
+                        __('Add Location','csa-slplus'):
+                        sprintf("%s #%d",__('Update Location', 'csa-slplus'),$locID)
                     );
                 $slpEditForm .= 
                         ($addform? '' : "<span class='slp-edit-location-id'>Location # $locID</span>") .
                         "<div id='slp_form_buttons'>" .
-                        "<input type='submit' value='".($addform?__('Add',SLPLUS_PREFIX):__('Update', SLPLUS_PREFIX)).
+                        "<input type='submit' value='".($addform?__('Add','csa-slplus'):__('Update', 'csa-slplus')).
                             "' alt='$alTitle' title='$alTitle' class='button-primary'>".
-                        "<input type='button' class='button' value='".__('Cancel', SLPLUS_PREFIX)."' onclick='location.href=\"".$edCancelURL."\"'>".
+                        "<input type='button' class='button' value='".__('Cancel', 'csa-slplus')."' onclick='location.href=\"".$edCancelURL."\"'>".
                         "<input type='hidden' name='option_value-$locID' value='".($addform?'':$sl_value['sl_option_value'])."' />"  .
                         "</div>"
                         ;
@@ -1068,19 +1025,19 @@ if (! class_exists('SLPlus_AdminUI')) {
                 $slpEditForm =
                         "<div id='slp_edit_right_column'>" .
 
-                        "<strong>".__("Additional Information", SLPLUS_PREFIX)."</strong><br>".
+                        "<strong>".__("Additional Information", 'csa-slplus')."</strong><br>".
 
                         "<textarea name='description-$locID' rows='5' cols='17'>".($addform?'':$sl_value['sl_description'])."</textarea>&nbsp;<small>".
-                            __("Description", SLPLUS_PREFIX)."</small><br>".
+                            __("Description", 'csa-slplus')."</small><br>".
 
                         "<input    name='tags-$locID'  value='".($addform?'':$sl_value['sl_tags'] )."'>&nbsp;<small>".
-                            __("Tags (seperate with commas)", SLPLUS_PREFIX)."</small><br>".
+                            __("Tags (seperate with commas)", 'csa-slplus')."</small><br>".
 
                         "<input    name='url-$locID'   value='".($addform?'':$sl_value['sl_url']  )."'>&nbsp;<small>".
                             get_option('sl_website_label','Website')."</small><br>".
 
                         "<input    name='email-$locID' value='".($addform?'':$sl_value['sl_email'])."'>&nbsp;<small>".
-                            __("Email", SLPLUS_PREFIX)."</small><br>".
+                            __("Email", 'csa-slplus')."</small><br>".
 
                         "<input    name='hours-$locID' value='".($addform?'':$sl_value['sl_hours'])."'>&nbsp;<small>".
                             $slplus_plugin->settings->get_item('label_hours','Hours','_')."</small><br>".
@@ -1092,7 +1049,7 @@ if (! class_exists('SLPlus_AdminUI')) {
                             $slplus_plugin->settings->get_item('label_fax','Fax','_')."</small><br>".
 
                         "<input    name='image-$locID' value='".($addform?'':$sl_value['sl_image'])."'>&nbsp;<small>".
-                            __("Image URL (shown with location)", SLPLUS_PREFIX)."</small>" .
+                            __("Image URL (shown with location)", 'csa-slplus')."</small>" .
 
                         '</div>'
                         ;
@@ -1105,28 +1062,14 @@ if (! class_exists('SLPlus_AdminUI')) {
 
                 // Bulk upload form
                 //
-                if ($addform && ($slplus_plugin->license->packages['Pro Pack']->isenabled)) {
-                    $content .=
-                        '<div class="slp_bulk_upload_div">' .
-                        '<h2>'.__('Bulk Upload', SLPLUS_PREFIX).'</h2>'.
-                        '<input type="file" name="csvfile" value="" id="bulk_file" size="60"><br/>' .
-                        "<input type='submit' value='".__("Upload Locations", SLPLUS_PREFIX)."' class='button-primary'>".
-                        '</div>';
+                if ($addform) {
+                    $content .= apply_filters('slp_add_location_form_footer', '');
                 }
 
                 $content .= '</form>';
 
                 return apply_filters('slp_locationinfoform',$content);
          }
-
-        /**
-         * Allows WordPress to process csv file types
-         *
-         */
-        function custom_upload_mimes ( $existing_mimes=array() ) {
-            $existing_mimes['csv'] = 'text/csv';
-            return $existing_mimes;
-        }
 
         /**
          * Return the icon selector HTML for the icon images in saved icons and default icon directories.
@@ -1189,7 +1132,7 @@ if (! class_exists('SLPlus_AdminUI')) {
                             $this->parent->notifications->add_notice(
                                     9,
                                     sprintf(
-                                            __('Could not read icon directory %s',SLPLUS_PREFIX),
+                                            __('Could not read icon directory %s','csa-slplus'),
                                             $directory
                                             )
                                     );
