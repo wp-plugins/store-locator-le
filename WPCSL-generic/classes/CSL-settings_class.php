@@ -244,9 +244,9 @@ class wpCSL_settings__slplus {
      **
      ** Return the value of a WordPress option that was saved via the settings interface.
      **/
-    function get_item($name, $default = null, $separator='-') {
+    function get_item($name, $default = null, $separator='-', $forceReload = false) {
         $option_name = $this->prefix . $separator . $name;
-        if (!isset($this->$option_name)) {            
+        if (!isset($this->$option_name) || $forceReload) {
             $this->$option_name =
                 ($default == null) ?
                     get_option($option_name) :
