@@ -88,6 +88,20 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
         }
 
         /**
+         * Create the hidden inputs HTML string from the REQUEST variable.
+         *
+         * Skips some REQUEST keys we wish to ignore.
+         */
+        function create_HiddenInputs() {
+            $this->hiddenInputs = '';
+            foreach($_REQUEST as $key=>$val) {
+                if ($key!="searchfor" && $key!="o" && $key!="sortorder" && $key!="start" && $key!="act" && $key!='sl_tags' && $key!='sl_id') {
+                    $this->hiddenInputs.="<input type='hidden' value='$val' name='$key'>\n";
+                }
+            }
+        }
+
+        /**
          * Delete a location.
          * 
          * @global type $wpdb - the WP database connection
@@ -291,24 +305,14 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
              }
 
              $actionBoxes = array();
-            ?>
-            <script type="text/javascript">
-            function doAction(theAction,thePrompt) {
-                if((thePrompt == '') || confirm(thePrompt)){
-                    LF=document.forms['locationForm'];
-                    LF.act.value=theAction;
-                    LF.submit();
-                }else{
-                    return false;
-                }
-            }
-            </script>
-            <?php
-            print '<div id="action_buttons">'.
-                '<div id="action_bar_header">'.
-                '<h3>'.__('Actions and Filters','csa-slplus').'</h3>'.
-                '</div>'.
-                '<div class="boxbar">'
+
+            print 
+                '<div id="slplus_actionbar">'             .
+                    '<div id="action_buttons">'.
+                        '<div id="action_bar_header">'.
+                            '<h3>'.__('Actions and Filters','csa-slplus').'</h3>'.
+                        '</div>'.
+                        '<div class="boxbar">'
                 ;
 
             // Basic Delete Icon
@@ -345,12 +349,12 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
             $actionBoxes['O'][] =
                     '<p class="centerbutton">' .
                         '<a class="like-a-button" href="#" ' .
-                            'onclick="doAction(\'changeview\',\'$altViewText\');">'.
+                            'onclick="doAction(\'changeview\',\''.$altViewText.'\');">'.
                             $viewText .
                         '</a>'.
                     '</p>' .
                     __('Show ', 'csa-slplus') .
-                    '<select name="sl_admin_locations_per_page" onchange="doAction(\'locationsPerPage\',\'\');">' .
+                    '<select id="sl_admin_locations_per_page" name="sl_admin_locations_per_page" onchange="doAction(\'locationsPerPage\',\'\');">' .
                         $pdString .
                     '</select>'.
                     __(' locations', 'csa-slplus') . '.'
@@ -371,31 +375,22 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
             do_action('slp_add_manage_locations_action_box');
 
             print
+                    '</div>' .
                 '</div>' .
-            '</div>'
+              '</div>'
             ;
         }
 
         /**
-         * Render the manage locations admin page.
-         *
+         * Render the JavaScript for the manage locations page.
          */
-        function render_adminpage() {
-            if (!$this->setParent()) { return; }
-            $this->plugin->helper->loadPluginData();
-            global $wpdb;
-
-            // Script
-            //
+        function render_JavaScript() {
             ?>
             <script language="JavaScript">
-                /*=================== Confirming Button Click ===================== */
                 function confirmClick(message,href) {
                     if (confirm(message)) {	location.href=href; }
                     else  { return false; }
                 }
-
-                /* ================= For Player Form: Checks All or None ======== */
                 function checkAll(cbox,formObj) {
                     var i=0;
                     if (cbox.checked==true)
@@ -407,11 +402,51 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
                         i++;
                     }
                 }
+                function doAction(theAction,thePrompt) {
+                    if((thePrompt == '') || confirm(thePrompt)){
+                        LF=document.forms['locationForm'];
+                        LF.act.value=theAction;
+                        LF.submit();
+                    }else{
+                        return false;
+                    }
+                }
             </script>
-
             <?php
-            // Header Text
-            //
+
+        }
+        
+        /**
+         * Render the manage locations admin page.
+         *
+         */
+        function render_adminpage() {
+            if (!$this->setParent()) { return; }
+            $this->plugin->helper->loadPluginData();
+            global $wpdb;
+
+            //--------------------------------
+            // Debug Output : Post/Server Vars
+            //--------------------------------
+            $this->parent->helper->bugout("<pre>REQUEST\n".print_r($_REQUEST,true)."</pre>",'','REQUEST',__FILE__,__LINE__);
+            // $this->parent->helper->bugout("<pre>POST\n".print_r($_POST,true)."</pre>",'','POST',__FILE__,__LINE__);
+            // $this->parent->helper->bugout("<pre>GET".print_r($_GET,true)."</pre>",'','GET',__FILE__,__LINE__);
+            $this->parent->helper->bugout("<pre>SERVER\n".print_r($_SERVER,true)."</pre>",'','SERVER',__FILE__,__LINE__);
+
+
+            //--------------------------------
+            // Create the hidden inputs string
+            //--------------------------------            
+            $this->create_HiddenInputs();
+
+            //--------------------------------
+            // Render: JavaScript
+            //--------------------------------
+            $this->render_JavaScript();
+
+            //--------------------------------
+            // Render: Header Div & Nav Tabs
+            //--------------------------------
             print "<div class='wrap'>
                         <div id='icon-edit-locations' class='icon32'><br/></div>
                         <h2>".
@@ -420,24 +455,13 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
                   $this->parent->helper->get_string_from_phpexec(SLPLUS_COREDIR.'/templates/navbar.php')
                   ;
 
-
-            // Form and variable setup for processing
-            //
-            $this->hiddenInputs = '';
-            foreach($_REQUEST as $key=>$val) {
-                if ($key!="searchfor" && $key!="o" && $key!="sortorder" && $key!="start" && $key!="act" && $key!='sl_tags' && $key!='sl_id') {
-                    $this->hiddenInputs.="<input type='hidden' value='$val' name='$key'>\n";
-                }
-            }
             $this->parent->AdminUI->initialize_variables();
-            $this->parent->helper->bugout("<pre>REQUEST\n".print_r($_REQUEST,true)."</pre>",'','REQUEST',__FILE__,__LINE__);
-            $this->parent->helper->bugout("<pre>SERVER\n".print_r($_SERVER,true)."</pre>",'','SERVER',__FILE__,__LINE__);
 
             //------------------------------------------------------------------------
             // ACTION HANDLER
             // If post action is set
             //------------------------------------------------------------------------
-            if ($_POST) {extract($_POST);}
+            if (isset($_REQUEST)) { extract($_REQUEST); }
 
             if (isset($_REQUEST['act'])) {
 
@@ -467,9 +491,16 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
                     if (isset($_REQUEST['sl_id'])) { $this->location_tag($_REQUEST['sl_id']); }
 
                 // Locations Per Page Action
+                //   - update the option first,
+                //   - then reload the
                 } elseif ($_REQUEST['act']=="locationsPerPage") {
-                    update_option('sl_admin_locations_per_page', $_REQUEST['sl_admin_locations_per_page']);
-                    extract($_REQUEST);
+                    if (
+                         isset($_REQUEST['sl_admin_locations_per_page']) &&
+                        !empty($_REQUEST['sl_admin_locations_per_page'])
+                        ) {
+                        update_option('sl_admin_locations_per_page', $_REQUEST['sl_admin_locations_per_page']);
+                        $this->plugin->settings->get_item('sl_admin_locations_per_page','get_option',null,'10',true);
+                    }
 
                 // Change View Action
                 //
@@ -560,6 +591,10 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
                 print "<script>location.replace('".$_SERVER['REQUEST_URI']."');</script>";
             }
 
+            //------------------------------------------------------------------------
+            // Reload Variables - anything that my have changed
+            //------------------------------------------------------------------------
+            $this->plugin->helper->getData('sl_admin_locations_per_page','get_option',null,'10',true,true);
 
             //------------------------------------------------------------------------
             // QUERY BUILDING
@@ -594,7 +629,7 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
             //
             if (trim($where) != false) { $where = "WHERE $where"; }
             $totalLocations=$wpdb->get_var("SELECT count(sl_id) FROM ".$wpdb->prefix."store_locator $where");
-            $this->parent->helper->bugout("SELECT count(sl_id) FROM ".$wpdb->prefix."store_locator $where", '', 'SQL Count', __FILE__, __LINE__);
+            $this->parent->helper->bugout("SELECT count(sl_id) FROM ".$wpdb->prefix."store_locator $where : returns $totalLocations", '', 'SQL Count', __FILE__, __LINE__);
             $start=(isset($_GET['start'])&&(trim($_GET['start'])!=''))?$_GET['start']:0;
             if ($totalLocations>0) {
                 $this->parent->AdminUI->manage_locations_pagination(
@@ -604,14 +639,18 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
                         );
             }
 
-            // Actionbar Section
-            //
+
+            //--------------------------------
+            // Render: Start of Form
+            //--------------------------------
             print '<form id="manage_locations_actionbar_form" name="locationForm" method="post" action="'.$this->baseAdminURL.'">'.
-                    '<input name="act" type="hidden">' .
-                    '<div id="slplus_actionbar">' .
-                        $this->render_actionbar() .
-                    '</div>'
+                    '<input name="act" type="hidden">'                         
                     ;
+
+            //--------------------------------
+            // Render: Action Bar
+            //--------------------------------
+            $this->render_actionbar();
 
             // Search Filter, no actions
             // Clear the start, we want all records
@@ -623,13 +662,13 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
 
             // We have matching locations
             //
-            if ($slpLocations=$wpdb->get_results(
-                    "SELECT * FROM " .$wpdb->prefix."store_locator " .
-                            "$where ORDER BY $opt $dir ".
-                            "LIMIT $start,".$this->plugin->data['sl_admin_locations_per_page'],
-                    ARRAY_A
-                    )
-                ) {
+            $dataQuery =
+                "SELECT * FROM " .$wpdb->prefix."store_locator " .
+                    "$where ORDER BY $opt $dir ".
+                     "LIMIT $start,".$this->plugin->data['sl_admin_locations_per_page']
+                ;
+            $this->parent->helper->bugout($dataQuery, '', 'SQL Data', __FILE__, __LINE__);
+            if ($slpLocations=$wpdb->get_results($dataQuery,ARRAY_A)) {
 
                 // Setup Table Columns
                 //

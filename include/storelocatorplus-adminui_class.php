@@ -466,7 +466,8 @@ if (! class_exists('SLPlus_AdminUI')) {
         }
 
         /**
-         *
+         * Initialize variables for the map settings.
+         * 
          * @global type $sl_google_map_domain
          * @global type $sl_google_map_country
          * @global type $sl_location_table_view
@@ -570,6 +571,7 @@ if (! class_exists('SLPlus_AdminUI')) {
             $pos=0;
             $prev = min(max(0,$start-$num_per_page),$totalLocations);
             $next = min(max(0,$start+$num_per_page),$totalLocations);
+            $num_per_page = max(1,$num_per_page);
             $qry = isset($_GET['q'])?$_GET['q']:'';
             $cleared=preg_replace('/q=$qry/', '', $_SERVER['REQUEST_URI']);
 

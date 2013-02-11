@@ -18,6 +18,7 @@
 
 
 class wpCSL_helper__slplus {
+    private $bugoutDivCount;
 
     /**
      *
@@ -27,6 +28,7 @@ class wpCSL_helper__slplus {
 
         // Defaults
         //
+        $this->bugoutDivCount = 0;
 
         // Set by incoming parameters
         //
@@ -248,18 +250,25 @@ class wpCSL_helper__slplus {
      * Puts info in the data[] named array for the object base on
      * the results returned by the passed function.
      *
+     * $function must be:
+     *    'get_option'  - where the element is the data name, params[0] or params = FULL database option name
+     *    'get_item'    - where the element is the data name, params[0] or params = base option name (prefix & hyphen are prepended)
+     *    anon function - anon function returns a value which goes into data[]
+     *
      * If $params is null and function is get_item the param will fetch the option = to the element name.
      *
      * @param string $element - the key for the data named array
-     * @param mixed $function - the string 'get_option' or a pointer to anon function
+     * @param mixed $function - the string 'get_option','get_item' or a pointer to anon function
      * @param mixed $params - an array of parameters to pass to get_option or the anon, note: get_option can receive an array of option_name, default value
      * @param mixed $default - default value for 'get_item' calls
+     * @param boolean $forceReload - if set, reload the data element from the options table
+     * @param boolean $cantBeEmpty - if set and the data is empty, set it to default
      * @return the value
      */
-    function getData($element = null, $function = null, $params=null, $default=null) {
+    function getData($element = null, $function = null, $params=null, $default=null, $forceReload = false, $cantBeEmpty = false) {
         if ($element  === null) { return; }
         if ($function === null) { return; }
-        if (!isset($this->parent->data[$element] )) {
+        if (!isset($this->parent->data[$element] ) || $forceReload) {
 
            // get_option shortcut, fetch the option named by params
            //
@@ -267,17 +276,21 @@ class wpCSL_helper__slplus {
                if (is_array($params)) {
                     $this->parent->data[$element] = get_option($params[0],$params[1]);
                 } else {
-                    $this->parent->data[$element] = get_option($params);
+                    if ($params === null) { $params = $element; }
+                    $this->parent->data[$element] =
+                        ($default == null) ?
+                            get_option($params) :
+                            get_option($params,$default);
                 }
 
            // get_item shortcut
            //
            } else if ($function === 'get_item') {
                if (is_array($params)) {
-                    $this->parent->data[$element] = $this->parent->settings->get_item($params[0],$params[1]);
+                    $this->parent->data[$element] = $this->parent->settings->get_item($params[0],$params[1],'-',$forceReload);
                 } else {
                     if ($params === null) { $params = $element; }
-                    $this->parent->data[$element] = $this->parent->settings->get_item($params,$default);
+                    $this->parent->data[$element] = $this->parent->settings->get_item($params,$default,'-',$forceReload);
                 }
 
 
@@ -287,6 +300,13 @@ class wpCSL_helper__slplus {
                 $this->parent->data[$element] = $function($params);
            }
        }
+
+       // Cant Be Empty?
+       //
+       if (($cantBeEmpty) && empty($this->parent->data[$element])) {
+           $this->parent->data[$element] = $default;
+       }
+
        return $this->parent->data[$element];
     }
 
