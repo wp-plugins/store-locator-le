@@ -141,6 +141,10 @@ class wpCSL_settings__slplus {
                                  </div>
                                  <div style="clear:left;">
                                    <div style="width:150px; float:left; text-align: right;
+                                       padding-right: 6px;">PHP Web App Peak RAM:</div>
+                                   <div style="float: left;">' . sprintf('%0.2d MB',memory_get_peak_usage(true)/1024/1024) .'</div>
+                                 </div>                                 <div style="clear:left;">
+                                   <div style="width:150px; float:left; text-align: right;
                                        padding-right: 6px;">PHP Modules:</div>
                                    <div style="float: left;">' .
                                      implode('<br/>',$this->csl_php_modules) . '
@@ -244,9 +248,9 @@ class wpCSL_settings__slplus {
      **
      ** Return the value of a WordPress option that was saved via the settings interface.
      **/
-    function get_item($name, $default = null, $separator='-') {
+    function get_item($name, $default = null, $separator='-', $forceReload = false) {
         $option_name = $this->prefix . $separator . $name;
-        if (!isset($this->$option_name)) {            
+        if (!isset($this->$option_name) || $forceReload) {
             $this->$option_name =
                 ($default == null) ?
                     get_option($option_name) :
