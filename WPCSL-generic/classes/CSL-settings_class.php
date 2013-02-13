@@ -141,6 +141,10 @@ class wpCSL_settings__slplus {
                                  </div>
                                  <div style="clear:left;">
                                    <div style="width:150px; float:left; text-align: right;
+                                       padding-right: 6px;">PHP Web App Peak RAM:</div>
+                                   <div style="float: left;">' . sprintf('%0.2d MB',memory_get_peak_usage(true)/1024/1024) .'</div>
+                                 </div>                                 <div style="clear:left;">
+                                   <div style="width:150px; float:left; text-align: right;
                                        padding-right: 6px;">PHP Modules:</div>
                                    <div style="float: left;">' .
                                      implode('<br/>',$this->csl_php_modules) . '

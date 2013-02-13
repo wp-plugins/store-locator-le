@@ -197,18 +197,17 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
                 foreach ($_POST as $key=>$sl_value) {
                     if (preg_match('#\-'.$_REQUEST['locationID'].'#', $key)) {
                         $slpFieldName = preg_replace('#\-'.$_REQUEST['locationID'].'#', '', $key);
-                        if (!$this->parent->license->packages['Pro Pack']->isenabled) {
-                            if ( ($slpFieldName == 'latitude') || ($slpFieldName == 'longitude')) {
-                                continue;
-                            }
-                        }
                         $field_value_str.="sl_".$slpFieldName."='".trim($this->parent->AdminUI->slp_escape($sl_value))."', ";
                         $_POST[$slpFieldName]=$sl_value;
                     }
                 }
-                $field_value_str=substr($field_value_str, 0, strlen($field_value_str)-2);
+                $field_value_str = substr($field_value_str, 0, strlen($field_value_str)-2);
                 $field_value_str = apply_filters('slp_update_location_data',$field_value_str,$_REQUEST['locationID']);
                 $wpdb->query("UPDATE ".$wpdb->prefix."store_locator SET $field_value_str WHERE sl_id={$_REQUEST['locationID']}");
+
+                // Run the Location updated Action
+                //
+                do_action('slp_location_updated',$_REQUEST['locationID'], $field_value_str);
 
                 // Check our address
                 //
@@ -452,7 +451,7 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
                         <h2>".
                         __('Store Locator Plus - Manage Locations', 'csa-slplus').
                         "</h2>" .
-                  $this->parent->helper->get_string_from_phpexec(SLPLUS_COREDIR.'/templates/navbar.php')
+                  $this->parent->AdminUI->create_Navbar()
                   ;
 
             $this->parent->AdminUI->initialize_variables();

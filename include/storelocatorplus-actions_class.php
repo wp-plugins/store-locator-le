@@ -144,20 +144,6 @@ if (! class_exists('SLPlus_Actions')) {
                     )
                 );
 
-                // Pro Pack menu items
-                //
-                if ($this->parent->license->packages['Pro Pack']->isenabled) {
-                    $menuItems = array_merge(
-                                $menuItems,
-                                array(
-                                    array(
-                                    'label' => __('Reports','csa-slplus'),
-                                    'url'   => SLPLUS_PLUGINDIR.'reporting.php'
-                                    )
-                                )
-                            );
-                }
-
                 // Third party plugin add-ons
                 //
                 $menuItems = apply_filters('slp_menu_items', $menuItems);
@@ -338,18 +324,15 @@ if (! class_exists('SLPlus_Actions')) {
                         false
                     );
 
-            $sl_google_map_domain=get_option('sl_google_map_domain','maps.google.com');
-
             //------------------------
             // Register our scripts for later enqueue when needed
             //
-            //wp_register_script('slplus_functions',SLPLUS_PLUGINURL.'/core/js/functions.js');
             if (get_option(SLPLUS_PREFIX.'-no_google_js','off') != 'on') {
                 $api_key  = ((trim($slplus_plugin->driver_args['api_key']) == false)?'':'&key='.$slplus_plugin->driver_args['api_key']);
                 $language = '&language='.$slplus_plugin->helper->getData('map_language','get_item',null,'en');
                 wp_enqueue_script(
                         'google_maps',
-                        'http'.(is_ssl()?'s':'').'://'.$sl_google_map_domain.'/maps/api/js?sensor=false' . $api_key . $language
+                        'http'.(is_ssl()?'s':'').'://'.get_option('sl_google_map_domain','maps.googleapis.com').'/maps/api/js?sensor=false' . $api_key . $language
                         );
             }
 
@@ -360,7 +343,7 @@ if (! class_exists('SLPlus_Actions')) {
                 );
             wp_enqueue_script(
                     'csl_script',
-                    SLPLUS_PLUGINURL.'/core/js/csl.js',
+                    $sslURL.'/core/js/csl.js',
                     array('jquery'),
                     false,
                     !$force_load

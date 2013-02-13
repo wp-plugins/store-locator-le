@@ -83,6 +83,11 @@ if (! class_exists('SLPlus_AdminUI')) {
             }
 
             $wpdb->query("INSERT into ". $wpdb->prefix . "store_locator ($fields) VALUES ($sl_values);");
+            
+            // Fire slp_location_added hook
+            //
+            do_action('slp_location_added',mysql_insert_id());
+
             if (!$skipGeocode) {
                 $this->do_geocoding($theaddress);
             }
@@ -102,7 +107,7 @@ if (! class_exists('SLPlus_AdminUI')) {
                 array(
                     'name'          => 'Navigation',
                     'div_id'        => 'slplus_navbar_wrapper',
-                    'description'   => $this->parent->helper->get_string_from_phpexec(SLPLUS_COREDIR.'/templates/navbar.php'),
+                    'description'   => $this->parent->AdminUI->create_Navbar(),
                     'innerdiv'      => false,
                     'is_topmenu'    => true,
                     'auto'          => false,
@@ -468,7 +473,6 @@ if (! class_exists('SLPlus_AdminUI')) {
         /**
          * Initialize variables for the map settings.
          * 
-         * @global type $sl_google_map_domain
          * @global type $sl_google_map_country
          * @global type $sl_location_table_view
          * @global type $sl_search_label
@@ -479,19 +483,13 @@ if (! class_exists('SLPlus_AdminUI')) {
          * @global type $sl_website_label
          * @global type $sl_load_locations_default
          * @global type $sl_distance_unit
-         * @global type $sl_map_overview_control
          */
         function initialize_variables() {
-            global $sl_google_map_domain, $sl_google_map_country, $sl_location_table_view,
+            global $sl_google_map_country, $sl_location_table_view,
                 $sl_search_label, $sl_zoom_level, $sl_zoom_tweak, $sl_use_name_search,
                 $sl_radius_label, $sl_website_label, $sl_load_locations_default,
-                $sl_distance_unit, $sl_map_overview_control;
+                $sl_distance_unit;
 
-            $sl_map_overview_control=get_option('sl_map_overview_control');
-            if (empty($sl_map_overview_control)) {
-                $sl_map_overview_control="0";
-                add_option('sl_map_overview_control', $sl_map_overview_control);
-                }
             $sl_distance_unit=get_option('sl_distance_unit');
             if (empty($sl_distance_unit)) {
                 $sl_distance_unit="miles";
@@ -549,12 +547,6 @@ if (! class_exists('SLPlus_AdminUI')) {
                 $sl_google_map_country="United States";
                 add_option('sl_google_map_country', $sl_google_map_country);
             }
-            $sl_google_map_domain=get_option('sl_google_map_domain');
-            if (empty($sl_google_map_domain)) {
-                $sl_google_map_domain="maps.google.com";
-                add_option('sl_google_map_domain', $sl_google_map_domain);
-            }
-
         }
 
 
@@ -800,10 +792,9 @@ if (! class_exists('SLPlus_AdminUI')) {
                             <div id='icon-add-locations' class='icon32'><br/></div>
                             <h2>Store Locator Plus - ".
                             __('Add Locations', 'csa-slplus').
-                            "</h2>".                      
-                      $slplus_plugin->helper->get_string_from_phpexec(SLPLUS_COREDIR.'/templates/navbar.php')                      
+                            "</h2>" .
+                            $this->parent->AdminUI->create_Navbar()
                       ;
-
 
                 //Inserting addresses by manual input
                 //
@@ -858,11 +849,13 @@ if (! class_exists('SLPlus_AdminUI')) {
          /**
           * Return the value of the field specified for the current location.
           * @param string $fldname - a location field
+          * @param boolean $blankifnull - if true return '' if fldname===null
           * @return string - value of the field
           */
-         function getFieldValue($fldname=null) {
+         function getFieldValue($fldname=null,$blankifnull = false) {
+             if ($blankifnull && ($fldname === null)) { return ''; }
              if (($fldname === null) || ($this->addingLocation)) { return ''; }
-             else { return $this->currentLocation[$fldname]; }
+             return $this->currentLocation[$fldname];
          }
 
         /**
@@ -925,8 +918,6 @@ if (! class_exists('SLPlus_AdminUI')) {
             return $content;
         }
 
-
-
         /**
          * Render the General Settings admin page.
          *
@@ -953,10 +944,7 @@ if (! class_exists('SLPlus_AdminUI')) {
             require_once(SLPLUS_PLUGINDIR . '/include/slp-adminui_mapsettings_class.php');
             $this->parent->AdminUI->MapSettings = new SLPlus_AdminUI_MapSettings();
             $this->parent->AdminUI->MapSettings->render_adminpage();
-
-
         }
-
 
          /**
           * Returns the string that is the Location Info Form guts.
@@ -1072,6 +1060,43 @@ if (! class_exists('SLPlus_AdminUI')) {
 
                 return apply_filters('slp_locationinfoform',$content);
          }
+
+        /**
+         * Render the admin page navbar (tabs)
+         *
+         * @global type $submenu - the WordPress Submenu array
+         * @return type
+         */
+        function create_Navbar() {
+            if (!$this->setParent()) { return; }
+
+            global $submenu;
+            if (!isset($submenu[$this->plugin->prefix]) || !is_array($submenu[$this->plugin->prefix])) {
+                echo apply_filters('slp_navbar','');
+            } else {
+                $content =
+                    '<div id="slplus_navbar">' .
+                        '<div class="about-wrap"><h2 class="nav-tab-wrapper">';
+
+                // Loop through all SLP sidebar menu items on admin page
+                //
+                foreach ($submenu[$this->plugin->prefix] as $slp_menu_item) {
+
+                    // Create top menu item
+                    //
+                    $selectedTab = ((isset($_REQUEST['page']) && ($_REQUEST['page'] === $slp_menu_item[2])) ? ' nav-tab-active' : '' );
+                    $content .= apply_filters(
+                            'slp_navbar_item_tweak',
+                            '<a class="nav-tab'.$selectedTab.'" href="'.menu_page_url( $slp_menu_item[2], false ).'">'.
+                                $slp_menu_item[0].
+                            '</a>'
+                            );
+                }
+                $content .= apply_filters('slp_navbar_item','');
+                $content .='</h2></div></div>';
+                return apply_filters('slp_navbar',$content);
+            }
+        }
 
         /**
          * Return the icon selector HTML for the icon images in saved icons and default icon directories.

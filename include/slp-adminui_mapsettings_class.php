@@ -236,7 +236,6 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                             SLPLUS_PREFIX.'_label_phone'            ,
                             SLPLUS_PREFIX.'_message_noresultsfound' ,
                             SLPLUS_PREFIX.'_tag_search_selections'  ,
-                            SLPLUS_PREFIX.'_map_center'             ,
                             SLPLUS_PREFIX.'-map_language'           ,
                             SLPLUS_PREFIX.'_maxreturned'            ,
                             SLPLUS_PREFIX.'_search_tag_label'       ,
@@ -259,11 +258,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                             SLPLUS_PREFIX.'_show_tags'                  ,
                             SLPLUS_PREFIX.'_disable_find_image'         ,
                             SLPLUS_PREFIX.'_disable_initialdirectory'   ,
-                            SLPLUS_PREFIX.'_disable_largemapcontrol3d'  ,
-                            SLPLUS_PREFIX.'_disable_scalecontrol'       ,
-                            SLPLUS_PREFIX.'_disable_scrollwheel'        ,
                             SLPLUS_PREFIX.'_disable_search'             ,
-                            SLPLUS_PREFIX.'_disable_maptypecontrol'     ,
                             SLPLUS_PREFIX.'_hide_radius_selections'     ,
                             SLPLUS_PREFIX.'_hide_address_entry'         ,
                             SLPLUS_PREFIX.'_show_search_by_name'        ,
@@ -273,7 +268,6 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                             'sl_use_city_search'                        ,
                             'sl_use_country_search'                     ,
                             'sl_load_locations_default'                 ,
-                            'sl_map_overview_control'                   ,
                             'sl_remove_credits'                         ,
                             'slplus_show_state_pd'                      ,
                             )
@@ -293,12 +287,6 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
           */
          function map_settings() {
             $this->plugin->helper->loadPluginData();
-
-            $slplus_message = ($this->plugin->license->packages['Pro Pack']->isenabled) ?
-                '' :
-                __('Extended settings are available in the <a href="%s">%s</a> premium add-on.','csa-slplus')
-               ;
-
 
             // Features
             //
@@ -346,18 +334,18 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                 // Pro Pack : Initial Look & Feel
                 //
                 if ($this->plugin->license->packages['Pro Pack']->isenabled) {
-                        $slpDescription .=
-                            $this->CreateInputDiv(
-                                'sl_starting_image',
-                                __('Starting Image','csa-slplus'),
-                                __('If set, this image will be displayed until a search is performed.  Enter the full URL for the image.','csa-slplus'),
-                                ''
-                                ) .
-                            $this->plugin->helper->CreateCheckboxDiv(
-                                '_disable_initialdirectory',
-                                __('Disable Initial Directory','csa-slplus'),
-                                __('Do not display the listings under the map when "immediately show locations" is checked.', 'csa-slplus')
-                                );
+                    $slpDescription .=
+                        $this->CreateInputDiv(
+                            'sl_starting_image',
+                            __('Starting Image','csa-slplus'),
+                            __('If set, this image will be displayed until a search is performed.  Enter the full URL for the image.','csa-slplus'),
+                            ''
+                            ) .
+                        $this->plugin->helper->CreateCheckboxDiv(
+                            '_disable_initialdirectory',
+                            __('Disable Initial Directory','csa-slplus'),
+                            __('Do not display the listings under the map when "immediately show locations" is checked.', 'csa-slplus')
+                            );
                 }
 
                 // Features : Country
@@ -391,8 +379,6 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                 // Settings
                 //
                 $slpDescription =
-                    "<div class='section_column_content'>" .
-
                     $this->CreateSubheadingLabel(__('Dimensions','csa-slplus')) .
 
                     $this->CreatePulldownDiv(
@@ -459,48 +445,14 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                         )
                         ;
 
-                // Pro Pack : Map Settings
-                //
-                if ($this->plugin->license->packages['Pro Pack']->isenabled) {
-                    $slpDescription .=
-                        $this->CreateTextAreaDiv(
-                                SLPLUS_PREFIX.'_map_center',
-                                __('Center Map At','csa-slplus'),
-                                __('Enter an address to serve as the initial focus for the map. Default is the center of the country.','csa-slplus'),
-                                ''
-                                ) .
-                        '<p class="slp_admin_info" style="clear:both;"><strong>'.__('Controls','csa-slplus').'</strong></p>' .
-                        $this->plugin->helper->CreateCheckboxDiv(
-                            'sl_map_overview_control',
-                            __('Show Map Inset Box','csa-slplus'),
-                            __('When checked the map inset is shown.', 'csa-slplus'),
-                            ''
-                            ) .
-                        $this->plugin->helper->CreateCheckboxDiv(
-                            '_disable_scrollwheel',
-                            __('Disable Scroll Wheel','csa-slplus'),
-                            __('Disable the scrollwheel zoom on the maps interface.', 'csa-slplus')
-                            ) .
-                        $this->plugin->helper->CreateCheckboxDiv(
-                            '_disable_largemapcontrol3d',
-                            __('Hide map 3d control','csa-slplus'),
-                            __('Turn the large map 3D control off.', 'csa-slplus')
-                            ) .
-                        $this->plugin->helper->CreateCheckboxDiv(
-                            '_disable_scalecontrol',
-                            __('Hide map scale','csa-slplus'),
-                            __('Turn the map scale off.', 'csa-slplus')
-                            ) .
-                        $this->plugin->helper->CreateCheckboxDiv(
-                            '_disable_maptypecontrol',
-                            __('Hide map type','csa-slplus'),
-                            __('Turn the map type selector off.', 'csa-slplus')
-                            )
-                        ;
-                }
-                $slpDescription .= "</div>" .
-                        "</div>";
-                $mapSettings['settings'] = apply_filters('slp_map_settings_settings',$slpDescription);
+                $slpDescription .= "</div>";
+
+
+                $mapSettings['settings'] = 
+                    "<div class='section_column_content'>".
+                    apply_filters('slp_map_settings_settings',$slpDescription) .
+                    '</div>'
+                    ;
 
 
             // ===== Icons
@@ -530,7 +482,6 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
 
             $slpDescription =
                 "<div id='map_settings'>" .
-                    sprintf('<p style="display:block; clear: both;">'.$slplus_message.'</p>',$this->plugin->purchase_url,'Pro Pack') .
                     $this->CreateSettingsGroup(
                                         'map_features',
                                         __('Features','csa-slplus'),
@@ -570,7 +521,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
              return apply_filters(
                      'slp_map_domains',
                     array(
-                        __('United States' ,'csa-slplus')=>'maps.google.com',
+                        __('United States' ,'csa-slplus')=>'maps.googleapis.com',
                         __('Argentina'     ,'csa-slplus')=>'maps.google.com.ar',
                         __('Australia'     ,'csa-slplus')=>'maps.google.com.au',
                         __('Austria'       ,'csa-slplus')=>'maps.google.at',
@@ -761,7 +712,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                 array(
                     'name'          => 'Navigation',
                     'div_id'        => 'slplus_navbar_wrapper',
-                    'description'   => $this->parent->helper->get_string_from_phpexec(SLPLUS_COREDIR.'/templates/navbar.php'),
+                    'description'   => $this->parent->AdminUI->create_Navbar(),
                     'auto'          => false,
                     'headerbar'     => false,
                     'innerdiv'      => false,
@@ -789,11 +740,6 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
           *
           */
          function results_settings() {
-            $slplus_message = ($this->parent->license->packages['Pro Pack']->isenabled) ?
-                '' :
-                __('Extended settings are available in the <a href="%s">%s</a> premium add-on.','csa-slplus')
-                ;
-
 
             // ===== Location Info
             //
@@ -801,8 +747,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
             //
             $slpDescription =
                     '<h2>' . __('Location Info','csa-slplus').'</h2>'.
-                    '<p class="slp_admin_info" style="clear:both;"><strong>'.__('Search Results','csa-slplus').'</strong></p>' .
-                    '<p>'.sprintf($slplus_message,$this->parent->purchase_url,'Pro Pack').'</p>'
+                    '<p class="slp_admin_info" style="clear:both;"><strong>'.__('Search Results','csa-slplus').'</strong></p>' 
                     ;
             $slpDescription .= $this->CreateInputDiv(
                         '_maxreturned',
@@ -915,11 +860,6 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
          *
          */
          function search_form_settings() {
-            global  $sl_the_distance_unit;
-
-            $sl_the_distance_unit[__("Kilometers", 'csa-slplus')]="km";
-            $sl_the_distance_unit[__("Miles", 'csa-slplus')]="miles";
-
             $ppFeatureMsg = (!$this->parent->license->packages['Pro Pack']->isenabled ?
                     sprintf(
                             __(' This is a <a href="%s" target="csa">Pro Pack</a> feature.', 'csa-slplus'),
@@ -927,10 +867,6 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                             ) :
                     ''
                  );
-            $slplus_message = ($this->parent->license->packages['Pro Pack']->isenabled) ?
-                '' :
-                __('Tag features are available in the <a href="%s">%s</a> premium add-on.','csa-slplus')
-                ;
 
             $slpDescription =
                 "<div id='search_settings'>" .
@@ -951,6 +887,8 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
                         "<select name='sl_distance_unit'>"
                 ;
 
+            $sl_the_distance_unit[__("Kilometers", 'csa-slplus')]="km";
+            $sl_the_distance_unit[__("Miles", 'csa-slplus')]="miles";
             foreach ($sl_the_distance_unit as $key=>$sl_value) {
                 $selected=(get_option('sl_distance_unit')==$sl_value)?" selected " : "";
                 $slpDescription .= "<option value='$sl_value' $selected>$key</option>\n";
@@ -1046,7 +984,6 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
             $slpDescription .= "<div class='section_column'>";
             $slpDescription .= '<h2>'.__('Tags', 'csa-slplus').'</h2>';
             $slpDescription .= '<div class="section_column_content">';
-            $slpDescription .= '<p>'.sprintf($slplus_message,$this->parent->purchase_url,'Pro Pack').'</p>';
 
             //----------------------------------------------------------------------
             // Pro Pack Enabled

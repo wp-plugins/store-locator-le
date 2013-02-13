@@ -64,6 +64,8 @@ if ( ! class_exists( 'SLPPro' ) ) {
             add_filter('slp_add_location_form_footer'   ,array($this,'bulk_upload_form')            );
             add_filter('slp_shortcode_atts'             ,array($this,'extend_main_shortcode')       );
             add_filter('slp_action_boxes'               ,array($this,'manage_locations_actionbar')  );
+            add_filter('slp_menu_items'                 ,array($this,'add_menu_items')              ,90);
+
         }
 
 
@@ -106,6 +108,19 @@ if ( ! class_exists( 'SLPPro' ) ) {
         //====================================================
         // Helpers
         //====================================================
+
+        function add_menu_items($menuItems) {
+            if (!$this->setPlugin()) { return $menuItems; }
+            return array_merge(
+                        $menuItems,
+                        array(
+                            array(
+                            'label' => __('Reports','csa-slplus'),
+                            'url'   => SLPLUS_PLUGINDIR.'reporting.php'
+                            )
+                        )
+                    );
+        }
 
         /**************************************
          ** function: configure_slplus_propack

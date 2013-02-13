@@ -102,7 +102,7 @@ $slpReportSettings->add_section(
     array(
         'name' => 'Navigation',
         'div_id' => 'slplus_navbar',
-        'description' => $slplus_plugin->helper->get_string_from_phpexec(SLPLUS_COREDIR.'/templates/navbar.php'),
+        'description' => $slplus_plugin->AdminUI->create_Navbar(),
         'is_topmenu' => true,
         'auto' => false,
         'headerbar'     => false              
