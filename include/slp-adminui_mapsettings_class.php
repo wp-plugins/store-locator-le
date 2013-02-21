@@ -521,7 +521,7 @@ if (! class_exists('SLPlus_AdminUI_MapSettings')) {
              return apply_filters(
                      'slp_map_domains',
                     array(
-                        __('United States' ,'csa-slplus')=>'maps.googleapis.com',
+                        __('United States' ,'csa-slplus')=>'maps.google.com',
                         __('Argentina'     ,'csa-slplus')=>'maps.google.com.ar',
                         __('Australia'     ,'csa-slplus')=>'maps.google.com.au',
                         __('Austria'       ,'csa-slplus')=>'maps.google.at',

@@ -1,34 +1,8 @@
 <?php
-/************************************************************************
-*
-* file: CSL-plugin.php
-*
-* The main library for communicating effectively with 
-* WordPress.   This class manages the related helper classes so we can 
-* share a code libary and reduce code redundancy.
-* 
-************************************************************************/
-if (!defined('WPCSL__slplus__VERSION')) { define('WPCSL__slplus__VERSION', '2.0.19'); }
-
-// WP App Store Affiliate ID
-if (!defined('WPAS_AFFILIATE_ID')) { define('WPAS_AFFILIATE_ID','3368'); }
-
-// These helper files should only be loaded if needed by the plugin
-// that is asking for WPCSL-Generic services.
-//
-// Wrap inside the init and check the class properties first?
-// 
-require_once('CSL-helper_class.php');
-require_once('CSL-license_class.php');
-require_once('CSL-notifications_class.php');
-require_once('CSL-settings_class.php');
-require_once('CSL-themes_class.php');
-
-
-/*****************************************************************************
-* Class: WPCSL_plugin
-*
-* This class does most of the heavy lifting for creating a plugin.
+/**
+ * A collection of classes that help us provide a consistent plugin experience for WordPress.
+ * 
+ * This class does most of the heavy lifting for creating a plugin.
 * It takes a hash as its one constructor argument, which can have the
 * following keys and values:
 *
@@ -72,30 +46,76 @@ require_once('CSL-themes_class.php');
 *
  *    * 'admin_slugs' :: and array (or single string) of valid admin page slugs for this plugin.
  *
-*/
+ *
+ *
+ * @author Lance Cleveland <lance@charlestonsw.com>
+ * @copyright 2013 Charleston Sofware Associates, LLC
+ * @package WPCSL
+ * @version 2.1
+ *
+ **/
+if (!defined('WPCSL__slplus__VERSION')) { define('WPCSL__slplus__VERSION', '2.1'); }
+
+// WP App Store Affiliate ID
+if (!defined('WPAS_AFFILIATE_ID')) { define('WPAS_AFFILIATE_ID','3368'); }
+
+// These helper files should only be loaded if needed by the plugin
+// that is asking for WPCSL-Generic services.
+//
+// Wrap inside the init and check the class properties first?
+// 
+require_once('CSL-helper_class.php');
+require_once('CSL-license_class.php');
+require_once('CSL-notifications_class.php');
+require_once('CSL-settings_class.php');
+require_once('CSL-themes_class.php');
+
+
+/**
+ * The base WPCSL class, to which all the other WPCSL objects get attached.
+ *
+ * @property boolean $display_settings Render the display panel on the settings interface? true = yes.
+ */
 class wpCSL_plugin__slplus {
 
-    /**-------------------------------------
-     **/
+    //---------------------------------------------
+    // Properties
+    //---------------------------------------------
+
+    /**
+     * @var boolean display_settings render the display panel on the settings interface?
+     */
+    private $display_settings = false;
+
+    //---------------------------------------------
+    // Methods
+    //---------------------------------------------
+
+    /**
+     * Run this whenever the class is instantiated.
+     *
+     * @param mixed[] $params a named array where key is the string of a wpCSL_plugin__slplus property, key is the initial value.
+     */
     function __construct($params) {
 
         // These settings can be overridden
         //
-        $this->no_license       = false;
-        $this->themes_enabled   = false;
-        $this->columns          = 1;
-        $this->driver_type      = 'Panhandler';
-        $this->css_prefix       = '';
-        $this->sku              = '';
-        $this->uses_money       = true;
-        $this->has_packages     = false;
-        $this->display_settings = true;
-        $this->display_settings_collapsed = false;
-        $this->show_locale      = true;
-        $this->broadcast_url    = 'http://www.charlestonsw.com/signage/index.php';
-        $this->shortcode_was_rendered = false;
-        $this->current_admin_page = '';
-        $this->prefix           = '';
+        $this->broadcast_url                = 'http://www.charlestonsw.com/signage/index.php';
+        $this->columns                      = 1;
+        $this->css_prefix                   = '';
+        $this->current_admin_page           = '';
+        $this->display_settings             = false;
+        $this->display_settings_collapsed   = false;
+        $this->driver_type                  = 'Panhandler';
+        $this->has_packages                 = false;
+        $this->no_license                   = false;
+        $this->prefix                       = '';
+        $this->show_locale                  = true;
+        $this->shortcode_was_rendered       = false;
+        $this->sku                          = '';
+        $this->themes_enabled               = false;
+        $this->use_obj_defaults             = true;
+        $this->uses_money                   = true;
         
         // Set current admin page
         //
@@ -194,6 +214,11 @@ class wpCSL_plugin__slplus {
             print "WordPress HTTP Handler is not available.<br/>\n";
         }
 
+        // Plugin Author URL
+        //
+        $this->url         = (isset($this->url          ) ? $this->url          : 'http://www.charlestonsw.com/');
+        $this->support_url = (isset($this->support_url  ) ? $this->support_url  : $this->url                    );
+
         // Debugging Flag
         $this->debugging = (get_option($this->prefix.'-debugging') == 'on');
 
@@ -219,7 +244,7 @@ class wpCSL_plugin__slplus {
             'css_prefix'        => $this->css_prefix,
             'plugin_url'        => $this->plugin_url,
             'name'              => $this->name,
-            'url'               => $this->url,
+            'url'               => (isset($this->url)?$this->url:null),
             'paypal_button_id'  => $this->paypal_button_id,
             'no_license'        => $this->no_license,
             'sku'               => $this->sku,
@@ -235,7 +260,7 @@ class wpCSL_plugin__slplus {
             require_once('CSL-cache_class.php');
             $this->cache_config = array(
                 'prefix' => $this->prefix,
-                'path' => $this->cache_path
+                'path' => (isset($this->cache_path)?$this->cache_path:$this->plugin_path)
             );
         }
 
@@ -679,13 +704,9 @@ class wpCSL_plugin__slplus {
         return $links;
     }
 
-    /**-------------------------------------
-     ** method: admin_init
-     **
-     ** What we do whenever an admin page is initialized.
-     ** This is called by Wordpress.
-     **
-     **/
+    /**
+     * WordPress admin_init hook (runs after admin_menu has run)
+     */
     function admin_init() {
         if ($this->display_settings) { $this->add_display_settings(); }
         $this->settings->register();
@@ -795,12 +816,11 @@ class wpCSL_plugin__slplus {
         }
     }
 
-    /**-------------------------------------
-     * method: add_display_settings
-     *
+    /**
      * Add the display settings section to the admin panel.
      *
-     **/
+     * @return none
+     */
     function add_display_settings() {      
         $this->settings->add_section(array(
                 'name' => __('Display Settings',WPCSL__slplus__VERSION),
@@ -927,20 +947,17 @@ class wpCSL_plugin__slplus {
                     //add our notice
                     $this->notifications->add_notice(
                         9,
-                        sprintf(
-                            __('Let us know how awesome '.$this->name.' is! Go to 
-                            <a href="'.$this->rate_url.'" target="_blank">the plugin page</a>.  
-                            and rate the plugin.  </br> Turn off this message in 
-                            <a href="'.admin_url().'/options-general.php?page='.$this->prefix.'-options#display_settings">Display Settings.</a> 
-                            Is something not right? <a href="'.$this->forum_url.'" target="_blank">Let us know.</a>
-                            This message will self destruct in: '.$hours_remaining.'',WPCSL__slplus__VERSION)
-                            )
-                        
-        			);
-                    }
-        		}
+                        __('Let us know how awesome '.$this->name.' is! Go to 
+                        <a href="'.$this->rate_url.'" target="_blank">the plugin page</a>.  
+                        and rate the plugin.  </br> Turn off this message in 
+                        <a href="'.admin_url().'/options-general.php?page='.$this->prefix.'-options#display_settings">Display Settings.</a> 
+                        Is something not right? <a href="'.$this->forum_url.'" target="_blank">Let us know.</a>
+                        This message will self destruct in: '.$hours_remaining,WPCSL__slplus__VERSION)                        
+                    );
+                }
+
             //checkbox was hit, so update to false
-            else {
+            } else {
                 update_option($this->prefix."-notice-countdown", false);
             }
             

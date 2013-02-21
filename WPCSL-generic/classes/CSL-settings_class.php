@@ -225,10 +225,13 @@ class wpCSL_settings__slplus {
                          ' ;
      }
 
-    /**------------------------------------
-     ** method: add_section
-     **
-     **/
+     /**
+      * Create a settings page panel.
+      *
+      * Does not render the panel, it simply creates the container to add stuff to for later rendering.
+      *
+      * @param array $params named array of the section properties, name is required.
+      */
     function add_section($params) {
         if (!isset($this->sections[$params['name']])) {
             $this->sections[$params['name']] = new wpCSL_settings_section__slplus(
@@ -241,7 +244,31 @@ class wpCSL_settings__slplus {
             );
         }            
     }
-    
+
+
+    /**
+     * Add a simple on/off slider to the settings array.
+     *
+     * @param string $section - slug for the parent section
+     * @param string $label - text to appear before the setting
+     * @param string $fieldID - the option value field
+     * @param string $description - the help text under the more icon expansion
+     * @param string $value - the default value to use, overrides get-option(name)
+     * @param boolean $disabled - true if the field is disabled
+     */
+    function add_slider($section,$label,$fieldID,$description=null,$value=null,$disabled=false) {
+        $this->add_item(
+                $section,
+                $label,
+                $fieldID,
+                'slider',
+                false,
+                $description,
+                null,
+                $value,
+                $disabled
+                );
+    }
 
     /**------------------------------------
      ** method: get_item
@@ -376,6 +403,29 @@ class wpCSL_settings__slplus {
                 );
     }
 
+    /**
+     * Add a simple text input to the settings array.
+     *
+     * @param string $section - slug for the parent section
+     * @param string $label - text to appear before the setting
+     * @param string $fieldID - the option value field
+     * @param string $description - the help text under the more icon expansion
+     * @param string $value - the default value to use, overrides get-option(name)
+     * @param boolean $disabled - true if the field is disabled
+     */
+    function add_textbox($section,$label,$fieldID,$description=null,$value=null,$disabled=false) {
+        $this->add_item(
+                $section,
+                $label,
+                $fieldID,
+                'textarea',
+                false,
+                $description,
+                null,
+                $value,
+                $disabled
+                );
+    }
 
     /**------------------------------------
      ** Method: register
@@ -398,11 +448,10 @@ class wpCSL_settings__slplus {
         }            
     }
 
-    /**------------------------------------
-     ** method: render_settings_page
-     **
-     ** Create the HTML for the plugin settings page on the admin panel
-     **/
+    /**
+     * Create the HTML for the plugin settings page on the admin panel.
+     *
+     */
     function render_settings_page() {
         $this->header();
         
@@ -802,15 +851,16 @@ class wpCSL_settings__slplus {
 
 }
 
-/****************************************************************************
- **
- ** class: wpCSL_settings_section__slplus
- **
- **/
+/**
+ * A section panel object.
+ */
 class wpCSL_settings_section__slplus {
 
-    /**------------------------------------
-     **/
+    /**
+     * Instantiate a section panel.
+     * 
+     * @param mixed[] $params
+     */
     function __construct($params) {
         $this->headerbar = true;
         $this->innerdiv  = true;
@@ -846,8 +896,11 @@ class wpCSL_settings_section__slplus {
         }
     }
 
-    /**------------------------------------
-     **/
+    /**
+     * Render a section panel.
+     *
+     * Panels are rendered in the order they are put in the stack, FIFO.
+     */
     function display() {
         $this->header();
 
@@ -949,6 +1002,31 @@ class wpCSL_settings_item__slplus {
                 echo '<input type="checkbox" name="'.$this->name.'" '.
                     ($this->disabled?'disabled="disabled" ':'').                
                     ($showThis?' checked' : '').'>';
+                break;
+
+            case "slider":
+                $setting = $this->name;
+                $label   = '';
+                $checked = ($showThis ? 'checked' : '');
+                $onClick = 'onClick="'.
+                    "jQuery('input[id={$setting}]').prop('checked',".
+                        "!jQuery('input[id={$setting}]').prop('checked')" .
+                        ");".
+                    '" ';
+
+                echo
+                    "<input type='checkbox' id='$setting' name='$setting' style='display:none;' $checked>" .
+                    "<div id='{$setting}_div' class='onoffswitch-block'>" .
+                    "<span class='onoffswitch-pretext'>$label</span>" .
+                    "<div class='onoffswitch'>" .
+                    "<input type='checkbox' name='onoffswitch' class='onoffswitch-checkbox' id='{$setting}-checkbox' $checked>" .
+                    "<label class='onoffswitch-label' for='{$setting}-checkbox'  $onClick>" .
+                    '<div class="onoffswitch-inner"></div>'.
+                    "<div class='onoffswitch-switch'></div>".
+                    '</label>'.
+                    '</div>' .
+                    '</div>'
+                    ;
                 break;
 
             case "list":

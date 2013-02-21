@@ -3,7 +3,7 @@
 Plugin Name: Store Locator Plus
 Plugin URI: http://www.charlestonsw.com/products/store-locator-plus/
 Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Gooogle Maps.  This is a highly customizable, easily expandable, enterprise-class location management system.
-Version: 3.8.19
+Version: 3.9
 Author: Charleston Software Associates
 Author URI: http://www.charlestonsw.com
 License: GPL3
@@ -37,6 +37,7 @@ if (
         (get_option('blogdescription'  ,'') === 'Lance Testing' ) 
     ){
     error_reporting(-1);
+    ini_set('display_errors','1');
 }
 
 
@@ -104,6 +105,10 @@ if (defined('SLPLUS_PREFIX') === false) {
 //====================================================================
 // Main Plugin Configuration ($slplus_plugin)
 //====================================================================
+
+/**
+ * @var wpCSL_plugin__slplus $slplus_plugin the wpCSL plugin object
+ */
 global $slplus_plugin;
 
 /**
@@ -124,11 +129,26 @@ if (defined('SLPLUS_PLUGINDIR')) {
     /**
      * This section defines the settings for the admin menu.
      */
+    global $wpdb;
     $slplus_plugin = new wpCSL_plugin__slplus(
         array(
             'on_update' => array('SLPlus_Activate', 'update'),
-            'version' => '3.8.19',
+            'version' => '3.9',
 
+            /**
+             * @property database - elements related to the SLP database tables
+             */
+            'database'             =>
+                array(
+                    'table'     => ' '.$wpdb->prefix.'store_locator ',
+                    'query'     =>
+                        array(
+                            'fromslp'   => ' FROM '         .$wpdb->prefix.'store_locator ' ,
+                            'selectall' => 'SELECT * FROM ' .$wpdb->prefix.'store_locator ' ,
+                            'selectthis'=> 'SELECT %s FROM '.$wpdb->prefix.'store_locator ' ,
+                            'whereslid' => 'WHERE sl_id=%d '                                ,
+                        ),
+                ),
 
             // Plugin data elements, helps make data lookups more efficient
             //
@@ -214,6 +234,7 @@ if (defined('SLPLUS_PLUGINDIR')) {
                     'plus_pack_enabled' => get_option(SLPLUS_PREFIX.'-SLPLUS-isenabled'),
                     ),
 
+            'display_settings'       => true,
             'has_packages'           => true,
             'debug_instructions'     => __('Turn debugging off via General Settings in the Plugin Environment panel.','csa-slplus')
         )
@@ -225,12 +246,6 @@ if (defined('SLPLUS_PLUGINDIR')) {
     require_once(SLPLUS_PLUGINDIR . '/slp-pro/slp-pro.php');
     if (isset($slplus_plugin->ProPack)) {
         $slplus_plugin->ProPack->add_package();
-    }
-
-    // Store Pages
-    require_once(SLPLUS_PLUGINDIR . '/slp-pages/slp-pages.php');
-    if (isset($slplus_plugin->StorePages)) {
-        $slplus_plugin->StorePages->add_package();
     }
 }
 

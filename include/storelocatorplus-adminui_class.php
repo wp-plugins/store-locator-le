@@ -20,6 +20,7 @@ if (! class_exists('SLPlus_AdminUI')) {
         public $parent = null;
         public $plugin = null;
         public $styleHandle = 'csl_slplus_admin_css';
+        private $geocodeIssuesRendered = false;
 
         /*************************************
          * The Constructor
@@ -186,31 +187,6 @@ if (! class_exists('SLPlus_AdminUI')) {
                 __('Check this box if your Theme or another plugin is providing Google Maps and generating warning messages.  THIS MAY BREAK THIS PLUGIN.', 'csa-slplus')
             );
 
-            //--------------------------
-            // Store Pages
-            //
-            $slp_rep_desc = __('These settings affect how the Store Pages add-on behaves. ', 'csa-slplus');
-            if (!$this->parent->license->AmIEnabled(true, "SLPLUS-PAGES")) {
-                $slp_rep_desc .= '<br/><br/>'.
-                    __('This is a <a href="http://www.charlestonsw.com/product/store-locator-plus-store-pages/">Store Pages</a>'.
-                    ' feature.  It provides a way to auto-create individual WordPress pages' .
-                    ' for each of your locations. ', 'csa-slplus');
-            } else {
-                $slp_rep_desc .= '<span style="float:right;">(<a href="#" onClick="'.
-                        'jQuery.post(ajaxurl,{action: \'license_reset_pages\'},function(response){alert(response);});'.
-                        '">'.__('Delete license','csa-slplus').'</a>)</span>';
-            }
-            $slp_rep_desc .= '<br/><br/>';
-            $this->parent->settings->add_section(
-                array(
-                    'name'        => 'Store Pages',
-                    'description' => $slp_rep_desc
-                )
-            );
-            if ($this->parent->license->AmIEnabled(true, "SLPLUS-PAGES")) {
-                $this->parent->StorePages->add_pages_settings();
-            }
-
             //-------------------------
             // Pro Pack
             //
@@ -298,7 +274,7 @@ if (! class_exists('SLPlus_AdminUI')) {
          * @param type $address
          * @param type $sl_id
          */
-        function do_geocoding($address,$sl_id='') {
+        function do_geocoding($address,$sl_id='',$extendedInfo = false) {
             global $wpdb, $slplus_plugin;
 
             $language = '&language='.$slplus_plugin->helper->getData('map_language','get_item',null,'en');
@@ -321,7 +297,6 @@ if (! class_exists('SLPlus_AdminUI')) {
 
                 // Iterate through the rows, geocoding each address
                 $errorMessage = '';
-
 
                 // Use HTTP Handler (WP_HTTP) first...
                 //
@@ -401,7 +376,7 @@ if (! class_exists('SLPlus_AdminUI')) {
                                                     $theDBError
                                                     );
                         } elseif ($update_result === 0) {
-                            $errorMessage .=  __(", The latitude and longitude did not change.", 'csa-slplus');
+                            $errorMessage .=  sprintf(__(", The latitude %s and longitude %s did not change.", 'csa-slplus'),$lat,$lng);
                         } else {
                             $errorMessage .=  __("No error logged.", 'csa-slplus');
                             $errorMessage .= "<br/>\n" . __('Query: ', 'csa-slplus');
@@ -447,7 +422,7 @@ if (! class_exists('SLPlus_AdminUI')) {
                         $errorMessage .= sprintf(__("URL %s.", 'csa-slplus'),$request_url)."\n<br>";
                         $errorMessage .= sprintf(__("Received data %s.", 'csa-slplus'),'<pre>'.print_r($json,true).'</pre>')."\n";
                     } else {
-                        $errorMessage .= sprintf(__("Reqeust sent to %s.", 'csa-slplus'),$request_url)."\n<br>";
+                        $errorMessage .= sprintf(__("Request sent to %s.", 'csa-slplus'),$request_url)."\n<br>";
                         $errorMessage .= sprintf(__("Received status %s.", 'csa-slplus'),$status)."\n<br>";
                     }
                 }
@@ -455,15 +430,40 @@ if (! class_exists('SLPlus_AdminUI')) {
                 // Show Error Messages
                 //
                 if ($errorMessage != '') {
-                    print '<div class="geocode_error">' .
-                            '<strong>'.
-                            sprintf(
-                                __('Read <a href="%s">this</a> if you are having geocoding issues.','csa_slplus'),
-                                'http://www.charlestonsw.com/support/documentation/store-locator-plus/troubleshooting/geocoding-errors/'
-                                ).
-                            "</strong><br/>\n" .
-                            $errorMessage .
-                            '</div>';
+                    if (!$this->geocodeIssuesRendered) {
+                        print
+                            '<div class="geocode_error">' .
+                           '<strong>'.
+                           sprintf(
+                               __('Read <a href="%s">this</a> if you are having geocoding issues.','csa_slplus'),
+                               'http://www.charlestonsw.com/support/documentation/store-locator-plus/troubleshooting/geocoding-errors/'
+                               ).
+                           "</strong><br/>\n" .
+                           '</div>'
+                           ;
+                        $this->geocodeIssuesRendered = true;
+                    }
+
+                    if ($extendedInfo) {
+                        $slplus_plugin->notifications->add_notice(4,$errorMessage);
+                    } else {
+                        print '<div class="geocode_error">' .
+                                $errorMessage .
+                                '</div>';
+                    }
+                } elseif ($extendedInfo) {
+                    $slplus_plugin->notifications->add_notice(
+                             9,
+                             sprintf(
+                                     __('Google thinks %s is at <a href="%s" target="_blank">lat: %s long %s</a>','csa-slplus'),
+                                     $address, 
+                                     sprintf('http://%s/?q=%s,%s',
+                                             $slplus_plugin->helper->getData('mapdomain','get_option',array('sl_google_map_domain','maps.google.com')),
+                                             $lat,
+                                             $lng),
+                                     $lat, $lng
+                                     )
+                             );
                 }
 
                 usleep($delay);
@@ -729,25 +729,6 @@ if (! class_exists('SLPlus_AdminUI')) {
         }
 
         /**
-         * Render The Create Page Button
-         *
-         * @param type $locationID
-         * @param type $storePageID
-         * @return type
-         */
-        static function slpRenderCreatePageButton($locationID=-1,$storePageID=-1) {
-            if ($locationID < 0) { return; }            
-            $slpPageClass = (($storePageID>0)?'haspage_icon' : 'createpage_icon');
-            print "<a   class='action_icon $slpPageClass' 
-                        alt='".__('create page','csa-slplus')."'
-                        title='".__('create page','csa-slplus')."'
-                        href='".
-                            preg_replace('/&createpage=/'.(isset($_GET['createpage'])?$_GET['createpage']:''), "",$_SERVER['REQUEST_URI']).
-                            "&act=createpage&sl_id=$locationID&slp_pageid=$storePageID#a$locationID'
-                   ></a>";            
-        }  
-
-        /**
          * Check if a URL starts with http://
          *
          * @param type $url
@@ -849,12 +830,13 @@ if (! class_exists('SLPlus_AdminUI')) {
          /**
           * Return the value of the field specified for the current location.
           * @param string $fldname - a location field
-          * @param boolean $blankifnull - if true return '' if fldname===null
           * @return string - value of the field
           */
-         function getFieldValue($fldname=null,$blankifnull = false) {
-             if ($blankifnull && ($fldname === null)) { return ''; }
-             if (($fldname === null) || ($this->addingLocation)) { return ''; }
+         function getFieldValue($fldname=null) {
+             if ($fldname === null      ) { return ''; }
+             if ($this->addingLocation  ) {
+                 return apply_filters('slp_addlocation_fieldvalue','',$fldname);
+             }
              return $this->currentLocation[$fldname];
          }
 
@@ -972,17 +954,6 @@ if (! class_exists('SLPlus_AdminUI')) {
                 "<tr><td valign='top'>"                                                         .
                 $slplus_plugin->AdminUI->renderFields_editlocation()
                 ;
-
-                // Store Pages URLs
-                //
-                if (
-                    ($slplus_plugin->license->packages['Store Pages']->isenabled) &&
-                    !$addform &&
-                    ($sl_value['sl_pages_url'] != '')
-                    ){
-                    $shortSPurl = preg_replace('/^.*?store_page=/','',$sl_value['sl_pages_url']);
-                    $slpEditForm .= "<label for='store_page'>Store Page</label><a href='$sl_value[sl_pages_url]' target='csa'>$shortSPurl</a><br/>";
-                }
 
                 $edCancelURL = isset($_GET['edit']) ?
                     preg_replace('/&edit='.$_GET['edit'].'/', '',$_SERVER['REQUEST_URI']) :

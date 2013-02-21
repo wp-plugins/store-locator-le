@@ -3,11 +3,11 @@
  * Plugin Name: Store Locator Plus : Pro Pack
  * Plugin URI: http://www.charlestonsw.com/product/store-locator-plus/
  * Description: A premium add-on pack for Store Locator Plus that provides more admin power tools for wrangling locations.
- * Version: 3.8.14
+ * Version: 3.9
  * Author: Charleston Software Associates
  * Author URI: http://charlestonsw.com/
  * Requires at least: 3.3
- * Test up to : 3.5.2
+ * Test up to : 3.5.1
  *
  * Text Domain: csl-slplus
  * Domain Path: /languages/
@@ -22,7 +22,8 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 // No SLP? Get out...
 //
-if ( !in_array( 'store-locator-le/store-locator-le.php', apply_filters( 'active_plugins', get_option('active_plugins')))) {
+include_once( ABSPATH . 'wp-admin/includes/plugin.php' ); 
+if ( !function_exists('is_plugin_active') ||  !is_plugin_active( 'store-locator-le/store-locator-le.php')) {
     return;
 }
 

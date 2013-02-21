@@ -307,40 +307,6 @@ if (! class_exists('SLPlus_AjaxHandler')) {
             die();
          }
 
-
-        /**
-         * Remove the Store Pages license.
-         */
-        function license_reset_pages() {
-            if (!$this->setParent()) { die(__('Store Pages license could not be removed.',SLPLUS_PREFIX)); }
-
-            global $wpdb;
-
-            foreach (array(
-                        SLPLUS_PREFIX.'-SLP-PAGES-isenabled',
-                        SLPLUS_PREFIX.'-SLP-PAGES-last_lookup',
-                        SLPLUS_PREFIX.'-SLP-PAGES-latest-version',
-                        SLPLUS_PREFIX.'-SLP-PAGES-latest-version-numeric',
-                        SLPLUS_PREFIX.'-SLP-PAGES-lk',
-                        SLPLUS_PREFIX.'-SLP-PAGES-version',
-                        SLPLUS_PREFIX.'-SLP-PAGES-version-numeric',
-
-                        SLPLUS_PREFIX.'-SLPLUS-PAGES-isenabled',
-                        SLPLUS_PREFIX.'-SLPLUS-PAGES-last_lookup',
-                        SLPLUS_PREFIX.'-SLPLUS-PAGES-latest-version',
-                        SLPLUS_PREFIX.'-SLPLUS-PAGES-latest-version-numeric',
-                        SLPLUS_PREFIX.'-SLPLUS-PAGES-lk',
-                        SLPLUS_PREFIX.'-SLPLUS-PAGES-version',
-                        SLPLUS_PREFIX.'-SLPLUS-PAGES-version-numeric',
-                        )
-                    as $optionName) {
-                $query = 'DELETE FROM '.$wpdb->prefix."options WHERE option_name='$optionName'";
-                $wpdb->query($query);
-            }
-            
-            die(__('Store Pages license has been removed. Refresh the General Settings page.', SLPLUS_PREFIX));
-        }
-
         /**
          * Remove the Pro Pack license.
          */
