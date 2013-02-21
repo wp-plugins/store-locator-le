@@ -1,12 +1,10 @@
 /*****************************************************************
  * file: csl.js
  *
- * A centralized javascript code to be compatible with all CSL plugins so we can virtually save cats from trees.
- *
  *****************************************************************/
 
 /***************************
-  * Cyber Sprocket Labs Namespace
+  * CSA Labs Namespace
   *
   * For stuff to do awesome stuff like save lobby jones if he got stuck in a tree.
   *
@@ -650,14 +648,16 @@ var csl = {
   	  	 * returns: none
   	  	 */
 		this.clearMarkers = function() {
-			if (this.markers) {
-				for (markerNumber in this.markers) {
-                    if (typeof this.markers[markerNumber].__gmarker != 'undefined') {
-                        this.markers[markerNumber].__gmarker.setMap(null);
+                    if (this.markers) {
+                        for (markerNumber in this.markers) {
+                            if (typeof this.markers[markerNumber] != 'undefined') {
+                                if (typeof this.markers[markerNumber].__gmarker != 'undefined') {
+                                    this.markers[markerNumber].__gmarker.setMap(null);
+                                }
+                            }
+                        }
+                        this.markers.length = 0;
                     }
-				}
-				this.markers.length = 0;
-			}
 		}
 
 		/***************************
@@ -744,7 +744,11 @@ var csl = {
 
 			//check for results
 			if (markerList.length == 0) {
+                            if ( (typeof this.homePoint != 'undefined') &&
+                                 (this.homePoint != null)
+                               ) {
 				this.gmap.panTo(this.homePoint);
+                            }
                 var sidebar = document.getElementById('map_sidebar');
 				sidebar.innerHTML = '<div class="no_results_found"><h2>'+slplus.msg_noresults+'</h2></div>';
                 jQuery('#map_sidebar').trigger('contentchanged');
@@ -849,7 +853,6 @@ var csl = {
                         //the map has been created so shift the center of the map
                         else {
                             //move the center of the map
-                            //this.gmap.panTo(results[0].geometry.location);
                             _this.homePoint = results[0].geometry.location;
                             _this.homeAdress = results[0].formatted_address;
 
@@ -1076,55 +1079,69 @@ var csl = {
   	  	 * returns: none
   	  	 */
 		this.loadMarkers = function(center, radius, tags) {
-			//determines if we need to invent real variables (usually only done at the beginning)
-			var realsearch = true;
-			if (this.forceAll) {
-				realsearch = false;
-				radius = null;
-				center = null;
-				this.forceAll = false;
-			}
-			this.debugSearch('doing search@' + center + ' for radius of ' + radius);
-			if (center == null) {
-				center = this.gmap.getCenter();
-			}
-			if (radius == null) {
-				radius = 40000;
-			}
-			this.lastCenter = center;
-			this.lastRadius = radius;
-			if (tags == null) { tags = ''; }
-			this.debugSearch('searching: ' + center.lat() +','+ center.lng());
-			var name = this.saneValue('nameSearch', '');
-			var action = null;
-			if (realsearch) {
-                var formObj = jQuery('#searchForm').formParams();
-				action = {action:'csl_ajax_search',lat:center.lat(),lng:center.lng(),radius:radius, tags: tags, name:name, address:this.saneValue('addressInput', 'no address entered'),formflds:formObj};
-			}
-			else {
-				action = {action:'csl_ajax_onload',lat:center.lat(),lng:center.lng(),tags:tags };
-			}
-			this.debugSearch(action);
-			var _this = this;
-			var ajax = new csl.Ajax();
-			if (!realsearch) {
-				ajax.send(action, function (response) {
-                    if (typeof response.response != 'undefined') {
-                        _this.dropMarkers.call(_this, response.response);
-                    } else {
-                        if (window.console) { console.log('SLP server did not send back a valid JSONP response on load.'); }
+
+                    //determines if we need to invent real variables (usually only done at the beginning)
+                    var realsearch = true;
+                    if (this.forceAll) {
+                        realsearch = false;
+                        radius = null;
+                        center = null;
+                        this.forceAll = false;
                     }
-				});
-			}
-			else {
-				ajax.send(action, function (response) {
-                    if (typeof response.response != 'undefined') {                    
-    					_this.bounceMarkers.call(_this, response.response);
+                    this.debugSearch('doing search@' + center + ' for radius of ' + radius);
+                    if (center == null) { center = this.gmap.getCenter(); }
+                    if (radius == null) { radius = 40000; }
+                    this.lastCenter = center;
+                    this.lastRadius = radius;
+                    if (tags == null) { tags = ''; }
+                    this.debugSearch('searching: ' + center.lat() +','+ center.lng());
+
+                    var _this = this;
+                    var ajax = new csl.Ajax();
+
+                    // On Load
+                    if (!realsearch) {
+                        var action = {
+                            action  : 'csl_ajax_onload',
+                            lat     : center.lat(),
+                            lng     : center.lng(),
+                            tags    : tags
+                         };
+
+                        this.debugSearch(action);
+
+                        ajax.send(action, function (response) {
+                                if (typeof response.response != 'undefined') {
+                                    _this.dropMarkers.call(_this, response.response);
+                                } else {
+                                    if (window.console) { console.log('SLP server did not send back a valid JSONP response on load.'); }
+                                }
+                            });
+
+                    // Search
                     } else {
-                        if (window.console) { console.log('SLP server did not send back a valid JSONP response on search.'); }
+                        var name = this.saneValue('nameSearch', '');
+                        var action = {
+                            action  : 'csl_ajax_search',
+                            address : this.saneValue('addressInput', 'no address entered'),
+                            formdata: jQuery('#searchForm').serialize(),
+                            lat     : center.lat(),
+                            lng     : center.lng(),
+                            name    : name,
+                            radius  : radius,
+                            tags    : tags,
+                        };
+
+                        this.debugSearch(action);
+
+                        ajax.send(action, function (response) {
+                                if (typeof response.response != 'undefined') {
+                                                    _this.bounceMarkers.call(_this, response.response);
+                                } else {
+                                    if (window.console) { console.log('SLP server did not send back a valid JSONP response on search.'); }
+                                }
+                            });
                     }
-				});
-			}
 		}
 
 		/***************************
@@ -1153,10 +1170,10 @@ var csl = {
   	  	 * returns: none
   	  	 */
 		this.searchLocations = function() {
-			var address = this.saneValue('addressInput', '');
-            jQuery('#map_box_image').hide();
-			jQuery('#map_box_map').show();
-            google.maps.event.trigger(this.gmap, 'resize');
+                    var address = this.saneValue('addressInput', '');
+                    jQuery('#map_box_image').hide();
+		    jQuery('#map_box_map').show();
+                    google.maps.event.trigger(this.gmap, 'resize');
 
 			// Address was given, use it...
 			//

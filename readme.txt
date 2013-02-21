@@ -2,18 +2,17 @@
 Plugin Name:  Store Locator Plus
 Contributors: charlestonsw
 Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
-Tags: google maps, store finder, store locator, store locater, google, dealer locator, dealer locater, zip code search, shop locator, shop finder, zipcode, location finder, places, stores, maps, mapping, mapper, plugin, posts, post, page, coordinates, latitude, longitude, geo, geocoding, shops, ecommerce, e-commerce, business locations, store locator plus, store locater plus, bing map, bing, yahoo maps, yahoo, mapping, retail
+Tags: google,bing,map,directory,location,place,store,dealer,shop,business,retail,brick,mortar,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
-Tested up to: 3.5
-Stable tag: 3.8.7
+Tested up to: 3.5.1
+Stable tag: 3.9
 
-Store Locator Plus makes it easy to put a fully functional store finder on your site.
-The most active store locator plugin with monthly updates!
+A high end location management system that makes it easy to put a store location finder on your site.  Extensive premium add-on library available!
 
 == Description ==
 
 Learn more about [Store Locator Plus at CSA](http://www.charlestonsw.com/product/store-locator-plus-2).
-The website offers [more screen shots](http://www.charlestonsw.com/product/store-locator-plus-2/), [technical documentation](http://www.charlestonsw.com/support/documentation/technical-documentation/), [full release notes](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/) and more.
+The website offers [more screen shots](http://www.charlestonsw.com/product/store-locator-plus-2/), [technical documentation](http://www.charlestonsw.com/support/documentation/technical-documentation/), and [full release notes](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/).
 
 Store Locator Plus is an advanced system for managing multiple physical locations via a fully integrated WordPress solution.
 Whether you have ten locations or ten-thousand, you manage them with ease right from within your WordPress admin panel.
@@ -33,9 +32,12 @@ Re-label entry fields and results fields.
 
 = Features =
 
-* You can use it for a variety of countries, as supported by Google Maps.
-* Supports international languages and character sets.
-* Allows you to use unique map icons or your own custom map icons.
+* Very active support via the [free support forum](http://wordpress.org/support/plugin/store-locator-le).
+* Regularly updated [online documentation](http://wordpress.org/support/plugin/store-locator-le).
+* Multiple [premium add-ons available](http://wordpress.org/support/plugin/store-locator-le).
+* You can use it for a [variety of countries](http://wordpress.org/support/plugin/store-locator-le), as supported by Google Maps.
+* Supports [international languages](http://wordpress.org/support/plugin/store-locator-le) and character sets.
+* Allows you to use [unique map icons](http://wordpress.org/support/plugin/store-locator-le) or your own custom map icons.
 * Change default map settings via the admin panel including:
 * Map type (terrain, satellite, street, etc.)
 * Inset map show/hide
@@ -59,12 +61,22 @@ Premium add-on packages are available to extend the capabilities of this plugin.
 ** Create pages for each location with the click of a button.
 ** Each page can be edited as an individual post.
 ** Pages support their own comments, featured image, page style, and other standard WordPress page template features.
+* [Enhanced Map](http://www.charlestonsw.com/product/store-locator-plus-enhanced-map) : Get even more control over the map interface.
+** Show or hide the map.
+** Add a map slider on/off to allow users to show/hide the map.
+** Add a center map at setting.
+** Show/Hide map inset.
+** Enable/Disable scroll wheel.
+** Show/Hide Map 3D control.
+** Show/Hide Map scale.
+** Show/Hide Map type.
 * [Enhanced Results](http://www.charlestonsw.com/product/store-locator-plus-enhanced-results)
 ** Order results by name or distance.
 ** Wrap the phone output in a tel: href tag.
 ** Hide the distance on the results table.
 * [Enhanced Search](http://www.charlestonsw.com/product/store-locator-plus-enhanced-search) : Get even more control over the basic search form.
 ** Turn the search interface on/off.
+* [Icon Packs](http://www.charlestonsw.com/product/store-locator-plus-icon-packs/) : Add new icon sets to your map markers.
 * [Tagalong](http://www.charlestonsw.com/product/store-locator-plus-tagalong/) : Add custom map markers based on location categories.
 ** Set a different marker for each location.
 ** Categorize your stores.
@@ -242,46 +254,17 @@ Currently this includes:
 
 The website offers [more screen shots](http://www.charlestonsw.com/product/store-locator-plus-2/) including those from the latest updates and premium add-on packages.
 
-1. Location Details
-2. Tag filter pulldown
-3. All Options Search
-4. Tag Filtered by location search
-5. Tag Filter, location and name search
-6. Admin Map Settings
-7. Admin Add Locations
-8. Admin Manage Locations
-9. Default settings
+1. Example Map with Enhanced Maps On/Off Slider
+2. Manage Locations with Pro Pack and Store Pages
+3. Search Settings with Pro Pack and Enhanced Search
+4. Map Settings with Pro Pack and Enhanced Map
+5. Result Settings with Enhanced Results
+6. Search and Result Reports with Pro Pack
+7. SEO via Store Pages
+8. Add Locations with Pro Pack Bulk Import
+9. Directions from results link
 
 More screenshots are available via [the CSA website](http://www.charlestonsw.com/products/store-locator-plus/).
-
-== Update Notice ==
-
-3.8.6 update notice.
-
-I have been chasing down some nasty icon (map marker) setting bugs.
-Turns out the icons were stored in TWO locations.
-Most icons were in both places.
-Most places in the code referenced a single location (under ./core/images/icons).
-Not EVERYPLACE in the code did so.
-
-Rather than hold up 3.8.6 to make a "perfect patch" I have released this version
-with the ability to change/save new home/end icons, save the map height and width,
-and a few other settings.
-
-YOU WILL LIKELY NEED TO RE-SET YOUR HOME AND END ICONS.
-
-I cleaned things up and moved all the map marker icons to ./images/icons.
-
-I also fixed the "save custom icons" which runs automatically when updating to a new version.
-If you store custom icons in ./core/images/icons or ./images/icons they are now copied to
-./wp-content/uploads/slp/saved-icons/.    This may result in a duplicate list of icons in
-your icon selector on map settings.   I will at least prevent icons that are in the core
-plugin from being copied over in a future release.  For now you may see double icons
-in the list.  I think this is better than not saving them at all (older versions) or
-not letting people save their map width/height and/or change the map marker icons.
-
-Again: YOU WILL LIKELY NEED TO RE-SET YOUR HOME AND END ICONS.
-
 
 == Changelog ==
 
@@ -291,67 +274,36 @@ Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/su
 
 I was listing the entire change log here but with weekly/bi-weekly updates it as getting much too long.
 
-= 3.8.7 (January 9th 2013) =
+= UPGRADING TO 3.9.X =
 
-* Security patch for slp-pro.php to prevent open query/injection attack.
-* Icon save/select eliminate duplicates. Base file name must be unique.  Base plugin icons take precedence.
+[Store Pages](http://www.charlestonsw.com/product/store-locator-plus-store-pages) users upgrading to 3.9 will need to download the separate Store Pages zip file.
+To have the v3.9 Store Pages download added to your account, please use the [contacting me](http://www.charlestonsw.com/mindset/contact-us/) form.
+Send your order number or license number for Store Pages so I can look up your order and add the download to your account.
+Your Store Pages license is no longer needed.
+You will need to go to the new "Store Pages" tab and re-enable some of your settings.
 
-= 3.8.6 (January 7th 2013) =
+Updating from a version 3.8.6 or earlier?
+You will likely need to reset your home and destination map markers.
 
-* Fix save map height.
-* Fix save map height units.
-* Fix save map width.
-* Fix save map width units.
-* Fix home marker saving.
-* Fix end marker saving.
-* Save icons/images/languages now go in ./wp-content/uploads/slp/
-* Fix saving of icons when upgrading.  May cause duplicate icons to be listed after first update.
-* Clean up the map marker icon set.
-* Add some new icons.
+= 3.9 (February 2013) =
 
+* Change: Store Pages is no longer a license key based add-on, it requires a separate .zip download.
+* Enhancement: Add [slp_addlocation_fieldvalue fitler](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/location-management-actions-filters/)
+* Enhancement: Add [slp_admin_init_complete hook](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/plugin-management-hooks-filters/)
+* Enhancement: Add [slp_admin_menu_starting hook](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/plugin-management-hooks-filters/)
+* Enhancement: Add [slp_deletelocation_starting hook](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/location-management-actions-filters/)
+* Enhancement: Add [slp_init_complete hook](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/plugin-management-hooks-filters/)
+* Enhancement: Add [slp_init_starting hook](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/plugin-management-hooks-filters/)
+* Enhancement: Add [slp_manage_locations_actions hook](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/location-management-actions-filters/)
+* Enhancement: Add [slp_storepage_attributes filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/store-pages-action-hooks-filters/)
+* Enhancement: Add [slp_storepage_features filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/store-pages-action-hooks-filters/)
+* Enhancement: Add [slp_storepage_labels filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/store-pages-action-hooks-filters/)
+* Enhancement: SLP is now leaner, using a smaller memory footprint and with faster page loads for all users.
+* Enhancement: Remove slp_edit_location_redirect filter, speed up manage locations saving of edits.
+* Enhancement: Improve the edit locations notification when an address has been edited and the coordinates were updated.
+* Enhancement: Improve the recode selected notification messages.
+* Enhancement: Catch more theme/plugin conflict quirks, test for map javascript processor having an undefined marker mid-processing.
+* Enhancement: Add new database helpers to the core plugin to make for more consistent data I/O between add-on packs.
+* Fix: tests for SLP is active now works on WPMU sites.
+* Fix: Delete not working, the URL is incorrect on manage locations when running deletes back-to-back.
 
-= 3.8.5 (January 3rd 2013) =
-
-* Fix syntax error in slp-pages.php
-
-= 3.8.4 (January 1st 2013) =
-
-* Fix remove credits not saving.
-* Fix an error in how Pro Pack was being loaded.  Unmatched } caused erratic behavior.
-* Fix a Pro Pack / Store Pages hook issue.
-* Find button is now text based button by default on new installs.
-
-= 3.8.3 (January 2013) =
-
-* Map settings panel updates to prep for Enhanced Maps.
-* Add the on/off slider button method for new UI elements including the map on/off toggle on Enhanced Maps.
-
-= 3.8.2 (December 31 2012) =
-
-* Simplify geocoding calls.
-* Fix warnings for non Pro Pack users.
-* Rework Map Settings panel.
-* Add filters to map settings admin panel in preparation for Enhanced Maps plugin.
-
-= 3.8.1 (Christmas 1012) =
-
-* Fix premature headers error messages on some installs (could cause site/plugin failure)
-* Fix call time reference warning message.
-* Improved over query limit messaging.
-* Update the manage locations action bar processing.
-
-= 3.8 (Late-December 2012) =
-
-* WordPress 3.5 testing.
-* Change admin page button bar to use standard WordPress style tabs.
-* Increase admin page performance, remove excess JavaScript from multiple locations.
-* Decrease memory footprint eliminating framework classes that are not used.
-* Added the Fournier theme for the Pro Pack / Enhanced Results add-ons.
-* Significant rework to the admin pages.  Far better isolation of code and memory management.
-* Added slp_shortcode_atts filter to allow add-ons to extend shortcode attributes.
-* Added slp_map_domains filter.
-* Added slp_map_encodings filter.
-* [Enhanced Results](http://www.charlestonsw.com/product/store-locator-plus-enhanced-results) Updates:
-** Added the [Results String](http://www.charlestonsw.com/support/documentation/store-locator-plus/enhanced-results-add-on/) setting, highly customized results formats.
-* [Enhanced Search](http://www.charlestonsw.com/product/store-locator-plus-enhanced-search) Updates:
-** Added placeholder option for name and address search field.  These are the instructions that appear in a field and disappear when clicked. HTML5 only.

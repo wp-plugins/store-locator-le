@@ -298,7 +298,7 @@ if (! class_exists('SLPlus_Activate')) {
         /*************************************
          * Updates the plugin
          */
-        function update($slplus_plugin=null, $old_version=null) {
+        static function update($slplus_plugin=null, $old_version=null) {
 
             // Called As Namespace
             //
@@ -361,6 +361,14 @@ if (! class_exists('SLPlus_Activate')) {
                     }
                 }
 
+                // Admin Pages might be blank, set to 10
+                // 3.8.18
+                //
+                $tmpVar = get_option('sl_admin_locations_per_page');
+                if (empty($tmpVar)) {
+                    update_option('sl_admin_locations_per_page','10');
+                }
+                
                 // Set DB Version
                 //
                 update_option(SLPLUS_PREFIX."-db_version", $updater->plugin->version);
@@ -372,6 +380,24 @@ if (! class_exists('SLPlus_Activate')) {
             $updater->install_main_table();
             $updater->install_reporting_tables();
             $updater->add_splus_roles_and_caps();
+            /* $updater->get_addonpack_metadata(); */
+        }
+
+        /**
+         * Fetch the add-on pack meta data from the server.
+         * 
+         * @return type
+         */
+        function get_addonpack_metadata() {
+            require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-updates_class.php');
+            $this->Updates = new SLPlus_Updates(
+                    $this->plugin->version,
+                    $this->plugin->updater_url,
+                    SLPLUS_BASENAME
+                    );
+            $result = $this->Updates->getRemote_list();
+            update_option('slp_addonpack_meta',$result['body']);
+            return;
         }
 
         /**

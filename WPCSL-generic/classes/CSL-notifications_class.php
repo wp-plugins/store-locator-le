@@ -5,12 +5,16 @@
  * Puts notifications on top of wpCSL plugin admin pages.
  *
  * @author Lance Cleveland <lance@charlestonsw.com>
- * @copyright Lance Cleveland
- * @package wpCSL
- * @subpackage Notifications
+ * @copyright 2013 Charleston Software Associates
+ * @package wpCSL/Notifications
  *
  */
 class wpCSL_notifications__slplus {
+
+    /**
+     * @var wpCSL_notifications_notice__slplus[] $notices and array of notice boxes.
+     */
+    private $notices = null;
 
     /**
      * Build a new notification object.
@@ -30,7 +34,7 @@ class wpCSL_notifications__slplus {
      * @param type $content
      * @param type $link
      */
-    function add_notice($level = 1, $content, $link = null) {
+    function add_notice($level = 1, $content='', $link = null) {
         $this->notices[] = new wpCSL_notifications_notice__slplus(
             array(
                 'level' => $level,
@@ -56,7 +60,8 @@ class wpCSL_notifications__slplus {
    function get($simple=false) {
 
         // No need to do anything if there aren't any notices
-        if (!isset($this->notices)) return;
+        if (!isset($this->notices) ) { return; }
+        if ($this->notices === null) { return; }
 
         foreach ($this->notices as $notice) {
             $levels[$notice->level][] = $notice;
@@ -69,7 +74,6 @@ class wpCSL_notifications__slplus {
         $actionMessage = __('needs attention',WPCSL__slplus__VERSION);
         foreach ($levels as $key => $value) {
             if (!$simple) {
-                $color = round($difference);
                 switch ($difference) {
                 case 1:
                     $notice_output .= "<div id='{$this->prefix}_notice' class='updated fade'
@@ -138,6 +142,13 @@ class wpCSL_notifications__slplus {
         }
 
         return $notice_output;
+    }
+
+    /**
+     * Reset the notices to a blank array.
+     */
+    function delete_all_notices() {
+        $this->notices = null;
     }
 }
 
