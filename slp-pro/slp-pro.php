@@ -253,6 +253,10 @@ if ( ! class_exists( 'SLPPro' ) ) {
         function bulk_upload_processing() {
             if (!$this->setPlugin()) { return false; }
 
+            // Reset the notification message to get a clean message stack.
+            //
+            $this->plugin->notifications->delete_all_notices();
+
             add_filter('upload_mimes', array($this,'custom_upload_mimes'));
             $this->plugin->helper->SaveCheckboxToDB('bulk_skip_first_line');
             $this->plugin->helper->SaveCheckboxToDB('bulk_skip_duplicates');
@@ -314,22 +318,13 @@ if ( ! class_exists( 'SLPPro' ) ) {
                             }
 
                             $num = count($data);
+                            $locationData = array();
                             if ($num <= $maxcols) {
-                                $fieldList = '';
-                                $sl_valueList = '';
-                                $this_addy = '';
                                 for ($fldno=0; $fldno < $num; $fldno++) {
-                                    $fieldList.=$fldNames[$fldno].',';
-                                    $sl_valueList.="\"".stripslashes($this->plugin->AdminUI->slp_escape($data[$fldno]))."\",";
-                                    if (($fldno>=1) && ($fldno<=6)) {
-                                        $this_addy .= $data[$fldno] . ', ';
-                                    }
+                                    $locationData[$fldNames[$fldno]] = stripslashes($this->plugin->AdminUI->slp_escape($data[$fldno]));
                                 }
-                                $this_addy = substr($this_addy, 0, strlen($this_addy)-2);
                                 $resultOfAdd = $this->plugin->AdminUI->add_this_addy(
-                                        $fieldList,
-                                        $sl_valueList,
-                                        $this_addy,
+                                        $locationData,
                                         $skipDupes,
                                         stripslashes($this->plugin->AdminUI->slp_escape($data[0])),
                                         (is_numeric($data[15]) && is_numeric($data[16]))

@@ -524,6 +524,7 @@ if (! class_exists('SLPlus_AdminUI_ManageLocations')) {
                 // Recode The Address
                 //
                 } elseif ($_REQUEST['act']=='recode') {
+                    $this->plugin->notifications->delete_all_notices();
                     if (isset($_REQUEST['sl_id'])) {
                         if (!is_array($_REQUEST['sl_id'])) {
                             $theLocations = array($_REQUEST['sl_id']);

@@ -56,41 +56,62 @@ if (! class_exists('SLPlus_AdminUI')) {
          *
          * Returns 'added' or 'duplicate'
          * 
-         * @global type $wpdb
-         * @param type $fields
-         * @param type $sl_values
-         * @param type $theaddress
+         * @global object $wpdb
+         * @param array[] $locationData
+         * @param boolean $skipdupes
+         * @param boolean $skipGeocode
+         * @return string 'duplicate' or 'added'
          *
          */
-        function add_this_addy($fields,$sl_values,$theaddress,$skipdupes=false,$storename='',$skipGeocode=false) {
+        function add_this_addy($locationData,$skipdupes=false,$storename='',$skipGeocode=false) {
             global $wpdb;
-            $fields=substr($fields, 0, strlen($fields)-1);
-            $sl_values=substr($sl_values, 0, strlen($sl_values)-1);
 
             // Dupe check?
             //
             if ($skipdupes) {
-                $checkDupeQuery =
-                'SELECT 1 FROM '. $wpdb->prefix . 'store_locator ' .
-                    ' WHERE ' .
-                        "CONCAT_WS(', ',sl_store,sl_address,sl_address2,sl_city,sl_state,sl_zip,sl_country)".
-                        "='$storename, $theaddress' " .
-                      'LIMIT 1'
-                        ;
-                $wpdb->query($checkDupeQuery);
+                $wpdb->query(
+                    $wpdb->prepare(
+                        'SELECT 1 ' . $this->plugin->database['query']['fromslp'] .
+                            'WHERE ' .
+                                'sl_store   = %s AND '.
+                                'sl_address = %s AND '.
+                                'sl_address2= %s AND '.
+                                'sl_city    = %s AND '.
+                                'sl_state   = %s AND '.
+                                'sl_zip     = %s AND '.
+                                'sl_country = %s     '.
+                              'LIMIT 1',
+                        $this->ValOrBlank($locationData['sl_store'])    ,
+                        $this->ValOrBlank($locationData['sl_address'])  ,
+                        $this->ValOrBlank($locationData['sl_address2']) ,
+                        $this->ValOrBlank($locationData['sl_city'])     ,
+                        $this->ValOrBlank($locationData['sl_state'])    ,
+                        $this->ValOrBlank($locationData['sl_zip'])      ,
+                        $this->ValOrBlank($locationData['sl_country'])
+                    )
+                );
                 if ($wpdb->num_rows == 1) {
                     return 'duplicate';
                 }
             }
 
-            $wpdb->query("INSERT into ". $wpdb->prefix . "store_locator ($fields) VALUES ($sl_values);");
+            // Insert the new location into the database
+            //
+            $wpdb->insert($this->plugin->database['table_ns'],$locationData);
             
             // Fire slp_location_added hook
             //
             do_action('slp_location_added',mysql_insert_id());
 
             if (!$skipGeocode) {
-                $this->do_geocoding($theaddress);
+                $this->do_geocoding(
+                        $this->ValOrBlank($locationData['sl_address'])  .','.
+                        $this->ValOrBlank($locationData['sl_address2']) .','.
+                        $this->ValOrBlank($locationData['sl_city'])     .','.
+                        $this->ValOrBlank($locationData['sl_state'])    .','.
+                        $this->ValOrBlank($locationData['sl_zip'])      .','.
+                        $this->ValOrBlank($locationData['sl_country'])
+                        );
             }
             return 'added';
         }
@@ -739,6 +760,17 @@ if (! class_exists('SLPlus_AdminUI')) {
         }
 
         /**
+         * Return the value of the data element or blank if not set.
+         *
+         * @param mixed $dataElement - the variable to test
+         * @param mixed $setTo - the value to set the variable to if not set
+         * @return mixed - the data element value or value of $setTo
+         */
+        function ValOrBlank($dataElement,$setTo='') {
+            return isset($dataElement) ? $dataElement : $setTo;
+        }
+
+        /**
          * Create the column headers for sorting the table.
          *
          * @param type $theURL
@@ -779,26 +811,15 @@ if (! class_exists('SLPlus_AdminUI')) {
 
                 //Inserting addresses by manual input
                 //
+                $locationData = array();
                 if ( isset($_POST['store-']) && $_POST['store-']) {
-                    $fieldList = '';
-                    $sl_valueList = '';
                     foreach ($_POST as $key=>$sl_value) {
                         if (preg_match('#\-$#', $key)) {
-                            $fieldList.='sl_'.preg_replace('#\-$#','',$key).',';
-                            $sl_value=$this->slp_escape($sl_value);
-                            $sl_valueList.="\"".stripslashes($sl_value)."\",";
+                            $fieldName='sl_'.preg_replace('#\-$#','',$key);
+                            $locationData[$fieldName]=stripslashes($this->slp_escape($sl_value));
                         }
                     }
-
-                    $this_addy = 
-                              $_POST['address-'].', '.
-                              $_POST['address2-'].', '.
-                              $_POST['city-'].', '.$_POST['state-'].' '.
-                              $_POST['zip-'] . ', ' .
-                              $_POST['country-']
-                              ;
-
-                    $slplus_plugin->AdminUI->add_this_addy($fieldList,$sl_valueList,$this_addy);
+                    $resultOfAdd = $this->plugin->AdminUI->add_this_addy($locationData);
                     print "<div class='updated fade'>".
                             $_POST['store-'] ." " .
                             __("Added Succesfully",'csa-slplus') . '.</div>';
