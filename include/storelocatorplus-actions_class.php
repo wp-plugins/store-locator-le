@@ -39,6 +39,7 @@ if (! class_exists('SLPlus_Actions')) {
             if (!isset($this->parent) || ($this->parent == null)) {
                 global $slplus_plugin;
                 $this->parent = $slplus_plugin;
+                $this->plugin = $slplus_plugin;
             }
             return (isset($this->parent) && ($this->parent != null));
         }
@@ -89,6 +90,10 @@ if (! class_exists('SLPlus_Actions')) {
             $this->attachAdminUI();
             $this->parent->AdminUI->set_style_as_needed();
             $this->parent->AdminUI->build_basic_admin_settings();
+
+            // Action hook for 3rd party plugins
+            //
+            do_action('slp_admin_init_complete');
         }
 
         /**
@@ -98,19 +103,18 @@ if (! class_exists('SLPlus_Actions')) {
          *
          */
         function admin_menu() {
-            if (
-                (!function_exists('add_slplus_roles_and_caps') || current_user_can('manage_slp'))
-                )
-            {
-                if (!$this->setParent()) { return; }
+            if (!$this->setParent()) { return; }
+
+            if (current_user_can('manage_slp')) {
                 $this->attachAdminUI();
+                do_action('slp_admin_menu_starting');
                 
                 // The main hook for the menu
                 //
                 add_menu_page(
                     $this->parent->name,
                     $this->parent->name,
-                    'administrator',
+                    'manage_slp',
                     $this->parent->prefix,
                     array('SLPlus_AdminUI','renderPage_GeneralSettings'),
                     SLPLUS_COREURL . 'images/icon_from_jpg_16x16.png'
@@ -120,44 +124,30 @@ if (! class_exists('SLPlus_Actions')) {
                 //
                 $menuItems = array(
                     array(
-                        'label'             => __('General Settings',SLPLUS_PREFIX),
+                        'label'             => __('General Settings','csa-slplus'),
                         'slug'              => 'slp_general_settings',
                         'class'             => $this->parent->AdminUI,
                         'function'          => 'renderPage_GeneralSettings'
                     ),
                     array(
-                        'label'             => __('Add Locations',SLPLUS_PREFIX),
+                        'label'             => __('Add Locations','csa-slplus'),
                         'slug'              => 'slp_add_locations',
                         'class'             => $this->parent->AdminUI,
                         'function'          => 'renderPage_AddLocations'
                     ),
                     array(
-                        'label' => __('Manage Locations',SLPLUS_PREFIX),
+                        'label' => __('Manage Locations','csa-slplus'),
                         'slug'              => 'slp_manage_locations',
                         'class'             => $this->parent->AdminUI,
                         'function'          => 'renderPage_ManageLocations'
                     ),
                     array(
-                        'label' => __('Map Settings',SLPLUS_PREFIX),
+                        'label' => __('Map Settings','csa-slplus'),
                         'slug'              => 'slp_map_settings',
                         'class'             => $this->parent->AdminUI,
                         'function'          => 'renderPage_MapSettings'
                     )
                 );
-
-                // Pro Pack menu items
-                //
-                if ($this->parent->license->packages['Pro Pack']->isenabled) {
-                    $menuItems = array_merge(
-                                $menuItems,
-                                array(
-                                    array(
-                                    'label' => __('Reports',SLPLUS_PREFIX),
-                                    'url'   => SLPLUS_PLUGINDIR.'reporting.php'
-                                    )
-                                )
-                            );
-                }
 
                 // Third party plugin add-ons
                 //
@@ -177,7 +167,7 @@ if (! class_exists('SLPlus_Actions')) {
                             $this->parent->prefix,
                             $menuItem['label'],
                             $menuItem['label'],
-                            'administrator',
+                            'manage_slp',
                             $menuItem['slug'],
                             array($menuItem['class'],$menuItem['function'])
                             );
@@ -189,7 +179,7 @@ if (! class_exists('SLPlus_Actions')) {
                             $this->parent->prefix,
                             $menuItem['label'],
                             $menuItem['label'],
-                            'administrator',
+                            'manage_slp',
                             $menuItem['url']
                             );
                     }
@@ -241,27 +231,37 @@ if (! class_exists('SLPlus_Actions')) {
          */
         function init() {
             if (!$this->setParent()) { return; }
-            
-            //--------------------------------
-            // Store Pages Is Licensed
-            //
-            if ($this->parent->license->packages['Store Pages']->isenabled) {
 
-                // Register Store Pages Custom Type
-                register_post_type( 'store_page',
-                    array(
-                        'labels' => array(
-                            'name'              => __( 'Store Pages',SLPLUS_PREFIX ),
-                            'singular_name'     => __( 'Store Page', SLPLUS_PREFIX ),
-                            'add_new'           => __('Add New Store Page', SLPLUS_PREFIX),
-                        ),
-                    'public'            => true,
-                    'has_archive'       => true,
-                    'description'       => __('Store Locator Plus location pages.',SLPLUS_PREFIX),
-                    'menu_postion'      => 20,   
-                    'menu_icon'         => SLPLUS_COREURL . 'images/icon_from_jpg_16x16.png',
-                    'capability_type'   => 'page',
-                    'supports'          =>
+            // Fire the SLP init starting trigger
+            //
+            do_action('slp_init_starting', $this);
+            
+            // Do not texturize our shortcodes
+            //
+            add_filter('no_texturize_shortcodes',array('SLPlus_UI','no_texturize_shortcodes'));
+
+            /**
+             * Register the store taxonomy & page type.
+             *
+             * This is used in multiple add-on packs.
+             *
+             */
+            if (!taxonomy_exists('stores')) {
+                // Store Page Labels
+                //
+                $storepage_labels =
+                    apply_filters(
+                        'slp_storepage_labels',
+                        array(
+                            'name'              => __( 'Store Pages','csa-slplus' ),
+                            'singular_name'     => __( 'Store Page', 'csa-slplus' ),
+                            'add_new'           => __('Add New Store Page', 'csa-slplus'),
+                        )
+                    );
+
+                $storepage_features =
+                    apply_filters(
+                        'slp_storepage_features',
                         array(
                             'title',
                             'editor',
@@ -274,40 +274,45 @@ if (! class_exists('SLPlus_Actions')) {
                             'custom-fields',
                             'page-attributes',
                             'post-formats'
-                        ),
-                    )
-                );                
-                
+                        )
+                    );
+
+                $storepage_attributes =
+                    apply_filters(
+                        'slp_storepage_attributes',
+                        array(
+                            'labels'            => $storepage_labels,
+                            'public'            => false,
+                            'has_archive'       => true,
+                            'description'       => __('Store Locator Plus location pages.','csa-slplus'),
+                            'menu_postion'      => 20,
+                            'menu_icon'         => SLPLUS_COREURL . 'images/icon_from_jpg_16x16.png',
+                            'show_in_menu'      => current_user_can('manage_slp'),
+                            'capability_type'   => 'page',
+                            'supports'          => $storepage_features,
+                        )
+                    );
+
+                // Register Store Pages Custom Type
+                register_post_type( 'store_page',$storepage_attributes);
+
+                register_taxonomy(
+                        'stores',
+                        'store_page',
+                        array (
+                            'hierarchical'  => true,
+                            'labels'        =>
+                                array(
+                                        'menu_name' => __('Categories','csa-slplus'),
+                                        'name'      => __('Store Categories','csa-slplus'),
+                                     )
+                            )
+                    );
             }
 
-            // Do not texturize our shortcodes
+            // Fire the SLP initialized trigger
             //
-            add_filter('no_texturize_shortcodes',array('SLPlus_UI','no_texturize_shortcodes'));
-
-            // Register Stores Taxonomy
-            //
-            $this->register_store_taxonomy();
-        }
-
-        /**
-         * Register the store taxonomy.
-         *
-         * We need this for Store Pages, Tagalong, and third party plugins.
-         *
-         */
-        function register_store_taxonomy() {
-            register_taxonomy(
-                    'stores',
-                    'store_page',
-                    array (
-                        'hierarchical'  => true,
-                        'labels'        =>
-                            array(
-                                    'menu_name' => __('Categories',SLPLUS_PREFIX),
-                                    'name'      => __('Store Categories',SLPLUS_PREFIX),
-                                 )
-                        )
-                );
+            do_action('slp_init_complete', $this);
         }
 
         /**
@@ -331,40 +336,23 @@ if (! class_exists('SLPlus_Actions')) {
          * This is called whenever the WordPress wp_enqueue_scripts action is called.
          */
         static function wp_enqueue_scripts() {
-            global $slplus_plugin;            
-            $api_key= (isset($slplus_plugin) && $slplus_plugin->ok_to_show()) ?
-                $slplus_plugin->driver_args['api_key'] :
-                ''
-                ;
+            global $slplus_plugin;                                        
             $force_load = (
                         isset($slplus_plugin) ?
                         $slplus_plugin->settings->get_item('force_load_js',true) :
                         false
                     );
 
-            $sl_google_map_domain=get_option('sl_google_map_domain','maps.google.com');
-
             //------------------------
             // Register our scripts for later enqueue when needed
             //
-            //wp_register_script('slplus_functions',SLPLUS_PLUGINURL.'/core/js/functions.js');
             if (get_option(SLPLUS_PREFIX.'-no_google_js','off') != 'on') {
-                if (isset($api_key))
-                {
-                     //todo:character encoding ???
-                     // $sl_map_character_encoding='&oe='.get_option('sl_map_character_encoding','utf8');
-                    //"http://$sl_google_map_domain/maps?file=api&amp;v=2&amp;key=$api_key&amp;sensor=false{$sl_map_character_encoding}"
-                    wp_enqueue_script(
-                            'google_maps',
-                            'http'.(is_ssl()?'s':'').'://'.$sl_google_map_domain.'/maps/api/js?sensor=false&v=3.9&key='.$api_key
-                            );
-                }
-                else {
-                    wp_enqueue_script(
+                $api_key  = ((trim($slplus_plugin->driver_args['api_key']) == false)?'':'&key='.$slplus_plugin->driver_args['api_key']);
+                $language = '&language='.$slplus_plugin->helper->getData('map_language','get_item',null,'en');
+                wp_enqueue_script(
                         'google_maps',
-                        'http'.(is_ssl()?'s':'').'://'.$sl_google_map_domain.'/maps/api/js?sensor=false&v=3.9'
-                    );
-                }
+                        'http'.(is_ssl()?'s':'').'://'.get_option('sl_google_map_domain','maps.google.com').'/maps/api/js?sensor=false' . $api_key . $language
+                        );
             }
 
             $sslURL =
@@ -374,7 +362,7 @@ if (! class_exists('SLPlus_Actions')) {
                 );
             wp_enqueue_script(
                     'csl_script',
-                    SLPLUS_PLUGINURL.'/core/js/csl.js',
+                    $sslURL.'/core/js/csl.js',
                     array('jquery'),
                     false,
                     !$force_load
