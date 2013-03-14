@@ -1,9 +1,15 @@
 <?php
-  global $sl_search_label,
-      $sl_radius_label, $r_options,
-      $cs_options, $slplus_state_options, $sl_country_options,
-      $slplus_plugin;
-      $slp_SearchDivs = new SLPlus_UI_DivManager();
+
+global $sl_search_label, $sl_radius_label, $cs_options, $slplus_state_options, $sl_country_options;
+
+/**
+ * The plugin object.
+ * 
+ * @var SLPlus $slplus_plugin
+ */
+global $slplus_plugin;
+
+$slp_SearchDivs = new SLPlus_UI_DivManager();
 ?>
 <form onsubmit='cslmap.searchLocations(); return false;' id='searchForm' action=''>
     <table  id='search_table' border='0' cellpadding='3px' class='sl_header'>
@@ -136,7 +142,7 @@ ob_start();
                         get_option('sl_name_label',__('Name of Store','csl-slplus')),
                         '',
                         (get_option(SLPLUS_PREFIX.'_show_search_by_name',0) == 0),
-                        'nameSearch'
+                        'div_nameSearch'
                         );
                 add_filter('slp_search_form_divs',array($slp_SearchDivs,'buildDiv50'),50);
             }
@@ -160,70 +166,72 @@ ob_start();
           // We are not hiding the radius selection
           //
         ob_start();
-        if (get_option(SLPLUS_PREFIX.'_hide_radius_selections') == 0) {
+        if (get_option(SLPLUS_PREFIX.'_hide_radius_selections',0) == 0) {
         ?>
             <div id='addy_in_radius'>
                 <label for='radiusSelect'><?php _e($sl_radius_label, SLPLUS_PREFIX);?></label>
-                <select id='radiusSelect'><?php echo $r_options;?></select>
+                <select id='radiusSelect'><?php echo $slplus_plugin->data['radius_options'];?></select>
             </div>
 
         <?php
         } else {
-            echo $r_options;
+            echo $slplus_plugin->data['radius_options'];
         }
-        global $slp_thishtml_70;
-        $slp_thishtml_70 = ob_get_clean();
-        add_filter('slp_search_form_divs',array($slp_SearchDivs,'buildDiv70'),70);
 
-          //------------------------------------------------
-          // We are not hiding the submit button
-          //
-          if (get_option(SLPLUS_PREFIX.'_disable_search') == 0) {
-                ob_start();
 
-                if ($slplus_plugin->settings->get_item('disable_find_image','0','_') === '0') {
-                    $sl_theme_base=SLPLUS_UPLOADURL."/images";
-                    $sl_theme_path=SLPLUS_UPLOADDIR."/images";
+global $slp_thishtml_70;
+$slp_thishtml_70 = ob_get_clean();
+add_filter('slp_search_form_divs',array($slp_SearchDivs,'buildDiv70'),70);
 
-                    if (!file_exists($sl_theme_path."/search_button.png")) {
-                        $sl_theme_base=SLPLUS_PLUGINURL."/images";
-                        $sl_theme_path=SLPLUS_COREDIR."/images";
-                    }
+//------------------------------------------------
+// We are not hiding the submit button
+//
+if (get_option(SLPLUS_PREFIX.'_disable_search') == 0) {
+    ob_start();
 
-                    $sub_img=$sl_theme_base."/search_button.png";
-                    $mousedown=(file_exists($sl_theme_path."/search_button_down.png"))?
-                        "onmousedown=\"this.src='$sl_theme_base/search_button_down.png'\" onmouseup=\"this.src='$sl_theme_base/search_button.png'\"" :
-                        "";
-                    $mouseover=(file_exists($sl_theme_path."/search_button_over.png"))?
-                        "onmouseover=\"this.src='$sl_theme_base/search_button_over.png'\" onmouseout=\"this.src='$sl_theme_base/search_button.png'\"" :
-                        "";
-                    $button_style=(file_exists($sl_theme_path."/search_button.png"))?
-                        "type='image' class='slp_ui_image_button' src='$sub_img' $mousedown $mouseover" :
-                        "type='submit'  class='slp_ui_button'";
-                } else {
-                    $button_style = 'type="submit" class="slp_ui_button"';
-                }
+    // Find Button Is An Image
+    //
+    if ($slplus_plugin->settings->get_item('disable_find_image','0','_') === '0') {
+        $sl_theme_base=SLPLUS_UPLOADURL."/images";
+        $sl_theme_path=SLPLUS_UPLOADDIR."/images";
 
-          ?>               
-          <div id='radius_in_submit'>
-              <input <?php echo $button_style?> 
-                      value='<?php echo get_option(SLPLUS_PREFIX.'_find_button_label','Find Locations'); ?>'
-                      id='addressSubmit'/>
-          </div>
-          <?php
-            global $slp_thishtml_80;
-            $slp_thishtml_80 = ob_get_clean();
-            add_filter('slp_search_form_divs',array($slp_SearchDivs,'buildDiv80'),80);
-          }
+        if (!file_exists($sl_theme_path."/search_button.png")) {
+            $sl_theme_base=SLPLUS_PLUGINURL."/images";
+            $sl_theme_path=SLPLUS_COREDIR."/images";
+        }
 
-          // Render each of the divs in the order specified
-          // by the filters we've setup.
-          //
-          echo apply_filters('slp_search_form_divs','');
-          ?>
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</form>
+        $sub_img=$sl_theme_base."/search_button.png";
+        $mousedown=(file_exists($sl_theme_path."/search_button_down.png"))?
+            "onmousedown=\"this.src='$sl_theme_base/search_button_down.png'\" onmouseup=\"this.src='$sl_theme_base/search_button.png'\"" :
+            "";
+        $mouseover=(file_exists($sl_theme_path."/search_button_over.png"))?
+            "onmouseover=\"this.src='$sl_theme_base/search_button_over.png'\" onmouseout=\"this.src='$sl_theme_base/search_button.png'\"" :
+            "";
+        $button_style=(file_exists($sl_theme_path."/search_button.png"))?
+            "type='image' class='slp_ui_image_button' src='$sub_img' $mousedown $mouseover" :
+            "type='submit'  class='slp_ui_button'";
+
+    // Find Button Image Is Disabled
+    //
+    } else {
+        $button_style = 'type="submit" class="slp_ui_button"';
+    }
+
+    global $slp_thishtml_80;
+    $slp_thishtml_80 =
+        "<div id='radius_in_submit'>".
+            "<input $button_style " .
+                "value='".get_option(SLPLUS_PREFIX.'_find_button_label','Find Locations')."' ".
+                "id='addressSubmit'/>".
+        "</div>"
+        ;
+    add_filter('slp_search_form_divs',array($slp_SearchDivs,'buildDiv80'),80);
+}
+
+// Render each of the divs in the order specified
+// by the filters we've setup.
+//
+echo $slplus_plugin->UI->rawDeal(apply_filters('slp_search_form_divs',''));
+
+
+echo '</div></td></tr></tbody></table></form>';

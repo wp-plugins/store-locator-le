@@ -1,10 +1,42 @@
 <?php
+/**
+ * Cache management for WPCSL objects.
+ *
+ * @author Lance Cleveland <lance@charlestonsw.com>
+ * @copyright 2013 Charleston Sofware Associates, LLC
+ * @package WPCSL
+ * @version 2.1
+ *
+ **/
 
+/**
+ * Setup a local disk cache for data streams coming back from remote servers.
+ *
+ * @var int $retain_time how long to keep an object in the cache
+ * @var string $crt_name name of the WordPress option that stores retain time
+ */
 class wpCSL_cache__slplus {
 
-    var $retain_time;
-    var $crt_name;
+    //------------------------------------------------------
+    // Properties
+    //------------------------------------------------------
 
+    /* @var int $retain_time how long to keep an object in the cache */
+    public $retain_time;
+
+    /* @var string $crt_name name of the WordPress option that stores retain time */
+    public $crt_name;
+
+
+    //------------------------------------------------------
+    // Methods
+    //------------------------------------------------------
+
+    /**
+     * Invoke the wpCSL_cache__slplus class
+     * 
+     * @param mixes[] $params named array of properties (key as string) and initial values (val as mixed)
+     */
     function __construct($params) {
         foreach ($params as $name => $value) {
             $this->$name = $value;
@@ -15,6 +47,9 @@ class wpCSL_cache__slplus {
         $this->retain_time = get_option($this->crt_name);
     }
 
+    /**
+     * Initialize the cache settings panel.
+     */
     function initialize_options() {
 
         $this->settings->add_section(array(

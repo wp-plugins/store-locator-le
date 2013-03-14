@@ -1,15 +1,10 @@
 /*****************************************************************
  * file: csl.js
  *
- * A centralized javascript code to be compatible with all CSL plugins so we can virtually save cats from trees.
- *
  *****************************************************************/
 
 /***************************
-  * Cyber Sprocket Labs Namespace
-  *
-  * For stuff to do awesome stuff like save lobby jones if he got stuck in a tree.
-  *
+  * CSA Labs Namespace
   */
 var csl = {
 
@@ -295,8 +290,6 @@ var csl = {
 		 *
 		 */
 		this.show_email_form = function(to) {
-			var allScripts=document.getElementsByTagName('script');
-			var add_base=allScripts[allScripts.length -2].src.replace(/\/js\/csl.js(.*)$/,'');
 			emailWin=window.open("about:blank","",
 				"height=220,width=310,scrollbars=no,top=50,left=50,status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=0");
 			with (emailWin.document) {
@@ -316,7 +309,7 @@ var csl = {
 				writeln("</style>");
 
 				writeln("<form id='emailForm' method='GET'");
-				writeln(    " action='"+add_base+"/send-email.php'>");
+				writeln(    " action='"+slplus.core_url+"send-email.php'>");
 
 				writeln("    <div id='email_form_content'>");
 
@@ -650,14 +643,16 @@ var csl = {
   	  	 * returns: none
   	  	 */
 		this.clearMarkers = function() {
-			if (this.markers) {
-				for (markerNumber in this.markers) {
-                    if (typeof this.markers[markerNumber].__gmarker != 'undefined') {
-                        this.markers[markerNumber].__gmarker.setMap(null);
+                    if (this.markers) {
+                        for (markerNumber in this.markers) {
+                            if (typeof this.markers[markerNumber] != 'undefined') {
+                                if (typeof this.markers[markerNumber].__gmarker != 'undefined') {
+                                    this.markers[markerNumber].__gmarker.setMap(null);
+                                }
+                            }
+                        }
+                        this.markers.length = 0;
                     }
-				}
-				this.markers.length = 0;
-			}
 		}
 
 		/***************************
@@ -744,7 +739,11 @@ var csl = {
 
 			//check for results
 			if (markerList.length == 0) {
+                            if ( (typeof this.homePoint != 'undefined') &&
+                                 (this.homePoint != null)
+                               ) {
 				this.gmap.panTo(this.homePoint);
+                            }
                 var sidebar = document.getElementById('map_sidebar');
 				sidebar.innerHTML = '<div class="no_results_found"><h2>'+slplus.msg_noresults+'</h2></div>';
                 jQuery('#map_sidebar').trigger('contentchanged');
@@ -849,7 +848,6 @@ var csl = {
                         //the map has been created so shift the center of the map
                         else {
                             //move the center of the map
-                            //this.gmap.panTo(results[0].geometry.location);
                             _this.homePoint = results[0].geometry.location;
                             _this.homeAdress = results[0].formatted_address;
 
@@ -948,14 +946,14 @@ var csl = {
             var url = this.__getMarkerUrl(aMarker);
 
 			if (url != '') {
-				html += "| <a href='"+url+"' target='"+(slplus.use_same_window?'_self':'_blank')+"' class='storelocatorlink'><nobr>" + slplus.website_label +" </nobr></a>";
+				html += "| <a href='"+url+"' target='"+(slplus.use_same_window?'_self':'_blank')+"' id='slp_marker_website' class='storelocatorlink'><nobr>" + slplus.website_label +" </nobr></a>";
 			}
 
 			if (aMarker.email.indexOf("@") != -1 && aMarker.email.indexOf(".") != -1) {
 				if (!this.useEmailForm) {
-					html += "| <a href='mailto:"+aMarker.email+"' target='_blank' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a>";
+					html += "| <a href='mailto:"+aMarker.email+"' target='_blank' id='slp_marker_email' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a>";
 				} else {
-					html += "| <a href='javascript:cslutils.show_email_form("+'"'+aMarker.email+'"'+");' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a><br/>";
+					html += "| <a href='javascript:cslutils.show_email_form("+'"'+aMarker.email+'"'+");' id='slp_marker_email' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a><br/>";
 				}
 			}
 
@@ -1076,55 +1074,69 @@ var csl = {
   	  	 * returns: none
   	  	 */
 		this.loadMarkers = function(center, radius, tags) {
-			//determines if we need to invent real variables (usually only done at the beginning)
-			var realsearch = true;
-			if (this.forceAll) {
-				realsearch = false;
-				radius = null;
-				center = null;
-				this.forceAll = false;
-			}
-			this.debugSearch('doing search@' + center + ' for radius of ' + radius);
-			if (center == null) {
-				center = this.gmap.getCenter();
-			}
-			if (radius == null) {
-				radius = 40000;
-			}
-			this.lastCenter = center;
-			this.lastRadius = radius;
-			if (tags == null) { tags = ''; }
-			this.debugSearch('searching: ' + center.lat() +','+ center.lng());
-			var name = this.saneValue('nameSearch', '');
-			var action = null;
-			if (realsearch) {
-                var formObj = jQuery('#searchForm').formParams();
-				action = {action:'csl_ajax_search',lat:center.lat(),lng:center.lng(),radius:radius, tags: tags, name:name, address:this.saneValue('addressInput', 'no address entered'),formflds:formObj};
-			}
-			else {
-				action = {action:'csl_ajax_onload',lat:center.lat(),lng:center.lng(),tags:tags };
-			}
-			this.debugSearch(action);
-			var _this = this;
-			var ajax = new csl.Ajax();
-			if (!realsearch) {
-				ajax.send(action, function (response) {
-                    if (typeof response.response != 'undefined') {
-                        _this.dropMarkers.call(_this, response.response);
-                    } else {
-                        if (window.console) { console.log('SLP server did not send back a valid JSONP response on load.'); }
+
+                    //determines if we need to invent real variables (usually only done at the beginning)
+                    var realsearch = true;
+                    if (this.forceAll) {
+                        realsearch = false;
+                        radius = null;
+                        center = null;
+                        this.forceAll = false;
                     }
-				});
-			}
-			else {
-				ajax.send(action, function (response) {
-                    if (typeof response.response != 'undefined') {                    
-    					_this.bounceMarkers.call(_this, response.response);
+                    this.debugSearch('doing search@' + center + ' for radius of ' + radius);
+                    if (center == null) { center = this.gmap.getCenter(); }
+                    if (radius == null) { radius = 40000; }
+                    this.lastCenter = center;
+                    this.lastRadius = radius;
+                    if (tags == null) { tags = ''; }
+                    this.debugSearch('searching: ' + center.lat() +','+ center.lng());
+
+                    var _this = this;
+                    var ajax = new csl.Ajax();
+
+                    // On Load
+                    if (!realsearch) {
+                        var action = {
+                            action  : 'csl_ajax_onload',
+                            lat     : center.lat(),
+                            lng     : center.lng(),
+                            tags    : tags
+                         };
+
+                        this.debugSearch(action);
+
+                        ajax.send(action, function (response) {
+                                if (typeof response.response != 'undefined') {
+                                    _this.dropMarkers.call(_this, response.response);
+                                } else {
+                                    if (window.console) { console.log('SLP server did not send back a valid JSONP response on load.'); }
+                                }
+                            });
+
+                    // Search
                     } else {
-                        if (window.console) { console.log('SLP server did not send back a valid JSONP response on search.'); }
+                        var name = this.saneValue('nameSearch', '');
+                        var action = {
+                            action  : 'csl_ajax_search',
+                            address : this.saneValue('addressInput', 'no address entered'),
+                            formdata: jQuery('#searchForm').serialize(),
+                            lat     : center.lat(),
+                            lng     : center.lng(),
+                            name    : name,
+                            radius  : radius,
+                            tags    : tags,
+                        };
+
+                        this.debugSearch(action);
+
+                        ajax.send(action, function (response) {
+                                if (typeof response.response != 'undefined') {
+                                                    _this.bounceMarkers.call(_this, response.response);
+                                } else {
+                                    if (window.console) { console.log('SLP server did not send back a valid JSONP response on search.'); }
+                                }
+                            });
                     }
-				});
-			}
 		}
 
 		/***************************
@@ -1153,10 +1165,10 @@ var csl = {
   	  	 * returns: none
   	  	 */
 		this.searchLocations = function() {
-			var address = this.saneValue('addressInput', '');
-            jQuery('#map_box_image').hide();
-			jQuery('#map_box_map').show();
-            google.maps.event.trigger(this.gmap, 'resize');
+                    var address = this.saneValue('addressInput', '');
+                    jQuery('#map_box_image').hide();
+		    jQuery('#map_box_map').show();
+                    google.maps.event.trigger(this.gmap, 'resize');
 
 			// Address was given, use it...
 			//
@@ -1199,10 +1211,10 @@ var csl = {
 			var elink = '';
 			if (aMarker.email.indexOf('@') != -1 && aMarker.email.indexOf('.') != -1) {
 				if (!slplus.use_email_form) {
-					elink = "<a href='mailto:"+aMarker.email+"' target='_blank' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a><br/>";
+					elink = "<a href='mailto:"+aMarker.email+"' target='_blank'  id='slp_marker_email' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a><br/>";
 				}
 				else {
-					elink = "<a href='javascript:cslutils.show_email_form("+'"'+aMarker.email+'"'+");' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a><br/>";
+					elink = "<a href='javascript:cslutils.show_email_form("+'"'+aMarker.email+'"'+");'  id='slp_marker_email' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a><br/>";
 				}
 			}
 

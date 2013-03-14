@@ -218,7 +218,7 @@ class wpCSL_license__slplus {
         register_setting($this->prefix.'-settings', $this->prefix.'-license_key');
         register_setting($this->prefix.'-settings', $this->prefix.'-purchased');
         
-        if ($this->has_packages) {
+        if (($this->has_packages) && is_array($this->packages))  {
             foreach ($this->packages as $aPackage) {
                 $aPackage->initialize_options_for_admin();
             }
