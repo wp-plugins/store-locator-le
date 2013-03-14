@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
 Tags: google,bing,map,directory,location,place,store,dealer,shop,business,retail,brick,mortar,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 3.9.1
+Stable tag: 3.9.2
 
 A high end location management system that makes it easy to put a store location finder on your site.  Extensive premium add-on library available!
 
@@ -32,7 +32,7 @@ Re-label entry fields and results fields.
 
 = Features =
 
-* Very active support via the [free support forum](http://wordpress.org/support/plugin/store-locator-le).
+* Very active support via the [free support forum](http://www.charlestonsw.com/forums/).
 * Regularly updated [online documentation](http://wordpress.org/support/plugin/store-locator-le).
 * Multiple [premium add-ons available](http://wordpress.org/support/plugin/store-locator-le).
 * You can use it for a [variety of countries](http://wordpress.org/support/plugin/store-locator-le), as supported by Google Maps.
@@ -88,7 +88,7 @@ If you are a plugin developer you will be interested in the new "Roll Your Own" 
 
 = Support =
 
-Support for the plugin can be found in the [WordPress Forum](http://wordpress.org/support/plugin/store-locator-le).  If you have an urgent issue or want one-on-one support you can [purchase premium support](http://www.charlestonsw.com/product/product-support).
+Support for the plugin can be found in the [CSA Forums](http://www.charlestonsw.com/forums/).  If you have an urgent issue or want one-on-one support you can [purchase premium support](http://www.charlestonsw.com/product/product-support).
 
 You can also view the [CSA Product Documentation](http://www.charlestonsw.com/support/documentation) for more information about the plugin including [known conflicts](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/troubleshooting/known-conflicts/) with themes and plugins.
 
@@ -136,7 +136,7 @@ Rating the plugin, hopefully with 5 stars, helps increase the exposure on WordPr
 The more add-ons I sell the easier it is to put food on the table and give me more time to code cool new features.
 No ratings, no food, more hours working as the Walmart Greeter, less coolness in the plugins.
 
-Give me a chance to address your concerns if this plugin doesn't earn 5 stars by [contacting me](http://www.charlestonsw.com/mindset/contact-us/) directly or by posting in the [support forum](http://wordpress.org/support/plugin/store-locator-le) here at WordPress.
+Give me a chance to address your concerns if this plugin doesn't earn 5 stars by [contacting me](http://www.charlestonsw.com/mindset/contact-us/) directly or by posting in the [support forum](http://www.charlestonsw.com/forums/) at the CSA website.
 
 == Installation ==
 
@@ -190,7 +190,7 @@ Basic upgrades are free and available directly from the WordPress plugin reposit
 
 = How do I report a bug? =
 
-Post in the [support forum](http://wordpress.org/support/plugin/store-locator-le).
+Post in the [support forum](http://www.charlestonsw.com/forums/).
 You can also [contact me](http://www.charlestonsw.com/product/product-support) to request premium support if you need immediate assistance.
 
 = What are the premium add-ons? =
@@ -284,6 +284,19 @@ You will need to go to the new "Store Pages" tab and re-enable some of your sett
 
 Updating from a version 3.8.6 or earlier?
 You will likely need to reset your home and destination map markers.
+
+= 3.9.2 (March 2013) =
+
+* Enhancement: Store Locator Plus themes are now in the free base product.
+* Enhancement: Fix some of the CSS themes.
+* Enhancement: Take some of the newline/carriage return white space out of search form interface, makes some themes happier with the layout.
+* Enhancement: Behind-the-scenes updates to better support [Tagalong](http://www.charlestonsw.com/product/store-locator-plus-tagalong/) and other add-on packs.
+* Enhancement: Better code documentation with online publication for third party devs via phpDocumentor2.
+* Enhancement: Lighten some of the adminUI object testing, make loading admin pages a microsecond faster.
+* Enhancement: Add id=slp_marker_email to popup bubble email link for better CSS access.
+* Enhancement: Add id=slp_marker_website to popup bubble web link for better CSS access.
+* Enhancement: Make manage locations less "wrappy" on location info.
+* Fix: Popup Email Form URL now addresses the correct file location.
 
 = 3.9.1 (February 27th 2013) =
 

@@ -30,11 +30,26 @@ class wpCSL_notifications__slplus {
     /**
      * Add a notification to the notice stack
      *
-     * @param type $level
-     * @param type $content
-     * @param type $link
+     * @param mixed $level - int (1 severe, 9 info) string 'error','warning','info'
+     * @param string $content - the message
+     * @param string $link - url
      */
     function add_notice($level = 1, $content='', $link = null) {
+        
+        // Set numeric level for string input
+        //
+        switch ($level):
+            case 'error':
+                $level = 1;
+                break;
+            case 'warning':
+                $level = 5;
+                break;
+            case 'info':
+                $level = 9;
+                break;
+        endswitch;
+
         $this->notices[] = new wpCSL_notifications_notice__slplus(
             array(
                 'level' => $level,

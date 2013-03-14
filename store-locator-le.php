@@ -3,7 +3,7 @@
 Plugin Name: Store Locator Plus
 Plugin URI: http://www.charlestonsw.com/products/store-locator-plus/
 Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Gooogle Maps.  This is a highly customizable, easily expandable, enterprise-class location management system.
-Version: 3.9.1
+Version: 3.9.2
 Author: Charleston Software Associates
 Author URI: http://www.charlestonsw.com
 License: GPL3
@@ -32,7 +32,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 */
 if (defined('SLPLUS_VERSION') === false) {
-    define('SLPLUS_VERSION', '3.9.1');
+    define('SLPLUS_VERSION', '3.9.2');
 }
 
 if ( 
@@ -106,11 +106,11 @@ if (defined('SLPLUS_PREFIX') === false) {
 }
 
 //====================================================================
-// Main Plugin Configuration ($slplus_plugin)
+// Main Plugin Configuration
 //====================================================================
 
 /**
- * @var wpCSL_plugin__slplus $slplus_plugin the wpCSL plugin object
+ * @var SLPlus $slplus_plugin an extended wpCSL object for this plugin.
  */
 global $slplus_plugin;
 
@@ -121,19 +121,36 @@ global $slplus_plugin;
  * installed, and if not then we load it.
  */
 if (defined('SLPLUS_PLUGINDIR')) {
+
+    // Hook up WPCSL
+    //
     if (class_exists('wpCSL_plugin__slplus') === false) {
         require_once(SLPLUS_PLUGINDIR.'WPCSL-generic/classes/CSL-plugin.php');
     }
 
+    // SLPlus Base Class
+    //
+    if (class_exists('SLPlus') == false) {
+        require_once(SLPLUS_PLUGINDIR.'include/class.slplus.php');
+    }
+
+    // Hook up the Activation class
+    //
     if (class_exists('SLPlus_Activation') == false) {
         require_once(SLPLUS_PLUGINDIR.'include/storelocatorplus-activation_class.php');
+    }
+
+    // Hook up the Locations class
+    //
+    if (class_exists('SLPlus_Location') == false) {
+        require_once(SLPLUS_PLUGINDIR.'include/class.location.php');
     }
 
     /**
      * This section defines the settings for the admin menu.
      */
     global $wpdb;
-    $slplus_plugin = new wpCSL_plugin__slplus(
+    $slplus_plugin = new SLPlus(
         array(
             'on_update' => array('SLPlus_Activate', 'update'),
             'version' => SLPLUS_VERSION,
@@ -208,6 +225,7 @@ if (defined('SLPLUS_PLUGINDIR')) {
             'products_obj_name'     => 'none',
             'settings_obj_name'     => 'default',
 
+            'themes_enabled'        => true,
             'themes_obj_name'       => 'default',
             'no_default_css'        => true,
 
@@ -221,7 +239,7 @@ if (defined('SLPLUS_PLUGINDIR')) {
             'support_url'           => 'http://www.charlestonsw.com/support/documentation/store-locator-plus/',
             'purchase_url'          => 'http://www.charlestonsw.com/product/store-locator-plus-2/',
             'rate_url'              => 'http://wordpress.org/extend/plugins/store-locator-le/',
-            'forum_url'             => 'http://wordpress.org/support/plugin/store-locator-le',
+            'forum_url'             => 'http://www.charlestonsw.com/forums/',
             'updater_url'           => 'http://www.charlestonsw.com/updater/index.php',
 
             'basefile'              => SLPLUS_BASENAME,

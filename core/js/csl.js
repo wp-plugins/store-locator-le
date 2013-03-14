@@ -5,9 +5,6 @@
 
 /***************************
   * CSA Labs Namespace
-  *
-  * For stuff to do awesome stuff like save lobby jones if he got stuck in a tree.
-  *
   */
 var csl = {
 
@@ -293,8 +290,6 @@ var csl = {
 		 *
 		 */
 		this.show_email_form = function(to) {
-			var allScripts=document.getElementsByTagName('script');
-			var add_base=allScripts[allScripts.length -2].src.replace(/\/js\/csl.js(.*)$/,'');
 			emailWin=window.open("about:blank","",
 				"height=220,width=310,scrollbars=no,top=50,left=50,status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=0");
 			with (emailWin.document) {
@@ -314,7 +309,7 @@ var csl = {
 				writeln("</style>");
 
 				writeln("<form id='emailForm' method='GET'");
-				writeln(    " action='"+add_base+"/send-email.php'>");
+				writeln(    " action='"+slplus.core_url+"send-email.php'>");
 
 				writeln("    <div id='email_form_content'>");
 
@@ -951,14 +946,14 @@ var csl = {
             var url = this.__getMarkerUrl(aMarker);
 
 			if (url != '') {
-				html += "| <a href='"+url+"' target='"+(slplus.use_same_window?'_self':'_blank')+"' class='storelocatorlink'><nobr>" + slplus.website_label +" </nobr></a>";
+				html += "| <a href='"+url+"' target='"+(slplus.use_same_window?'_self':'_blank')+"' id='slp_marker_website' class='storelocatorlink'><nobr>" + slplus.website_label +" </nobr></a>";
 			}
 
 			if (aMarker.email.indexOf("@") != -1 && aMarker.email.indexOf(".") != -1) {
 				if (!this.useEmailForm) {
-					html += "| <a href='mailto:"+aMarker.email+"' target='_blank' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a>";
+					html += "| <a href='mailto:"+aMarker.email+"' target='_blank' id='slp_marker_email' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a>";
 				} else {
-					html += "| <a href='javascript:cslutils.show_email_form("+'"'+aMarker.email+'"'+");' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a><br/>";
+					html += "| <a href='javascript:cslutils.show_email_form("+'"'+aMarker.email+'"'+");' id='slp_marker_email' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a><br/>";
 				}
 			}
 
@@ -1216,10 +1211,10 @@ var csl = {
 			var elink = '';
 			if (aMarker.email.indexOf('@') != -1 && aMarker.email.indexOf('.') != -1) {
 				if (!slplus.use_email_form) {
-					elink = "<a href='mailto:"+aMarker.email+"' target='_blank' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a><br/>";
+					elink = "<a href='mailto:"+aMarker.email+"' target='_blank'  id='slp_marker_email' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a><br/>";
 				}
 				else {
-					elink = "<a href='javascript:cslutils.show_email_form("+'"'+aMarker.email+'"'+");' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a><br/>";
+					elink = "<a href='javascript:cslutils.show_email_form("+'"'+aMarker.email+'"'+");'  id='slp_marker_email' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a><br/>";
 				}
 			}
 

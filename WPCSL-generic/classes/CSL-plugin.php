@@ -50,11 +50,11 @@
  *
  * @author Lance Cleveland <lance@charlestonsw.com>
  * @copyright 2013 Charleston Sofware Associates, LLC
- * @package WPCSL
- * @version 2.1
+ * @package wpCSL
+ * @version 2.1.1
  *
  **/
-if (!defined('WPCSL__slplus__VERSION')) { define('WPCSL__slplus__VERSION', '2.1'); }
+if (!defined('WPCSL__slplus__VERSION')) { define('WPCSL__slplus__VERSION', '2.1.1'); }
 
 // WP App Store Affiliate ID
 if (!defined('WPAS_AFFILIATE_ID')) { define('WPAS_AFFILIATE_ID','3368'); }
@@ -66,7 +66,6 @@ if (!defined('WPAS_AFFILIATE_ID')) { define('WPAS_AFFILIATE_ID','3368'); }
 // 
 require_once('CSL-helper_class.php');
 require_once('CSL-license_class.php');
-require_once('CSL-notifications_class.php');
 require_once('CSL-settings_class.php');
 require_once('CSL-themes_class.php');
 
@@ -75,6 +74,8 @@ require_once('CSL-themes_class.php');
  * The base WPCSL class, to which all the other WPCSL objects get attached.
  *
  * @property boolean $display_settings Render the display panel on the settings interface? true = yes.
+ *
+ * @property wpCSL_notifications__slplus $notifications - a notification object
  */
 class wpCSL_plugin__slplus {
 
@@ -86,6 +87,13 @@ class wpCSL_plugin__slplus {
      * @var boolean display_settings render the display panel on the settings interface?
      */
     private $display_settings = false;
+    
+    /**
+     * The notification object, for display messages to users in the admin panel.
+     * 
+     * @var wpCSL_notifications__slplus $notifications 
+     */
+    public  $notifications;
 
     //---------------------------------------------
     // Methods
@@ -222,12 +230,6 @@ class wpCSL_plugin__slplus {
         // Debugging Flag
         $this->debugging = (get_option($this->prefix.'-debugging') == 'on');
 
-        $this->notifications_config = array(
-            'prefix' => $this->prefix,
-            'name' => $this->name,
-            'url' => 'options-general.php?page='.$this->prefix.'-options',
-        );
-        
         if ($this->driver_type != 'none') {
             require_once('CSL-products_class.php');
             $this->products_config = array(
@@ -385,22 +387,24 @@ class wpCSL_plugin__slplus {
         }
     }    
 
-    /**-------------------------------------
-     ** method: create_notifications
-     **/
+    /**
+     * Setup the WPCSL Notifications Object.
+     *
+     * Does not include the class or invoke the object if the class type is 'none'.
+     *
+     * @param string $class - 'none' to disable notifications
+     */
     function create_notifications($class = 'none') {
-        switch ($class) {
-            case 'none':
-                break;
-
-            case 'wpCSL_notifications__slplus':
-            case 'default':
-            default:
-                $this->notifications = 
-                    new wpCSL_notifications__slplus($this->notifications_config);
-        }
+        if ($class==='none') { return; }
+        require_once('CSL-notifications_class.php');
+        $this->notifications_config = array(
+            'prefix' => $this->prefix,
+            'name' => $this->name,
+            'url' => 'options-general.php?page='.$this->prefix.'-options',
+        );
+        $this->notifications = 
+            new wpCSL_notifications__slplus($this->notifications_config);
     }
-    
    
     /**-------------------------------------
      ** method: create_products
@@ -841,7 +845,17 @@ class wpCSL_plugin__slplus {
         // If we have an exec function and get locales, show the pulldown.
         //        
         if ($this->show_locale){
-            if (function_exists('exec')) {
+            // Exec function exists.
+            // Exec is not disabled.
+            // Safe Mode is not on.
+            $exec_enabled =
+                 function_exists('exec')                                            &&
+                 !in_array('exec', array_map('trim',explode(', ', ini_get('disable_functions'))))     &&
+                 !(strtolower( ini_get( 'safe_mode' ) ) != 'off')
+                 ;
+
+            if ($exec_enabled) {
+
                 if (exec('locale -a', $locales)) {
                     $locale_custom = array();
         
@@ -899,12 +913,11 @@ class wpCSL_plugin__slplus {
        if (isset($this->rate_url)){
 
         	$time = time(); 
-            $destruct_time =($time+(3*24*60*60));
             
             //-use this to force the notification for 72 hours checked or not
             //update_option($this->prefix."-notice-countdown", $destruct_time);
             
-            $destruct_time = get_option($this->prefix."-notice-countdown", $destruct_time);
+            $destruct_time = get_option($this->prefix."-notice-countdown", ($time+(3*24*60*60)));
             // have we already expired a timer
             if ($destruct_time === false) {
                 return;
