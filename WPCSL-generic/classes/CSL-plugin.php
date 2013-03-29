@@ -51,10 +51,10 @@
  * @author Lance Cleveland <lance@charlestonsw.com>
  * @copyright 2013 Charleston Sofware Associates, LLC
  * @package wpCSL
- * @version 2.1.1
+ * @version 2.1.2
  *
  **/
-if (!defined('WPCSL__slplus__VERSION')) { define('WPCSL__slplus__VERSION', '2.1.1'); }
+if (!defined('WPCSL__slplus__VERSION')) { define('WPCSL__slplus__VERSION', '2.1.2'); }
 
 // WP App Store Affiliate ID
 if (!defined('WPAS_AFFILIATE_ID')) { define('WPAS_AFFILIATE_ID','3368'); }
@@ -851,7 +851,7 @@ class wpCSL_plugin__slplus {
             $exec_enabled =
                  function_exists('exec')                                            &&
                  !in_array('exec', array_map('trim',explode(', ', ini_get('disable_functions'))))     &&
-                 !(strtolower( ini_get( 'safe_mode' ) ) != 'off')
+                 (strtolower( ini_get( 'safe_mode' ) ) != 'off')
                  ;
 
             if ($exec_enabled) {

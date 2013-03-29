@@ -12,8 +12,7 @@
  * @since 2.0.0
  * @version 2.0.13
  *
- * @package wpCSL
- * @subpackage wpCSL_helper
+ * @package wpCSL\wpCSL_helper
  */
 
 
@@ -195,6 +194,7 @@ class wpCSL_helper__slplus {
             }
         }
         if (isset($_POST[$optionname])) {
+            $_POST[$optionname] = stripslashes_deep($_POST[$optionname]);
             update_option($optionname,$_POST[$optionname]);
         }
     }
@@ -307,7 +307,7 @@ class wpCSL_helper__slplus {
            $this->parent->data[$element] = $default;
        }
 
-       return $this->parent->data[$element];
+       return esc_html($this->parent->data[$element]);
     }
 
     /**

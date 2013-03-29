@@ -241,7 +241,6 @@ class SLPlus_AdminUI_MapSettings {
                         SLPLUS_PREFIX.'_label_fax'              ,
                         SLPLUS_PREFIX.'_label_hours'            ,
                         SLPLUS_PREFIX.'_label_phone'            ,
-                        SLPLUS_PREFIX.'_message_noresultsfound' ,
                         SLPLUS_PREFIX.'_tag_search_selections'  ,
                         SLPLUS_PREFIX.'-map_language'           ,
                         SLPLUS_PREFIX.'_maxreturned'            ,
@@ -779,11 +778,12 @@ class SLPlus_AdminUI_MapSettings {
                 );
         }
 
-        // Filter on Results : Search Output Box
+        // FILTER: slp_settings_results_locationinfo - add input fields to results locaiton info
         //
-        $slpDescription = apply_filters('slp_add_results_settings',$slpDescription);
+        $slpDescription = apply_filters('slp_settings_results_locationinfo',$slpDescription);
+
         $slpDescription =
-            "<div class='section_column'>".
+            "<div class='section_column' id='results_location_info'>".
                 "<div class='map_designer_settings'>".
                 $slpDescription .
                 "</div>" .
@@ -839,15 +839,11 @@ class SLPlus_AdminUI_MapSettings {
                    )
                    ;
 
-        if ($this->plugin->license->packages['Pro Pack']->isenabled) {
-            $slpDescription .= $this->CreateInputDiv(
-                    '_message_noresultsfound',
-                    __('No Results Message', 'csa-slplus'),
-                    __('No results found message that appears under the map.','csa-slplus'),
-                    SLPLUS_PREFIX,
-                    __('Results not found.','csa-slplus')
-                    );
-        }
+        // FILTER: slp_settings_results_labels - add input fields to results labels
+        //
+        $slpDescription = apply_filters('slp_settings_results_labels',$slpDescription);
+
+
         $slpDescription .= '</div>';
 
 
@@ -985,17 +981,17 @@ class SLPlus_AdminUI_MapSettings {
         $slpDescription .= ob_get_clean();
         $slpDescription .= '</div>';
 
-        /**
-         * Tags Section
-         */
-        $slpDescription .= "<div class='section_column'>";
-        $slpDescription .= '<h2>'.__('Tags (Pro Pack)', 'csa-slplus').'</h2>';
-        $slpDescription .= '<div class="section_column_content">';
 
         //----------------------------------------------------------------------
         // Pro Pack Enabled
         //
         if ($this->plugin->license->packages['Pro Pack']->isenabled) {
+            /**
+             * Tags Section
+             */
+            $slpDescription .= "<div class='section_column'>";
+            $slpDescription .= '<h2>'.__('Tags', 'csa-slplus').'</h2>';
+            $slpDescription .= '<div class="section_column_content">';
             $slpDescription .= $this->plugin->helper->CreateCheckboxDiv(
                 '_show_tag_search',
                 __('Tag Input','csa-slplus'),
@@ -1012,14 +1008,11 @@ class SLPlus_AdminUI_MapSettings {
                 __('Add "any" to tags pulldown','csa-slplus'),
                 __('Add an "any" selection on the tag pulldown list thus allowing the user to show all locations in the area, not just those matching a selected tag.', 'csa-slplus')
                 );
+            ob_start();
+            do_action('slp_add_search_form_tag_setting');
+            $slpDescription .= ob_get_clean();
+            $slpDescription .= '</div></div>';
         }
-
-
-        ob_start();
-        do_action('slp_add_search_form_tag_setting');
-        $slpDescription .= ob_get_clean();
-
-        $slpDescription .= '</div></div>';
 
         // Search Form Labels
         //

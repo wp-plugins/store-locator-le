@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
 Tags: google,bing,map,directory,location,place,store,dealer,shop,business,retail,brick,mortar,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 3.9.2
+Stable tag: 3.9.3
 
 A high end location management system that makes it easy to put a store location finder on your site.  Extensive premium add-on library available!
 
@@ -138,12 +138,32 @@ No ratings, no food, more hours working as the Walmart Greeter, less coolness in
 
 Give me a chance to address your concerns if this plugin doesn't earn 5 stars by [contacting me](http://www.charlestonsw.com/mindset/contact-us/) directly or by posting in the [support forum](http://www.charlestonsw.com/forums/) at the CSA website.
 
+= Help Me "Speak" Your Language =
+
+Help me with translating the English words and phrases in the plugin and I will give you a premium add-on or plugin.
+I will send you the translation files that WordPress creates, you send back the translation, I add any requested premium add-on to your account.
+[Contact me](http://www.charlestonsw.com/mindset/contact-us/) to request the files and let me know which language you want to translate.
+Offer available to first complete translation of this plugin or for notable updates to existing translation files.
+Upon request I will also put a link to your site in the "special thanks" section.
+
+Any EASIER way to help with translations?  Load the (Codestyling Localization plugin)[http://wordpress.org/extend/plugins/codestyling-localization/] and then find it under "Tools/Localization" in your admin panel.
+
+Here is the process, in case you are wondering:
+1. I run php makepot.php for the plugin.
+2. I send you a csa-slplus.pot file similar to [this one](http://wp.me/a36f2N-2aA).
+3. You send me back a po file named after the specific locale such as csa-slplus-es_MX.po
+4. I generate the .mo file for that locale with the msgfmt -o filename.mo filename.po command.
+5. I ship the pot, po, and mo files in the next release.
+6. Users see your translation text when their WordPress install is setup for the matching locale.
+7. You tell me which premium plugin or add-on pack that I created that you would like to have.
+8. The world is a happier place, especially for my friends that have as much trouble reading English as I do just about any other language!
+
 == Installation ==
 
 = Requirements =
 
 * PHP 5.2.4+ (same as WordPress 3.3.2)
-* Wordpress: 3.3.2+
+* WordPress: 3.3.2+
 
 = Main Plugin =
 
@@ -285,7 +305,30 @@ You will need to go to the new "Store Pages" tab and re-enable some of your sett
 Updating from a version 3.8.6 or earlier?
 You will likely need to reset your home and destination map markers.
 
-= 3.9.2 (March 2013) =
+= 3.9.3 =
+
+* Enhancement: Better debugging with Debug Bar hooks.
+* Enhancement: Drop duplicate language files in ./core/languages.
+* Enhancement: Load textdomain (for language support) in the proper place (init).
+* Enhancement: Give pot/po/mo language files the proper name and the proper directory (./languages).
+* Enhancement: Get rid of unused PHP script, lessens security vulnerabilities.
+* Enhancement: Eliminate unused variables and speed up front end UI a tick.
+* Enhancement: Default CSS theme is now Default, Old.
+* Enhancement: Default CSS theme has been updated to take elements I liked from Clean Simple White.
+* Enhancement: Immediately show locations now shows home marker where base of search is centered.
+* Enhancement: [Pro Pack](http://www.charlestonsw.com/product/store-locator-plus) report downloads are now AJAX based, lighter & less risky.
+* Enhancement: [Hooks & Filters](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/) add slp_manage_expanded_location_columns.
+* Enhancement: [Hooks & Filters](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/) add slp_manage_priority_location_columns.
+* Enhancement: [Hooks & Filters](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/) add slp_settings_results_locationinfo.
+* Enhancement: [Hooks & Filters](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/) add slp_search_default_address filter.
+* Change: Image URL field has been removed form base product (was not being used), is now in [Enhanced Results](http://www.charlestonsw.com/product/store-locator-plus-enhanced-results).
+* Change: No Results message customization moved from [Pro Pack](http://www.charlestonsw.com/product/store-locator-plus) to [Enhanced Results](http://www.charlestonsw.com/product/store-locator-plus-enhanced-results).
+* Fix: Stop [Pro Pack](http://www.charlestonsw.com/product/store-locator-plus) reporting JavaScript from loading on all pages.
+* Fix: Got the locale setting working again.
+* Fix: Multiple map settings fields can now have ' as valid field data.
+* Fix: Immediately show locations works again.
+
+= 3.9.2 =
 
 * Enhancement: Store Locator Plus themes are now in the free base product.
 * Enhancement: Fix some of the CSS themes.
@@ -298,7 +341,7 @@ You will likely need to reset your home and destination map markers.
 * Enhancement: Make manage locations less "wrappy" on location info.
 * Fix: Popup Email Form URL now addresses the correct file location.
 
-= 3.9.1 (February 27th 2013) =
+= 3.9.1 =
 
 * Enhancement: Speed up [Pro Pack](http://www.charlestonsw.com/product/store-locator-plus) bulk upload.
 * Enhancement: Clean up [Pro Pack](http://www.charlestonsw.com/product/store-locator-plus) bulk upload messages.
@@ -307,7 +350,7 @@ You will likely need to reset your home and destination map markers.
 * Fix: map directions link when upgrade is made from the 3.8.X release with broken maps.googleapis.com setting.
 * Fix: Workaround the dbDelta() bug, stop creating duplicate database indexes.
 
-= 3.9 (February 2013) =
+= 3.9 =
 
 * Change: Store Pages is no longer a license key based add-on, it requires a separate .zip download.
 * Enhancement: Add [slp_addlocation_fieldvalue fitler](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/location-management-actions-filters/)

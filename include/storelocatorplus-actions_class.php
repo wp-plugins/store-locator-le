@@ -237,6 +237,7 @@ class SLPlus_Actions {
      */
     function init() {
         if (!$this->set_Plugin()) { return; }
+        load_plugin_textdomain('csa-slplus', false, SLPLUS_PLUGINDIR . 'languages/');
 
         // Fire the SLP init starting trigger
         //
@@ -319,23 +320,6 @@ class SLPlus_Actions {
         // Fire the SLP initialized trigger
         //
         do_action('slp_init_complete', $this);
-    }
-
-    /**
-     * Set the starting point for the center of the map.
-     *
-     * Uses country by default.
-     */
-    function SetMapCenter() {
-        global $slplus_plugin;
-        $customAddress = get_option(SLPLUS_PREFIX.'_map_center');
-        if (
-            (preg_replace('/\W/','',$customAddress) != '') &&
-            $slplus_plugin->license->packages['Pro Pack']->isenabled
-            ) {
-            return str_replace(array("\r\n","\n","\r"),', ',esc_attr($customAddress));
-        }
-        return esc_attr(get_option('sl_google_map_country','United States'));
     }
 
     /**

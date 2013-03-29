@@ -3,10 +3,13 @@
 Plugin Name: Store Locator Plus
 Plugin URI: http://www.charlestonsw.com/products/store-locator-plus/
 Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Gooogle Maps.  This is a highly customizable, easily expandable, enterprise-class location management system.
-Version: 3.9.2
+Version: 3.9.3
 Author: Charleston Software Associates
 Author URI: http://www.charlestonsw.com
 License: GPL3
+
+Text Domain: csa-slplus
+Domain Path: /languages/
 
 Copyright 2013  Charleston Software Associates (info@charlestonsw.com)
 
@@ -32,7 +35,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 */
 if (defined('SLPLUS_VERSION') === false) {
-    define('SLPLUS_VERSION', '3.9.2');
+    define('SLPLUS_VERSION', '3.9.3');
 }
 
 if ( 
@@ -146,6 +149,14 @@ if (defined('SLPLUS_PLUGINDIR')) {
         require_once(SLPLUS_PLUGINDIR.'include/class.location.php');
     }
 
+
+    // Hook up the Pro Pack class
+    // TODO: this really needs to be a separate plugin.
+    //
+    if (class_exists('SLPPro') == false) {
+        require_once(SLPLUS_PLUGINDIR . '/slp-pro/slp-pro.php');
+    }
+
     /**
      * This section defines the settings for the admin menu.
      */
@@ -241,6 +252,7 @@ if (defined('SLPLUS_PLUGINDIR')) {
             'rate_url'              => 'http://wordpress.org/extend/plugins/store-locator-le/',
             'forum_url'             => 'http://www.charlestonsw.com/forums/',
             'updater_url'           => 'http://www.charlestonsw.com/updater/index.php',
+            'broadcast_url'         => 'http://www.charlestonsw.com/signage/index.php?sku=SLPLUS&version='.SLPLUS_VERSION,
 
             'basefile'              => SLPLUS_BASENAME,
             'plugin_path'           => SLPLUS_PLUGINDIR,
@@ -261,14 +273,6 @@ if (defined('SLPLUS_PLUGINDIR')) {
             'debug_instructions'     => __('Turn debugging off via General Settings in the Plugin Environment panel.','csa-slplus')
         )
     );
-
-
-    // Pro Pack
-    //
-    require_once(SLPLUS_PLUGINDIR . '/slp-pro/slp-pro.php');
-    if (isset($slplus_plugin->ProPack)) {
-        $slplus_plugin->ProPack->add_package();
-    }
 }
 
 //====================================================================
@@ -319,9 +323,6 @@ add_action('shutdown'           ,array($slplus_plugin->Actions,'shutdown')      
 //
 add_action('admin_menu'         ,array($slplus_plugin->Actions,'admin_menu')           );
 add_action('admin_init'         ,array($slplus_plugin->Actions,'admin_init'),10        );
-if (isset($slplus_plugin->ProPack)) {
-    add_action('admin_head'         ,array($slplus_plugin->ProPack,'report_downloads')     );
-}
 
 //------------------------
 // AJAX Hooks
@@ -358,9 +359,4 @@ add_action('wp_ajax_license_reset_propack'      , array($slplus_plugin->AjaxHand
 add_shortcode('STORE-LOCATOR', array($slplus_plugin->UI,'render_shortcode'));
 add_shortcode('SLPLUS',array($slplus_plugin->UI,'render_shortcode'));
 add_shortcode('slplus',array($slplus_plugin->UI,'render_shortcode'));
-
-
-// Text Domains
-//
-load_plugin_textdomain('csa-slplus', false, SLPLUS_COREDIR . 'languages/');
 

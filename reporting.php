@@ -402,6 +402,7 @@ $slpSectionDescription .= '
               <input id="export_results"  class="button-secondary button-export" type="button" value="'.__('Top Results',SLPLUS_PREFIX).'">
           </div>
         </div>
+        <iframe id="secretIFrame" src="" style="display:none; visibility:hidden;"></iframe>
     </div>
     ';
 

@@ -320,7 +320,7 @@ table#map_table td {
 	font-family:Arial;
 	padding:20px;
 	font-size:18px;
-	text-align:justified;
+	text-align:justify;
 }
 .no_results_found {
 	/*shown if no results found */

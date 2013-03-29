@@ -15,7 +15,13 @@ class SLPlus_AjaxHandler {
     //-------------------------------------
     // Properties
     //-------------------------------------
-    public $parent = null;
+    
+    /**
+     * The plugin object.
+     * 
+     * @var SLPlus $plugin 
+     */
+    public $plugin;
 
 
     //----------------------------------
@@ -29,19 +35,19 @@ class SLPlus_AjaxHandler {
     }
 
     /**
-     * Set the parent property to point to the primary plugin object.
+     * Set the plugin property to point to the primary plugin object.
      *
      * Returns false if we can't get to the main plugin object.
      *
      * @global wpCSL_plugin__slplus $slplus_plugin
      * @return boolean true if plugin property is valid
      */
-    function setParent() {
-        if (!isset($this->parent) || ($this->parent == null)) {
+    function setPlugin() {
+        if (!isset($this->plugin) || ($this->plugin == null)) {
             global $slplus_plugin;
-            $this->parent = $slplus_plugin;
+            $this->plugin = $slplus_plugin;
         }
-        return (isset($this->parent) && ($this->parent != null));
+        return (isset($this->plugin) && ($this->plugin != null));
     }
 
     /**
@@ -87,27 +93,24 @@ class SLPlus_AjaxHandler {
     /**
      * Handle AJAX request for OnLoad action.
      *
-     * @global type $wpdb
      */
     function csl_ajax_onload() {
-        global $wpdb;
         $username=DB_USER;
         $password=DB_PASSWORD;
         $database=DB_NAME;
         $host=DB_HOST;
-        $dbPrefix = $wpdb->prefix;
-        $this->setParent();
+        $this->setPlugin();
 
         $connection=mysql_connect ($host, $username, $password);
         if (!$connection) {
-            die (json_encode( array('success' => false, 'slp_version' => $this->parent->version, 'response' => 'Not connected : ' . mysql_error())));
+            die (json_encode( array('success' => false, 'slp_version' => $this->plugin->version, 'response' => 'Not connected : ' . mysql_error())));
         }
 
         // Set the active MySQL database
         $db_selected = mysql_select_db($database, $connection);
         mysql_query("SET NAMES utf8");
         if (!$db_selected) {
-          die (json_encode( array('success' => false, 'slp_version' => $this->parent->version, 'response' => 'Can\'t use db : ' . mysql_error())));
+          die (json_encode( array('success' => false, 'slp_version' => $this->plugin->version, 'response' => 'Can\'t use db : ' . mysql_error())));
         }
 
         $num_initial_displayed=trim(get_option('sl_num_initial_displayed','25'));
@@ -141,7 +144,7 @@ class SLPlus_AjaxHandler {
         $query = sprintf(
             "SELECT *,".
             "( $multiplier * acos( cos( radians('%s') ) * cos( radians( sl_latitude ) ) * cos( radians( sl_longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( sl_latitude ) ) ) ) AS sl_distance ".
-            "FROM ${dbPrefix}store_locator ".
+            "FROM {$this->plugin->db->prefix}store_locator ".
             "WHERE sl_longitude<>'' and sl_longitude<>'' %s %s ".
             "HAVING (sl_distance < '%s') ".
             'ORDER BY sl_distance ASC '.
@@ -171,7 +174,7 @@ class SLPlus_AjaxHandler {
         echo json_encode( 
                 array(  'success'       => true,
                         'count'         => count($response) ,
-                        'slp_version'   => $this->parent->version,
+                        'slp_version'   => $this->plugin->version,
                         'type'          => 'load',
                         'response'      => $response
                     )
@@ -190,9 +193,8 @@ class SLPlus_AjaxHandler {
         $password=DB_PASSWORD;
         $database=DB_NAME;
         $host=DB_HOST;
-        $dbPrefix = $wpdb->prefix;
 
-        $this->setParent();
+        $this->setPlugin();
 
         // Get parameters from URL
         $center_lat = $_POST["lat"];
@@ -203,11 +205,11 @@ class SLPlus_AjaxHandler {
         // Set the active MySQL database
         //
         $connection=mysql_connect ($host, $username, $password);
-        if (!$connection) { die(json_encode( array('success' => false, 'slp_version' => $this->parent->version, 'response' => 'Not connected : ' . mysql_error()))); }
+        if (!$connection) { die(json_encode( array('success' => false, 'slp_version' => $this->plugin->version, 'response' => 'Not connected : ' . mysql_error()))); }
         $db_selected = mysql_select_db($database, $connection);
         mysql_query("SET NAMES utf8");
         if (!$db_selected) {
-            die (json_encode( array('success' => false, 'slp_version' => $this->parent->version, 'response' => 'Can\'t use db : ' . mysql_error())));
+            die (json_encode( array('success' => false, 'slp_version' => $this->plugin->version, 'response' => 'Can\'t use db : ' . mysql_error())));
         }
 
         // If tags are passed filter to just those tags
@@ -237,11 +239,10 @@ class SLPlus_AjaxHandler {
         get_option(SLPLUS_PREFIX.'_maxreturned') :
         '25';
 
-        $max = mysql_real_escape_string($option[SLPLUS_PREFIX.'_maxreturned']);
         $query = sprintf(
             "SELECT *,".
             "( $multiplier * acos( cos( radians('%s') ) * cos( radians( sl_latitude ) ) * cos( radians( sl_longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( sl_latitude ) ) ) ) AS sl_distance ".
-            "FROM ${dbPrefix}store_locator ".
+            "FROM {$this->plugin->db->prefix}store_locator ".
             "WHERE sl_longitude<>'' and sl_longitude<>'' %s %s ".
             "HAVING (sl_distance < '%s') ".
             'ORDER BY sl_distance ASC '.
@@ -257,7 +258,7 @@ class SLPlus_AjaxHandler {
 
         $result = mysql_query(apply_filters('slp_mysql_search_query',$query));
         if (!$result) {
-            die(json_encode( array('success' => false, 'slp_version' => $this->parent->version, 'query' => $query, 'response' => 'Invalid query: ' . mysql_error())));
+            die(json_encode( array('success' => false, 'slp_version' => $this->plugin->version, 'query' => $query, 'response' => 'Invalid query: ' . mysql_error())));
         }
 
         // Reporting
@@ -265,7 +266,7 @@ class SLPlus_AjaxHandler {
         //
         if (get_option(SLPLUS_PREFIX.'-reporting_enabled','off') === 'on') {
             $qry = sprintf(
-                    "INSERT INTO ${dbPrefix}slp_rep_query ".
+                    "INSERT INTO {$this->plugin->db->prefix}slp_rep_query ".
                                "(slp_repq_query,slp_repq_tags,slp_repq_address,slp_repq_radius) ".
                         "values ('%s','%s','%s','%s')",
                         mysql_real_escape_string($_SERVER['QUERY_STRING']),
@@ -290,7 +291,7 @@ class SLPlus_AjaxHandler {
                 if (get_option(SLPLUS_PREFIX.'-reporting_enabled') === "on") {
                     $wpdb->query(
                         sprintf(
-                            "INSERT INTO ${dbPrefix}slp_rep_query_results
+                            "INSERT INTO {$this->plugin->db->prefix}slp_rep_query_results
                                 (slp_repq_id,sl_id) values (%d,%d)",
                                 $slp_QueryID,
                                 $row['sl_id']
@@ -304,7 +305,7 @@ class SLPlus_AjaxHandler {
                 array(  'success'       => true,
                         'count'         => count($response),
                         'option'        => $_POST['address'],
-                        'slp_version'   => $this->parent->version,
+                        'slp_version'   => $this->plugin->version,
                         'type'          => 'search',
                         'dbquery'       => $query,
                         'response'      => $response

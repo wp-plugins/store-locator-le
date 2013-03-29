@@ -22,6 +22,13 @@ class SLPlus_AdminUI {
      */
     private $plugin;
 
+    /**
+     * True if Pro Pack is Enabled.
+     *
+     * @var boolean $proPackEnabled
+     */
+    private $proPackEnabled = false;
+
     public $styleHandle = 'csl_slplus_admin_css';
     private $geocodeIssuesRendered = false;
 
@@ -67,6 +74,12 @@ class SLPlus_AdminUI {
             $this->parent = $slplus_plugin;
             $this->plugin = $slplus_plugin;
         }
+
+        $this->proPackEnabled = (
+            isset($this->plugin->ProPack) &&
+            $this->plugin->ProPack->enabled
+        );
+
         return (isset($this->parent) && ($this->parent != null));
     }
 
@@ -301,7 +314,7 @@ class SLPlus_AdminUI {
         // Pro Pack
         //
         $proPackMsg = (
-                $this->parent->license->packages['Pro Pack']->isenabled            ?
+                $this->proPackEnabled ?
                 '' :
                 __('This is a <a href="http://www.charlestonsw.com/product/store-locator-plus/">Pro Pack</a>  feature. ', 'csa-slplus')
                 );
@@ -344,7 +357,7 @@ class SLPlus_AdminUI {
                     ,
                 null,
                 null,
-                !$this->parent->license->packages['Pro Pack']->isenabled
+                !$this->proPackEnabled
                 );
     }
 
@@ -545,7 +558,7 @@ class SLPlus_AdminUI {
                         '<div class="geocode_error">' .
                        '<strong>'.
                        sprintf(
-                           __('Read <a href="%s">this</a> if you are having geocoding issues.','csa_slplus'),
+                           __('Read <a href="%s">this</a> if you are having geocoding issues.','csa-slplus'),
                            'http://www.charlestonsw.com/support/documentation/store-locator-plus/troubleshooting/geocoding-errors/'
                            ).
                        "</strong><br/>\n" .
@@ -585,40 +598,26 @@ class SLPlus_AdminUI {
      * 
      * @global type $sl_google_map_country
      * @global type $sl_location_table_view
-     * @global type $sl_search_label
      * @global type $sl_zoom_level
      * @global type $sl_zoom_tweak
      * @global type $sl_use_name_search
-     * @global type $sl_radius_label
      * @global type $sl_website_label
-     * @global type $sl_load_locations_default
      * @global type $sl_distance_unit
      */
     function initialize_variables() {
         global $sl_google_map_country, $sl_location_table_view,
-            $sl_search_label, $sl_zoom_level, $sl_zoom_tweak, $sl_use_name_search,
-            $sl_radius_label, $sl_website_label, $sl_load_locations_default,
-            $sl_distance_unit;
+            $sl_zoom_level, $sl_zoom_tweak, $sl_use_name_search,
+            $sl_website_label, $sl_distance_unit;
 
         $sl_distance_unit=get_option('sl_distance_unit');
         if (empty($sl_distance_unit)) {
             $sl_distance_unit="miles";
             add_option('sl_distance_unit', $sl_distance_unit);
             }
-        $sl_load_locations_default=get_option('sl_load_locations_default');
-        if (empty($sl_load_locations_default)) {
-            $sl_load_locations_default="1";
-            add_option('sl_load_locations_default', $sl_load_locations_default);
-            }
         $sl_website_label=get_option('sl_website_label');
         if (empty($sl_website_label)) {
             $sl_website_label="Website";
             add_option('sl_website_label', $sl_website_label);
-            }
-        $sl_radius_label=get_option('sl_radius_label');
-        if (empty($sl_radius_label)) {
-            $sl_radius_label="Radius";
-            add_option('sl_radius_label', $sl_radius_label);
             }
         $sl_map_type=get_option('sl_map_type');
         if (isset($sl_map_type)) {
@@ -642,11 +641,6 @@ class SLPlus_AdminUI {
         $sl_zoom_tweak=get_option('sl_zoom_tweak','1');
         add_option('sl_zoom_tweak', $sl_zoom_tweak);
 
-        $sl_search_label=get_option('sl_search_label');
-        if (empty($sl_search_label)) {
-            $sl_search_label="Address";
-            add_option('sl_search_label', $sl_search_label);
-            }
         $sl_location_table_view=get_option('sl_location_table_view');
         if (empty($sl_location_table_view)) {
             $sl_location_table_view="Normal";
@@ -828,14 +822,6 @@ class SLPlus_AdminUI {
                'admin_print_styles-' . $slugPrefix . 'slp_map_settings',
                 array($this,'enqueue_admin_stylesheet')
                 );
-
-        // Reporting
-        //
-        add_action(
-               'admin_print_styles-' . 'store-locator-le/reporting.php',
-                array($this,'enqueue_admin_stylesheet')
-                );
-
     }
 
     /**
@@ -986,14 +972,14 @@ class SLPlus_AdminUI {
                     if ($this->parent->AdminUI->addingLocation === false) {
                     ?>
                         <label  for='latitude-<?php echo $this->get_CurrentLocationVal('sl_id')?>'><?php _e('Latitude (N/S)', 'csa-slplus');?></label>
-                        <?php if ($this->parent->license->packages['Pro Pack']->isenabled) { ?>
+                        <?php if ($this->proPackEnabled) { ?>
                             <input name='latitude-<?php echo $this->get_CurrentLocationVal('sl_id')?>' value='<?php echo $this->get_CurrentLocationVal('sl_latitude')?>'  style='width: 40em;'><br/>
                         <?php } else { ?>
                             <input class='disabled'  name='latitude-<?php echo $this->get_CurrentLocationVal('sl_id')?>' value='<?php echo __('Changing the latitude is a Pro Pack feature.','csa-slplus').' ('.$this->get_CurrentLocationVal('sl_latitude').')';?>'  style='width: 40em;'><br/>
                         <?php } ?>
 
                         <label  for='longitude-<?php echo $this->get_CurrentLocationVal('sl_id')?>'><?php _e('Longitude (E/W)', 'csa-slplus');?></label>
-                        <?php if ($this->parent->license->packages['Pro Pack']->isenabled) { ?>
+                        <?php if ($this->proPackEnabled) { ?>
                             <input name='longitude-<?php echo $this->get_CurrentLocationVal('sl_id')?>' value='<?php echo $this->get_CurrentLocationVal('sl_longitude')?>'  style='width: 40em;'><br/>
                         <?php } else { ?>
                             <input class='disabled' name='longitude-<?php echo $this->get_CurrentLocationVal('sl_id')?>' value='<?php echo __('Changing the longitude is a Pro Pack feature.','csa-slplus').' ('.$this->get_CurrentLocationVal('sl_longitude').')'; ?>'  style='width: 40em;'><br/>
@@ -1114,9 +1100,6 @@ class SLPlus_AdminUI {
                     "<textarea name='description-$locID' rows='5' cols='17'>".($addform?'':$sl_value['sl_description'])."</textarea>&nbsp;<small>".
                         __("Description", 'csa-slplus')."</small><br>".
 
-                    "<input    name='tags-$locID'  value='".($addform?'':$sl_value['sl_tags'] )."'>&nbsp;<small>".
-                        __("Tags (seperate with commas)", 'csa-slplus')."</small><br>".
-
                     "<input    name='url-$locID'   value='".($addform?'':$sl_value['sl_url']  )."'>&nbsp;<small>".
                         get_option('sl_website_label','Website')."</small><br>".
 
@@ -1131,9 +1114,6 @@ class SLPlus_AdminUI {
 
                     "<input    name='fax-$locID'   value='".($addform?'':$sl_value['sl_fax']  )."'>&nbsp;<small>".
                         $this->plugin->settings->get_item('label_fax','Fax','_')."</small><br>".
-
-                    "<input    name='image-$locID' value='".($addform?'':$sl_value['sl_image'])."'>&nbsp;<small>".
-                        __("Image URL (shown with location)", 'csa-slplus')."</small>" .
 
                     '</div>'
                     ;
