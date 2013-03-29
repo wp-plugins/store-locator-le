@@ -6,6 +6,8 @@
  ***************************************************************************/
  
  global $slplus_plugin, $sl_hidden;
+ $slplus_plugin->helper->loadPluginData();
+
 
  if (get_option('sl_location_table_view') == 'Expanded') {
      $altViewText = __('Switch to normal view?',SLPLUS_PREFIX);
@@ -59,7 +61,7 @@ function doAction(theAction,thePrompt) {
         print '<div id="search_block" class="searchlocations filterbox">';
         ?>
                 <p class="centerbutton"><input class='like-a-button' type='submit' value='<?php print __("Search Locations", SLPLUS_PREFIX); ?>'></p>
-                <input id='search-q' value='<?php print (isset($_REQUEST['q'])?$_REQUEST['q']:''); ?>' name='q'>
+                <input id='searchfor' value='<?php print (isset($_REQUEST['searchfor'])?$_REQUEST['searchfor']:''); ?>' name='searchfor'>
                 <?php 
                 print $sl_hidden;
         print '</div>';
@@ -70,10 +72,9 @@ function doAction(theAction,thePrompt) {
             <select name='sl_admin_locations_per_page'
                onchange="doAction('locationsPerPage','');">
     <?php
-        $pagelen = get_option('sl_admin_locations_per_page');
         $opt_arr=array(10,25,50,100,200,300,400,500,1000,2000,4000,5000,10000);
         foreach ($opt_arr as $sl_value) {
-            $selected=($pagelen==$sl_value)? " selected " : "";
+            $selected=($slplus_plugin->data['sl_admin_locations_per_page']==$sl_value)? " selected " : "";
             print "<option value='$sl_value' $selected>$sl_value</option>";
         }
     ?>

@@ -99,6 +99,7 @@ div#addy_in_state LABEL {
 #addressInputState {
     border: solid 1px #DDDDDD;
     background-color: #FFFFFF;
+    background-image: -webkit-linear-gradient(#FFFF,#FFFF, #FFFF);
     color: #8F8F8F;
     display: inline-block;
     font-family: "Arial", sans-serif;
@@ -109,7 +110,6 @@ div#addy_in_state LABEL {
     width: 315px;
     white-space: nowrap;
     -webkit-appearance: button;
-    -webkit-linear-gradient(#FFFF,#FFFF, #FFFF);
 }
 div#addy_in_address {
     color: #8F8F8F;
@@ -128,7 +128,7 @@ div#radius_in_submit {
     display: inline-block;
 }
 #addressSubmit,
-#addressSubmit:hover,
+#addressSubmit:hover
 {
     background-color: #00D6F2;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00D6F2', endColorstr='#00D6F2'); /* for IE */

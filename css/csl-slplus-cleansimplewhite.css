@@ -134,3 +134,7 @@ span.slp_result_address {
 span.slp_result_phone {
     padding-top: 6px;
 }
+span.slp_result_contact {
+    width: 100%;
+    white-space: nowrap;
+}
