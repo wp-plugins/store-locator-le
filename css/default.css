@@ -5,6 +5,10 @@
  **
  **/
 
+/**
+ * General - All areas
+ **/
+
 /* Slider from proto.io/freebies/onoff/
 */
 .onoffswitch-block {
@@ -65,7 +69,33 @@
     right: 0px;
     }
 
-/***** Area Above Map DIV. Contains Search Form Inputs *****/
+/**
+ * General SLP Div Only
+ **/
+#sl_div {
+	padding:10px;
+	font-weight:bold;
+}
+#sl_div a {
+}
+#sl_div a.storelocatorlink {
+	color:#0000FF;
+}
+#sl_div a:hover.storelocatorlink {
+	color:#4444FF;
+}
+#sl_div img {
+	background-color:transparent;
+	background-image:none;
+	max-width:none;
+}
+#sl_div table, #sl_div tr, #sl_div td {
+	border:none;
+}
+
+/**
+ * Search Form
+ **/
 .sl_header img, .sl_header td {
     border: none;
     cursor: pointer;   
@@ -119,9 +149,6 @@
 .sl_header td, .sl_header th, .sl_header tr {
 	padding:4px;
 }
-
-
-/***** Search Form Inputs  *****/
 #address_search {
     width: 600px;
 }
@@ -133,23 +160,17 @@
     float: left;
     padding-right: 8px;
 }
-
 #address_search SELECT {
 	margin:0px 6px 0px 0px;
 }
-
 #address_search INPUT {
 	margin:0px 6px 0px 0px;
 }
-
-
-
 #address_search .search_item {
 	display: block;
 	float: none;
 	clear: both;
 }
-
 #address_search .search_item INPUT {
 	border:solid 1px silver;
 	padding-left:3px; 
@@ -159,11 +180,9 @@
 	width: 256px;
 	padding-top:0px;
 }
-
 #address_search .search_item SELECT {
 	margin:0px 6px 0px 0px;
 }
-
 #addy_in_city {
     clear: both;
     float: left;
@@ -183,13 +202,18 @@
     padding-top: 3px;
     padding-right: 12px;
 }
-
 #radius_in_submit {
     float: left;
     width: 300px;
     padding-top: 3px;
 }
+span.slp_checkbox_entry {
+    padding-right: 12px;
+}
 
+span.slp_checkbox_entry input[type="checkbox"] {
+    vertical-align: text-bottom;
+}
 
 
 /**** Map Box
@@ -199,60 +223,41 @@
  ** this for us.
  **
  **/
+div#map {
+    border-top: solid 1px #CCCCCC;
+    border-left: solid 1px #CCCCCC;
+    border-right: solid 1px #CCCCCC;
+    width: auto !important;
+}
+#sl_div #map img {
+    visibility: visible;
+}
 
+/* Hide the default Google bubble shadow */
+div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
+    display:none;
+}
 #map_box_image {
-    display: block; 
+    display: block;
 }
 
 #map_box_map {
     display: none;
 }
-div#slp_tagline {
-    text-align: right;
-    padding-right: 3px;
-}
 
-/***** Store Locator Map DIV *****/
-#sl_div {
+/**
+ * Map Info Bubble
+ **/
+#sl_info_bubble {
 	padding:10px;
-	font-weight:bold;
-}
-#sl_div a {
-}
-#sl_div a.storelocatorlink {
-	color:#0000FF;
-}
-#sl_div a:hover.storelocatorlink {
-	color:#4444FF;
-}
-#sl_div img {
-	background-color:transparent;
-	background-image:none;
-	max-width:none; 
-}
-#sl_div table, #sl_div tr, #sl_div td {
-	border:none;
-}
-#sl_div #map { 
-	color:black; 
-	font-weight:normal;
-}
-
-#sl_div #map img {
-    visibility: visible;    
-}
-
-/***** Popup Info Window for Specific Location *****/
-#sl_info_bubble { 
-	padding:10px; 
-	max-width:300px; 
-	font-size:11px; 
+	max-width:300px;
+	font-size:11px;
 	font-family:Arial;
 	text-align:justify;
 	line-height:normal;
 }
 #sl_info_bubble img{
-	width:250px; 
+	width:250px;
 	max-height:200px;
 	border:0px;
 }
@@ -263,99 +268,69 @@ div#slp_tagline {
 	font-weight:bold;
 }
 
-/***** Area Below Map DIV, before Search Results Area *****/
-.sl_footer td, .sl_footer td a, .sl_footer td a:link, .sl_footer td a:hover, .sl_footer td a:active, .sl_footer td a:visited {
-	font-weight:normal;
-	font-size:10px;
-}
-.sl_footer {
-	background-color:black;
-	padding:0px;
-	border:0px black solid;
-	color: #222;
-}
-.sl_footer a {
-	color:#666;
-	font-weight:bold;
-	border:0px black solid;
-	padding-left:5px;
-}
-.sl_footer_right_column {
-	padding-right:5px;
-	text-align:right;
-}
-.sl_footer_left_column {
-	text-align:left;
-}
 
-/*****Search Results Area *****/
-.searchResultsTable td {
-	line-height:12px;
-	font-family: Verdana;
-	font-size:10px;
-	text-align:left;
+/**
+ * Tagline
+ **/
+div#slp_tagline {
+    text-align: right;
+    padding-right: 3px;
 }
-.text_below_map {
-	/*shown before search performed */
-	font-family:Arial;
-	padding:20px;
-	font-size:18px;
-	text-align:justified;
+table.sl_footer {
+    margin-bottom: 12px;
+    border-bottom: solid 1px #CCCCCC;
+    border-left: solid 1px #CCCCCC;
+    border-right: solid 1px #CCCCCC;
 }
-.no_results_found {
-	/*shown if no results found */
-	padding:10px;
-}
-#map_sidebar { 
-	/*shown for results found for specific query */
-	background-color:transparent;
-	font-weight:normal;
-	text-align:justify;
-	overflow: auto;
-	height:250px;
-	font-size: 11px;
-}
-.results_entry {
-	cursor:pointer;
-	cursor:hand;
-	padding:4px;
-	border-bottom:solid silver 1px;
-	background-color:transparent;
-}
-.results_entry:hover {
-	background-color:#F4F4AA;
-}
-.results_row_left_column {
-	width:30%;
-	padding-right:4px;
-	vertical-align:top;
-}
-.results_row_left_column .location_name {
-	font-weight:bold;
-}
-.results_row_center_column {
-	width:40%;
-	vertical-align:top;
-}
-.results_row_right_column {
-	width:30%;
-	vertical-align:top;
-	text-align:right;
+tr.slp_map_tagline td {
+    color: #444444;
+    background-color: #F4F4F4;
+    font-size: 0.9em;
+    font-style: italic;
+    padding: 3px;
+    text-align: right;
 }
 
 
-span.slp_checkbox_entry {
-    padding-right: 12px;
+/**
+ * Results
+ **/
+tr.slp_results_row:hover {
+    background-color: #F2F2F2;
 }
-
-span.slp_checkbox_entry input[type="checkbox"] {
-    vertical-align: text-bottom;
+tr.slp_map_search_results td {
+    border: none;
+    padding-bottom: 18px;
+    vertical-align: text-top;
 }
-
+tr.slp_map_search_results td.results_row_left_column {
+    width: 240px;
+}
+tr.slp_map_search_results td.results_row_right_column {
+    text-align: right;
+}
+tr.slp_map_search_results span.location_name {
+    color: #CC0000;
+    font-weight: bold;
+}
+tr.slp_map_search_results a {
+    color: #444444;
+    display: inline-block;
+    text-decoration: none;
+    width: 100%;
+}
+tr.slp_map_search_results a:hover {
+    color: #4444FF;
+    background-color: #F2F2F2;
+}
 span.slp_result_address {
     width: 100%;
     display: inline-block;
 }
 span.slp_result_phone {
     padding-top: 6px;
+}
+span.slp_result_contact {
+    width: 100%;
+    white-space: nowrap;
 }

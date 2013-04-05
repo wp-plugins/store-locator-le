@@ -99,6 +99,7 @@ div#addy_in_state LABEL {
 #addressInputState {
     border: solid 1px #DDDDDD;
     background-color: #FFFFFF;
+    background-image: -webkit-linear-gradient(#FFFF,#FFFF, #FFFF);
     color: #8F8F8F;
     display: inline-block;
     font-family: "Arial", sans-serif;
@@ -108,8 +109,7 @@ div#addy_in_state LABEL {
     top: -22px;
     width: 315px;
     white-space: nowrap;
-    -webkit-appearance: button;
-    -webkit-linear-gradient(#FFFF,#FFFF, #FFFF);
+    -webkit-appearance: button;    
 }
 div#addy_in_address {
     color: #8F8F8F;
@@ -170,7 +170,10 @@ div#slp_tagline {
 #map_table_cell {
     width: 100%;
 }
-
+/* Hide the default Google bubble shadow */
+div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
+    display:none;
+}
 /***********************
  * Results Table
  ***********************/

@@ -235,7 +235,10 @@ div#slp_tagline {
 #map_table_cell {
     width: 100%;
 }
-
+/* Hide the default Google bubble shadow */
+div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
+    display:none;
+}
 /***********************
  * Results Table
  ***********************/

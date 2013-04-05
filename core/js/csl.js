@@ -1,15 +1,10 @@
 /*****************************************************************
  * file: csl.js
  *
- * A centralized javascript code to be compatible with all CSL plugins so we can virtually save cats from trees.
- *
  *****************************************************************/
 
 /***************************
-  * Cyber Sprocket Labs Namespace
-  *
-  * For stuff to do awesome stuff like save lobby jones if he got stuck in a tree.
-  *
+  * CSA Labs Namespace
   */
 var csl = {
 
@@ -30,16 +25,16 @@ var csl = {
 	{
 		this.anim2 = function(imgObj, url) {
 			imgObj.src=url;
-		}
+		};
 
 		this.anim = function(name, type) {
-			if (type==0)
+			if (type===0)
 				document.images[name].src="/core/images/"+name+".gif";
-			if (type==1)
+			if (type===1)
 				document.images[name].src="/core/images/"+name+"_over.gif";
-			if (type==2)
+			if (type===2)
 				document.images[name].src="/core/images/"+name+"_down.gif";
-		}
+		};
 	},
 
     /***************************************************************************
@@ -62,7 +57,7 @@ var csl = {
         this.__init = function() {
             this.Initialized = true;
             try {
-                if (typeof navigator.geolocation == 'undefined') {
+                if (typeof navigator.geolocation === 'undefined') {
                     if (google.gears) {
                         this.theService = google.gears.factory.create('beta.geolocation');
                     } else {
@@ -98,7 +93,7 @@ var csl = {
                 errorCallback(null);
             }
 
-        }
+        };
     },
 
     /***************************************************************************
@@ -125,7 +120,7 @@ var csl = {
 		 * returns: none
 		 */
 	    this.send = function (action, callback) {
-	        if (window.location.protocol != csl_ajax.ajaxurl.substring(0, csl_ajax.ajaxurl.indexOf(':') + 1)) {
+	        if (window.location.protocol !== csl_ajax.ajaxurl.substring(0, csl_ajax.ajaxurl.indexOf(':') + 1)) {
 	            csl_ajax.ajaxurl = csl_ajax.ajaxurl.replace(csl_ajax.ajaxurl.substring(0, csl_ajax.ajaxurl.indexOf(':') + 1), window.location.protocol);
 	        }
 
@@ -138,7 +133,7 @@ var csl = {
 			    }
 				callback(response);
 			});
-		}
+		};
 
 		this.GetXmlHttpObject = function() {
 			var objXMLHttp=null;
@@ -148,17 +143,17 @@ var csl = {
 				objXMLHttp=new ActiveXObject("Microsoft.XMLHTTP");
 			}
 			return objXMLHttp;
-		}
+		};
 
 		this.stateChanged = function() {
-			if (xmlHttp.readyState==4 || xmlHttp.readyState=="complete") {
+			if (xmlHttp.readyState===4 || xmlHttp.readyState==="complete") {
 				document.getElementById("ajaxMsg").innerHTML="Submission Successful.";
 			}
-		}
+		};
 
 		this.showArticles = function(start) {
 			xmlHttp=GetXmlHttpObject();
-			if (xmlHttp==null)
+			if (xmlHttp===null)
 			{
 				alert ("Browser does not support HTTP Request (1)");
 				return false;
@@ -169,10 +164,10 @@ var csl = {
 			xmlHttp.onreadystatechange=stateChanged;
 			xmlHttp.open("GET",url,true);
 			xmlHttp.send(null);
-		}
+		};
 
 		this.doc_counter = function(the_loc) {
-			if (the_loc.search.indexOf('u=')!=-1) {
+			if (the_loc.search.indexOf('u=')!==-1) {
 				parts=the_loc.href.split('u=');
 				u_part=parts[1].split('&')[0];
 			}
@@ -183,7 +178,7 @@ var csl = {
 			}
 
 			xmlHttp=GetXmlHttpObject();
-			if (xmlHttp==null)
+			if (xmlHttp===null)
 			{
 				alert ("Browser does not support HTTP Request (2)");
 				return false;
@@ -192,7 +187,7 @@ var csl = {
 			url=url+"?u="+u_part;
 			xmlHttp.open("GET",url,true);
 			xmlHttp.send(null);
-		}
+		};
 	},
 
     /***************************************************************************
@@ -226,13 +221,13 @@ var csl = {
          */
   	  	this.__init = function() {
 
-			if (this.__iconUrl != null) {
+			if (this.__iconUrl !== null) {
 				this.__iconImage = this.__iconUrl;
 			}
 
             // No icon image
             //
-			if (this.__iconImage == null) {
+			if (this.__iconImage === null) {
 				this.__gmarker = new google.maps.Marker(
                     {
                         position: this.__position,
@@ -260,7 +255,7 @@ var csl = {
                 this.__shadowImage = cslmap.shadows[shadowKey];
                 this.buildMarker();
             }
-  	  	}
+  	  	};
 
         /*------------------------
          * MARKERS buildMarker
@@ -276,7 +271,7 @@ var csl = {
 				zIndex: 0,
   	  	  	  	title: this.__title
   	  	  	});
-		}
+		};
 
   	  	this.__init();
   	},
@@ -295,8 +290,6 @@ var csl = {
 		 *
 		 */
 		this.show_email_form = function(to) {
-			var allScripts=document.getElementsByTagName('script');
-			var add_base=allScripts[allScripts.length -2].src.replace(/\/js\/csl.js(.*)$/,'');
 			emailWin=window.open("about:blank","",
 				"height=220,width=310,scrollbars=no,top=50,left=50,status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=0");
 			with (emailWin.document) {
@@ -316,7 +309,7 @@ var csl = {
 				writeln("</style>");
 
 				writeln("<form id='emailForm' method='GET'");
-				writeln(    " action='"+add_base+"/send-email.php'>");
+				writeln(    " action='"+slplus.core_url+"send-email.php'>");
 
 				writeln("    <div id='email_form_content'>");
 
@@ -357,7 +350,7 @@ var csl = {
 				writeln("</body></html>");
 				close();
 			}
-		}
+		};
 
 		/**************************************
 		 * function: escapeExtended()
@@ -369,7 +362,7 @@ var csl = {
 		this.escapeExtended = function(string)
 		{
 			return string;
-		}
+		};
 	},
 
     /***************************************************************************
@@ -395,24 +388,24 @@ var csl = {
 			this.__content = content;
   	  		this.__gwindow = setContent = this.__content;
   	  	  	this.open(map, object);
-  	  	}
+  	  	};
 
   	  	this.open = function(map, object) {
 			this.__gmap = map.gmap;
   	  	  	this.__anchor = object;
   	  	  	this.__gwindow.open(this.__gmap, this.__anchor);
-  	  	}
+  	  	};
 
   	  	this.close = function() {
 			this.__gwindow.close();
-  	  	}
+  	  	};
 
   	  	this.__init = function() {
 			this.__gwindow = new google.maps.InfoWindow(
   	  	  	{
 				content: this.__content
   	  	  	});
-  	  	}
+  	  	};
 
   	  	this.__init();
   	},
@@ -437,7 +430,7 @@ var csl = {
 
   	  	//php passed vars set in init
 		this.debug_mode = null;
-  	  	this.address = null; //y
+  	  	this.address = null;
   	  	this.canvasID = null;
   	  	this.draggable = true;
   	  	this.tilt = 45; //n
@@ -446,13 +439,10 @@ var csl = {
 
 		//slplus options
         this.usingSensor = false;
-		this.debugMode = null;
 		this.disableScroll = null;
 		this.disableDir = null;
 		this.distanceUnit = null;
-		this.load_locations = null;
 		this.map3dControl = null;
-		this.mapCountry = null;
 		this.mapDomain = null;
 		this.mapHomeIconUrl = null;
 		this.mapHomeIconWidth = null;
@@ -466,9 +456,7 @@ var csl = {
 		this.showTags = null;
 		this.overviewControl = null;
 		this.useEmailForm = null;
-		this.useSameWindow = null;
 		this.websiteLabel = null;
-		this.zoomLevel = '12';
 
   	  	//gmap set variables
   	  	this.options = null;
@@ -498,16 +486,10 @@ var csl = {
   	  	 */
   	  	this.__init = function() {
 
-            if (typeof slplus != 'undefined') {
-                this.address = slplus.map_country;
-                this.zoom = slplus.zoom_level;
+            if (typeof slplus !== 'undefined') {
                 this.mapType = slplus.map_type;
                 this.disableScroll = !!slplus.disable_scroll;
-                this.debugMode = !!slplus.debug_mode;
-                this.disableDir = !!slplus.disable_dir;
                 this.distanceUnit = slplus.distance_unit;
-                this.load_locations = !!slplus.load_locations;
-                this.mapCountry = slplus.map_country;
                 this.mapDomain = slplus.map_domain;
                 this.mapHomeIconUrl = slplus.map_home_icon;
                 this.mapHomeIconWidth = slplus.map_home_icon_sizew;
@@ -520,18 +502,27 @@ var csl = {
                 this.showTags = slplus.show_tags;
                 this.overviewControl = !!(parseInt(slplus.overview_ctrl));
                 this.useEmailForm = !!slplus.use_email_form;
-                this.useSameWindow = !!slplus.use_same_window;
                 this.websiteLabel = slplus.website_label;
-                this.zoomLevel = slplus.zoom_level;
                 this.disableDefaultUI = false;
 
-                if (!this.disableDir) {
+                if (!slplus.disable_dir) {
                     this.loadedOnce = true;
                 }
+
+                // Setup address
+                // Use the entry form value if set, otherwise use the country
+                //
+                var addressInput = this.getSearchAddress();
+                if (typeof addressInput === 'undefined') {
+                    this.address = slplus.map_country;
+                } else {
+                    this.address = addressInput;
+                }
+
             } else {
                 alert('Store Locator Plus script not loaded properly.');
             }
-  	  	}
+  	  	};
 
         /***************************
   	  	 * function: __buildMap
@@ -543,7 +534,7 @@ var csl = {
   	  	 * returns: none
   	  	 */
         this.__buildMap = function(center) {
-            if (this.gmap == null)
+            if (this.gmap === null)
             {
                 this.options = {
                     mapTypeControl: this.mapTypeControl,
@@ -551,7 +542,7 @@ var csl = {
                     overviewMapControl: this.overviewControl,
                     scrollwheel: !this.disableScroll,
                     center: center,
-                    zoom: parseInt(this.zoom),
+                    zoom: parseInt(slplus.zoom_level),
                     scaleControl: this.mapScaleControl,
                     overviewMapControlOptions: { opened: this.overviewControl }
                 };
@@ -571,26 +562,17 @@ var csl = {
                     this.addMarkerAtCenter();
                 }
 
-                //load all the markers
-                if (this.load_locations == '1') {
-                    if (this.saneValue('addressInput', null) == null || this.saneValue('addressInput', null) == '') {
-                        this.forceAll = true;
-
-                        this.loadMarkers(null, null, this.saneValue('tag_to_search_for', null));
-                    }
-                    else {
+                // If immediately show locations is enabled.
+                //
+                if (slplus.load_locations === '1') {
                         this.homePoint = center;
                         this.addMarkerAtCenter();
                         var tag_to_search_for = this.saneValue('tag_to_search_for', '');
                         var radius = this.saneValue('radiusSelect');
                         this.loadMarkers(center, radius, tag_to_search_for);
-                    }
-                }
-                else {
-                    this.load_locations = '0';
                 }
             }
-        }
+        };
 
 		/***************************
   	  	 * function: __waitForTileLoad
@@ -602,13 +584,13 @@ var csl = {
   	  	 */
 		this.__waitForTileLoad = function() {
 			var _this = this;
-			if (this.__tilesLoaded == null)
+			if (this.__tilesLoaded === null)
 			{
 				this.__tilesLoaded = google.maps.event.addListener(this.gmap, 'tilesloaded', function() {
 					_this.__tilesAreLoaded.call(_this);
 				});
 			}
-		}
+		};
 
 		/***************************
   	  	 * function: __tilesAreLoaded
@@ -622,7 +604,7 @@ var csl = {
 			jQuery('#map').find('img').css({'max-width': 'none'});
 			google.maps.event.removeListener(this.__tilesLoaded);
 			this.__tilesLoaded = null;
-		}
+		};
 
   	  	/***************************
   	  	 * function: addMarkerAtCenter
@@ -639,7 +621,7 @@ var csl = {
 			if (this.homePoint) {
 				this.centerMarker = new csl.Marker(csl.Animation.None, this, "", this.homePoint, this.mapHomeIconUrl, this.mapHomeIconWidth, this.mapHomeIconHeight);
 			}
-  	  	}
+  	  	};
 
 		/***************************
   	  	 * function: clearMarkers
@@ -650,15 +632,17 @@ var csl = {
   	  	 * returns: none
   	  	 */
 		this.clearMarkers = function() {
-			if (this.markers) {
-				for (markerNumber in this.markers) {
-                    if (typeof this.markers[markerNumber].__gmarker != 'undefined') {
-                        this.markers[markerNumber].__gmarker.setMap(null);
+                    if (this.markers) {
+                        for (markerNumber in this.markers) {
+                            if (typeof this.markers[markerNumber] !== 'undefined') {
+                                if (typeof this.markers[markerNumber].__gmarker !== 'undefined') {
+                                    this.markers[markerNumber].__gmarker.setMap(null);
+                                }
+                            }
+                        }
+                        this.markers.length = 0;
                     }
-				}
-				this.markers.length = 0;
-			}
-		}
+		};
 
 		/***************************
   	  	 * function: putMarkers
@@ -691,7 +675,7 @@ var csl = {
 				this.debugSearch(markerList[markerNumber]);
 				var position = new google.maps.LatLng(markerList[markerNumber].lat, markerList[markerNumber].lng);
 
-				if (markerNumber == 0) {
+				if (markerNumber === 0) {
 					this.debugSearch('create initial bounds');
 					bounds = new google.maps.LatLngBounds();
 					if (this.homePoint) {
@@ -711,7 +695,7 @@ var csl = {
 
 				this.debugSearch(position);
 
-                locationIcon = ((typeof markerList[markerNumber].icon != 'undefined') && (markerList[markerNumber].icon.length > 4)?markerList[markerNumber].icon:this.mapEndIconUrl);
+                locationIcon = ((typeof markerList[markerNumber].icon !== 'undefined') && (markerList[markerNumber].icon.length > 4)?markerList[markerNumber].icon:this.mapEndIconUrl);
 				this.markers.push(new csl.Marker(animation, this, "", position, locationIcon, this.mapEndIconWidth, this.mapEndIconHeight ));
 				_this = this;
 
@@ -735,7 +719,7 @@ var csl = {
 					(function(infoData, marker) {
 						return function() {
 							_this.__handleInfoClicks.call(_this, infoData, marker);
-						}
+						};
 					})(markerList[markerNumber], this.markers[markerNumber]));
 				}
 			}
@@ -743,8 +727,12 @@ var csl = {
 			this.loadedOnce = true;
 
 			//check for results
-			if (markerList.length == 0) {
+			if (markerList.length === 0) {
+                            if ( (typeof this.homePoint !== 'undefined') &&
+                                 (this.homePoint !== null)
+                               ) {
 				this.gmap.panTo(this.homePoint);
+                            }
                 var sidebar = document.getElementById('map_sidebar');
 				sidebar.innerHTML = '<div class="no_results_found"><h2>'+slplus.msg_noresults+'</h2></div>';
                 jQuery('#map_sidebar').trigger('contentchanged');
@@ -752,7 +740,7 @@ var csl = {
                 jQuery('#map_sidebar').trigger('contentchanged');
             }
 
-			if (bounds != null) {
+			if (bounds !== null) {
 				this.debugSearch('rebounded');
 				this.bounds = bounds;
 				this.gmap.fitBounds(this.bounds);
@@ -771,7 +759,7 @@ var csl = {
                     ;
                 this.gmap.setZoom(newZoom);
 			}
-		}
+		};
 
 		/***************************
   	  	 * function: bounceMarkers
@@ -786,7 +774,7 @@ var csl = {
 			this.clearMarkers();
 			this.debugSearch('bounce');
 			this.putMarkers(markerList, csl.Animation.None);
-		}
+		};
 
 		/***************************
   	  	 * function: dropMarkers
@@ -801,7 +789,7 @@ var csl = {
 			this.clearMarkers();
 			this.debugSearch('dropping');
 			this.putMarkers(markerList, csl.Animation.Drop);
-		}
+		};
 
 		/***************************
   	  	 * function: private handleInfoClicks
@@ -821,35 +809,32 @@ var csl = {
 			this.infowindow.setContent(this.createMarkerContent(infoData));
 			//this.infowindow.setContent('hi');
 			this.infowindow.open(this.gmap, marker.__gmarker);
-		}
+		};
 
-  	  	/***************************
-  	  	 * function doGeocode()
-  	  	 * usage:
-  	  	 * Call to start the geocode of the address and display it on the map if possible
-  	  	 * make sure to call init first
-  	  	 * parameters: none
-  	  	 * returns: none
-  	  	 */
+        /**
+         * Geocode an address on the search input field and display on map.
+         * 
+         * @return {undefined}
+         */
   	  	this.doGeocode = function() {
 			var geocoder = new google.maps.Geocoder();
   	  	  	var _this = this;
+
   	  	  	geocoder.geocode(
 				{
 					'address': this.address
   	  	  	  	},
   	  	  	  	function (results, status) {
-                    if (status == 'OK' && results.length > 0)
+                    if (status === 'OK' && results.length > 0)
                     {
                         // if the map hasn't been created, then create one
-                        if (_this.gmap == null)
+                        if (_this.gmap === null)
                         {
                             _this.__buildMap(results[0].geometry.location);
                         }
                         //the map has been created so shift the center of the map
                         else {
                             //move the center of the map
-                            //this.gmap.panTo(results[0].geometry.location);
                             _this.homePoint = results[0].geometry.location;
                             _this.homeAdress = results[0].formatted_address;
 
@@ -861,7 +846,7 @@ var csl = {
                         }
                         //if the user entered an address, replace it with a formatted one
                         var addressInput = _this.saneValue('addressInput','');
-                        if (addressInput != '') {
+                        if (addressInput !== '') {
                             addressInput = results[0].formatted_address;
                         }
                     } else {
@@ -874,7 +859,7 @@ var csl = {
                 }
 
   	  	  	);
-  	  	}
+  	  	};
 
         /***************************
   	  	 * function: __getMarkerUrl
@@ -888,21 +873,19 @@ var csl = {
         this.__getMarkerUrl = function(aMarker) {
             var url = '';
             //add an http to the url
-            if ((slplus.use_pages_links == "1") && (aMarker.sl_pages_url != '')) {
+            if ((slplus.use_pages_links === "on") && (aMarker.sl_pages_url !== '')) {
                 url = aMarker.sl_pages_url;
-            }
-            else if (aMarker.url != '') {
-                if (aMarker.url.indexOf("http://") == -1) {
+            } else if (aMarker.url !== '') {
+                if (aMarker.url.indexOf("http://") === -1) {
                     aMarker.url = "http://" + aMarker.url;
                 }
-
-                if (aMarker.url.indexOf(".") != -1) {
+                if (aMarker.url.indexOf(".") !== -1) {
                     url = aMarker.url;
                 }
             }
 
             return url;
-        }
+        };
 
         /***************************
   	  	 * function: __createAddress
@@ -916,22 +899,22 @@ var csl = {
         this.__createAddress = function(aMarker) {
 
             var address = '';
-            if (aMarker.address != '') {
+            if (aMarker.address !== '') {
                 address += aMarker.address;
             }
 
-            if (aMarker.address2 != '') { address += ", " + aMarker.address2; }
+            if (aMarker.address2 !== '') { address += ", " + aMarker.address2; }
 
-            if (aMarker.city != '') { address += ", " + aMarker.city; }
+            if (aMarker.city !== '') { address += ", " + aMarker.city; }
 
-            if (aMarker.state != '') { address += ", " + aMarker.state; }
+            if (aMarker.state !== '') { address += ", " + aMarker.state; }
 
-            if (aMarker.zip != '') { address += ", " + aMarker.zip; }
+            if (aMarker.zip !== '') { address += ", " + aMarker.zip; }
 
-            if (aMarker.country != '') { address += ", " + aMarker.country; }
+            if (aMarker.country !== '') { address += ", " + aMarker.country; }
 
             return address;
-        }
+        };
 
 		/***************************
   	  	 * function: createMarkerContent
@@ -947,48 +930,48 @@ var csl = {
 
             var url = this.__getMarkerUrl(aMarker);
 
-			if (url != '') {
-				html += "| <a href='"+url+"' target='"+(slplus.use_same_window?'_self':'_blank')+"' class='storelocatorlink'><nobr>" + slplus.website_label +" </nobr></a>";
+			if (url !== '') {
+				html += "| <a href='"+url+"' target='"+((slplus.use_same_window==="on")?'_self':'_blank')+"' id='slp_marker_website' class='storelocatorlink'><nobr>" + slplus.website_label +" </nobr></a>";
 			}
 
-			if (aMarker.email.indexOf("@") != -1 && aMarker.email.indexOf(".") != -1) {
+			if (aMarker.email.indexOf("@") !== -1 && aMarker.email.indexOf(".") !== -1) {
 				if (!this.useEmailForm) {
-					html += "| <a href='mailto:"+aMarker.email+"' target='_blank' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a>";
+					html += "| <a href='mailto:"+aMarker.email+"' target='_blank' id='slp_marker_email' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a>";
 				} else {
-					html += "| <a href='javascript:cslutils.show_email_form("+'"'+aMarker.email+'"'+");' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a><br/>";
+					html += "| <a href='javascript:cslutils.show_email_form("+'"'+aMarker.email+'"'+");' id='slp_marker_email' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a><br/>";
 				}
 			}
 
-			if (aMarker.image.indexOf(".") != -1) {
+			if (aMarker.image.indexOf(".") !== -1) {
 				html+="<br/><img src='"+aMarker.image+"' class='sl_info_bubble_main_image'>";
 			} else {
 				aMarker.image = "";
 			}
 
-			if (aMarker.description != '') {
+			if (aMarker.description !== '') {
 				html+="<br/>"+aMarker.description+"";
 			} else {
 				aMarker.description = '';
 			}
 
-			if (aMarker.hours != '') {
+			if (aMarker.hours !== '') {
                 var decoded = jQuery("<div/>").html(aMarker.hours).text();
 				html+="<br/><span class='location_detail_label'>"+slplus.label_hours+"</span> "+ decoded;
 			} else {
 				aMarker.hours = "";
 			}
 
-			if (aMarker.phone != '') {
+			if (aMarker.phone !== '') {
 				html+="<br/><span class='location_detail_label'>"+slplus.label_phone+"</span> "+aMarker.phone;
 			}
-			if (aMarker.fax != '') {
+			if (aMarker.fax !== '') {
 				html+="<br/><span class='location_detail_label'>"+slplus.label_fax+"</span> "+aMarker.fax;
 			}
 
 			var address = this.__createAddress(aMarker);
 
 			if (slplus.show_tags) {
-				if (jQuery.trim(aMarker.tags) != '') {
+				if (jQuery.trim(aMarker.tags) !== '') {
 					var tagclass = 'bubble_'+aMarker.tags.replace(/\W/g,'_');
 					html += '<br/><div class="'+tagclass+'"><span class="slp_info_bubble_tags">'+aMarker.tags + '</span></div>';
 				}
@@ -1004,11 +987,10 @@ var csl = {
                         '" target="_blank" class="storelocatorlink">'+
                         slplus.label_directions+
                         '</a> ' + html +
-                        '<br/><!--/td></tr--></div>'
-                    ;
+                        '<br/><!--/td></tr--></div>';
 
 			return complete_html;
-		}
+		};
 
         /**
          * Return a proper search address for directions.
@@ -1019,20 +1001,20 @@ var csl = {
         this.getSearchAddress = function (defaultAddress) {
             var searchAddress = jQuery('#addressInput').val();
             if (!searchAddress) {
-                if ((slplus.use_sensor) && (sensor.lat != 0.00) && (sensor.lng != 0.00)) {
+                if ((slplus.use_sensor) && (sensor.lat !== 0.00) && (sensor.lng !== 0.00)) {
                     searchAddress = sensor.lat + ',' + sensor.lng;
                 } else {
                     searchAddress = defaultAddress;
                 }
             }
             return searchAddress;
-        }
+        };
 
         /**
          * debug the search mechanism
          */
 		this.debugSearch = function(toLog) {
-		    if (slplus.debug_mode == 1) {
+		    if (slplus.debug_mode === 1) {
                 try {
                     if (console) {
 				        console.log(toLog);
@@ -1042,7 +1024,7 @@ var csl = {
                 {
                 }
 			}
-		}
+		};
 
 		/***************************
   	  	 * function: saneValue
@@ -1057,14 +1039,14 @@ var csl = {
   	  	 */
 		this.saneValue = function(id, defaultValue) {
 			var name = document.getElementById(id);
-			if (name == null) {
+			if (name === null) {
 				name = defaultValue;
 			}
 			else {
 				name = name.value;
 			}
 			return name;
-		}
+		};
 
 		/***************************
   	  	 * function: loadMarkers
@@ -1076,56 +1058,70 @@ var csl = {
   	  	 * returns: none
   	  	 */
 		this.loadMarkers = function(center, radius, tags) {
-			//determines if we need to invent real variables (usually only done at the beginning)
-			var realsearch = true;
-			if (this.forceAll) {
-				realsearch = false;
-				radius = null;
-				center = null;
-				this.forceAll = false;
-			}
-			this.debugSearch('doing search@' + center + ' for radius of ' + radius);
-			if (center == null) {
-				center = this.gmap.getCenter();
-			}
-			if (radius == null) {
-				radius = 40000;
-			}
-			this.lastCenter = center;
-			this.lastRadius = radius;
-			if (tags == null) { tags = ''; }
-			this.debugSearch('searching: ' + center.lat() +','+ center.lng());
-			var name = this.saneValue('nameSearch', '');
-			var action = null;
-			if (realsearch) {
-                var formObj = jQuery('#searchForm').formParams();
-				action = {action:'csl_ajax_search',lat:center.lat(),lng:center.lng(),radius:radius, tags: tags, name:name, address:this.saneValue('addressInput', 'no address entered'),formflds:formObj};
-			}
-			else {
-				action = {action:'csl_ajax_onload',lat:center.lat(),lng:center.lng(),tags:tags };
-			}
-			this.debugSearch(action);
-			var _this = this;
-			var ajax = new csl.Ajax();
-			if (!realsearch) {
-				ajax.send(action, function (response) {
-                    if (typeof response.response != 'undefined') {
-                        _this.dropMarkers.call(_this, response.response);
-                    } else {
-                        if (window.console) { console.log('SLP server did not send back a valid JSONP response on load.'); }
+
+                    //determines if we need to invent real variables (usually only done at the beginning)
+                    var realsearch = true;
+                    if (this.forceAll) {
+                        realsearch = false;
+                        radius = null;
+                        center = null;
+                        this.forceAll = false;
                     }
-				});
-			}
-			else {
-				ajax.send(action, function (response) {
-                    if (typeof response.response != 'undefined') {                    
-    					_this.bounceMarkers.call(_this, response.response);
+                    this.debugSearch('doing search@' + center + ' for radius of ' + radius);
+                    if (center === null) { center = this.gmap.getCenter(); }
+                    if (radius === null) { radius = 40000; }
+                    this.lastCenter = center;
+                    this.lastRadius = radius;
+                    if (tags === null) { tags = ''; }
+                    this.debugSearch('searching: ' + center.lat() +','+ center.lng());
+
+                    var _this = this;
+                    var ajax = new csl.Ajax();
+
+                    // On Load
+                    if (!realsearch) {
+                        var action = {
+                            action  : 'csl_ajax_onload',
+                            lat     : center.lat(),
+                            lng     : center.lng(),
+                            tags    : tags
+                         };
+
+                        this.debugSearch(action);
+
+                        ajax.send(action, function (response) {
+                                if (typeof response.response !== 'undefined') {
+                                    _this.dropMarkers.call(_this, response.response);
+                                } else {
+                                    if (window.console) { console.log('SLP server did not send back a valid JSONP response on load.'); }
+                                }
+                            });
+
+                    // Search
                     } else {
-                        if (window.console) { console.log('SLP server did not send back a valid JSONP response on search.'); }
+                        var name = this.saneValue('nameSearch', '');
+                        var action = {
+                            action  : 'csl_ajax_search',
+                            address : this.saneValue('addressInput', 'no address entered'),
+                            formdata: jQuery('#searchForm').serialize(),
+                            lat     : center.lat(),
+                            lng     : center.lng(),
+                            name    : name,
+                            radius  : radius,
+                            tags    : tags
+                        };
+
+                        this.debugSearch(action);
+
+                        ajax.send(action, function (response) {
+                                if (typeof response.response !== 'undefined') {
+                                                    _this.bounceMarkers.call(_this, response.response);
+                                } else {
+                                    if (window.console) { console.log('SLP server did not send back a valid JSONP response on search.'); }
+                                }
+                            });
                     }
-				});
-			}
-		}
+		};
 
 		/***************************
   	  	 * function: tagFilter
@@ -1142,7 +1138,7 @@ var csl = {
 			this.loadMarkers(this.lastCenter, this.lastRadius, tag_to_search_for);
 			jQuery('#map_box_image').hide();
 			jQuery('#map_box_map').show();
-		 }
+		 };
 
 		/***************************
   	  	 * function: searchLocations
@@ -1153,14 +1149,14 @@ var csl = {
   	  	 * returns: none
   	  	 */
 		this.searchLocations = function() {
-			var address = this.saneValue('addressInput', '');
+            var address = this.saneValue('addressInput', '');
             jQuery('#map_box_image').hide();
-			jQuery('#map_box_map').show();
+		    jQuery('#map_box_map').show();
             google.maps.event.trigger(this.gmap, 'resize');
 
 			// Address was given, use it...
 			//
-			if (address != '') {
+			if (address !== '') {
 				this.address = cslutils.escapeExtended(address);
 				this.doGeocode();
 
@@ -1170,15 +1166,13 @@ var csl = {
 				var radius = this.saneValue('radiusSelect');
 				this.loadMarkers(this.gmap.getCenter(), radius, tag_to_search_for);
 			}
-		}
+		};
 
-		/***************************
-  	  	 * function: createSidebar
-  	  	 * usage:
-  	  	 * 		Builds to side bar
-  	  	 * parameters:
-  	  	 * 		aMarker: the marker data
-  	  	 * returns: a html div with the data properly displayed
+		/**
+  	  	 * Render a marker in the results section
+         *
+         * @param {object} aMarker marker data for a single location
+  	  	 * @returns {string} a html div with the data properly displayed
   	  	 */
 		this.createSidebar = function(aMarker) {
 			document.getElementById('map_sidebar_td').style.display='block';
@@ -1192,17 +1186,17 @@ var csl = {
 
             var url = this.__getMarkerUrl(aMarker);
 
-			if (url != '') {
-				link = link = "<a href='"+url+"' target='"+(slplus.use_same_window?'_self':'_blank')+"' class='storelocatorlink'><nobr>" + slplus.website_label +"</nobr></a><br/>";
+			if (url !== '') {
+				link = link = "<a href='"+url+"' target='"+((slplus.use_same_window==="on")?'_self':'_blank')+"' class='storelocatorlink'><nobr>" + slplus.website_label +"</nobr></a><br/>";
 			}
 
 			var elink = '';
-			if (aMarker.email.indexOf('@') != -1 && aMarker.email.indexOf('.') != -1) {
+			if (aMarker.email.indexOf('@') !== -1 && aMarker.email.indexOf('.') !== -1) {
 				if (!slplus.use_email_form) {
-					elink = "<a href='mailto:"+aMarker.email+"' target='_blank' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a><br/>";
+					elink = "<a href='mailto:"+aMarker.email+"' target='_blank'  id='slp_marker_email' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a><br/>";
 				}
 				else {
-					elink = "<a href='javascript:cslutils.show_email_form("+'"'+aMarker.email+'"'+");' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a><br/>";
+					elink = "<a href='javascript:cslutils.show_email_form("+'"'+aMarker.email+'"'+");'  id='slp_marker_email' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a><br/>";
 				}
 			}
 
@@ -1210,7 +1204,7 @@ var csl = {
 			//
 			var tagInfo = '';
 			if (slplus.show_tags) {
-				if (jQuery.trim(aMarker.tags) != '') {
+				if (jQuery.trim(aMarker.tags) !== '') {
 					var tagclass = aMarker.tags.replace(/\W/g,'_');
 					tagInfo = '<br/><div class="'+tagclass+' slp_result_table_tags"><span class="tagtext">'+aMarker.tags+'</span></div>';
 				}
@@ -1219,42 +1213,41 @@ var csl = {
 			//keep empty data lines out of the final result
 			//
             var city_state_zip = '';
-            if (jQuery.trim(city) != '') {
+            if (jQuery.trim(city) !== '') {
                 city_state_zip += city;
-                if (jQuery.trim(state) != '' || jQuery.trim(zip) != '') {
+                if (jQuery.trim(state) !== '' || jQuery.trim(zip) !== '') {
                     city_state_zip += ', ';
                 }
             }
-            if (jQuery.trim(state) != '') {
+            if (jQuery.trim(state) !== '') {
                 city_state_zip += state;
-                if (jQuery.trim(zip) != '') {
+                if (jQuery.trim(zip) !== '') {
                     city_state_zip += ', ';
                 }
             }
-            if (jQuery.trim(zip) != '') {
+            if (jQuery.trim(zip) !== '') {
                 city_state_zip += zip;
             }
-            if (jQuery.trim(aMarker.phone) != '') {
+            if (jQuery.trim(aMarker.phone) !== '') {
                 thePhone = slplus.label_phone+ aMarker.phone;
             } else {
-                thePhone = ''
+                thePhone = '';
             }
-            if (jQuery.trim(aMarker.fax) != '') {
+            if (jQuery.trim(aMarker.fax) !== '') {
                 theFax = slplus.label_fax + aMarker.fax;
             } else {
-                theFax = ''
+                theFax = '';
             }
 
             var address = this.__createAddress(aMarker);
-
 
             // JavaScript version of sprintf
             //
             String.prototype.format = function() {
              var args = arguments;
              return this.replace(/{(\d+)(\.(\w+))*}/g, function(match, number, dotsubname, subname) {
-               return typeof args[number] != 'undefined'
-                 ? typeof args[number] != 'object'
+               return typeof args[number] !== 'undefined'
+                 ? typeof args[number] !== 'object'
                      ? args[number]
                      : args[number][subname]
                  : match
@@ -1313,12 +1306,12 @@ var csl = {
             div.id = 'slp_results_entry_'+aMarker.id;
 
 			return div;
-		}
+		};
 
   	  	//dumb browser quirk trick ... wasted two hours on that one
   	  	this.__init();
 	}
-}
+};
 
 
 /***************************************************************************
@@ -1329,44 +1322,64 @@ var csl = {
 var cslmap;
 var cslutils;
 
-/***************************
- * function InitializeTheMap()
+/**
+ * Setup the map settings and get it rendered.
  *
- * Setup the map settings and get id rendered.
- *
+ * @returns {undefined}
  */
 function InitializeTheMap() {
-	cslutils = new csl.Utils();
-	cslmap = new csl.Map();
 
+    // Initialize Utilities
+    //
+	cslutils = new csl.Utils();
+
+    // Initialize the map based on sensor activity
+    //
+    // There are 4 possibilities, and we set the cslmap object as
+    // late as possible for each...
+    //
+    // 1) Sensor Active, Location Service OK
+    // 2) Sensor Active, Location Service FAIL
+    // 3) Sensor Active, But No Location Support
+    // 4) Sensor Inactive
+    //
     if (slplus.use_sensor) {
         sensor = new csl.LocationServices();
-        
-        // If the GPS Sensor is working...
-        //
         if (sensor.LocationSupport) {
             sensor.currentLocation(
+
+                // 1) Success on Location
+                //
                 function(loc) {
+                	cslmap = new csl.Map();
                     cslmap.usingSensor = true;
                     clearTimeout(sensor.location_timeout);
                     sensor.lat = loc.coords.latitude;
                     sensor.lng = loc.coords.longitude;
                     cslmap.__buildMap(new google.maps.LatLng(loc.coords.latitude, loc.coords.longitude));
                 },
+
+                // 2) Failed on location
+                //
                 function(error) {
                     clearTimeout(sensor.location_timeout);
+                	cslmap = new csl.Map();
                     cslmap.doGeocode();
                 }
             );
             
-        // GPS Sensor Not Working (like IE8)
+        // 3) GPS Sensor Not Working (like IE8)
         //
         } else {
             slplus.use_sensor = false;
+        	cslmap = new csl.Map();
             cslmap.doGeocode();            
         }
-    }
-    else {
+
+    // 4) No Sensor
+    //
+    } else {
+    	cslmap = new csl.Map();
         cslmap.doGeocode();
     }
 }
@@ -1375,7 +1388,7 @@ function InitializeTheMap() {
  * When the document has been loaded...
  *
  */
-jQuery('#document').ready(
+jQuery(document).ready(
     function() {
                 /*---------------------------------
                  * formparams minified js
@@ -1385,11 +1398,11 @@ jQuery('#document').ready(
                     numberMatcher = /^[\-+]?[0-9]*\.?[0-9]+([eE][\-+]?[0-9]+)?$/;
 
                 var isNumber = function( value ) {
-                    if ( typeof value == 'number' ) {
+                    if ( typeof value === 'number' ) {
                         return true;
                     }
 
-                    if ( typeof value != 'string' ) {
+                    if ( typeof value !== 'string' ) {
                         return false;
                     }
 
