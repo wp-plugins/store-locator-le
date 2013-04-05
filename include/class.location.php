@@ -185,11 +185,14 @@ class SLPlus_Location {
         if ($this->linked_postid > 0) {
             $touched_pageID = wp_update_post($this->pageData);
             $crupdateOK = ($touched_pageID > 0);
+            $this->plugin->debugMP('msg','location.crupdate_Page()','update post',__FILE__,__LINE__);
+
 
         // Create a new page.
         } else {
             $touched_pageID = wp_insert_post($this->pageData, true);
             $crupdateOK = !is_wp_error($touched_pageID);
+            $this->plugin->debugMP('msg','location.crupdate_Page()','insert post',__FILE__,__LINE__);
         }
 
         // Ok - we are good...
@@ -198,15 +201,12 @@ class SLPlus_Location {
 
             // Debugging Output (if flag turned on)
             //
-            $this->plugin->helper->bugout(
-                    (($touched_pageID != $this->linked_postid) ? 'Created':'Updated') .
-                       " location page $touched_pageID with <pre>" .
-                       print_r($this->pageData,true).'</pre>',
-                    '',
-                    'SLPlus_Location.crupdate_Page()',
-                    __FILE__,
-                    __LINE__
-                    );
+            $header = 
+                    'location.crupdate_Page() page # ' . 
+                    $touched_pageID . 
+                    (($touched_pageID != $this->linked_postid) ? 'Created':'Updated')
+                    ;
+           $this->plugin->debugMP('pr',$header,$this->pageData,__FILE__,__LINE__);
 
             // If we created a page or changed the page ID,
             // set it in our location property and make it
@@ -221,11 +221,8 @@ class SLPlus_Location {
         // We got an error... oh shit...
         //
         } else {
-            $this->plugin->notifications->add_notice('error',
-                    'Could not create or update the custom page for this location. <pre>'.
-                    print_r($touched_pageID->get_error_messages(),true).
-                    '</pre>'
-                    );
+            $this->plugin->notifications->add_notice('error','Could not create or update the custom page for this location.');
+            $this->plugin->debugMP('pr','location.crupdate_Page() failed',$touched_pageID->get_error_messages(),__FILE__,__LINE__);
         }
 
 
@@ -272,12 +269,21 @@ class SLPlus_Location {
     public function set_PageData() {
 
         // We have an existing page
+        // should feed a wp_update_post not wp_insert_post
         //
         if ($this->linked_postid > 0) {
             $this->pageData = array(
                 'ID'            => $this->linked_postid,
             );
-
+           $this->plugin->debugMP(
+                   'msg',
+                   'location.set_PageData()',
+                   ' pre-existing post ID ' . $this->linked_postid . '<br/>' .
+                   '   this pageType ' . $this->pageType . '<br/>' .
+                   '   this pageDefaultStatus ' . $this->pageDefaultStatus . '<br/>' .
+                   '   this store ' . $this->store
+                   ,__FILE__,__LINE__
+                   );
 
         // No page yet, default please.
         //
@@ -289,6 +295,15 @@ class SLPlus_Location {
                 'post_title'    => $this->store,
                 'post_content'  => ''
             );
+           $this->plugin->debugMP(
+                   'msg',
+                   'location.set_PageData()',
+                   ' new post ID ' . $this->linked_postid . '<br/>' .
+                   '   this pageType ' . $this->pageType . '<br/>' .
+                   '   this pageDefaultStatus ' . $this->pageDefaultStatus . '<br/>' .
+                   '   this store ' . $this->store
+                   ,__FILE__,__LINE__
+                   );
         }
 
         // Apply our location page data filters.
@@ -296,15 +311,8 @@ class SLPlus_Location {
         //
         $this->pageData = apply_filters('slp_location_page_attributes', $this->pageData);
 
-        // Show some details if debug mode is enabled
-        //
-        $this->plugin->helper->bugout(
-                '<pre>'.print_r($this->pageData,true).'</pre>',
-                '',
-                'SLPlus_Location.set_PageData()',
-                __FILE__,
-                __LINE__
-                );
+        // Debugging
+        $this->plugin->debugMP('pr','location.set_PageData() post-filter',$this->pageData,__FILE__,__LINE__);
 
         return $this->pageData;
     }
@@ -410,8 +418,16 @@ class SLPlus_Location {
             //
             $this->settings = maybe_unserialize($this->option_value);
 
+            // Debugging Output
+            //
+            $this->plugin->debugMP('pr','location.set_PropertiesViaArray()',$locationData,__FILE__,__LINE__);
+
             return true;
         }
+
+        // Debugging Output
+        //
+        $this->plugin->debugMP('msg','location.set_PropertiesViaArray()','ERROR: location data not in array format.',__FILE__,__LINE__);
         return false;
     }
 

@@ -185,6 +185,13 @@ class wpCSL_helper__slplus {
             }
 
     /**
+     * Generate a consistent HTML wrapper for a message in the admin panels.
+     */
+    function create_SimpleMessage($message) {
+        return '<p class="message">'.$message.'</p>';
+    }
+
+    /**
      * function: SavePostToOptionsTable
      */
     function SavePostToOptionsTable($optionname,$default=null) {

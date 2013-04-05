@@ -48,13 +48,9 @@
  *
  *
  *
- * @author Lance Cleveland <lance@charlestonsw.com>
- * @copyright 2013 Charleston Sofware Associates, LLC
- * @package wpCSL
- * @version 2.1.2
  *
  **/
-if (!defined('WPCSL__slplus__VERSION')) { define('WPCSL__slplus__VERSION', '2.1.2'); }
+if (!defined('WPCSL__slplus__VERSION')) { define('WPCSL__slplus__VERSION', '2.1.3'); }
 
 // WP App Store Affiliate ID
 if (!defined('WPAS_AFFILIATE_ID')) { define('WPAS_AFFILIATE_ID','3368'); }
@@ -67,15 +63,14 @@ if (!defined('WPAS_AFFILIATE_ID')) { define('WPAS_AFFILIATE_ID','3368'); }
 require_once('CSL-helper_class.php');
 require_once('CSL-license_class.php');
 require_once('CSL-settings_class.php');
-require_once('CSL-themes_class.php');
-
 
 /**
  * The base WPCSL class, to which all the other WPCSL objects get attached.
  *
- * @property boolean $display_settings Render the display panel on the settings interface? true = yes.
- *
- * @property wpCSL_notifications__slplus $notifications - a notification object
+ * @author Lance Cleveland <lance@charlestonsw.com>
+ * @copyright 2013 Charleston Sofware Associates, LLC
+ * @package wpCSL
+ * @version 2.1.3
  */
 class wpCSL_plugin__slplus {
 
@@ -84,7 +79,9 @@ class wpCSL_plugin__slplus {
     //---------------------------------------------
 
     /**
-     * @var boolean display_settings render the display panel on the settings interface?
+     * Render the display panel on the settings interface? true = yes.
+     *
+     * @var boolean $display_settings render the display panel on the settings interface?
      */
     private $display_settings = false;
     
@@ -288,14 +285,6 @@ class wpCSL_plugin__slplus {
             );
         }            
 
-        $this->themes_config = array(
-            'prefix'        => $this->prefix,
-            'plugin_path'   => $this->plugin_path,
-            'plugin_url'    => $this->plugin_url,  
-            'support_url'   => $this->support_url,
-            'parent'        => $this
-        );
-
         $this->initialize();
     }
 
@@ -440,23 +429,25 @@ class wpCSL_plugin__slplus {
         }
     }
 
-   
-    /**-------------------------------------
-     ** method: create_themes
-     **/
+
+    /**
+     * Create the theme object and attach it.
+     *
+     * @param string $class 'none' to disable themes.
+     * @return null
+     */
     function create_themes($class = 'none') {
-        switch ($class) {
-            case 'none':
-                break;
-
-            case 'wpCSL_products__slplus':
-            case 'default':
-            default:
-                $this->themes = new wpCSL_themes__slplus($this->themes_config);
-
-        }
+        if ($class === 'none') { return; }
+        require_once('CSL-themes_class.php');
+        $this->themes_config = array(
+            'prefix'        => $this->prefix,
+            'plugin_path'   => $this->plugin_path,
+            'plugin_url'    => $this->plugin_url,
+            'support_url'   => $this->support_url,
+            'parent'        => $this
+        );
+        $this->themes = new wpCSL_themes__slplus($this->themes_config);
     }    
-    
 
     /**-------------------------------------
      ** method: create_license

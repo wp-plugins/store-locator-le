@@ -288,7 +288,7 @@ class SLPlus_UI {
                 "</div>"
                 ;
         } else {
-            $slp_thishtml_70 = $this->plugin->data['radius_options'];
+            $slp_thishtml_70 =$this->plugin->data['radius_options'];
         }
         add_filter('slp_search_form_divs',array($slp_SearchDivs,'buildDiv70'),70);
     }
@@ -505,6 +505,7 @@ class SLPlus_UI {
         if (get_option(SLPLUS_PREFIX.'_hide_radius_selections', 0) == 1) {
             preg_match('/\((.*?)\)/', $radiusSelections, $selectedRadius);
             $selectedRadius = preg_replace('/[^0-9]/', '', (isset($selectedRadius[1])?$selectedRadius[1]:$radiusSelections));
+            if (empty($selectedRadius) || ($selectedRadius <= 0)) { $selectedRadius = '2500'; }
             $this->plugin->data['radius_options'] =
                     "<input type='hidden' id='radiusSelect' name='radiusSelect' value='$selectedRadius'>";
 
@@ -634,13 +635,11 @@ class SLPlus_UI {
             'show_tags'         => (get_option(SLPLUS_PREFIX.'_show_tags')==1),
             'overview_ctrl'     => get_option('sl_map_overview_control',0),
             'use_email_form'    => (get_option(SLPLUS_PREFIX.'_use_email_form',0)==1),
-            'use_pages_links'   => ($this->plugin->settings->get_item('use_pages_links','off')=='on'),
-            'use_same_window'   => ($this->plugin->settings->get_item('use_same_window')=='on'),
             'website_label'     => esc_attr(get_option('sl_website_label','Website')),
             'zoom_level'        => get_option('sl_zoom_level',12),
             'zoom_tweak'        => get_option('sl_zoom_tweak',1)
             );
-        wp_localize_script('csl_script','slplus',$scriptData);
+        wp_localize_script('csl_script','slplus',apply_filters('slp_script_data',$scriptData));
     }
 
     /**
@@ -815,20 +814,6 @@ class SLPlus_UI_DivManager {
         global $slp_thishtml_30;
         $content = $this->DivStr($blank,$slp_thishtml_30);
         $slp_thishtml_30 = '';
-        return $content;
-    }
-
-    function buildDiv40($blank) {
-        global $slp_thishtml_40;
-        $content = $this->DivStr($blank,$slp_thishtml_40);
-        $slp_thishtml_40 = '';
-        return $content;
-    }
-
-    function buildDiv50($blank) {
-        global $slp_thishtml_50;
-        $content = $this->DivStr($blank,$slp_thishtml_50);
-        $slp_thishtml_50 = '';
         return $content;
     }
 

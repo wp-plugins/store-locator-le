@@ -239,7 +239,10 @@ div#slp_tagline {
 #sl_div #map img {
     visibility: visible;    
 }
-
+/* Hide the default Google bubble shadow */
+div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
+    display:none;
+}
 /***** Popup Info Window for Specific Location *****/
 #sl_info_bubble { 
 	padding:10px; 

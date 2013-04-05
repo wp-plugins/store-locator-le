@@ -9,6 +9,7 @@
  * @copyright 2012-2013 Charleston Software Associates, LLC
  */
 class SLPlus_Updates {
+
     /**
      * The plugin current version
      * @var string
@@ -19,6 +20,14 @@ class SLPlus_Updates {
      * @var string
      */
     public $update_path;
+
+    /**
+     * The global plugin.
+     * 
+     * @var \SLPlus
+     */
+    private $plugin;
+
     /**
      * Plugin Slug (plugin_directory/plugin_file.php)
      * @var string
@@ -29,6 +38,7 @@ class SLPlus_Updates {
      * @var string
      */
     public $slug;
+
     /**
      * Initialize a new instance of the WordPress Auto-Update class
      * @param string $current_version
@@ -37,16 +47,21 @@ class SLPlus_Updates {
      */
     function __construct($current_version, $update_path, $plugin_slug)
     {
+        global $slplus_plugin;
+
         // Set the class public variables
+        $this->plugin = $slplus_plugin;
         $this->current_version = $current_version;
-        $this->update_path = $update_path;
         $this->plugin_slug = $plugin_slug;
         list ($t1, $t2) = explode('/', $plugin_slug);
         $this->slug = str_replace('.php', '', $t2);
+        $this->update_path = $update_path . '?slug='.$this->slug;
+
         // define the alternative API for updating checking
-        add_filter('pre_set_site_transient_update_plugins', array(&$this, 'check_update'));
+        add_filter('pre_set_site_transient_update_plugins', array($this, 'check_update'));
+        
         // Define the alternative response for information checking
-        add_filter('plugins_api', array(&$this, 'check_info'), 10, 3);
+        add_filter('plugins_api', array($this, 'check_info'), 10, 3);
     }
     /**
      * Add our self-hosted autoupdate plugin to the filter transient
@@ -62,7 +77,11 @@ class SLPlus_Updates {
 
         // Get the remote version
         $remote_version = $this->getRemote_version();
+
         // If a newer version is available, add the update
+        if (isset($GLOBALS['DebugMyPlugin'])) {
+            error_log('slug ' . $this->slug . ' current version ' . $this->current_version . ' remote version ' . $remote_version);
+        }
         if (version_compare($this->current_version, $remote_version, '<')) {
             $obj = new stdClass();
             $obj->slug = $this->slug;
@@ -71,28 +90,31 @@ class SLPlus_Updates {
             $obj->package = $this->update_path;
             $transient->response[$this->plugin_slug] = $obj;
         }
-
-//            print '<pre>';
-//            var_dump($transient);
-//            print '</pre>';
-
         return $transient;
     }
+    
     /**
      * Add our self-hosted description to the filter
      *
-     * @param boolean $false
+     * @param mixed $orig original incoming args
      * @param array $action
      * @param object $arg
      * @return bool|object
      */
-    public function check_info($false, $action, $arg)
+    public function check_info($orig, $action, $arg)
     {
-        if (isset($this->slug) && isset($arg->slug) && ($arg->slug === $this->slug)) {
-            $information = $this->getRemote_information();
+        if (isset($GLOBALS['DebugMyPlugin'])) {
+            error_log('check info for action ' . $action . ' arg slug ' . $arg->slug);
+        }
+        if (!isset($this->plugin->infoFetched[$arg->slug])) {
+            $information = $this->getRemote_information($arg->slug);
+            $this->plugin->infoFetched[$arg->slug] = true;
+            if (isset($GLOBALS['DebugMyPlugin'])) {
+                error_log(' plugin info '. print_r($information,true));
+            }
             return $information;
         }
-        return false;
+        return $orig;
     }
     /**
      * Return the remote version
@@ -108,19 +130,25 @@ class SLPlus_Updates {
     }
     /**
      * Get information about the remote version
-     * @return bool|object
+     * @return mixed[] false if cannot get info, unserialized info if we could
      */
-    public function getRemote_information()
-    {
-        $request = wp_remote_post($this->update_path, array('body' => array('action' => 'info', 'slug' => $this->slug)));
+    public function getRemote_information($slug=null) {
+        if ($slug===null) { $slug = $this->slug; }
+        $request = wp_remote_post($this->update_path, array('body' => array('action' => 'info', 'slug' => $slug)));
         if (!is_wp_error($request) || wp_remote_retrieve_response_code($request) === 200) {
+            if (isset($GLOBALS['DebugMyPlugin'])) {
+                error_log('retrieved remote info for ' . $slug);
+            }
             return unserialize($request['body']);
+        }
+        if (isset($GLOBALS['DebugMyPlugin'])) {
+            error_log('remote info retrieval failed for ' . $slug);
         }
         return false;
     }
     /**
      * Get a list of remote packages on this updater URL.
-     * @return bool|object
+     * @return mixed false if error on remote, unserialized list of products otherwise
      */
     public function getRemote_list()
     {

@@ -320,6 +320,13 @@ class SLPlus_Actions {
         // Fire the SLP initialized trigger
         //
         do_action('slp_init_complete', $this);
+
+        // Update the broadcast URL with the registered plugins
+        // registered plugins are expected to tell us they are here using
+        // slp_init_complete
+        //
+        $this->plugin->broadcast_url = $this->plugin->broadcast_url . '&' . $this->plugin->create_addon_query();
+        $this->plugin->settings->broadcast_url = $this->plugin->broadcast_url;
     }
 
     /**

@@ -160,6 +160,14 @@ div.csl-slplus-moretext {
 a.moreinfo_clicker {
     text-decoration: none;
 }
+p.message{
+    clear: both;
+    color: #999999;
+    font-size: 11px;
+    margin: -18px 0 9px;
+    padding: 0 0 0 9px;
+    text-align: left;
+}
 
 
 /*----------------------------------
@@ -287,6 +295,7 @@ form#manage_locations_actionbar_form {
 }
 
 /* Action Bar Specific */
+
 div#action_buttons {
     display: inline;
     margin: 12px 0px 0px 0px;
@@ -311,6 +320,7 @@ div#filter_bar_header h3
 div#slplus_actionbar {
     clear:both;
     padding-top: 1px;
+    font-size: 12px;
 }
 div#tag_block {
     width: 341px;
@@ -373,7 +383,7 @@ div.actionbox {
 }
 
 /***************************
- * Locations: Add / Edit
+ * Locations: Add Form / Edit
  */
 div.slp_bulk_upload_div {
   background-color: #F8F7DE;
@@ -429,6 +439,84 @@ table.slp_locationinfoform_table td {
     padding-right:0px;
 }
 
+div#sl_div div#address_search input[type="submit"] {
+    margin: 3px;
+    padding: 3px;
+}
+.menu-toggle, button, input[type="submit"], input[type="button"], input[type="reset"] {
+    cursor: pointer;
+}
+.menu-toggle, input[type="submit"], input[type="button"], input[type="reset"], article.post-password-required input[type="submit"], li.bypostauthor cite span {
+    background-color: #E6E6E6;
+    background-image: -moz-linear-gradient(center top , #F4F4F4, #E6E6E6);
+    background-repeat: repeat-x;
+    border: 1px solid #D2D2D2;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 0 1px 2px rgba(64, 64, 64, 0.1);
+    color: #7C7C7C;
+    font-size: 0.785714rem;
+    font-weight: normal;
+    line-height: 1.42857;
+    padding: 0.428571rem 0.714286rem;
+}
+button, input {
+    line-height: normal;
+}
+button, input, textarea {
+    border: 1px solid #CCCCCC;
+    border-radius: 3px 3px 3px 3px;
+    font-family: inherit;
+    padding: 0.428571rem;
+}
+div#sl_div div#address_search {
+    text-align: left;
+}
+caption, th, td {
+    font-weight: normal;
+    text-align: left;
+}
+.entry-content table, .comment-content table {
+    color: #757575;
+    font-size: 0.857143rem;
+    line-height: 2;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+.entry-content, .entry-summary, .mu_register {
+    line-height: 1.71429;
+}
+.site-content article {
+    -moz-hyphens: auto;
+    word-wrap: break-word;
+}
+body.custom-font-enabled {
+    font-family: "Open Sans",Helvetica,Arial,sans-serif;
+}
+body {
+    color: #444444;
+    font-family: Helvetica,Arial,sans-serif;
+    font-size: 1rem;
+    text-rendering: optimizelegibility;
+}
+body {
+    line-height: 1;
+}
+div.slp_editform_section {
+    clear: both;
+    margin-bottom: 9px;
+}
+
+div.slp_editform_section small {
+    margin-left: 9px;
+}
+div.slp_editform_section A {
+    display: inline-block;
+    margin: 1px;
+    min-width: 161px;
+    padding: 3px;
+}
 
 /***************************
  * Locations: Manage
@@ -485,10 +573,10 @@ td.slp_manage_locations_cell {
  div.wrap table.slplus.widefat thead tr th a 
  {
     color: #EEEEFF;
-    font-weight: bold;
     text-decoration: none;    
     text-shadow: none;
-    font-size: 14px;
+    font-size: 12px;
+    font-weight: 500;
     font-family: "Trebuchet MS", Helvetica, sans-serif; 
  }
  div.wrap table.slplus.widefat thead tr th a {
@@ -524,8 +612,16 @@ td.slp_manage_locations_cell {
     clear:both;
 }
 div.section_column .form_entry {
+    clear: both;
+    display: inline-block;
+    min-height: 18px;
     min-width: 475px;
-    padding: 6px;
+    padding: 0px;
+}
+
+.section_description {
+    font-size: 12px;
+    padding: 0px;
 }
 
 .section_description H3 {
@@ -543,6 +639,7 @@ div.section_column .form_entry {
     margin: 0px 3px 0px 6px;
     display: block;
     clear: left;
+    font-size: 12px;
 }
 .section_description label.disabled {
     color: #CCC;
@@ -568,6 +665,7 @@ div.input_note {
 
 .section_description .small {
 	width: 3em;
+    vertical-align: top;
 }
 
 .slplus_innertable td {
@@ -765,6 +863,7 @@ div.section_column_content {
 
 p.slp_admin_info {
     clear: both;
+    padding-left: 9px;
 }
 
 div.section_column h2,
@@ -773,6 +872,7 @@ div.section_column h2,
     margin-top: 0px;
     padding: 0px 6px;
     background: #D4D4FF;
+    font-size: 16px;
 }
 
 .section_description {
@@ -876,8 +976,11 @@ div.section_column h2,
 }
 
 .form-table .input_label {
-    font-weight:bold;
-    padding: 1em 0 0;
+    coor: #222;
+    font-size: 12px;
+    font-weight:500;
+    line-height: 3em;
+    padding: 0px;
     text-align: right;
     vertical-align: top;
 }
@@ -894,4 +997,10 @@ div.csa_info_msg {
     font-weight: bold;
     font-size: 1.25em;
     
+}
+
+div#slp_edit_left_column small,
+div#slp_edit_right_column small {
+    line-height: 2em;
+    vertical-align: top;
 }

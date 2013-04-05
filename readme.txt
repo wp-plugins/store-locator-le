@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
 Tags: google,bing,map,directory,location,place,store,dealer,shop,business,retail,brick,mortar,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 3.9.3
+Stable tag: 3.9.4
 
 A high end location management system that makes it easy to put a store location finder on your site.  Extensive premium add-on library available!
 
@@ -304,6 +304,20 @@ You will need to go to the new "Store Pages" tab and re-enable some of your sett
 
 Updating from a version 3.8.6 or earlier?
 You will likely need to reset your home and destination map markers.
+
+= 3.9.4 =
+
+* Change: Add-on packs updater URL revised to new location.
+* Change: Updates to the JavaScript processor to make [Store Pages](http://www.charlestonsw.com/product/store-locator-plus-store-pages) happy.
+* Enhancement: Clean up the add-on pack additional edit form fields layout.
+* Enhancement: Top Labels CSS Theme modified, drop coloring and shadows, revised below map rendering.
+* Enhancement: Clean Simple White Theme modified, adjust input field padding and separation.
+* Enhancement: If radius selection is hidden and radius is set to blank or <=0, make default 2500.
+* Enhancement: [Hooks & Filters](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/) add slp_script_data filter.
+* Enhancement: JavaScript simplification.
+* Fix: Add-on updater now downloads zip files from remote source properly.
+* Fix: Add-on updater no longer fails on info retrieval if the add-on is inactive.
+* Fix: Hide the Google bubble shadow that looks "wonky" on older browsers.
 
 = 3.9.3 =
 

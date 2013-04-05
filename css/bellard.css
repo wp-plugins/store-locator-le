@@ -158,6 +158,10 @@ div#radius_in_submit {
 #map_table td {
     border: none;
 }
+/* Hide the default Google bubble shadow */
+div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
+    display:none;
+}
 div#slp_tagline {
     text-align: right;
     padding-right: 3px;

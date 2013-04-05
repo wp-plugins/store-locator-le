@@ -232,7 +232,6 @@ class SLPlus_AdminUI_MapSettings {
                         'sl_map_type'                           ,
                         'sl_num_initial_displayed'              ,
                         'sl_distance_unit'                      ,
-                        'sl_name_label'                         ,
                         'sl_radius_label'                       ,
                         'sl_search_label'                       ,
                         'sl_starting_image'                     ,
@@ -267,7 +266,6 @@ class SLPlus_AdminUI_MapSettings {
                         SLPLUS_PREFIX.'_disable_search'             ,
                         SLPLUS_PREFIX.'_hide_radius_selections'     ,
                         SLPLUS_PREFIX.'_hide_address_entry'         ,
-                        SLPLUS_PREFIX.'_show_search_by_name'        ,
                         SLPLUS_PREFIX.'_use_email_form'             ,
                         SLPLUS_PREFIX.'_use_location_sensor'        ,
                         SLPLUS_PREFIX.'-force_load_js'              ,
@@ -336,23 +334,6 @@ class SLPlus_AdminUI_MapSettings {
                     ''
                     )
                 ;
-
-            // Pro Pack : Initial Look & Feel
-            //
-            if ($this->plugin->license->packages['Pro Pack']->isenabled) {
-                $slpDescription .=
-                    $this->CreateInputDiv(
-                        'sl_starting_image',
-                        __('Starting Image','csa-slplus'),
-                        __('If set, this image will be displayed until a search is performed.  Enter the full URL for the image.','csa-slplus'),
-                        ''
-                        ) .
-                    $this->plugin->helper->CreateCheckboxDiv(
-                        '_disable_initialdirectory',
-                        __('Disable Initial Directory','csa-slplus'),
-                        __('Do not display the listings under the map when "immediately show locations" is checked.', 'csa-slplus')
-                        );
-            }
 
             // Features : Country
             $slpDescription .=
@@ -909,15 +890,6 @@ class SLPlus_AdminUI_MapSettings {
                 SLPLUS_PREFIX,
                 !$this->plugin->license->packages['Pro Pack']->isenabled
                 ) .
-
-            $this->plugin->helper->CreateCheckboxDiv(
-                '_show_search_by_name',
-                __('Show search by name box', 'csa-slplus'),
-                __('Shows the name search entry box to the user.', 'csa-slplus') . $ppFeatureMsg,
-                SLPLUS_PREFIX,
-                !$this->plugin->license->packages['Pro Pack']->isenabled
-                ) .
-
             $this->plugin->helper->CreateCheckboxDiv(
                 '_hide_address_entry',
                 __('Hide address entry box','csa-slplus'),
@@ -981,39 +953,6 @@ class SLPlus_AdminUI_MapSettings {
         $slpDescription .= ob_get_clean();
         $slpDescription .= '</div>';
 
-
-        //----------------------------------------------------------------------
-        // Pro Pack Enabled
-        //
-        if ($this->plugin->license->packages['Pro Pack']->isenabled) {
-            /**
-             * Tags Section
-             */
-            $slpDescription .= "<div class='section_column'>";
-            $slpDescription .= '<h2>'.__('Tags', 'csa-slplus').'</h2>';
-            $slpDescription .= '<div class="section_column_content">';
-            $slpDescription .= $this->plugin->helper->CreateCheckboxDiv(
-                '_show_tag_search',
-                __('Tag Input','csa-slplus'),
-                __('Show the tag entry box on the search form.', 'csa-slplus')
-                );
-            $slpDescription .= $this->CreateInputDiv(
-                    '_tag_search_selections',
-                    __('Preselected Tag Searches', 'csa-slplus'),
-                    __("Enter a comma (,) separated list of tags to show in the search pulldown, mark the default selection with parenthesis '( )'. This is a default setting that can be overriden on each page within the shortcode.",'csa-slplus')
-                    );
-
-            $slpDescription .= $this->plugin->helper->CreateCheckboxDiv(
-                '_show_tag_any',
-                __('Add "any" to tags pulldown','csa-slplus'),
-                __('Add an "any" selection on the tag pulldown list thus allowing the user to show all locations in the area, not just those matching a selected tag.', 'csa-slplus')
-                );
-            ob_start();
-            do_action('slp_add_search_form_tag_setting');
-            $slpDescription .= ob_get_clean();
-            $slpDescription .= '</div></div>';
-        }
-
         // Search Form Labels
         //
         $settingsHTML =
@@ -1023,13 +962,6 @@ class SLPlus_AdminUI_MapSettings {
                 __('Search form address label.','csa-slplus'),
                 '',
                 'Address / Zip'
-                ) .
-            $this->CreateInputDiv(
-                'sl_name_label',
-                __('Name', 'csa-slplus'),
-                __('Search form name label.','csa-slplus'),
-                '',
-                'Name'
                 ) .
             $this->CreateInputDiv(
                 'sl_radius_label',
