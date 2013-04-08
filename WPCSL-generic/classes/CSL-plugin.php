@@ -50,7 +50,7 @@
  *
  *
  **/
-if (!defined('WPCSL__slplus__VERSION')) { define('WPCSL__slplus__VERSION', '2.1.3'); }
+if (!defined('WPCSL__slplus__VERSION')) { define('WPCSL__slplus__VERSION', '2.1.4'); }
 
 // WP App Store Affiliate ID
 if (!defined('WPAS_AFFILIATE_ID')) { define('WPAS_AFFILIATE_ID','3368'); }
@@ -70,7 +70,7 @@ require_once('CSL-settings_class.php');
  * @author Lance Cleveland <lance@charlestonsw.com>
  * @copyright 2013 Charleston Sofware Associates, LLC
  * @package wpCSL
- * @version 2.1.3
+ * @version 2.1.4
  */
 class wpCSL_plugin__slplus {
 
@@ -91,6 +91,13 @@ class wpCSL_plugin__slplus {
      * @var wpCSL_notifications__slplus $notifications 
      */
     public  $notifications;
+
+    /**
+     * Turn on/off the monetary l10n settings.
+     *
+     * @var boolean $show_locale
+     */
+    private $show_locale;
 
     //---------------------------------------------
     // Methods
@@ -827,15 +834,12 @@ class wpCSL_plugin__slplus {
         if ($this->themes_enabled) {
             $this->themes->add_admin_settings();
         }
-        
-        
-        if (get_option($this->prefix.'-locale')) {
-            setlocale(LC_MONETARY, get_option($this->prefix.'-locale'));
-        }
 
         // If we have an exec function and get locales, show the pulldown.
         //        
         if ($this->show_locale){
+            setlocale(LC_MONETARY, get_option($this->prefix.'-locale',get_locale()));
+
             // Exec function exists.
             // Exec is not disabled.
             // Safe Mode is not on.
@@ -881,8 +885,8 @@ class wpCSL_plugin__slplus {
         // Show money pulldown if we are using Panhandler or have set the uses_money flag
         //
         if  (
-            (($this->driver_type == 'Panhandler') || $this->uses_money) && 
-            (function_exists('money_format')) 
+            ($this->show_locale) &&
+            (($this->driver_type == 'Panhandler') || $this->uses_money) && (function_exists('money_format')) 
             ) {
                 $this->settings->add_item(
                     'Display Settings', 

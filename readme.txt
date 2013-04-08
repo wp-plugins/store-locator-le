@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
 Tags: google,bing,map,directory,location,place,store,dealer,shop,business,retail,brick,mortar,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 3.9.4
+Stable tag: 3.9.5
 
 A high end location management system that makes it easy to put a store location finder on your site.  Extensive premium add-on library available!
 
@@ -304,6 +304,10 @@ You will need to go to the new "Store Pages" tab and re-enable some of your sett
 
 Updating from a version 3.8.6 or earlier?
 You will likely need to reset your home and destination map markers.
+
+= 3.9.5 =
+
+* Fix: locale issues (again), makes plugin happy on MS servers.
 
 = 3.9.4 =
 
