@@ -154,6 +154,16 @@ class wpCSL_helper__slplus {
             }
 
         /**
+         * Generate the HTML for a sub-heading label in a settings panel.
+         *
+         * @param string $label
+         * @return string HTML
+         */
+        function create_SubheadingLabel($label) {
+            return "<p class='slp_admin_info'><strong>$label</strong></p>";
+        }
+
+        /**
          * Generate the HTML for a checkbox settings interface element.
          *
          * @param string $boxname - the name of the checkbox (db option name)

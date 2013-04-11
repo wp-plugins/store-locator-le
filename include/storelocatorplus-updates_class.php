@@ -48,7 +48,6 @@ class SLPlus_Updates {
     function __construct($current_version, $update_path, $plugin_slug)
     {
         global $slplus_plugin;
-
         // Set the class public variables
         $this->plugin = $slplus_plugin;
         $this->current_version = $current_version;
@@ -106,6 +105,11 @@ class SLPlus_Updates {
         if (isset($GLOBALS['DebugMyPlugin'])) {
             error_log('check info for action ' . $action . ' arg slug ' . $arg->slug);
         }
+
+        // No slug? Not plugin update.
+        //
+        if (empty($arg->slug)) { return $orig; }
+
         if (!isset($this->plugin->infoFetched[$arg->slug])) {
             $information = $this->getRemote_information($arg->slug);
             $this->plugin->infoFetched[$arg->slug] = true;

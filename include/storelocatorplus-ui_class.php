@@ -459,9 +459,6 @@ class SLPlus_UI {
      *
      *
      * @global type $wpdb
-     * @global type $cs_options
-     * @global type $sl_country_options
-     * @global type $slplus_state_options
      * @param type $attributes
      * @param type $content
      * @return string HTML the shortcode will render
@@ -471,7 +468,7 @@ class SLPlus_UI {
              return sprintf(__('%s is not ready','csa-slplus'),__('Store Locator Plus','csa-slplus'));
         }
 
-        global  $wpdb, $cs_options, $sl_country_options, $slplus_state_options;
+        global  $wpdb;
 
         // Get Approved Shortcode Attributes
         $attributes =
@@ -493,9 +490,6 @@ class SLPlus_UI {
 
         $this->plugin->data['radius_options'] =
                 (isset($this->plugin->data['radius_options'])?$this->plugin->data['radius_options']:'');
-        $cs_options     =(isset($cs_options)        ?$cs_options     :'');
-        $sl_country_options=(isset($sl_country_options)   ?$sl_country_options:'');
-        $slplus_state_options=(isset($slplus_state_options)   ?$slplus_state_options:'');
 
         // Radius Options
         //
@@ -519,34 +513,6 @@ class SLPlus_UI {
                         "<option value='$radius' $selected>$radius $unit_display</option>";
             }
         }
-
-        //-------------------
-        // Show City Search option is checked
-        // setup the pulldown list
-        //
-        if (get_option('sl_use_city_search',0)==1) {
-            $cs_array=$wpdb->get_results(
-                "SELECT CONCAT(TRIM(sl_city), ', ', TRIM(sl_state)) as city_state " .
-                    "FROM ".$wpdb->prefix."store_locator " .
-                    "WHERE sl_city<>'' AND sl_state<>'' AND sl_latitude<>'' " .
-                        "AND sl_longitude<>'' " .
-                    "GROUP BY city_state " .
-                    "ORDER BY city_state ASC",
-                ARRAY_A);
-
-            if ($cs_array) {
-                foreach($cs_array as $sl_value) {
-            $cs_options.="<option value='$sl_value[city_state]'>$sl_value[city_state]</option>";
-                }
-            }
-        }
-        $sl_country_options     = (isset($this->parent->ProPack) ? $this->parent->ProPack->create_country_pd() : '');
-        $slplus_state_options   = (isset($this->parent->ProPack) ? $this->parent->ProPack->create_state_pd()   : '');
-
-        $columns = 1;
-        $columns += (get_option('sl_use_city_search',0)!=1) ? 1 : 0;
-        $columns += (get_option('sl_use_country_search',0)!=1) ? 1 : 0;
-        $columns += (get_option('slplus_show_state_pd',0)!=1) ? 1 : 0;
 
         // Set our flag for later processing
         // of JavaScript files

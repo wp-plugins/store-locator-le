@@ -356,17 +356,11 @@ class SLPlus_Activate {
             // Save Image and Lanuages Files
             $filesSaved = $updater->save_important_files();
 
-            // Change Pro Pack license info to new SKU
+            // TODO: elminate this when PRO becomes a download product.
             //
             if (get_option(SLPLUS_PREFIX.'-SLPLUS-PRO-lk','') == '') {
                 update_option(SLPLUS_PREFIX.'-SLPLUS-PRO-lk',get_option(SLPLUS_PREFIX.'-SLPLUS-lk',''));
                 update_option(SLPLUS_PREFIX.'-SLPLUS-PRO-isenabled',get_option(SLPLUS_PREFIX.'-SLPLUS-isenabled',''));
-            }
-
-            // Change Pages license info to new SKU
-            //
-            if (get_option(SLPLUS_PREFIX.'-SLPLUS-PAGES-lk','') == '') {
-                update_option(SLPLUS_PREFIX.'-SLPLUS-PAGES-isenabled',get_option(SLPLUS_PREFIX.'-SLP-PAGES-isenabled',''));
             }
 
             // Core Icons Moved

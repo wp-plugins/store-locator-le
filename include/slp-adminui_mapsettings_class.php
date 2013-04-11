@@ -158,16 +158,6 @@ class SLPlus_AdminUI_MapSettings {
      }
 
     /**
-     * Generate the HTML for a sub-heading label in a settings panel.
-     * 
-     * @param string $label
-     * @return string HTML
-     */
-    function CreateSubheadingLabel($label) {
-        return "<p class='slp_admin_info'><strong>$label</strong></p>";
-    }
-
-    /**
      * Generate the HTML for a text area settings interface element.
      * 
      * @param string $boxname
@@ -243,9 +233,6 @@ class SLPlus_AdminUI_MapSettings {
                         SLPLUS_PREFIX.'_tag_search_selections'  ,
                         SLPLUS_PREFIX.'-map_language'           ,
                         SLPLUS_PREFIX.'_maxreturned'            ,
-                        SLPLUS_PREFIX.'_search_tag_label'       ,
-                        SLPLUS_PREFIX.'_state_pd_label'         ,
-                        SLPLUS_PREFIX.'_find_button_label'      ,
                     )
                 );
             foreach ($BoxesToHit as $JustAnotherBox) {
@@ -260,20 +247,11 @@ class SLPlus_AdminUI_MapSettings {
                         SLPLUS_PREFIX.'_show_tag_search'            ,
                         SLPLUS_PREFIX.'_show_tag_any'               ,
                         SLPLUS_PREFIX.'_email_form'                 ,
-                        SLPLUS_PREFIX.'_show_tags'                  ,
                         SLPLUS_PREFIX.'_disable_find_image'         ,
                         SLPLUS_PREFIX.'_disable_initialdirectory'   ,
-                        SLPLUS_PREFIX.'_disable_search'             ,
-                        SLPLUS_PREFIX.'_hide_radius_selections'     ,
-                        SLPLUS_PREFIX.'_hide_address_entry'         ,
-                        SLPLUS_PREFIX.'_use_email_form'             ,
-                        SLPLUS_PREFIX.'_use_location_sensor'        ,
                         SLPLUS_PREFIX.'-force_load_js'              ,
-                        'sl_use_city_search'                        ,
-                        'sl_use_country_search'                     ,
                         'sl_load_locations_default'                 ,
                         'sl_remove_credits'                         ,
-                        'slplus_show_state_pd'                      ,
                         )
                     );
             foreach ($BoxesToHit as $JustAnotherBox) {
@@ -297,7 +275,7 @@ class SLPlus_AdminUI_MapSettings {
         $slpDescription =
             "<div class='section_column_content'>" .
 
-            $this->CreateSubheadingLabel(__('Look and Feel','csa-slplus')) .
+            $this->plugin->helper->create_SubheadingLabel(__('Look and Feel','csa-slplus')) .
 
             $this->plugin->helper->CreateCheckboxDiv(
                     'sl_remove_credits',
@@ -337,7 +315,7 @@ class SLPlus_AdminUI_MapSettings {
 
             // Features : Country
             $slpDescription .=
-                $this->CreateSubheadingLabel(__('Country','csa-slplus')) .
+                $this->plugin->helper->create_SubheadingLabel(__('Country','csa-slplus')) .
                 "<div class='form_entry'>" .
                 "<label for='google_map_domain'>". __("Map Domain", 'csa-slplus') . "</label>" .
                 "<select name='google_map_domain'>"
@@ -366,7 +344,7 @@ class SLPlus_AdminUI_MapSettings {
             // Settings
             //
             $slpDescription =
-                $this->CreateSubheadingLabel(__('Dimensions','csa-slplus')) .
+                $this->plugin->helper->create_SubheadingLabel(__('Dimensions','csa-slplus')) .
 
                 $this->CreatePulldownDiv(
                     'sl_zoom_level',
@@ -420,7 +398,7 @@ class SLPlus_AdminUI_MapSettings {
                     '%'
                     ) .
 
-                $this->CreateSubheadingLabel(__('General','csa-slplus')) .
+                $this->plugin->helper->create_SubheadingLabel(__('General','csa-slplus')) .
 
                 $this->CreatePulldownDiv(
                     'sl_map_type',
@@ -742,23 +720,6 @@ class SLPlus_AdminUI_MapSettings {
                     __('How many locations does a search return? Default is 25.','csa-slplus')
                     );
 
-        //--------
-        // Pro Pack : Search Results Settings
-        //
-        if ($this->plugin->license->packages['Pro Pack']->isenabled) {
-            $slpDescription .= $this->plugin->helper->CreateCheckboxDiv(
-                '_show_tags',
-                __('Show Tags In Output','csa-slplus'),
-                __('Show the tags in the location output table and bubble.', 'csa-slplus')
-                );
-
-            $slpDescription .= $this->plugin->helper->CreateCheckboxDiv(
-                '_use_email_form',
-                __('Use Email Form','csa-slplus'),
-                __('Use email form instead of mailto: link when showing email addresses.', 'csa-slplus')
-                );
-        }
-
         // FILTER: slp_settings_results_locationinfo - add input fields to results locaiton info
         //
         $slpDescription = apply_filters('slp_settings_results_locationinfo',$slpDescription);
@@ -844,14 +805,6 @@ class SLPlus_AdminUI_MapSettings {
      *
      */
      function search_form_settings() {
-        $ppFeatureMsg = (!$this->plugin->license->packages['Pro Pack']->isenabled ?
-                sprintf(
-                        __(' This is a <a href="%s" target="csa">Pro Pack</a> feature.', 'csa-slplus'),
-                        $this->plugin->purchase_url
-                        ) :
-                ''
-             );
-
         $slpDescription =
             "<div id='search_settings'>" .
                 "<div class='section_column'>" .
@@ -879,78 +832,28 @@ class SLPlus_AdminUI_MapSettings {
         }
         $slpDescription .=
                 '</select>'.
-            '</div>'
-            ;
-
-        $slpDescription .=
-            $this->plugin->helper->CreateCheckboxDiv(
-                '_hide_radius_selections',
-                __('Hide radius selection','csa-slplus'),
-                __('Hides the radius selection from the user, the default radius will be used.', 'csa-slplus') . $ppFeatureMsg,
-                SLPLUS_PREFIX,
-                !$this->plugin->license->packages['Pro Pack']->isenabled
-                ) .
-            $this->plugin->helper->CreateCheckboxDiv(
-                '_hide_address_entry',
-                __('Hide address entry box','csa-slplus'),
-                __('Hides the address entry box from the user.', 'csa-slplus') . $ppFeatureMsg,
-                SLPLUS_PREFIX,
-                !$this->plugin->license->packages['Pro Pack']->isenabled
-                ) .
-
-            $this->plugin->helper->CreateCheckboxDiv(
-                '_use_location_sensor',
-                __('Use location sensor', 'csa-slplus'),
-                __('This turns on the location sensor (GPS) to set the default search address.  This can be slow to load and customers are prompted whether or not to allow location sensing.', 'csa-slplus') . $ppFeatureMsg,
-                SLPLUS_PREFIX,
-                !$this->plugin->license->packages['Pro Pack']->isenabled
-                ) .
-
-            $this->plugin->helper->CreateCheckboxDiv(
-                'sl_use_city_search',
-                __('Show City Pulldown','csa-slplus'),
-                __('Displays the city pulldown on the search form. It is built from the unique city names in your location list.','csa-slplus') . $ppFeatureMsg,
-                '',
-                !$this->plugin->license->packages['Pro Pack']->isenabled
-                ) .
-
-            $this->plugin->helper->CreateCheckboxDiv(
-                'sl_use_country_search',
-                __('Show Country Pulldown','csa-slplus'),
-                __('Displays the country pulldown on the search form. It is built from the unique country names in your location list.','csa-slplus') . $ppFeatureMsg,
-                '',
-                !$this->plugin->license->packages['Pro Pack']->isenabled
-                ) .
-
-            $this->plugin->helper->CreateCheckboxDiv(
-                'slplus_show_state_pd',
-                __('Show State Pulldown','csa-slplus'),
-                __('Displays the state pulldown on the search form. It is built from the unique state names in your location list.','csa-slplus') . $ppFeatureMsg,
-                '',
-                !$this->plugin->license->packages['Pro Pack']->isenabled
-                ) .
-
-            $this->plugin->helper->CreateCheckboxDiv(
-                '_disable_search',
-                __('Hide Find Locations button','csa-slplus'),
-                __('Remove the "Find Locations" button from the search form.', 'csa-slplus') . $ppFeatureMsg,
-                SLPLUS_PREFIX,
-                !$this->plugin->license->packages['Pro Pack']->isenabled
-                ) .
-
+            '</div>'.
             $this->plugin->helper->CreateCheckboxDiv(
                 '_disable_find_image',
                 __('Use Find Location Text Button','csa-slplus'),
-                __('Use a standard text button for "Find Locations" instead of the provided button images.', 'csa-slplus') . $ppFeatureMsg,
+                __('Use a standard text button for "Find Locations" instead of the provided button images.', 'csa-slplus'),
                 SLPLUS_PREFIX,
                 false,
                 1
                 )
                 ;
 
+        // FILTER: slp_settings_search_features
+        $slpDescription = apply_filters('slp_settings_search_features',$slpDescription);
+
+        // Legacy Action Call to setup new features
+        // This really should have been a filter.
+        // TODO: find all uses and deprecate
+        //
         ob_start();
         do_action('slp_add_search_form_features_setting');
         $slpDescription .= ob_get_clean();
+
         $slpDescription .= '</div>';
 
         // Search Form Labels
@@ -972,30 +875,13 @@ class SLPlus_AdminUI_MapSettings {
                 )
             ;
 
-        //----------------------------------------------------------------------
-        // Pro Pack Enabled
-        //
-        if ($this->plugin->license->packages['Pro Pack']->isenabled) {
-            $settingsHTML .=
-                $this->CreateInputDiv(
-                    '_search_tag_label',
-                    __('Tags', 'csa-slplus'),
-                    __('Search form label to prefix the tag selector.','csa-slplus')
-                    ) .
-                $this->CreateInputDiv(
-                    '_state_pd_label',
-                    __('State Label', 'csa-slplus'),
-                    __('Search form label to prefix the state selector.','csa-slplus')
-                    ).
-                $this->CreateInputDiv(
-                    '_find_button_label',
-                    __('Find Button', 'csa-slplus'),
-                    __('The label on the find button, if text mode is selected.','csa-slplus'),
-                    SLPLUS_PREFIX,
-                    __('Find Locations','csa-slplus')
-                    );
-        }
+        // FILTER: slp_settings_search_labels
+        $settingsHTML = apply_filters('slp_settings_search_labels',$settingsHTML);
 
+        // Legacy Action Call to setup new features
+        // This really should have been a filter.
+        // TODO: find all uses and deprecate
+        //
         ob_start();
         do_action('slp_add_search_form_label_setting');
         $settingsHTML .= ob_get_clean() . '</div>';
@@ -1017,3 +903,5 @@ class SLPlus_AdminUI_MapSettings {
          );
      }
 }
+
+// Dad. Husband. Rum Lover. Code Geek. Not necessarily in that order.

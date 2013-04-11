@@ -452,14 +452,4 @@ if ($slpRepTotalQueries > 0) {
 <?php    
 }
 
-
-//------------------------------------
-// Render It 
-//
-if ($slplus_plugin->license->packages['Pro Pack']->isenabled) {      
-    $slpReportSettings->render_settings_page();
-} else {
-    $slplus_plugin->notifications->add_notice(9,__('This is a Pro Pack feature.',SLPLUS_PREFIX));
-    $slplus_plugin->notifications->display();    
-}    
-
+$slpReportSettings->render_settings_page();

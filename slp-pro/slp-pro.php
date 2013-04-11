@@ -3,7 +3,7 @@
  * Plugin Name: Store Locator Plus : Pro Pack
  * Plugin URI: http://www.charlestonsw.com/product/store-locator-plus/
  * Description: A premium add-on pack for Store Locator Plus that provides more admin power tools for wrangling locations.
- * Version: 3.9
+ * Version: 3.9.6
  * Author: Charleston Software Associates
  * Author URI: http://charlestonsw.com/
  * Requires at least: 3.3
@@ -41,7 +41,6 @@ class SLPPro {
     private $url;
     private $adminMode = false;
 
-
     /**
      * The main plugin object.
      * 
@@ -57,6 +56,19 @@ class SLPPro {
      * @var boolean $packageAdded
      */
     private $packageAdded = false;
+
+    /**
+     * The Pro Pack Settings Object
+     *
+     * @var wpCSL_settings__slplus $settings
+     */
+    private $ProPack_Settings;
+
+    /**
+     * The Pro Pack settings page slug.
+     */
+    private $ProPack_SettingsSlug = 'slp_propack';
+
 
     /**
      * Is the Pro Pack enabled?
@@ -94,7 +106,6 @@ class SLPPro {
 
         // Store Locator Plus invocation complete
         //
-        add_action('slp_invocation_complete'        ,array($this,'setPlugin'                    ));
         add_action('slp_init_complete'              ,array($this,'slp_init'                     ));
 
         // Admin / Nav Menus (start of admin stack)
@@ -111,12 +122,8 @@ class SLPPro {
     }
 
 
-    //====================================================
-    // WordPress Admin Actions
-    //====================================================
-
     /**
-     * WordPress admin_init hook for Tagalong.
+     * WordPress admin_init hook for Pro Pack.
      */
     function admin_init(){
 
@@ -136,7 +143,7 @@ class SLPPro {
         // - tweak the manage locations column headers
         // - tweak the manage locations column data
         //
-        add_filter('slp_edit_location_right_column'         ,array($this,'filter_AddFieldsToEditForm'                   ),15        );
+        add_filter('slp_edit_location_right_column'         ,array($this,'filter_AddFieldsToEditForm'                   ),11        );
         add_filter('slp_manage_expanded_location_columns'   ,array($this,'filter_AddFieldHeadersToManageLocations'      )           );
         add_filter('slp_column_data'                        ,array($this,'filter_AddFieldDataToManageLocations'         ),90    ,3  );
 
@@ -144,6 +151,164 @@ class SLPPro {
         //
         add_filter('slp_map_features_settings'              ,array($this,'filter_MapFeatures_AddSettings'               ),10        );
         add_filter('slp_map_settings_searchform'            ,array($this,'filter_MapSettings_AddTagsBox'                )           );
+        add_filter('slp_settings_results_locationinfo'      ,array($this,'filter_MapResults_LocationAddSettings'        )           );
+        add_filter('slp_settings_search_features'           ,array($this,'filter_MapSettings_Search_FeaturesAddSettings'),11        );
+        add_filter('slp_settings_search_labels'             ,array($this,'filter_MapSettings_SearchLabel_AddSettings'   ),11        );
+
+        // Data Saving
+        //
+        add_filter('slp_save_map_settings_checkboxes'       ,array($this,'filter_SaveMapCBSettings'                     )           );
+        add_filter('slp_save_map_settings_inputs'           ,array($this,'filter_SaveMapInputSettings'                  )           );
+    }
+
+    /**
+     * This is adding some settings to the Map Settings / Results / Location Info Panel
+     */
+    function filter_MapResults_LocationAddSettings($HTML) {
+        $HTML .=
+            $this->plugin->helper->create_SubheadingLabel(__('Pro Pack','csa-slp-em')) .
+            $this->plugin->helper->CreateCheckboxDiv(
+                '_show_tags',
+                __('Show Tags In Output','csa-slplus'),
+                __('Show the tags in the location output table and bubble.', 'csa-slplus')
+                );
+
+        $HTML .= $this->plugin->helper->CreateCheckboxDiv(
+                '_use_email_form',
+                __('Use Email Form','csa-slplus'),
+                __('Use email form instead of mailto: link when showing email addresses.', 'csa-slplus')
+                );
+
+        return $HTML;
+    }
+
+    /**
+     * Add Pro Pack settings to the search form features section.
+     *
+     * @param string $HTML incoming HTML
+     * @return string augmented HTML
+     */
+    function filter_MapSettings_Search_FeaturesAddSettings($HTML) {
+        $HTML .=
+            $this->plugin->helper->create_SubheadingLabel(__('Pro Pack','csa-slp-em')) .
+            $this->plugin->helper->create_SimpleMessage('These features will move to the Enhanced Search add-on pack in a future release.').
+            $this->plugin->helper->CreateCheckboxDiv(
+                '_hide_radius_selections',
+                __('Hide radius selection','csa-slplus'),
+                __('Hides the radius selection from the user, the default radius will be used.', 'csa-slplus'),
+                SLPLUS_PREFIX
+                ) .
+            $this->plugin->helper->CreateCheckboxDiv(
+                '_hide_address_entry',
+                __('Hide address entry box','csa-slplus'),
+                __('Hides the address entry box from the user.', 'csa-slplus'),
+                SLPLUS_PREFIX
+                ) .
+
+            $this->plugin->helper->CreateCheckboxDiv(
+                '_use_location_sensor',
+                __('Use location sensor', 'csa-slplus'),
+                __('This turns on the location sensor (GPS) to set the default search address.  This can be slow to load and customers are prompted whether or not to allow location sensing.', 'csa-slplus'),
+                SLPLUS_PREFIX
+                ) .
+
+            $this->plugin->helper->CreateCheckboxDiv(
+                'sl_use_city_search',
+                __('Show City Pulldown','csa-slplus'),
+                __('Displays the city pulldown on the search form. It is built from the unique city names in your location list.','csa-slplus'),
+                ''
+                ) .
+
+            $this->plugin->helper->CreateCheckboxDiv(
+                'sl_use_country_search',
+                __('Show Country Pulldown','csa-slplus'),
+                __('Displays the country pulldown on the search form. It is built from the unique country names in your location list.','csa-slplus'),
+                ''
+                ) .
+
+            $this->plugin->helper->CreateCheckboxDiv(
+                'slplus_show_state_pd',
+                __('Show State Pulldown','csa-slplus'),
+                __('Displays the state pulldown on the search form. It is built from the unique state names in your location list.','csa-slplus'),
+                ''
+                ) .
+
+            $this->plugin->helper->CreateCheckboxDiv(
+                '_disable_search',
+                __('Hide Find Locations button','csa-slplus'),
+                __('Remove the "Find Locations" button from the search form.', 'csa-slplus'),
+                SLPLUS_PREFIX
+                );
+
+        return $HTML;
+    }
+
+    /**
+     * Add Pro Pack settings to the search label features section.
+     *
+     * @param string $HTML incoming HTML
+     * @return string augmented HTML
+     */
+    function filter_MapSettings_SearchLabel_AddSettings($HTML) {
+        $HTML .=
+            $this->plugin->helper->create_SubheadingLabel(__('Pro Pack','csa-slp-em')) .
+            $this->plugin->helper->create_SimpleMessage('These features will move to the Enhanced Search add-on pack in a future release.').
+            $this->plugin->AdminUI->MapSettings->CreateInputDiv(
+                '_search_tag_label',
+                __('Tags', 'csa-slplus'),
+                __('Search form label to prefix the tag selector.','csa-slplus')
+                ) .
+            $this->plugin->AdminUI->MapSettings->CreateInputDiv(
+                '_state_pd_label',
+                __('State Label', 'csa-slplus'),
+                __('Search form label to prefix the state selector.','csa-slplus')
+                ).
+            $this->plugin->AdminUI->MapSettings->CreateInputDiv(
+                '_find_button_label',
+                __('Find Button', 'csa-slplus'),
+                __('The label on the find button, if text mode is selected.','csa-slplus'),
+                SLPLUS_PREFIX,
+                __('Find Locations','csa-slplus')
+                );
+        return $HTML;
+    }
+
+    /**
+     * Save our Pro Pack checkboxes from the map settings page.
+     *
+     * @param string[] $cbArray array of checkbox names to be saved
+     * @return string[] augmented list of inputs to save
+     */
+    function filter_SaveMapCBSettings($cbArray) {
+        return array_merge($cbArray,
+                array(
+                        SLPLUS_PREFIX.'_show_tags'                  ,
+                        SLPLUS_PREFIX.'_use_email_form'             ,
+                        SLPLUS_PREFIX.'_hide_radius_selections'     ,
+                        SLPLUS_PREFIX.'_hide_address_entry'         ,
+                        SLPLUS_PREFIX.'_use_location_sensor'        ,
+                        'sl_use_city_search'                        ,
+                        'sl_use_country_search'                     ,
+                        'slplus_show_state_pd'                      ,
+                        SLPLUS_PREFIX.'_disable_search'            
+                    )
+                );
+    }
+
+    /**
+     * Add the Pro Pack input settings to be saved on the map settings page.
+     *
+     * @param string[] $inArray names of inputs already to be saved
+     * @return string[] modified array with our Pro Pack inputs added.
+     */
+    function filter_SaveMapInputSettings($inArray) {
+        return array_merge($inArray,
+                array(
+                        SLPLUS_PREFIX.'_search_tag_label'       ,
+                        SLPLUS_PREFIX.'_state_pd_label'         ,
+                        SLPLUS_PREFIX.'_find_button_label'      ,
+                    )
+                );
     }
 
     /**
@@ -151,42 +316,66 @@ class SLPPro {
      */
     function admin_menu(){
         $this->adminMode = true;
-        if (!$this->setPlugin()) { return ''; }
+        if (!$this->enabled) { return ''; }
+
+        $slugPrefix = 'store-locator-plus_page_';
+
+       // Admin Styles
+        //
+        add_action(
+                'admin_print_styles-' . $slugPrefix .$this->ProPack_SettingsSlug,
+                array($this,'action_EnqueueAdmin_CSS')
+                );
 
         // Admin Actions
         //
-        add_action('admin_init' ,array($this,'admin_init'));
+        add_action('admin_init'             ,array($this,'admin_init'));
     }
 
     /**
      * Do this stuff after SLP has started up.
      */
     function slp_init() {
-        add_filter('slp_search_form_divs',array($this,'filter_SearchForm_AddTagSearch'),40);
+        if (!$this->setPlugin()) { return; }
+        $this->plugin->register_addon($this->slug);
+
+        add_filter('slp_search_form_divs',array($this,'filter_SearchForm_AddCityPD'     ),10);
+        add_filter('slp_search_form_divs',array($this,'filter_SearchForm_AddStatePD'    ),20);
+        add_filter('slp_search_form_divs',array($this,'filter_SearchForm_AddCountryPD'  ),30);
+        add_filter('slp_search_form_divs',array($this,'filter_SearchForm_AddTagSearch'  ),40);
     }
 
-    ////====================================================
-    // Helpers
-    //====================================================
 
+    /**
+     * Add the Pro Pack menu
+     *
+     * @param mixed[] $menuItems
+     * @return mixed[]
+     */
     function add_menu_items($menuItems) {
-        if (!$this->setPlugin()) { return $menuItems; }
+        if (!$this->enabled) { return $menuItems; }
         return array_merge(
                     $menuItems,
                     array(
                         array(
-                        'label' => __('Reports','csa-slplus'),
-                        'url'   => SLPLUS_PLUGINDIR.'reporting.php'
+                            'label'     => __('Pro Pack','csa-slp-propack'),
+                            'slug'      => 'slp_propack',
+                            'class'     => $this,
+                            'function'  => 'renderPage_ProPack_Settings'
+                        ),
+                        array(
+                            'label' => __('Reports','csa-slplus'),
+                            'url'   => SLPLUS_PLUGINDIR.'reporting.php'
                         )
                     )
                 );
     }
 
-    /**************************************
-     ** function: configure_slplus_propack
-     **
-     ** Configure the Pro Pack.
-     **/
+    /**
+     * Add the Pro Pack package to the main plugin.
+     * 
+     * @return null
+     */
     function add_package() {
         if ($this->packageAdded) { return; }
         $this->plugin->ProPack = $this;
@@ -272,11 +461,6 @@ class SLPPro {
             );
     }
 
-
-    //====================================================
-    // Pro Pack Custom Methods
-    //====================================================
-
     /**
      * Add the bulk upload form to add locations.
      *
@@ -284,7 +468,7 @@ class SLPPro {
      * @return string - complete HTML to put in the footer.
      */
     function bulk_upload_form($HTML) {
-        if (!$this->setPlugin()) { return ''; }
+        if (!$this->enabled) { return ''; }
         return ( $HTML .
                     '<div class="slp_bulk_upload_div section_column">' .
                     '<h2>'.__('Bulk Upload', 'csa-slplus').'</h2>'.
@@ -325,8 +509,8 @@ class SLPPro {
      *
      */
     function bulk_upload_processing() {
-        if (!$this->setPlugin()) { return false; }
-
+        if (!$this->enabled) { return ''; }
+        
         // Reset the notification message to get a clean message stack.
         //
         $this->plugin->notifications->delete_all_notices();
@@ -454,77 +638,73 @@ class SLPPro {
     }
 
     /**
-     * Create the county pulldown list, mark the checked item.
+     * Generate the HTML to build the city pulldown UI element.
      * 
-     * @global type $wpdb
      * @return string
      */
-    function create_country_pd() {
-        if (!$this->setPlugin()) { return ''; }
+    private function create_CityPD() {
+        $pdOptions = '';
+        $cs_array=$this->plugin->db->get_results(
+            "SELECT CONCAT(TRIM(sl_city), ', ', TRIM(sl_state)) as city_state " .
+                "FROM ".$this->plugin->db->prefix."store_locator " .
+                "WHERE sl_city<>'' AND sl_state<>'' AND sl_latitude<>'' AND sl_longitude<>'' " .
+                "GROUP BY city_state " .
+                "ORDER BY city_state ASC",
+            ARRAY_A);
+        if ($cs_array) {
+            foreach($cs_array as $sl_value) {
+                $pdOptions.="<option value='$sl_value[city_state]'>$sl_value[city_state]</option>";
+            }
+        }
+        return $pdOptions;
+    }
 
-        global $wpdb;
+    /**
+     * Create the country pulldown list, mark the checked item.
+     * 
+     * @return string
+     */
+    private function create_CountryPD() {
         $myOptions = '';
-
-        // If Use Country Search option is enabled
-        // build our country pulldown.
-        //
-        if (get_option('sl_use_country_search',0)==1) {
-            $cs_array=$wpdb->get_results(
-                "SELECT TRIM(sl_country) as country " .
-                    "FROM ".$wpdb->prefix."store_locator " .
-                    "WHERE sl_country<>'' " .
-                        "AND sl_latitude<>'' AND sl_longitude<>'' " .
-                    "GROUP BY country " .
-                    "ORDER BY country ASC",
-                ARRAY_A);
-
-            // If we have country data show it in the pulldown
-            //
-            if ($cs_array) {
-                foreach($cs_array as $sl_value) {
-                  $myOptions.=
-                    "<option value='$sl_value[country]'>" .
-                    $sl_value['country']."</option>";
-                }
+        $cs_array=$this->plugin->db->get_results(
+            "SELECT TRIM(sl_country) as country " .
+                "FROM ".$this->plugin->db->prefix."store_locator " .
+                "WHERE sl_country<>'' " .
+                    "AND sl_latitude<>'' AND sl_longitude<>'' " .
+                "GROUP BY country " .
+                "ORDER BY country ASC",
+            ARRAY_A);
+        if ($cs_array) {
+            foreach($cs_array as $sl_value) {
+              $myOptions.="<option value='{$sl_value['country']}'>{$sl_value['country']}</option>";
             }
         }
         return $myOptions;
     }
 
-
     /**
      * Create the state pulldown list, mark the checked item.
      *
-     * @global type $wpdb
      * @return string
      */
-    function create_state_pd() {
-        if (!$this->setPlugin()) { return ''; }
-
-        global $wpdb;
+    function create_StatePD() {
         $myOptions = '';
+        $cs_array=$this->plugin->db->get_results(
+            "SELECT TRIM(sl_state) as state " .
+                "FROM ".$this->plugin->db->prefix."store_locator " .
+                "WHERE sl_state<>'' " .
+                    "AND sl_latitude<>'' AND sl_longitude<>'' " .
+                "GROUP BY state " .
+                "ORDER BY state ASC",
+            ARRAY_A);
 
-        // If Use State Search option is enabled
-        // build our state pulldown.
+        // If we have country data show it in the pulldown
         //
-        if (get_option('slplus_show_state_pd',0)==1) {
-            $cs_array=$wpdb->get_results(
-                "SELECT TRIM(sl_state) as state " .
-                    "FROM ".$wpdb->prefix."store_locator " .
-                    "WHERE sl_state<>'' " .
-                        "AND sl_latitude<>'' AND sl_longitude<>'' " .
-                    "GROUP BY state " .
-                    "ORDER BY state ASC",
-                ARRAY_A);
-
-            // If we have country data show it in the pulldown
-            //
-            if ($cs_array) {
-                foreach($cs_array as $sl_value) {
-                  $myOptions.=
-                    "<option value='$sl_value[state]'>" .
-                    $sl_value['state']."</option>";
-                }
+        if ($cs_array) {
+            foreach($cs_array as $sl_value) {
+              $myOptions.=
+                "<option value='$sl_value[state]'>" .
+                $sl_value['state']."</option>";
             }
         }
         return $myOptions;
@@ -551,7 +731,7 @@ class SLPPro {
      * @param array $valid_atts - current list of approved attributes
      */
     function extend_main_shortcode($valid_atts) {
-        if (!$this->setPlugin()) { return array(); }
+        if (!$this->enabled) { return array(); }
 
         return array_merge(
                 array(
@@ -566,6 +746,14 @@ class SLPPro {
     }
 
     /**
+     * Enqueue the style sheet when needed.
+     */
+    function action_EnqueueAdmin_CSS() {
+        wp_enqueue_style($this->ProPack_SettingsSlug.'_style');
+        wp_enqueue_style($this->plugin->AdminUI->styleHandle);
+    }
+
+    /**
      * Add extra fields that show in results output to the edit form.
      *
      * SLP Filter: slp_edit_location_right_column
@@ -574,17 +762,57 @@ class SLPPro {
      * @return string the modified HTML form
      */
     function filter_AddFieldsToEditForm($theHTML) {
-        $locID = $this->plugin->currentLocation->id;
         $addform = $this->plugin->AdminUI->addingLocation;
 
-        return $theHTML .=
-            '<div id="slp_pro_fields" class="slp_editform_section"><strong>'.__('Pro Pack','csa-slplus').'</strong><br/>'.
-                "<input name='tags-$locID' value='".($addform?'':$this->plugin->currentLocation->tags)."'> ".
+        $theHTML .=
+            '<div id="slp_pro_fields" class="slp_editform_section">'.
+            $this->plugin->helper->create_SubheadingLabel(__('Pro Pack','csa-slplus'))
+            ;
+
+        // Add or Edit
+        //
+        $theHTML .=
+                '<br/>'.
+                "<input ".
+                    "id='tags-edit' "   .
+                    "name='tags-"       .$this->plugin->currentLocation->id     ."' ".
+                    "value='".($addform?'':$this->plugin->currentLocation->tags)."' ".
+                    '>'.
                 '<small>'.
                    __("Tags (seperate with commas)", 'csa-slplus').
-                '</small>' .
+                '</small>'
+                ;
+        
+        // Edit Location Only
+        //
+        if ($this->plugin->AdminUI->addingLocation === false) {
+            $theHTML .=
+                '<br/>'.
+                "<input ".
+                    "id='latitude-edit' ".
+                    "name='latitude-".$this->plugin->currentLocation->id."' ".
+                    "value='".$this->plugin->currentLocation->latitude  ."' ".
+                    '>'.
+                '<small>'.
+                    __('Latitude (N/S)', 'csa-slplus').
+                '</small>'.
+                '<br/>'.
+                '<input ' .
+                    "id='longitude-edit' ".
+                    "name='longitude-".$this->plugin->currentLocation->id."' ".
+                    "value='".$this->plugin->currentLocation->longitude  ."' ".
+                    '>'.
+                '<small>'.
+                    __('Longitude (E/W)', 'csa-slplus').
+                '</small>'
+                ;
+        }
+        
+        $theHTML .=
             '</div>'
             ;
+
+        return $theHTML;
     }
 
     /**
@@ -596,7 +824,7 @@ class SLPPro {
     function filter_MapFeatures_AddSettings($html) {
         return
             $html .
-            $this->plugin->AdminUI->MapSettings->CreateSubheadingLabel(__('Pro Pack','csa-slplus')).
+            $this->plugin->helper->create_SubheadingLabel(__('Pro Pack','csa-slplus')).
             $this->plugin->helper->create_SimpleMessage('These features will move to the Enhanced Map add-on pack in a future release.').
             $this->plugin->AdminUI->MapSettings->CreateInputDiv(
                 'sl_starting_image',
@@ -699,6 +927,80 @@ class SLPPro {
     }
 
     /**
+     * Add City pulldown to search form.
+     * 
+     * @param string $HTML the initial pulldown HTML, typically empty.
+     */
+    function filter_SearchForm_AddCityPD($HTML) {
+        if (!$this->enabled) { return $HTML; }
+        if (get_option('sl_use_city_search',0)=='0') { return $HTML; }
+
+        $onChange = 'aI=document.getElementById("searchForm").addressInput;if(this.value!=""){oldvalue=aI.value;aI.value=this.value;}else{aI.value=oldvalue;}';
+        $HTML .=
+            "<div id='addy_in_city'>".
+                "<select id='addressInput2' onchange='$onChange'>".
+                    "<option value=''>".
+                        get_option(SLPLUS_PREFIX.'_search_by_city_pd_label',__('--Search By City--','csa-slplus')).
+                     '</option>'.
+                    $this->create_CityPD().
+                '</select>'.
+            '</div>'
+            ;
+        return $HTML;
+    }
+
+    /**
+     * Add Country pulldown to search form.
+     *
+     * @param string $HTML the initial pulldown HTML, typically empty.
+     */
+    function filter_SearchForm_AddCountryPD($HTML) {
+        if (!$this->enabled) { return $HTML; }
+        if (get_option('sl_use_country_search',0)==0) { return $HTML; }
+
+        $onChange = 'aI=document.getElementById("searchForm").addressInput;if(this.value!=""){oldvalue=aI.value;aI.value=this.value;}else{aI.value=oldvalue;}';
+        $HTML .=
+            "<div id='addy_in_country'>".
+                "<select id='addressInput3' onchange='$onChange'>".
+                    "<option value=''>".
+                        get_option(SLPLUS_PREFIX.'_search_by_country_pd_label',__('--Search By Country--','csa-slplus')).
+                     '</option>'.
+                    $this->create_CountryPD().
+                '</select>'.
+            '</div>'
+            ;
+
+        return $HTML;
+    }
+
+    /**
+     * Add State pulldown to search form.
+     *
+     * @param string $HTML the initial pulldown HTML, typically empty.
+     */
+    function filter_SearchForm_AddStatePD($HTML) {
+        if (!$this->enabled) { return $HTML; }
+        if (get_option('slplus_show_state_pd',0)==0) { return $HTML; }
+
+        $onChange = 'aI=document.getElementById("searchForm").addressInput;if(this.value!=""){oldvalue=aI.value;aI.value=this.value;}else{aI.value=oldvalue;}';
+        $HTML .=
+            "<div id='addy_in_state'>".
+                "<label for='addressInputState'>".
+                    get_option(SLPLUS_PREFIX.'_state_pd_label','').
+                '</label>'.
+                "<select id='addressInputState' onchange='$onChange'>".
+                    "<option value=''>".
+                        get_option(SLPLUS_PREFIX.'_search_by_state_pd_label',__('--Search By State--','csa-slplus')).
+                     '</option>'.
+                    $this->create_StatePD().
+                '</select>'.
+            '</div>'
+            ;
+
+        return $HTML;
+    }
+
+    /**
      * Add the images column header to the manage locations table.
      *
      * SLP Filter: slp_manage_location_columns
@@ -741,7 +1043,7 @@ class SLPPro {
      * Load the JavaScript and CSS on ony our pages.
      */
     function loadJSandCSS() {
-        if (!$this->setPlugin()) { return; }
+        if (!$this->enabled) { return; }
 
         // Reporting
         //
@@ -949,7 +1251,7 @@ class SLPPro {
       * @return string
       */
      function manage_locations_actionbar($actionBoxes) {
-            if (!$this->setPlugin()) { return $actionBoxes; }
+            if (!$this->enabled) { return $actionBoxes; }
             $actionBoxes['A'][] =
                    '<p class="centerbutton">' .
                        '<a class="like-a-button" href="#" ' .
@@ -990,6 +1292,118 @@ class SLPPro {
                 ;
 
             return $actionBoxes;
+    }
+
+    /**
+     * Render the Pro Pack settings page.
+     */
+    function renderPage_ProPack_Settings() {
+        if (!$this->enabled) { return __('Pro Pack has not been activated.','csa-slplus'); }
+
+        // If we are updating settings...
+        //
+        if (isset($_REQUEST['action']) && ($_REQUEST['action']==='update')) {
+            $this->updateSettings();
+        }
+
+        // Setup and render settings page
+        //
+        $this->ProPack_Settings = new wpCSL_settings__slplus(
+            array(
+                    'no_license'        => true,
+                    'prefix'            => $this->plugin->prefix,
+                    'css_prefix'        => $this->plugin->prefix,
+                    'url'               => $this->plugin->url,
+                    'name'              => $this->plugin->name . ' - Pro Pack',
+                    'plugin_url'        => $this->plugin->plugin_url,
+                    'render_csl_blocks' => true,
+                    'form_action'       => admin_url().'admin.php?page='.$this->ProPack_SettingsSlug
+                )
+         );
+
+        //-------------------------
+        // Navbar Section
+        //-------------------------
+        $this->ProPack_Settings->add_section(
+            array(
+                'name'          => 'Navigation',
+                'div_id'        => 'slplus_navbar',
+                'description'   => $this->plugin->AdminUI->create_Navbar(),
+                'is_topmenu'    => true,
+                'auto'          => false,
+                'headerbar'     => false
+            )
+        );
+
+        //-------------------------
+        // General Settings
+        //-------------------------
+        $sectName = __('General Settings','csa-slplus');
+        $this->ProPack_Settings->add_section(
+            array(
+                    'name'          => $sectName,
+                    'description' =>
+                        __('These settings affect how the Pro Pack add-on behaves. ', 'csa-slplus') .
+                        '<span style="float:right;">(<a href="#" onClick="'.
+                        'jQuery.post(ajaxurl,{action: \'license_reset_propack\'},function(response){alert(response);});'.
+                        '">'.__('Delete license','csa-slplus').'</a>)</span>',
+                    'auto'          => true
+                )
+         );
+
+        $this->ProPack_Settings->add_item(
+            $sectName,
+            __('Enable reporting', 'csa-slplus'),
+            'reporting_enabled',
+            'checkbox',
+            false,
+            __('Enables tracking of searches and returned results.  The added overhead ' .
+            'can increase how long it takes to return location search results.', 'csa-slplus')
+        );
+
+        // Custom CSS Field
+        //
+        $this->ProPack_Settings->add_item(
+                $sectName,
+                __('Custom CSS','csa-slplus'),
+                'custom_css',
+                'textarea',
+                false,
+                __('Enter your custom CSS, preferably for SLPLUS styling only but it can be used for any page element as this will go in your page header.','csa-slplus')
+                );
+
+        //------------------------------------------
+        // RENDER
+        //------------------------------------------
+        $this->ProPack_Settings->render_settings_page();
+    }
+
+    /**
+     * Handle updating Pro Pack settings on the custom settings page.
+     */
+    function updateSettings() {
+        if (!isset($_REQUEST['page']) || ($_REQUEST['page']!=$this->ProPack_SettingsSlug)) { return; }
+        if (!isset($_REQUEST['_wpnonce'])) { return; }
+
+        // Save Checkboxes
+        //
+        $BoxesToHit = array(
+            'reporting_enabled',
+        );
+        foreach ($BoxesToHit as $JustAnotherBox) {
+            $this->plugin->helper->SaveCheckBoxToDB($JustAnotherBox);
+        }
+
+        // Save Inputs
+        //
+        $BoxesToHit = array(
+            SLPLUS_PREFIX.'-custom_css',
+        );
+        foreach ($BoxesToHit as $JustAnotherBox) {
+            $this->plugin->helper->SavePostToOptionsTable($JustAnotherBox);
+        }
+
+        $this->plugin->debugMP('pr','Pro.updateSettings()',$_REQUEST,__FILE__,__LINE__);
     }
 }
 

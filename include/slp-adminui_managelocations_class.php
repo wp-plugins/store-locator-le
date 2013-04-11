@@ -286,7 +286,6 @@ class SLPlus_AdminUI_ManageLocations {
             if (preg_match('#\-'.$_REQUEST['locationID'].'#', $key)) {
                 $slpFieldName = preg_replace('#\-'.$_REQUEST['locationID'].'#', '', $key);
                 if (($slpFieldName === 'latitude') || ($slpFieldName === 'longitude')) {
-                    if (!$this->plugin->license->packages['Pro Pack']->isenabled) { continue; }
                     if (!is_numeric(trim($this->plugin->AdminUI->slp_escape($sl_value)))) { continue; }
                 }
                 $field_value_str.=
@@ -820,10 +819,10 @@ class SLPlus_AdminUI_ManageLocations {
                     $actionButtonsHTML = apply_filters('slp_manage_locations_actionbuttons',$actionButtonsHTML, $sl_value);
 
                     print "<tr style='background-color:$bgcol'>" .
-                        "<th><input type='checkbox' name='sl_id[]' value='$locID'></th>" .
-                        "<th class='thnowrap'>".
+                        "<th class='th_checkbox'><input type='checkbox' name='sl_id[]' value='$locID'></th>" .
+                        "<th class='thnowrap'><div class='action_buttons'>".
                             $actionButtonsHTML . 
-                        "</th>"
+                        "</div></th>"
                         ;
 
                     // Data Columns

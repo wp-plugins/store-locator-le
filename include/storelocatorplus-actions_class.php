@@ -344,7 +344,8 @@ class SLPlus_Actions {
         // Register our scripts for later enqueue when needed
         //
         if (get_option(SLPLUS_PREFIX.'-no_google_js','off') != 'on') {
-            $api_key  = ((trim($slplus_plugin->driver_args['api_key']) == false)?'':'&key='.$slplus_plugin->driver_args['api_key']);
+            $dbAPIKey = trim(get_option(SLPLUS_PREFIX.'-api_key',''));
+            $api_key  = (empty($dbAPIKey)?'':'&key='.$dbAPIKey);
             $language = '&language='.$slplus_plugin->helper->getData('map_language','get_item',null,'en');
             wp_enqueue_script(
                     'google_maps',
@@ -384,7 +385,7 @@ class SLPlus_Actions {
     function wp_head() {
         $output = strip_tags($this->plugin->settings->get_item('custom_css',''));
         if ($output != '') {
-            echo '<!-- SLP Pro Pack Custom CSS -->'."\n".'<style type="text/css">'."\n" . $output . '</style>'."\n\n";
+            echo '<!-- SLP Custom CSS -->'."\n".'<style type="text/css">'."\n" . $output . '</style>'."\n\n";
         }
     }
 

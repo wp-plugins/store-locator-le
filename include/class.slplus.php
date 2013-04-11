@@ -72,25 +72,4 @@ class SLPlus extends wpCSL_plugin__slplus {
     public function create_addon_query() {
         return http_build_query($this->addons,'addon_');
     }
-
-    /**
-     * Add DebugMyPlugin messages.
-     *
-     * @param string $type - what type of debugging (msg = simple string, pr = print_r of variable)
-     * @param string $header - the header
-     * @param string $message - what you want to say
-     * @param string $file - file of the call (__FILE__)
-     * @param int $line - line number of the call (__LINE__)
-     * @return null
-     */
-    function debugMP($type='msg', $header='Store Locator Plus',$message='',$file=null,$line=null) {
-        if (!isset($GLOBALS['DebugMyPlugin'])) { return; }
-        switch (strtolower($type)):
-            case 'pr':
-                $GLOBALS['DebugMyPlugin']->panels['main']->addPR($header,$message,$file,$line);
-                break;
-            default:
-                $GLOBALS['DebugMyPlugin']->panels['main']->addMessage($header,$message,$file,$line);
-        endswitch;
-    }
 }

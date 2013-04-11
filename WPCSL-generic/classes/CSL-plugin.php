@@ -50,7 +50,7 @@
  *
  *
  **/
-if (!defined('WPCSL__slplus__VERSION')) { define('WPCSL__slplus__VERSION', '2.1.4'); }
+if (!defined('WPCSL__slplus__VERSION')) { define('WPCSL__slplus__VERSION', '2.1.5'); }
 
 // WP App Store Affiliate ID
 if (!defined('WPAS_AFFILIATE_ID')) { define('WPAS_AFFILIATE_ID','3368'); }
@@ -70,7 +70,7 @@ require_once('CSL-settings_class.php');
  * @author Lance Cleveland <lance@charlestonsw.com>
  * @copyright 2013 Charleston Sofware Associates, LLC
  * @package wpCSL
- * @version 2.1.4
+ * @version 2.1.5
  */
 class wpCSL_plugin__slplus {
 
@@ -983,6 +983,27 @@ class wpCSL_plugin__slplus {
 
             update_option($this->prefix."-notice-countdown", $destruct_time);
         }
+    }
+
+    /**
+     * Add DebugMyPlugin messages.
+     *
+     * @param string $type - what type of debugging (msg = simple string, pr = print_r of variable)
+     * @param string $header - the header
+     * @param string $message - what you want to say
+     * @param string $file - file of the call (__FILE__)
+     * @param int $line - line number of the call (__LINE__)
+     * @return null
+     */
+    function debugMP($type='msg', $header='wpCSL DMP',$message='',$file=null,$line=null) {
+        if (!isset($GLOBALS['DebugMyPlugin'])) { return; }
+        switch (strtolower($type)):
+            case 'pr':
+                $GLOBALS['DebugMyPlugin']->panels['main']->addPR($header,$message,$file,$line);
+                break;
+            default:
+                $GLOBALS['DebugMyPlugin']->panels['main']->addMessage($header,$message,$file,$line);
+        endswitch;
     }
 
     /**-------------------------------------

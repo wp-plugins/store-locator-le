@@ -22,13 +22,6 @@ class SLPlus_AdminUI {
      */
     private $plugin;
 
-    /**
-     * True if Pro Pack is Enabled.
-     *
-     * @var boolean $proPackEnabled
-     */
-    private $proPackEnabled = false;
-
     public $styleHandle = 'csl_slplus_admin_css';
     private $geocodeIssuesRendered = false;
 
@@ -74,11 +67,6 @@ class SLPlus_AdminUI {
             $this->parent = $slplus_plugin;
             $this->plugin = $slplus_plugin;
         }
-
-        $this->proPackEnabled = (
-            isset($this->plugin->ProPack) &&
-            $this->plugin->ProPack->enabled
-        );
 
         return (isset($this->parent) && ($this->parent != null));
     }
@@ -267,7 +255,7 @@ class SLPlus_AdminUI {
             'api_key',
             'text',
             false,
-            'Your Google Maps V3 API Key.  Used for searches only. You will need to ' .
+            'Your Google Maps V3 API Key.  NOT REQUIRED. Used for searches only. You will need to ' .
             '<a href="http://code.google.com/apis/console/" target="newinfo">'.
             'go to Google</a> to get your Google Maps API Key.'
         );
@@ -309,53 +297,6 @@ class SLPlus_AdminUI {
             false,
             __('Check this box if your Theme or another plugin is providing Google Maps and generating warning messages.  THIS MAY BREAK THIS PLUGIN.', 'csa-slplus')
         );
-
-        //-------------------------
-        // Pro Pack
-        //
-        $proPackMsg = (
-                $this->proPackEnabled ?
-                '' :
-                __('This is a <a href="http://www.charlestonsw.com/product/store-locator-plus/">Pro Pack</a>  feature. ', 'csa-slplus')
-                );
-        $slp_rep_desc = __('These settings affect how the Pro Pack add-on behaves. ', 'csa-slplus');
-        if ($this->parent->license->AmIEnabled(true, "SLPLUS-PRO")) {
-            $slp_rep_desc .= '<span style="float:right;">(<a href="#" onClick="'.
-                    'jQuery.post(ajaxurl,{action: \'license_reset_propack\'},function(response){alert(response);});'.
-                    '">'.__('Delete license','csa-slplus').'</a>)</span>';
-        }
-        $this->parent->settings->add_section(
-            array(
-                'name'        => 'Pro Pack',
-                'description' => $slp_rep_desc
-            )
-        );
-        if ($this->parent->license->AmIEnabled(true, "SLPLUS-PRO")) {
-            $this->parent->settings->add_item(
-                'Pro Pack',
-                __('Enable reporting', 'csa-slplus'),
-                'reporting_enabled',
-                'checkbox',
-                false,
-                __('Enables tracking of searches and returned results.  The added overhead ' .
-                'can increase how long it takes to return location search results.', 'csa-slplus')
-            );
-        }
-        // Custom CSS Field
-        //
-        $this->parent->settings->add_item(
-                'Pro Pack',
-                __('Custom CSS','csa-slplus'),
-                'custom_css',
-                'textarea',
-                false,
-                __('Enter your custom CSS, preferably for SLPLUS styling only but it can be used for any page element as this will go in your page header.','csa-slplus')
-                .$proPackMsg
-                    ,
-                null,
-                null,
-                !$this->proPackEnabled
-                );
     }
 
     /**
@@ -764,8 +705,8 @@ class SLPlus_AdminUI {
         $tableHeaderString =
                 "<thead>
                 <tr >
-                    <th colspan='1'><input type='checkbox' onclick='checkAll(this,document.forms[\"locationForm\"])' class='button'></th>
-                    <th colspan='1'>".__("Actions", 'csa-slplus')."</th>"
+                    <th id='top_of_checkbox_column'><input type='checkbox' onclick='checkAll(this,document.forms[\"locationForm\"])' class='button'></th>
+                    <th id='top_of_actions_column'>".__("Actions", 'csa-slplus')."</th>"
                 ;
         foreach ($slpManageColumns as $slpField => $slpLabel) {
             $tableHeaderString .= $this->slpCreateColumnHeader($slpCleanURL,$slpField,$slpLabel,$opt,$dir);
@@ -870,7 +811,7 @@ class SLPlus_AdminUI {
      * @global type $wpdb
      */
      function renderPage_AddLocations() {
-            global $slplus_plugin,$wpdb;
+            global $wpdb;
             $this->initialize_variables();
 
             print "<div class='wrap'>
@@ -913,7 +854,7 @@ class SLPlus_AdminUI {
                 '<div id="location_table_wrapper">'.
                     "<table id='manage_locations_table' class='slplus wp-list-table widefat fixed posts' cellspacing=0>" .
                         '<tr><td class="slp_locationinfoform_cell">' .
-                            $slplus_plugin->AdminUI->createString_LocationInfoForm(array(),'', true) .
+                            $this->plugin->AdminUI->createString_LocationInfoForm(array(),'', true) .
                         '</td></tr>' .
                     '</table>' .
                 '</div>'
@@ -964,26 +905,6 @@ class SLPlus_AdminUI {
 
                     <label  for='country-<?php echo $this->get_CurrentLocationVal('sl_id')?>'><?php _e('Country', 'csa-slplus');?></label>
                     <input name='country-<?php echo $this->get_CurrentLocationVal('sl_id')?>' value='<?php echo $this->get_CurrentLocationVal('sl_country')?>'  style='width: 40em;'><br/>
-
-                    <?php
-                    if ($this->parent->AdminUI->addingLocation === false) {
-                    ?>
-                        <label  for='latitude-<?php echo $this->get_CurrentLocationVal('sl_id')?>'><?php _e('Latitude (N/S)', 'csa-slplus');?></label>
-                        <?php if ($this->proPackEnabled) { ?>
-                            <input name='latitude-<?php echo $this->get_CurrentLocationVal('sl_id')?>' value='<?php echo $this->get_CurrentLocationVal('sl_latitude')?>'  style='width: 40em;'><br/>
-                        <?php } else { ?>
-                            <input class='disabled'  name='latitude-<?php echo $this->get_CurrentLocationVal('sl_id')?>' value='<?php echo __('Changing the latitude is a Pro Pack feature.','csa-slplus').' ('.$this->get_CurrentLocationVal('sl_latitude').')';?>'  style='width: 40em;'><br/>
-                        <?php } ?>
-
-                        <label  for='longitude-<?php echo $this->get_CurrentLocationVal('sl_id')?>'><?php _e('Longitude (E/W)', 'csa-slplus');?></label>
-                        <?php if ($this->proPackEnabled) { ?>
-                            <input name='longitude-<?php echo $this->get_CurrentLocationVal('sl_id')?>' value='<?php echo $this->get_CurrentLocationVal('sl_longitude')?>'  style='width: 40em;'><br/>
-                        <?php } else { ?>
-                            <input class='disabled' name='longitude-<?php echo $this->get_CurrentLocationVal('sl_id')?>' value='<?php echo __('Changing the longitude is a Pro Pack feature.','csa-slplus').' ('.$this->get_CurrentLocationVal('sl_longitude').')'; ?>'  style='width: 40em;'><br/>
-                        <?php
-                        }
-                    }
-                    ?>
                     </div>
                 </td>
             </tr>
@@ -1071,6 +992,12 @@ class SLPlus_AdminUI {
                      ' - '. $this->plugin->currentLocation->linked_postid :
                      ''
                      );
+            if (
+                    is_numeric($this->plugin->currentLocation->latitude) &&
+                    is_numeric($this->plugin->currentLocation->longitude)
+               ) {
+                $idString .= __(' at ').$this->plugin->currentLocation->latitude.','.$this->plugin->currentLocation->longitude;
+            }
             $slpEditForm .= 
                     ($addform? '' : "<span class='slp-edit-location-id'>Location # $idString</span>") .
                     "<div id='slp_form_buttons'>" .
