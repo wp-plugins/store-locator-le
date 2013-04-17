@@ -258,14 +258,26 @@ class SLPlus_Activate {
      * Only looks for the first "infraction".
      *
      * @global object $wpdb
-     * @return null
      */
     function drop_duplicate_indexes() {
+        $this->drop_index('sl_store_2');
+        $this->drop_index('sl_latitude_2');
+        $this->drop_index('sl_longitude_2');
+    }
+
+    /**
+     * Drop an index only if it exists.
+     *
+     * @global object $wpdb
+     * @param string $idxName name of index to drop
+     */
+    function drop_index($idxName) {
         global $wpdb;
-        $wpdb->query('DROP INDEX sl_store_2     ON ' . $this->plugin->database['table']);
-        $wpdb->query('DROP INDEX sl_latitude_2  ON ' . $this->plugin->database['table']);
-        $wpdb->query('DROP INDEX sl_longitude_2 ON ' . $this->plugin->database['table']);
-        return null;
+        if ($wpdb->get_var('SELECT count(*) FROM information_schema.statistics '.
+                "WHERE table_name='".$this->plugin->database['table']."' " .
+                    "AND index_name='{$idxName}'" ) > 0) {
+            $wpdb->query("DROP INDEX {$idxName} ON " . $this->plugin->database['table']);
+        }
     }
 
     /**

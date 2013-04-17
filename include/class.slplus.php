@@ -41,6 +41,20 @@ class SLPlus extends wpCSL_plugin__slplus {
     public $infoFetched = array();
 
     /**
+     * The options that the user has set for Store Locator Plus.
+     *
+     * Key is the name of a supported option, value is the default value.
+     *
+     * Anything stored in here also gets passed to the csl.js via the slplus.options object.
+     * Reference the settings in the csl.js via slplus.options.<key>
+     *
+     * @var mixed[] $options
+     */
+    public  $options                = array(
+        'initial_radius'        => '',
+        );
+
+    /**
      * Initialize a new SLPlus Object
      *
      * @param mixed[] $params - a named array of the plugin options for wpCSL.
@@ -51,8 +65,33 @@ class SLPlus extends wpCSL_plugin__slplus {
         parent::__construct($params);
         $this->currentLocation = new SLPlus_Location(array('plugin'=>$this));
         $this->themes->css_dir = SLPLUS_PLUGINDIR . 'css/';
+        $this->initOptions();
         do_action('slp_invocation_complete');
     }
+
+    /**
+     * Initialize the options properties from the WordPress database.
+     */
+    function initOptions() {
+        $dbOptions = get_option(SLPLUS_PREFIX.'-options');
+        if (is_array($dbOptions)) {
+            $this->options = array_merge($this->options,$dbOptions);
+        }
+        $this->debugMP('pr','SLP initOptions',$this->options,__FILE__,__LINE__);
+    }
+
+    /**
+     * Set valid options from the incoming REQUEST
+     *
+     * @param mixed $val - the value of a form var
+     * @param string $key - the key for that form var
+     */
+    function set_ValidOptions($val,$key) {
+        if (array_key_exists($key, $this->options)) {
+            $this->options[$key] = $val;
+            $this->debugMP('msg',"SLP.set_ValidOptions $key was set to $val.");
+        }
+     }
 
     /**
      * Register an add-on pack.

@@ -715,6 +715,15 @@ img.slp_icon_selector {
     vertical-align: middle;
 }
 
+div#slplus_navbar_wrapper INPUT {
+    box-shadow: 12px;
+    line-height: 1em;
+    padding: 3px;
+}
+div#slplus_navbar_wrapper INPUT:focus {
+    background-color: #FFFFDD;
+}
+
 /***************************
  * Settings: General
  **/

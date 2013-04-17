@@ -2,12 +2,12 @@
 Plugin Name:  Store Locator Plus
 Contributors: charlestonsw
 Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
-Tags: google,bing,map,directory,location,place,store,dealer,shop,business,retail,brick,mortar,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
+Tags: mapping,map,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 3.9.6
+Stable tag: 3.9.7
 
-A high end location management system that makes it easy to put a store location finder on your site.  Extensive premium add-on library available!
+A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
 
 == Description ==
 
@@ -167,11 +167,10 @@ Here is the process, in case you are wondering:
 
 = Main Plugin =
 
-1. Upload the `store-locator-plus` folder to the `/wp-content/plugins/` directory
-2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Sign up for a Google Maps API Key for your domain at http://code.google.com/apis/console/
-4. Add your locations through the 'Add Locations' page in the Store Locator admin panel
-5. Place the code '[STORE-LOCATOR]' (case-sensitive) in the body of a page or a post to display your store locator
+1. Search for "Store Locator Plus" via Plugins/Add New on your WordPress admin panel.
+2. Click install.
+3. Add your locations through the 'Add Locations' page in the Store Locator admin panel
+4. Create or edit a page and add the [SLPLUS] shortcode.
 
 = Icons =
 
@@ -259,17 +258,6 @@ on the [CSL License Terms page](http://www.charlestonsw.com/products/general-eul
 This plugin has settings for many of the user-interface labels.
 I am looking into working with the WPML plugin for added support for those of you that are not in North America.
 
-= What browsers are supported? =
-
-All major browsers should work, however CSA only officially supports the current and the most recent prior release of Internet Explorer, Firefox, Chrome, and Safari.
-
-Currently this includes:
-
-* Internet Explorer (IE) 9
-* Firefox 15
-* Chrome 21
-* Safari 5
-
 == Screenshots ==
 
 The website offers [more screen shots](http://www.charlestonsw.com/product/store-locator-plus-2/) including those from the latest updates and premium add-on packages.
@@ -294,18 +282,17 @@ Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/su
 
 I was listing the entire change log here but with weekly/bi-weekly updates it as getting much too long.
 
-= UPGRADING TO 3.9.X =
+= 3.9.7 (April 2013) =
 
-[Store Pages](http://www.charlestonsw.com/product/store-locator-plus-store-pages) users upgrading to 3.9 will need to download the separate Store Pages zip file.
-To have the v3.9 Store Pages download added to your account, please use the [contacting me](http://www.charlestonsw.com/mindset/contact-us/) form.
-Send your order number or license number for Store Pages so I can look up your order and add the download to your account.
-Your Store Pages license is no longer needed.
-You will need to go to the new "Store Pages" tab and re-enable some of your settings.
+* Enhancement: Add immediately show locations radius setting.
+* Enhancement: Remove unused file, reducing security liability footprint.
+* Enhancement: Completely retool the location lookup AJAX listener.  Now uses WP database functions.  Faster. More secure.  Less cruft.
+* Fix: Immediately show locations once again limits it to the count noted in the settings page.
+* Fix: New installations have "headers already sent" due to the workaround for the dbDelta bug in WordPress.  Test for index before deleting.
+* Fix: logic for attribute / admin panel settings check.   Any attribute that has an admin panel setting and shortcode is not honoring settings.
+* Fix: Google map image rendering tweaks, fixes bad map images on poorly behaved themes and other plugins.
 
-Updating from a version 3.8.6 or earlier?
-You will likely need to reset your home and destination map markers.
-
-= 3.9.6 (April 10th, 2013) =
+= 3.9.6 =
 
 * Change: Isolate more Pro Pack stuff into Pro Pack module.
 * Enhancement: [Pro Pack](http://www.charlestonsw.com/product/store-locator-plus) now has its own settings tab.
@@ -315,7 +302,7 @@ You will likely need to reset your home and destination map markers.
 * Enhancement: Eliminate search_form.php file, invoke in a controlled class for better security.
 * Enhancement: Eliminate multiple unused JavaScript functions.  Smaller footprint in browser memory.  Lessen security footprint.
 * Fix: Allow https in the website URL of a location.
-* Fix: Fit the add-on pack updater, which buggered the main add plugin class for WordPress.
+* Fix: Fix the add-on pack updater, which buggered the main add plugin class for WordPress.
 
 = 3.9.5 =
 

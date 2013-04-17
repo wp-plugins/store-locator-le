@@ -209,6 +209,14 @@ div#slp_tagline {
     text-align: right;
     padding-right: 3px;
 }
+div.entry-content div#sl_div #map_table IMG {
+	max-width:none;
+    box-shadow: none;
+    border-radius: 0px;
+    border: none;
+    padding: 0px;
+    margin: 0px;
+}
 
 /***** Store Locator Map DIV *****/
 #sl_div {

@@ -89,6 +89,14 @@
 	background-image:none;
 	max-width:none;
 }
+div.entry-content div#sl_div #map_table IMG {
+	max-width:none;
+    box-shadow: none;
+    border-radius: 0px;
+    border: none;
+    padding: 0px;
+    margin: 0px;
+}
 #sl_div table, #sl_div tr, #sl_div td {
 	border:none;
 }

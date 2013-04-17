@@ -24,6 +24,13 @@ class SLPlus_AjaxHandler {
     public $plugin;
 
 
+    /**
+     * The database query string.
+     *
+     * @var string $dbQuery
+     */
+    private $dbQuery;
+
     //----------------------------------
     // Methods
     //----------------------------------
@@ -95,91 +102,25 @@ class SLPlus_AjaxHandler {
      *
      */
     function csl_ajax_onload() {
-        $username=DB_USER;
-        $password=DB_PASSWORD;
-        $database=DB_NAME;
-        $host=DB_HOST;
         $this->setPlugin();
 
-        $connection=mysql_connect ($host, $username, $password);
-        if (!$connection) {
-            die (json_encode( array('success' => false, 'slp_version' => $this->plugin->version, 'response' => 'Not connected : ' . mysql_error())));
-        }
-
-        // Set the active MySQL database
-        $db_selected = mysql_select_db($database, $connection);
-        mysql_query("SET NAMES utf8");
-        if (!$db_selected) {
-          die (json_encode( array('success' => false, 'slp_version' => $this->plugin->version, 'response' => 'Can\'t use db : ' . mysql_error())));
-        }
-
-        $num_initial_displayed=trim(get_option('sl_num_initial_displayed','25'));
-
-        // If tags are passed filter to just those tags
+        // Get Locations
         //
-        $tag_filter = '';
-        if (
-            isset($_POST['tags']) && ($_POST['tags'] != '')
-           ){
-            $posted_tag = preg_replace('/^\s+(.*?)/','$1',$_POST['tags']);
-            $posted_tag = preg_replace('/(.*?)\s+$/','$1',$posted_tag);
-            $tag_filter = " AND ( sl_tags LIKE '%%". $posted_tag ."%%') ";
-        }
-
-        // If store names are passed, filter show those names
-        $name_filter = '';
-        if ((get_option(SLPLUS_PREFIX.'_show_name_search') == 1) &&
-            isset($_POST['name']) && ($_POST['name'] != ''))
-        {
-            $posted_name = preg_replace('/^\s+(.*?)/','$1',$_POST['name']);
-            $posted_name = preg_replace('/(.*?)\s+$/','$1',$posted_name);
-            $name_filter = " AND (sl_store LIKE '%%".$posted_name."%%')";
-        }
-
-        // Select all the rows in the markers table
-        // Radius was ignored in the original SLP, showing all locations up to N max
-        // that is why 99999 is hard-coded here
-        //
-        $multiplier=(get_option('sl_distance_unit')=="km")? 6371 : 3959;
-        $query = sprintf(
-            "SELECT *,".
-            "( $multiplier * acos( cos( radians('%s') ) * cos( radians( sl_latitude ) ) * cos( radians( sl_longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( sl_latitude ) ) ) ) AS sl_distance ".
-            "FROM {$this->plugin->db->prefix}store_locator ".
-            "WHERE sl_longitude<>'' and sl_longitude<>'' %s %s ".
-            "HAVING (sl_distance < '%s') ".
-            'ORDER BY sl_distance ASC '.
-            'LIMIT %s',
-            mysql_real_escape_string($_POST['lat']),
-            mysql_real_escape_string($_POST['lng']),
-            mysql_real_escape_string($_POST['lat']),
-            $tag_filter,
-            $name_filter,
-            mysql_real_escape_string('99999'),
-            $num_initial_displayed
-        );
-        $result = mysql_query(apply_filters('slp_mysql_search_query',$query));
-
-        if (!$result) {
-          die('Invalid query: ' . mysql_error());
-        }
-
-
-        // Iterate through the rows, printing json nodes for each
         $response = array();
-        while ($row = @mysql_fetch_assoc($result)){
+        $locations = $this->execute_LocationQuery('sl_num_initial_displayed');
+        foreach ($locations as $row){
             $response[] = $this->slp_add_marker($row);
         }
 
-        header( "Content-Type: application/json" );
-        echo json_encode( 
-                array(  'success'       => true,
+        // Output the JSON and Exit
+        //
+        $this->renderJSON_Response(
+                array(
                         'count'         => count($response) ,
-                        'slp_version'   => $this->plugin->version,
                         'type'          => 'load',
                         'response'      => $response
                     )
                 );
-        die();
     }
 
     /**
@@ -189,77 +130,7 @@ class SLPlus_AjaxHandler {
      */
     function csl_ajax_search() {
         global $wpdb;
-        $username=DB_USER;
-        $password=DB_PASSWORD;
-        $database=DB_NAME;
-        $host=DB_HOST;
-
         $this->setPlugin();
-
-        // Get parameters from URL
-        $center_lat = $_POST["lat"];
-        $center_lng = $_POST["lng"];
-        $radius     = $_POST["radius"];
-
-        //-----------------
-        // Set the active MySQL database
-        //
-        $connection=mysql_connect ($host, $username, $password);
-        if (!$connection) { die(json_encode( array('success' => false, 'slp_version' => $this->plugin->version, 'response' => 'Not connected : ' . mysql_error()))); }
-        $db_selected = mysql_select_db($database, $connection);
-        mysql_query("SET NAMES utf8");
-        if (!$db_selected) {
-            die (json_encode( array('success' => false, 'slp_version' => $this->plugin->version, 'response' => 'Can\'t use db : ' . mysql_error())));
-        }
-
-        // If tags are passed filter to just those tags
-        //
-        $tag_filter = '';
-        if (
-            isset($_POST['tags']) && ($_POST['tags'] != '')
-        ){
-            $posted_tag = preg_replace('/^\s+(.*?)/','$1',$_POST['tags']);
-            $posted_tag = preg_replace('/(.*?)\s+$/','$1',$posted_tag);
-            $tag_filter = " AND ( sl_tags LIKE '%%". $posted_tag ."%%') ";
-        }
-
-        $name_filter = '';
-        if(isset($_POST['name']) && ($_POST['name'] != ''))
-        {
-            $posted_name = preg_replace('/^\s+(.*?)/','$1',$_POST['name']);
-            $posted_name = preg_replace('/(.*?)\s+$/','$1',$posted_name);
-            $name_filter = " AND (sl_store LIKE '%%".$posted_name."%%')";
-        }
-
-        //Since miles is default, if kilometers is selected, divide by 1.609344 in order to convert the kilometer value selection back in miles when generating the XML
-        //
-        $multiplier=(get_option('sl_distance_unit')=="km")? 6371 : 3959;
-
-        $option[SLPLUS_PREFIX.'_maxreturned']=(trim(get_option(SLPLUS_PREFIX.'_maxreturned'))!="")?
-        get_option(SLPLUS_PREFIX.'_maxreturned') :
-        '25';
-
-        $query = sprintf(
-            "SELECT *,".
-            "( $multiplier * acos( cos( radians('%s') ) * cos( radians( sl_latitude ) ) * cos( radians( sl_longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( sl_latitude ) ) ) ) AS sl_distance ".
-            "FROM {$this->plugin->db->prefix}store_locator ".
-            "WHERE sl_longitude<>'' and sl_longitude<>'' %s %s ".
-            "HAVING (sl_distance < '%s') ".
-            'ORDER BY sl_distance ASC '.
-            'LIMIT %s',
-            mysql_real_escape_string($center_lat),
-            mysql_real_escape_string($center_lng),
-            mysql_real_escape_string($center_lat),
-            $tag_filter,
-            $name_filter,
-            mysql_real_escape_string($radius),
-            mysql_real_escape_string($option[SLPLUS_PREFIX.'_maxreturned'])
-        );
-
-        $result = mysql_query(apply_filters('slp_mysql_search_query',$query));
-        if (!$result) {
-            die(json_encode( array('success' => false, 'slp_version' => $this->plugin->version, 'query' => $query, 'response' => 'Invalid query: ' . mysql_error())));
-        }
 
         // Reporting
         // Insert the query into the query DB
@@ -278,9 +149,11 @@ class SLPlus_AjaxHandler {
             $slp_QueryID = mysql_insert_id();
         }
 
-        // Iterate through the rows, printing XML nodes for each
+        // Get Locations
+        //
         $response = array();
-        while ($row = @mysql_fetch_assoc($result)){
+        $locations = $this->execute_LocationQuery(SLPLUS_PREFIX.'_maxreturned');
+        foreach ($locations as $row){
             $thisLocation = $this->slp_add_marker($row);
             if (!empty($thisLocation)) {
                 $response[] = $thisLocation;
@@ -300,19 +173,162 @@ class SLPlus_AjaxHandler {
                 }
             }
         }
-        header( "Content-Type: application/json" );
-        echo json_encode( 
-                array(  'success'       => true,
+
+        // Output the JSON and Exit
+        //
+        $this->renderJSON_Response(
+                array(  
                         'count'         => count($response),
                         'option'        => $_POST['address'],
-                        'slp_version'   => $this->plugin->version,
                         'type'          => 'search',
-                        'dbquery'       => $query,
                         'response'      => $response
                     )
                 );
-        die();
      }
+
+    /**
+     * Run a database query to fetch the locations the user asked for.
+     *
+     * @param string $maxReturned how many results to max out at
+     * @return object a MySQL result object
+     */
+    function execute_LocationQuery($optName_HowMany='') {
+        //........
+        // SLP options that tweak the query
+        //........
+
+        // Distance Unit (KM or MI) Modifier
+        // Since miles is default, if kilometers is selected, divide by 1.609344 in order to convert the kilometer value selection back in miles
+        //
+        $multiplier=(get_option('sl_distance_unit')=="km")? 6371 : 3959;
+
+        // Return How Many?
+        //
+        if (empty($optName_HowMany)) { $optName_HowMany = SLPLUS_PREFIX.'_maxreturned'; }
+        $maxReturned = trim(get_option($optName_HowMany,'25'));
+        if (!is_numeric($maxReturned)) { $maxReturned = '25'; }
+
+
+        //........
+        // Post options that tweak the query
+        //........
+
+        // Tag Filters
+        //
+        $tagFilter = '';
+        if (
+            isset($_POST['tags']) && ($_POST['tags'] != '')
+           ){
+            $posted_tag = preg_replace('/^\s+(.*?)/','$1',$_POST['tags']);
+            $posted_tag = preg_replace('/(.*?)\s+$/','$1',$posted_tag);
+            $tagFilter = " AND ( sl_tags LIKE '%%". $posted_tag ."%%') ";
+        }
+
+        // Name Filters
+        //
+        $nameFilter = '';
+        if ((get_option(SLPLUS_PREFIX.'_show_name_search') == 1) &&
+            isset($_POST['name']) && ($_POST['name'] != ''))
+        {
+            $posted_name = preg_replace('/^\s+(.*?)/','$1',$_POST['name']);
+            $posted_name = preg_replace('/(.*?)\s+$/','$1',$posted_name);
+            $nameFilter = " AND (sl_store LIKE '%%".$posted_name."%%')";
+        }
+
+        // Set the query
+        // FILTER: slp_mysql_search_query
+        //
+        $this->dbQuery = apply_filters('slp_mysql_search_query',
+            "SELECT *,".
+            "( $multiplier * acos( cos( radians('%s') ) * cos( radians( sl_latitude ) ) * cos( radians( sl_longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( sl_latitude ) ) ) ) AS sl_distance ".
+            "FROM {$this->plugin->db->prefix}store_locator ".
+            "WHERE sl_longitude<>'' and sl_longitude<>'' ".
+            $tagFilter.
+            $nameFilter .
+            "HAVING (sl_distance < %d) ".
+            'ORDER BY sl_distance ASC '.
+            'LIMIT %d'
+            );
+
+        // Run the query
+        //
+        // First convert our placeholder dbQuery into a string with the vars inserted.
+        // Then turn off errors so they don't munge our JSONP.
+        //
+        global $wpdb;
+        $this->dbQuery =
+            $wpdb->prepare(
+                $this->dbQuery,
+                $_POST['lat'],
+                $_POST['lng'],
+                $_POST['lat'],
+                $_POST['radius'],
+                $maxReturned
+                );
+        $wpdb->hide_errors();
+        $result = $wpdb->get_results($this->dbQuery, ARRAY_A);
+
+        // Problems?  Oh crap.  Die.
+        //
+        if (!$result) {
+            die(json_encode(array(
+                'success'       => false, 
+                'response'      => 'Invalid query: ' . $wpdb->last_error,
+                'dbQuery'       => $this->dbQuery
+            )));
+        }
+
+        // Return the results
+        //
+        return $result;
+    }
+
+
+    /**
+     * Output a JSON response based on the incoming data and die.
+     *
+     * Used for AJAX processing in WordPress where a remote listener expects JSON data.
+     *
+     * @param mixed[] $data named array of keys and values to turn into JSON data
+     * @return null dies on execution
+     */
+    function renderJSON_Response($data) {
+        header( "Content-Type: application/json" );
+
+        // What do you mean we didn't get an array?
+        //
+        if (!is_array($data)) {
+            $data = array(
+                'success'       => false,
+                'count'         => 0,
+                'message'       => __('renderJSON_Response did not get an array()','csa-slplus')
+            );
+        }
+
+        // Add our SLP Version and DB Query to the output
+        //
+        $data = array_merge(
+                    array(
+                        'success'       => true,
+                        'slp_version'   => $this->plugin->version,
+                        'dbQuery'       => $this->dbQuery
+                    ),
+                    $data
+                );
+
+        // Tell them what is coming...
+        //
+        header( "Content-Type: application/json" );
+
+        // Go forth and spew data
+        //
+        echo json_encode($data);
+
+        // Then die.
+        //
+        die();
+    }
+
 
     /**
      * Remove the Pro Pack license.

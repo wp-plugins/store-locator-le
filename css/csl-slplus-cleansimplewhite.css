@@ -100,6 +100,14 @@ div#map {
 div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
     display:none;
 }
+div.entry-content div#sl_div #map_table IMG {
+	max-width:none;
+    box-shadow: none;
+    border-radius: 0px;
+    border: none;
+    padding: 0px;
+    margin: 0px;
+}
 
 /**
  * Tagline Area (immediately below map)

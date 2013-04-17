@@ -365,7 +365,7 @@ class SLPPro {
                         ),
                         array(
                             'label' => __('Reports','csa-slplus'),
-                            'url'   => SLPLUS_PLUGINDIR.'reporting.php'
+                            'url'   => SLPLUS_PLUGINDIR.'slp-reports/reporting.php'
                         )
                     )
                 );
@@ -1048,11 +1048,11 @@ class SLPPro {
         // Reporting
         //
         add_action(
-               'admin_print_styles-store-locator-le/reporting.php',
+               'admin_print_styles-store-locator-le/slp-reports/reporting.php',
                 array($this->plugin->AdminUI,'enqueue_admin_stylesheet')
                 );
         add_action(
-                'admin_print_scripts-store-locator-le/reporting.php',
+                'admin_print_scripts-store-locator-le/slp-reports/reporting.php',
                 array($this,'enqueueReportingJS')
                 );
     }

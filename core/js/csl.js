@@ -375,7 +375,6 @@ var csl = {
 		this.tilesLoaded = null;
 
   	  	//php passed vars set in init
-		this.debug_mode = null;
   	  	this.address = null;
   	  	this.canvasID = null;
   	  	this.draggable = true;
@@ -413,7 +412,6 @@ var csl = {
 		this.bounds = null;
 		this.homeAddress = null;
 		this.homePoint = null;
-		this.forceAll = false;
 		this.lastCenter = null;
 		this.lastRadius = null;
 		this.loadedOnce = false;
@@ -514,7 +512,20 @@ var csl = {
                         this.homePoint = center;
                         this.addMarkerAtCenter();
                         var tag_to_search_for = this.saneValue('tag_to_search_for', '');
-                        var radius = this.saneValue('radiusSelect');
+
+                        // Default radius for immediately show locations
+                        // uses setting from admin panel first,
+                        // then the default from the drop down menu,
+                        // then 10000 if neither are working.
+                        //
+                        var radius = 10000;
+                        slplus.options.initial_radius = slplus.options.initial_radius.replace(/\D/g,'');
+                        if (/^[0-9]+$/.test(slplus.options.initial_radius)) {
+                            radius = slplus.options.initial_radius;
+                        } else {
+                            radius = this.saneValue('radiusSelect');
+                        }
+
                         this.loadMarkers(center, radius, tag_to_search_for);
                 }
             }
@@ -690,7 +701,6 @@ var csl = {
 				this.debugSearch('rebounded');
 				this.bounds = bounds;
 				this.gmap.fitBounds(this.bounds);
-                var theCenter = this.gmap.getCenter();
 
                 // Searches, use Google Bounds - and adjust by the tweak.
                 // Initial Load Only - Use "Zoom Level"
@@ -974,17 +984,13 @@ var csl = {
 			}
 		};
 
-		/***************************
-  	  	 * function: saneValue
-  	  	 * usage:
-  	  	 * 		Gets a sane value from the document
-  	  	 * parameters:
-  	  	 * 		id:
-		 *			the id of the control to look up
-		 *		defaultValue:
-		 *			the default value to return if it doesn't exist
-  	  	 * returns: none
-  	  	 */
+        /**
+         * Get a sane value from the HTML document.
+         *
+         * @param {string} id of control to look at
+         * @param {string} default value to return
+         * @return {undef}
+         */
 		this.saneValue = function(id, defaultValue) {
 			var name = document.getElementById(id);
 			if (name === null) {
@@ -1008,13 +1014,6 @@ var csl = {
 		this.loadMarkers = function(center, radius, tags) {
 
                     //determines if we need to invent real variables (usually only done at the beginning)
-                    var realsearch = true;
-                    if (this.forceAll) {
-                        realsearch = false;
-                        radius = null;
-                        center = null;
-                        this.forceAll = false;
-                    }
                     this.debugSearch('doing search@' + center + ' for radius of ' + radius);
                     if (center === null) { center = this.gmap.getCenter(); }
                     if (radius === null) { radius = 40000; }
@@ -1026,49 +1025,37 @@ var csl = {
                     var _this = this;
                     var ajax = new csl.Ajax();
 
+                    // Setup our variables sent to the AJAX listener.
+                    //
+                    var action = {
+                        address : this.saneValue('addressInput', 'no address entered'),
+                        formdata: jQuery('#searchForm').serialize(),
+                        lat     : center.lat(),
+                        lng     : center.lng(),
+                        name    : this.saneValue('nameSearch', ''),
+                        radius  : radius,
+                        tags    : tags
+                     };
+
                     // On Load
-                    if (!realsearch) {
-                        var action = {
-                            action  : 'csl_ajax_onload',
-                            lat     : center.lat(),
-                            lng     : center.lng(),
-                            tags    : tags
-                         };
-
-                        this.debugSearch(action);
-
-                        ajax.send(action, function (response) {
-                                if (typeof response.response !== 'undefined') {
-                                    _this.dropMarkers.call(_this, response.response);
-                                } else {
-                                    if (window.console) { console.log('SLP server did not send back a valid JSONP response on load.'); }
-                                }
-                            });
+                    if (slplus.load_locations === '1') {
+                        action.action = 'csl_ajax_onload';
+                        slplus.load_locations = '0';
 
                     // Search
                     } else {
-                        var name = this.saneValue('nameSearch', '');
-                        var action = {
-                            action  : 'csl_ajax_search',
-                            address : this.saneValue('addressInput', 'no address entered'),
-                            formdata: jQuery('#searchForm').serialize(),
-                            lat     : center.lat(),
-                            lng     : center.lng(),
-                            name    : name,
-                            radius  : radius,
-                            tags    : tags
-                        };
-
-                        this.debugSearch(action);
-
-                        ajax.send(action, function (response) {
-                                if (typeof response.response !== 'undefined') {
-                                                    _this.bounceMarkers.call(_this, response.response);
-                                } else {
-                                    if (window.console) { console.log('SLP server did not send back a valid JSONP response on search.'); }
-                                }
-                            });
+                        action.action = 'csl_ajax_search';
                     }
+
+                    // Send AJAX call
+                    //
+                    ajax.send(action, function (response) {
+                            if (typeof response.response !== 'undefined') {
+                                _this.bounceMarkers.call(_this, response.response);
+                            } else {
+                                if (window.console) { console.log('SLP server did not send back a valid JSONP response for ' + action.action + '.'); }
+                            }
+                        });
 		};
 
 		/***************************
