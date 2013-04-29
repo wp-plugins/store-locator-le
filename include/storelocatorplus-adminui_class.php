@@ -16,6 +16,13 @@ class SLPlus_AdminUI {
     public $parent = null;
 
     /**
+     * The id string to show for this location.
+     * 
+     * @var string $idString 
+     */
+    private $idString;
+
+    /**
      * The SLPlus object.
      * 
      * @var SLPlus $plugin
@@ -808,10 +815,8 @@ class SLPlus_AdminUI {
     /**
      * Draw the add locations page.
      *
-     * @global type $wpdb
      */
      function renderPage_AddLocations() {
-            global $wpdb;
             $this->initialize_variables();
 
             print "<div class='wrap'>
@@ -840,15 +845,13 @@ class SLPlus_AdminUI {
             /** Bulk Upload
              **/
             } elseif ( 
-                isset($this->plugin->ProPack)     &&
                 isset($_FILES['csvfile']['name']) &&
                 ($_FILES['csvfile']['name']!='')  &&
                 ($_FILES['csvfile']['size'] > 0)
                ) {
-                $this->plugin->ProPack->bulk_upload_processing();
+                do_action('slp_addlocations_with_csv');
             }
 
-            $base=get_option('siteurl');
             $this->addingLocation = true;
             print 
                 '<div id="location_table_wrapper">'.
@@ -875,43 +878,172 @@ class SLPlus_AdminUI {
      }
 
     /**
-     * Render the edit locations form fields.
+     * Create the add/edit form field.
      *
-     * @param named array $sl_value the location data.
+     * Leave fldLabel blank to eliminate the leading <label>
+     *
+     * inType can be 'input' (default) or 'textarea'
+     *
+     * @param string $fldName name of the field, base name only
+     * @param string $fldLabel label to show ahead of the input
+     * @param string $fldValue
+     * @param string $inputclass class for input field
+     * @param boolean $noBR skip the <br/> after input
+     * @param string $inType type of input field (default:input)
+     * @return string the form HTML output
+     */
+    function create_InputElement($fldName,$fldLabel,$fldValue, $inputClass='', $noBR = false, $inType='input') {
+        return
+            (empty($fldLabel)?'':"<label  for='{$fldName}-{$this->plugin->currentLocation->id}'>{$fldLabel}</label>").
+            "<{$inType} "                                                   .
+                "id='edit-{$fldName}' "                                     .
+                "name='{$fldName}-{$this->plugin->currentLocation->id}' "   .
+                (($inType==='input')?
+                        "value='{$fldValue}' "  :
+                        "rows='5' cols='17'  "
+                 )                                                          .
+                (empty($inputClass)?'':"class='{$inputClass}' ")            .
+            '>'                                                             .
+            (($inType==='textarea')?$fldValue       :'')                    .
+            (($inType==='textarea')?'</textarea>'   :'')                    .
+            ($noBR?'':'<br/>')
+            ;
+    }
+
+    /**
+     * Add the left column to the add/edit locations form.
+     *
+     * @param string $HTML the html of the base form.
      * @return string HTML of the form inputs
      */
-    function renderFields_editlocation() {
-        if (!$this->setParent()) { return; }
+    function filter_EditLocationLeft_Address($HTML) {
+        return
+            $this->plugin->helper->create_SubheadingLabel(__('Address','csa-slplus')).
+            $this->create_InputElement(
+                'store',
+                __('Name of Location', 'csa-slplus'),
+                $this->plugin->currentLocation->store
+                ).
+            $this->create_InputElement(
+                'address',
+                __('Street - Line 1', 'csa-slplus'),
+                $this->plugin->currentLocation->address
+                ).
+            $this->create_InputElement(
+                'address2',
+                __('Street - Line 2', 'csa-slplus'),
+                $this->plugin->currentLocation->address2
+                ).
+            $this->create_InputElement(
+                'city',
+                __('City, State, ZIP', 'csa-slplus'),
+                $this->plugin->currentLocation->city,
+                'mediumfield',
+                true
+                ).
+            $this->create_InputElement(
+                'state',
+                '',
+                $this->plugin->currentLocation->state,
+                'shortfield',
+                true
+                ).
+            $this->create_InputElement(
+                'zip',
+                '',
+                $this->plugin->currentLocation->zip,
+                'shortfield'
+                ).
+            $this->create_InputElement(
+                'country',
+                __('Country','csa-slplus'),
+                $this->plugin->currentLocation->country
+                ).
+            $HTML
+            ;
+    }
 
-        $content = '';
-        ob_start();
-        ?>
-        <table>
-            <tr>
-                <td><div class="add_location_form">
-                    <label  for='store-<?php echo $this->get_CurrentLocationVal('sl_id')?>'><?php _e('Name of Location', 'csa-slplus');?></label>
-                    <input name='store-<?php echo $this->get_CurrentLocationVal('sl_id')?>' value='<?php echo $this->get_CurrentLocationVal('sl_store')?>'><br/>
+    /**
+     * Put the add/cancel button on the add/edit locations form.
+     * 
+     * This is rendered AFTER other HTML stuff.
+     *
+     * @param string $HTML the html of the base form.
+     * @return string HTML of the form inputs
+     */
+    function filter_EditLocationLeft_Submit($HTML) {
+        $edCancelURL = isset($_GET['edit']) ?
+            preg_replace('/&edit='.$_GET['edit'].'/', '',$_SERVER['REQUEST_URI']) :
+            $_SERVER['REQUEST_URI']
+            ;
+        $alTitle =
+            ($this->addingLocation?
+                __('Add Location','csa-slplus'):
+                sprintf("%s #%d",__('Update Location', 'csa-slplus'),$this->plugin->currentLocation->id)
+            );
+        return
+            $HTML .
+            ($this->addingLocation? '' : "<span class='slp-edit-location-id'>Location # $this->idString</span>") .
+            "<div id='slp_form_buttons'>" .
+            "<input type='submit' value='".($this->addingLocation?__('Add','csa-slplus'):__('Update', 'csa-slplus')).
+                "' alt='$alTitle' title='$alTitle' class='button-primary'>".
+            "<input type='button' class='button' "                                                  .
+                "value='".__('Cancel', 'csa-slplus')."' "                                           .
+                "onclick='location.href=\"".$edCancelURL."\"'>"                                     .
+            "<input type='hidden' name='option_value-{$this->plugin->currentLocation->id}' "        .
+                "value='".($this->addingLocation?'':$this->plugin->currentLocation->option_value)   .
+                "' />"                                                                              .
+            "</div>"
+            ;
+    }
 
-                    <label  for='address-<?php echo $this->get_CurrentLocationVal('sl_id')?>'><?php _e('Street - Line 1', 'csa-slplus');?></label>
-                    <input name='address-<?php echo $this->get_CurrentLocationVal('sl_id')?>' value='<?php echo $this->get_CurrentLocationVal('sl_address')?>'><br/>
-
-                    <label  for='address2-<?php echo $this->get_CurrentLocationVal('sl_id')?>'><?php _e('Street - Line 2', 'csa-slplus');?></label>
-                    <input name='address2-<?php echo $this->get_CurrentLocationVal('sl_id')?>' value='<?php echo $this->get_CurrentLocationVal('sl_address2')?>'><br/>
-
-                    <label  for='city-<?php echo $this->get_CurrentLocationVal('sl_id')?>'><?php _e('City, State, ZIP', 'csa-slplus');?></label>
-                    <input name='city-<?php echo $this->get_CurrentLocationVal('sl_id')?>'    value='<?php echo $this->get_CurrentLocationVal('sl_city')?>'     style='width: 21.4em; margin-right: 3px;'>
-                    <input name='state-<?php echo $this->get_CurrentLocationVal('sl_id')?>'   value='<?php echo $this->get_CurrentLocationVal('sl_state')?>'    style='width: 7em; margin-right: 1em;'>
-                    <input name='zip-<?php echo $this->get_CurrentLocationVal('sl_id')?>'     value='<?php echo $this->get_CurrentLocationVal('sl_zip')?>'      style='width: 7em;'><br/>
-
-                    <label  for='country-<?php echo $this->get_CurrentLocationVal('sl_id')?>'><?php _e('Country', 'csa-slplus');?></label>
-                    <input name='country-<?php echo $this->get_CurrentLocationVal('sl_id')?>' value='<?php echo $this->get_CurrentLocationVal('sl_country')?>'  style='width: 40em;'><br/>
-                    </div>
-                </td>
-            </tr>
-        </table>
-        <?php
-        $content .= ob_get_clean();
-        return $content;
+    /**
+     * Add the right column to the add/edit locations form.
+     *
+     * @param string $HTML the html of the base form.
+     * @return string HTML of the form inputs
+     */
+    function filter_EditLocationRight_Address($HTML) {
+        return
+            $this->plugin->helper->create_SubheadingLabel(__('Additional Information','csa-slplus')).
+            $this->create_InputElement(
+                    'description',
+                    __('Description', 'csa-slplus'),
+                    $this->plugin->currentLocation->description,
+                    '',
+                    false,
+                    'textarea'
+                    ).
+            $this->create_InputElement(
+                    'url',
+                    get_option('sl_website_label','Website'),
+                    $this->plugin->currentLocation->url
+                    ).
+            $this->create_InputElement(
+                    'email',
+                    __('Email', 'csa-slplus'),
+                    $this->plugin->currentLocation->email
+                    ).
+            $this->create_InputElement(
+                    'hours',
+                    $this->plugin->settings->get_item('label_hours','Hours','_'),
+                    $this->plugin->currentLocation->hours,
+                    '',
+                    false,
+                    'textarea'
+                    ).
+            $this->create_InputElement(
+                    'phone',
+                    $this->plugin->settings->get_item('label_phone','Phone','_'),
+                    $this->plugin->currentLocation->phone
+                    ).
+            $this->create_InputElement(
+                    'fax',
+                    $this->plugin->settings->get_item('label_fax','Fax','_'),
+                    $this->plugin->currentLocation->phone
+                    ).
+            $HTML
+            ;
     }
 
     /**
@@ -956,107 +1088,70 @@ class SLPlus_AdminUI {
      function createString_LocationInfoForm($sl_value, $locID, $addform=false) {
         if (!$this->setParent()) { return; }
         $this->addingLocation = $addform;
-        $slpEditForm = '';
 
         // TODO: currentLocation can be replaced with the plugin.currentLocation object
         // make sure to transfer the filter down to the plugin setup first.
         //
         $this->currentLocation = apply_filters('slp_edit_location_data',$sl_value);
         $this->plugin->currentLocation->set_PropertiesViaArray($this->currentLocation);
+        $this->idString =
+                $this->plugin->currentLocation->id .
+                (!empty($this->plugin->currentLocation->linked_postid)?
+                 ' - '. $this->plugin->currentLocation->linked_postid :
+                 ''
+                 );
+        if (
+                is_numeric($this->plugin->currentLocation->latitude) &&
+                is_numeric($this->plugin->currentLocation->longitude)
+           ) {
+            $this->idString .= __(' at ').$this->plugin->currentLocation->latitude.','.$this->plugin->currentLocation->longitude;
+        }
 
-         $content  = 
-            "<form id='manualAddForm' name='manualAddForm' method='post' enctype='multipart/form-data'>"       .
-            "<input type='hidden' name='locationID'       id='locationID'       value='$locID'                          />" .
-            "<input type='hidden' name='linked_postid-$locID' id='linked_postid-$locID' value='".
-                 $this->plugin->currentLocation->linked_postid
-                 ."' />" .
-            "<a name='a$locID'></a>"                                                    .
-            "<table cellpadding='0' class='slp_locationinfoform_table'>"                           .
-            "<tr><td valign='top'>"                                                         .
-            $this->plugin->AdminUI->renderFields_editlocation()
+        // Hook in our filters that generate the form.
+        //
+        add_filter('slp_edit_location_left_column'  ,array($this,'filter_EditLocationLeft_Address')   , 5);
+        add_filter('slp_edit_location_left_column'  ,array($this,'filter_EditLocationLeft_Submit')    ,99);
+        add_filter('slp_edit_location_right_column' ,array($this,'filter_EditLocationRight_Address')  , 5);
+
+        // Create the form.
+        //
+        // FILTER: slp_add_location_form_footer
+        // FILTER: slp_edit_location_left_column
+        // FILTER: slp_edit_location_right_column
+        //
+        $content  =
+           "<form id='manualAddForm' name='manualAddForm' method='post' enctype='multipart/form-data'>" .
+           "<input type='hidden' name='locationID' "                                                    .
+                "id='locationID' value='{$this->plugin->currentLocation->id}' />"                       .
+           "<input type='hidden' name='linked_postid-{$this->plugin->currentLocation->id}' "            .
+                "id='linked_postid-{$this->plugin->currentLocation->id}' value='"                       .
+                $this->plugin->currentLocation->linked_postid                                           .
+                "' />"                                                                                  .
+           "<a name='a{$this->plugin->currentLocation->id}'></a>"                                       .
+           "<table cellpadding='0' class='slp_locationinfoform_table'>"                                 .
+           "<tr>"                                                                                       .
+
+           // Left Cell
+           "<td id='slp_manual_update_table_left_cell' valign='top'>"                                   .
+                "<div id='slp_edit_left_column' class='add_location_form'>"                             .
+                    apply_filters('slp_edit_location_left_column','')                                   .
+                '</div>'                                                                                .
+           '</td>'                                                                                      .
+
+           // Right Cell
+           "<td id='slp_manual_update_table_right_cell' valign='top'>"                                  .
+                "<div id='slp_edit_right_column' class='add_location_form'>"                            .
+                    apply_filters('slp_edit_location_right_column','')                                  .
+                '</div>'                                                                                .
+           '</td>'                                                                                      .
+           '</tr></table>'                                                                              .
+            ($this->addingLocation?apply_filters('slp_add_location_form_footer', ''):'')                .
+            '</form>'
             ;
 
-            $edCancelURL = isset($_GET['edit']) ?
-                preg_replace('/&edit='.$_GET['edit'].'/', '',$_SERVER['REQUEST_URI']) :
-                $_SERVER['REQUEST_URI']
-                ;
-
-            $alTitle =
-                ($addform?
-                    __('Add Location','csa-slplus'):
-                    sprintf("%s #%d",__('Update Location', 'csa-slplus'),$locID)
-                );
-            $idString = 
-                    $locID .
-                    (!empty($this->plugin->currentLocation->linked_postid)?
-                     ' - '. $this->plugin->currentLocation->linked_postid :
-                     ''
-                     );
-            if (
-                    is_numeric($this->plugin->currentLocation->latitude) &&
-                    is_numeric($this->plugin->currentLocation->longitude)
-               ) {
-                $idString .= __(' at ').$this->plugin->currentLocation->latitude.','.$this->plugin->currentLocation->longitude;
-            }
-            $slpEditForm .= 
-                    ($addform? '' : "<span class='slp-edit-location-id'>Location # $idString</span>") .
-                    "<div id='slp_form_buttons'>" .
-                    "<input type='submit' value='".($addform?__('Add','csa-slplus'):__('Update', 'csa-slplus')).
-                        "' alt='$alTitle' title='$alTitle' class='button-primary'>".
-                    "<input type='button' class='button' value='".__('Cancel', 'csa-slplus')."' onclick='location.href=\"".$edCancelURL."\"'>".
-                    "<input type='hidden' name='option_value-$locID' value='".($addform?'':$sl_value['sl_option_value'])."' />"  .
-                    "</div>"
-                    ;
-
-            /**
-             * @see  http://goo.gl/ooXFC 'slp_edit_location_left_column' filter to manipulate edit location form, left column
-             */
-            $content .= apply_filters('slp_edit_location_left_column',$slpEditForm)             .
-                '</td>'                                                                         .
-                "<td id='slp_manual_update_table_right_cell'>"
-                ;
-
-            $slpEditForm =
-                    "<div id='slp_edit_right_column'>" .
-
-                    "<strong>".__("Additional Information", 'csa-slplus')."</strong><br>".
-
-                    "<textarea name='description-$locID' rows='5' cols='17'>".($addform?'':$sl_value['sl_description'])."</textarea>&nbsp;<small>".
-                        __("Description", 'csa-slplus')."</small><br>".
-
-                    "<input    name='url-$locID'   value='".($addform?'':$sl_value['sl_url']  )."'>&nbsp;<small>".
-                        get_option('sl_website_label','Website')."</small><br>".
-
-                    "<input    name='email-$locID' value='".($addform?'':$sl_value['sl_email'])."'>&nbsp;<small>".
-                        __("Email", 'csa-slplus')."</small><br>".
-
-                    "<input    name='hours-$locID' value='".($addform?'':$sl_value['sl_hours'])."'>&nbsp;<small>".
-                        $this->plugin->settings->get_item('label_hours','Hours','_')."</small><br>".
-
-                    "<input    name='phone-$locID' value='".($addform?'':$sl_value['sl_phone'])."'>&nbsp;<small>".
-                        $this->plugin->settings->get_item('label_phone','Phone','_')."</small><br>".
-
-                    "<input    name='fax-$locID'   value='".($addform?'':$sl_value['sl_fax']  )."'>&nbsp;<small>".
-                        $this->plugin->settings->get_item('label_fax','Fax','_')."</small><br>".
-
-                    '</div>'
-                    ;
-
-            /**
-             * @see  http://goo.gl/ooXFC 'slp_edit_location_right_column' filter to manipulate edit location form, right column
-             */
-            $content .= apply_filters('slp_edit_location_right_column',$slpEditForm);
-            $content .= '</td></tr></table>';
-
-            // Bulk upload form
-            //
-            if ($addform) {
-                $content .= apply_filters('slp_add_location_form_footer', '');
-            }
-
-            $content .= '</form>';
-
-            return apply_filters('slp_locationinfoform',$content);
+           // FILTER: slp_locationinfoform
+           //
+          return apply_filters('slp_locationinfoform',$content);
      }
 
     /**

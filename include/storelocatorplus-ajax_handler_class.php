@@ -242,7 +242,7 @@ class SLPlus_AjaxHandler {
             "SELECT *,".
             "( $multiplier * acos( cos( radians('%s') ) * cos( radians( sl_latitude ) ) * cos( radians( sl_longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( sl_latitude ) ) ) ) AS sl_distance ".
             "FROM {$this->plugin->db->prefix}store_locator ".
-            "WHERE sl_longitude<>'' and sl_longitude<>'' ".
+            "WHERE sl_longitude<>'' and sl_latitude<>'' ".
             $tagFilter.
             $nameFilter .
             "HAVING (sl_distance < %d) ".
@@ -270,7 +270,7 @@ class SLPlus_AjaxHandler {
 
         // Problems?  Oh crap.  Die.
         //
-        if (!$result) {
+        if ($result === null) {
             die(json_encode(array(
                 'success'       => false, 
                 'response'      => 'Invalid query: ' . $wpdb->last_error,
@@ -327,33 +327,5 @@ class SLPlus_AjaxHandler {
         // Then die.
         //
         die();
-    }
-
-
-    /**
-     * Remove the Pro Pack license.
-     * 
-     * TODO: kill this when Pro Pack is no longer a licensed product.
-     */
-    function license_reset_propack() {
-        if (!$this->setPlugin()) { die(__('Pro Pack license could not be removed.',SLPLUS_PREFIX)); }
-
-        global $wpdb;
-
-        foreach (array(
-                    SLPLUS_PREFIX.'-SLPLUS-PRO-isenabled',
-                    SLPLUS_PREFIX.'-SLPLUS-PRO-last_lookup',
-                    SLPLUS_PREFIX.'-SLPLUS-PRO-latest-version',
-                    SLPLUS_PREFIX.'-SLPLUS-PRO-latest-version-numeric',
-                    SLPLUS_PREFIX.'-SLPLUS-PRO-lk',
-                    SLPLUS_PREFIX.'-SLPLUS-PRO-version',
-                    SLPLUS_PREFIX.'-SLPLUS-PRO-version-numeric',
-                    )
-                as $optionName) {
-            $query = 'DELETE FROM '.$wpdb->prefix."options WHERE option_name='$optionName'";
-            $wpdb->query($query);
-        }
-
-        die(__('Pro Pack license has been removed. Refresh the General Settings page.', SLPLUS_PREFIX));
     }
 }

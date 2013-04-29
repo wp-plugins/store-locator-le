@@ -48,6 +48,7 @@ class SLPlus_Updates {
     function __construct($current_version, $update_path, $plugin_slug)
     {
         global $slplus_plugin;
+
         // Set the class public variables
         $this->plugin = $slplus_plugin;
         $this->current_version = $current_version;
@@ -102,13 +103,14 @@ class SLPlus_Updates {
      */
     public function check_info($orig, $action, $arg)
     {
-        if (isset($GLOBALS['DebugMyPlugin'])) {
-            error_log('check info for action ' . $action . ' arg slug ' . $arg->slug);
-        }
-
         // No slug? Not plugin update.
         //
         if (empty($arg->slug)) { return $orig; }
+        if (!in_array($arg->slug,$this->plugin->addons)) { return $orig; }
+
+        if (isset($GLOBALS['DebugMyPlugin'])) {
+            error_log('check info for action ' . $action . ' arg slug ' . $arg->slug);
+        }
 
         if (!isset($this->plugin->infoFetched[$arg->slug])) {
             $information = $this->getRemote_information($arg->slug);
@@ -138,6 +140,11 @@ class SLPlus_Updates {
      */
     public function getRemote_information($slug=null) {
         if ($slug===null) { $slug = $this->slug; }
+
+        if (isset($GLOBALS['DebugMyPlugin'])) {
+            error_log('SLPlus_Updates.getRemote_information()');
+        }
+        
         $request = wp_remote_post($this->update_path, array('body' => array('action' => 'info', 'slug' => $slug)));
         if (!is_wp_error($request) || wp_remote_retrieve_response_code($request) === 200) {
             if (isset($GLOBALS['DebugMyPlugin'])) {

@@ -828,17 +828,20 @@ var csl = {
         */
         this.__getMarkerUrl = function(aMarker) {
             var url = '';
-            //add an http to the url
-            if ((slplus.use_pages_links === "on") && (aMarker.sl_pages_url !== '')) {
-                url = aMarker.sl_pages_url;
-            } else if (aMarker.url !== '') {
-                if ((aMarker.url.indexOf("http://" ) === -1)  &&
-                    (aMarker.url.indexOf("https://") === -1)
-                   ){
-                    aMarker.url = "http://" + aMarker.url;
-                }
-                if (aMarker.url.indexOf(".") !== -1) {
-                    url = aMarker.url;
+
+            if (typeof amarker === "object") {
+                //add an http to the url
+                if ((slplus.use_pages_links === "on") && (aMarker.sl_pages_url !== '')) {
+                    url = aMarker.sl_pages_url;
+                } else if (aMarker.url !== '') {
+                    if ((aMarker.url.indexOf("http://" ) === -1)  &&
+                        (aMarker.url.indexOf("https://") === -1)
+                       ){
+                        aMarker.url = "http://" + aMarker.url;
+                    }
+                    if (aMarker.url.indexOf(".") !== -1) {
+                        url = aMarker.url;
+                    }
                 }
             }
 

@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Store Locator Plus
-Plugin URI: http://www.charlestonsw.com/products/store-locator-plus/
+Plugin URI: http://www.charlestonsw.com/product-category/slplus/
 Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Google Maps.  This is a highly customizable, easily expandable, enterprise-class location management system.
-Version: 3.9.7
+Version: 3.10
 Author: Charleston Software Associates
 Author URI: http://www.charlestonsw.com
 License: GPL3
@@ -35,7 +35,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 */
 if (defined('SLPLUS_VERSION') === false) {
-    define('SLPLUS_VERSION', '3.9.7');
+    define('SLPLUS_VERSION', '3.10');
 }
 
 if ( 
@@ -149,14 +149,6 @@ if (defined('SLPLUS_PLUGINDIR')) {
         require_once(SLPLUS_PLUGINDIR.'include/class.location.php');
     }
 
-
-    // Hook up the Pro Pack class
-    // TODO: this really needs to be a separate plugin.
-    //
-    if (class_exists('SLPPro') == false) {
-        require_once(SLPLUS_PLUGINDIR . '/slp-pro/slp-pro.php');
-    }
-
     /**
      * This section defines the settings for the admin menu.
      */
@@ -246,9 +238,9 @@ if (defined('SLPLUS_PLUGINDIR')) {
             'sku'                   => 'SLPLUS',
             'admin_slugs'           => array('slp_general_settings'),
 
-            'url'                   => 'http://www.charlestonsw.com/product/store-locator-plus-2/',
+            'url'                   => 'http://www.charlestonsw.com/',
             'support_url'           => 'http://www.charlestonsw.com/support/documentation/store-locator-plus/',
-            'purchase_url'          => 'http://www.charlestonsw.com/product/store-locator-plus-2/',
+            'purchase_url'          => 'http://www.charlestonsw.com/product-category/slplus/',
             'rate_url'              => 'http://wordpress.org/extend/plugins/store-locator-le/',
             'forum_url'             => 'http://www.charlestonsw.com/forums/',
             'updater_url'           => 'http://www.charlestonsw.com/paypal/updater.php',
@@ -264,7 +256,7 @@ if (defined('SLPLUS_PLUGINDIR')) {
             'driver_type'           => 'none',
 
             'display_settings'       => true,
-            'has_packages'           => true,
+            'has_packages'           => false,
             'show_locale'            => false, 
             'debug_instructions'     => __('Turn debugging off via General Settings in the Plugin Environment panel.','csa-slplus')
         )

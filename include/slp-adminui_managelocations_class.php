@@ -528,9 +528,8 @@ class SLPlus_AdminUI_ManageLocations {
         //--------------------------------
         // Debug Output : Post/Server Vars
         //--------------------------------
-        $this->plugin->helper->bugout("<pre>REQUEST\n".print_r($_REQUEST,true)."</pre>",'','REQUEST',__FILE__,__LINE__);
-        $this->plugin->helper->bugout("<pre>SERVER\n".print_r($_SERVER,true)."</pre>",'','SERVER',__FILE__,__LINE__);
-
+        $this->plugin->debugMP('pr','ManageLocations.render_adminpage() _REQUEST'  ,$_REQUEST,__FILE__,__LINE__);
+        $this->plugin->debugMP('pr','ManageLocations.render_adminpage() _SERVER'    ,$_SERVER,__FILE__,__LINE__);
 
         //--------------------------------
         // Create the hidden inputs string
@@ -818,8 +817,13 @@ class SLPlus_AdminUI_ManageLocations {
 
                     $actionButtonsHTML = apply_filters('slp_manage_locations_actionbuttons',$actionButtonsHTML, $sl_value);
 
-                    print "<tr style='background-color:$bgcol'>" .
-                        "<th class='th_checkbox'><input type='checkbox' name='sl_id[]' value='$locID'></th>" .
+                    $cleanName = urlencode($this->plugin->currentLocation->store);
+                    print
+                        "<tr style='background-color:$bgcol' "                                                  .
+                            "id='location-{$this->plugin->currentLocation->id}' "                               .
+                            "name='{$cleanName}' "                          .
+                            ">"                                                                                 .
+                        "<th class='th_checkbox'><input type='checkbox' name='sl_id[]' value='$locID'></th>"    .
                         "<th class='thnowrap'><div class='action_buttons'>".
                             $actionButtonsHTML . 
                         "</div></th>"

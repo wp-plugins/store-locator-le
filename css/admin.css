@@ -408,28 +408,38 @@ div.slp_bulk_upload_div {
      position:relative;
      width: 100%;
  }
-table.slp_locationinfoform_table label,
-table.manual_add_table label,
-.add_location_form label {
+table.slp_locationinfoform_table LABEL,
+table.manual_add_table LABEL,
+.add_location_form LABEL {
     width: 120px;
     float: left;
     text-align: right;
     margin-right: 0.5em;
+    margin-top: 3px;
     display: block;
 }
 
 .add_location_form INPUT {
-    width: 40em;
+    margin-right: 3px;
+    width: 34em;
 }
-
+.add_location_form INPUT.mediumfield {
+    width: 21.2em;
+}
+.add_location_form INPUT.shortfield {
+    width: 4.75em;
+}
 .add_location_form TEXTAREA {
-    width: 40em;
+    width: 35.25em;
 }
 
-.add_location_form INPUT[type='submit'] {
-    position: absolute;
-    right: 0;
-    top: 0;
+.add_location_form #slp_form_buttons {
+    padding-left: 124px;
+}
+.add_location_form INPUT[type='submit'],
+.add_location_form INPUT[type='button']
+{
+    margin:3px;
     width: 150px;
 }
 .add_location_form INPUT[type='submit']:hover {
@@ -539,9 +549,15 @@ td.slp_manage_locations_cell {
     word-wrap: break-word;
     word-break: keep-all;
 }
-
-table#manage_locations_table th.th_checkbox {
+#manage_locations_table {
+   margin: 0px;
+   padding: 0px;
+}
+#manage_locations_table th {
     vertical-align: top;
+}
+#manage_locations_table th.thnowrap {
+    white-space: nowrap;
 }
 
  div#slp_pagination {
@@ -573,10 +589,6 @@ table#manage_locations_table th.th_checkbox {
     background-color: #FAFAD2;
     border-color: #B8860B;
     color: #B8860B;
- }
- table#manage_locations_table {
-    margin: 0px;
-    padding: 0px;
  }
  div.wrap table.slplus.widefat thead tr th {
     background: #404040; /* for non-css3 browsers */
@@ -791,9 +803,12 @@ div.feedburnerFeedBlock ul li span.headline {
 div.feedburnerFeedBlock ul li span.headline {
 	font-weight: bold;
 }
+
+
 .map_designer_section td {
 	border-bottom:none;
 }
+
 .left_side {
 	border-right:solid #ddd 1px;
 }
@@ -987,10 +1002,6 @@ div.action_buttons{
 .haspage_icon:hover {
   background-position: -150px -20px;
 }
-th.thnowrap {
-    white-space: nowrap;
-}
-
 
 /*** Generic Formatting ***/
 .floatright {
