@@ -52,6 +52,7 @@ class SLPlus extends wpCSL_plugin__slplus {
      */
     public  $options                = array(
         'initial_radius'        => '',
+        'slplus_version'        => SLPLUS_VERSION
         );
 
     /**
