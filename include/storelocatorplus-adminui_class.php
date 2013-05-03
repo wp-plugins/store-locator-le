@@ -1040,7 +1040,7 @@ class SLPlus_AdminUI {
             $this->create_InputElement(
                     'fax',
                     $this->plugin->settings->get_item('label_fax','Fax','_'),
-                    $this->plugin->currentLocation->phone
+                    $this->plugin->currentLocation->fax
                     ).
             $HTML
             ;
