@@ -1,19 +1,13 @@
 <?php
 
-/****************************************************************************
- **
- ** class: wpCSL_settings__slplus
- **
- ** The main settings class.
- **
- ** Methods:
- **
- **     __construct         : Overload of the default class instantiation.
- **     add_section 
- **     default_broadcast
- **     get_broadcast   
- **     get_item            : Return the value of a WordPress option that was saved via the settings interface.
- **/
+/**
+ * The wpCSL Settings Class
+ *
+ * @package wpCSL\Settings
+ * @author Lance Cleveland <lance@charlestonsw.com>
+ * @copyright 2012-2013 Charleston Software Associates, LLC
+ *
+ */
 class wpCSL_settings__slplus {
 
     /**------------------------------------
@@ -28,11 +22,11 @@ class wpCSL_settings__slplus {
         $this->render_csl_blocks = true;        // Display the CSL info blocks
         $this->form_action = 'options.php';     // The form action for this page
         $this->save_text =__('Save Changes',WPCSL__slplus__VERSION);
-        $this->css_prefix = '';  
+        $this->css_prefix = '';
         $this->has_packages = false;
-        
+
         // Passed Params
-        //        
+        //
         foreach ($params as $name => $value) {
             $this->$name = $value;
         }
@@ -40,142 +34,157 @@ class wpCSL_settings__slplus {
         // Only do this if we are on admin panel
         //
         if (isset($this->parent) && (is_admin() && $this->parent->isOurAdminPage)) {
-            
-            // Only show the license section if the plugin settings
-            // wants a license module
-            if (!$this->no_license) {
-                $this->license_section_title = 'Plugin License';
-                $this->add_section(array(
-                        'name' => $this->license_section_title,
-                        'description' => "<p>To obtain a key, please purchase this plugin " .
-                            "from <a href=\"{$this->url}\" target=\"_new\">{$this->url}</a>.</p>",
-                        'auto' => false,
-                        'div_id' => 'csl_license_block'
-                    )
-                );
-                
-            // We don't have a main license but we have paid option
-            // packages
-            } else if ($this->has_packages) {
-                $this->license_section_title = 'Premium Options';
-                $this->add_section(array(
-                        'name' => $this->license_section_title,
-                        'description' => "<h1>{$this->name} has premium options available.</h1>" .
-                            "<p>Visit <a href=\"{$this->url}\" target=\"_new\">{$this->url}</a> to " .
-                            "learn more about the available add-on packages.<br/> After you purchase " .
-                            "an add-on package come back here to activate your add-on packages.</p>",
-                        'auto' => false,
-                        'div_id' => 'csl_license_block'
-                    )
-                );
-            }
-    
-            // Render CSL Blocks - if set false we don't need this overhead
-            //
-            if ($this->render_csl_blocks) {        
-                $this->csl_php_modules = get_loaded_extensions();
-                natcasesort($this->csl_php_modules);
-                global $wpdb;
-                $this->add_section(
-                    array(
-                        'name' => 'Plugin Environment',
-                        'description' =>
-                            '<p>Here are the technical details about your plugin:<br />
-                               <div style="border: solid 1px #E0E0E0; padding: 6px; margin: 6px;
-                                   background-color: #F4F4F4;">
-
-
-                                 <div style="clear:left;">
-                                   <div style="width:150px; float:left; text-align: right;
-                                       padding-right: 6px;">CSA IP Addresses:</div>
-                                   <div style="float: left;">' . 
-                                        gethostbyname('charlestonsw.com') . 
-                                        ' and ' .  
-                                        gethostbyname('license.charlestonsw.com') . 
-                                    '</div>
-                                 </div>                                
-                                   
-                                 <div style="clear:left;">
-                                   <div style="width:150px; float:left; text-align: right;
-                                       padding-right: 6px;">Active WPCSL:</div>
-                                   <div style="float: left;">' . plugin_dir_path(__FILE__) . '</div>
-                                 </div>                                
-                                 <div style="clear:left;">
-                                   <div style="width:150px; float:left; text-align: right;
-                                       padding-right: 6px;">Site URL:</div>
-                                   <div style="float: left;">' . get_option('siteurl') . '</div>
-                                 </div>
-                                 <div style="clear:left;">
-                                   <div style="width:150px; float:left; text-align: right;
-                                       padding-right: 6px;">Encryption Key:</div>
-                                   <div style="float: left;">' . md5(get_option($this->prefix.'-license_key')) . '</div>
-                                 </div>
-                                 <div style="clear:left;">
-                                   <div style="width:150px; float:left; text-align: right;
-                                       padding-right: 6px;">License Key:</div>
-                                   <div style="float: left;">' . (get_option($this->prefix.'-purchased')?'licensed':'unlicensed') . '</div>
-                                 </div>
-                                 
-                                 <div style="clear:left;">
-                                   <div style="width:150px; float:left; text-align: right;
-                                       padding-right: 6px;">WPCSL Version:</div>
-                                   <div style="float: left;">' . WPCSL__slplus__VERSION . '
-                                   </div>
-                                 </div>
-                                 <div style="clear:left;">
-                                   <div style="width:150px; float:left; text-align: right;
-                                       padding-right: 6px;">WordPress Version:</div>
-                                   <div style="float: left;">' . $GLOBALS['wp_version'] . '
-                                   </div>
-                                 </div>
-                                 <div style="clear:left;">
-                                   <div style="width:150px; float:left; text-align: right;
-                                       padding-right: 6px;">MySQL Version:</div>
-                                   <div style="float: left;">' . $wpdb->db_version() . '
-                                   </div>
-                                 </div>
-                                 <div style="clear:left;">
-                                   <div style="width:150px; float:left; text-align: right;
-                                       padding-right: 6px;">PHP Version:</div>
-                                   <div style="float: left;">' . phpversion() .'</div>
-                                 </div>
-                                 <div style="clear:left;">
-                                   <div style="width:150px; float:left; text-align: right;
-                                       padding-right: 6px;">PHP Modules:</div>
-                                   <div style="float: left;">' .
-                                     implode('<br/>',$this->csl_php_modules) . '
-                                   </div>
-                                 </div>
-                                 <div style="clear:left;">&nbsp;</div>
-                               </div>
-                             </p>',
-                        'auto' => false,
-                        'start_collapsed' => true
-                    )
-                );
-        
-                $this->add_item(
-                    'Plugin Environment', 
-                    'Enable Debugging Output: ',   
-                    'debugging',    
-                    'checkbox'
-                );
-        
-                $this->add_section(array(
-                        'name' => 'Plugin Info',
-                        'div_id' => 'csa_plugin_info',
-                        'description' => $this->get_broadcast(),
-                        'auto' => false
-                    )
-                );
-            }
-        }       
+            add_action('admin_init',array($this,'create_SettingsPanel'));
+        }
     }
-    
-    /**------------------------------------
-     ** method: get_broadcast
-     **
-     **/
+
+    /**
+     * Create the settings panel when admin is ready to init.
+     *
+     * @global type $wpdb
+     */
+    function create_SettingsPanel() {
+        global $wpdb;
+
+        // Only show the license section if the plugin settings
+        // wants a license module
+        if (!$this->no_license) {
+            $this->license_section_title = 'Plugin License';
+            $this->add_section(array(
+                    'name' => $this->license_section_title,
+                    'description' => "<p>To obtain a key, please purchase this plugin " .
+                        "from <a href=\"{$this->url}\" target=\"_new\">{$this->url}</a>.</p>",
+                    'auto' => false,
+                    'div_id' => 'csl_license_block'
+                )
+            );
+
+        // We don't have a main license but we have paid option
+        // packages
+        } else if ($this->has_packages) {
+            $this->license_section_title = 'Premium Options';
+            $this->add_section(array(
+                    'name' => $this->license_section_title,
+                    'description' => "<h1>{$this->name} has premium options available.</h1>" .
+                        "<p>Visit <a href=\"{$this->url}\" target=\"_new\">{$this->url}</a> to " .
+                        "learn more about the available add-on packages.<br/> After you purchase " .
+                        "an add-on package come back here to activate your add-on packages.</p>",
+                    'auto' => false,
+                    'div_id' => 'csl_license_block'
+                )
+            );
+        }
+
+        // Render CSL Blocks - if set false we don't need this overhead
+        //
+        if ($this->render_csl_blocks) {
+            $this->csl_php_modules = get_loaded_extensions();
+            natcasesort($this->csl_php_modules);
+            global $wpdb;
+            $this->add_section(
+                array(
+                    'name' => 'Plugin Environment',
+                    'description' =>
+                        '<p>Here are the technical details about your plugin:<br />
+                           <div style="border: solid 1px #E0E0E0; padding: 6px; margin: 6px;
+                               background-color: #F4F4F4;">
+
+
+                             <div style="clear:left;">
+                               <div style="width:150px; float:left; text-align: right;
+                                   padding-right: 6px;">CSA IP Addresses:</div>
+                               <div style="float: left;">' .
+                                    gethostbyname('charlestonsw.com') .
+                                    ' and ' .
+                                    gethostbyname('license.charlestonsw.com') .
+                                '</div>
+                             </div>
+
+                             <div style="clear:left;">
+                               <div style="width:150px; float:left; text-align: right;
+                                   padding-right: 6px;">Active WPCSL:</div>
+                               <div style="float: left;">' . plugin_dir_path(__FILE__) . '</div>
+                             </div>
+                             <div style="clear:left;">
+                               <div style="width:150px; float:left; text-align: right;
+                                   padding-right: 6px;">Site URL:</div>
+                               <div style="float: left;">' . get_option('siteurl') . '</div>
+                             </div>
+                             <div style="clear:left;">
+                               <div style="width:150px; float:left; text-align: right;
+                                   padding-right: 6px;">Encryption Key:</div>
+                               <div style="float: left;">' . md5(get_option($this->prefix.'-license_key')) . '</div>
+                             </div>
+                             <div style="clear:left;">
+                               <div style="width:150px; float:left; text-align: right;
+                                   padding-right: 6px;">License Key:</div>
+                               <div style="float: left;">' . (get_option($this->prefix.'-purchased')?'licensed':'unlicensed') . '</div>
+                             </div>
+
+                             <div style="clear:left;">
+                               <div style="width:150px; float:left; text-align: right;
+                                   padding-right: 6px;">WPCSL Version:</div>
+                               <div style="float: left;">' . WPCSL__slplus__VERSION . '
+                               </div>
+                             </div>
+                             <div style="clear:left;">
+                               <div style="width:150px; float:left; text-align: right;
+                                   padding-right: 6px;">WordPress Version:</div>
+                               <div style="float: left;">' . $GLOBALS['wp_version'] . '
+                               </div>
+                             </div>
+                             <div style="clear:left;">
+                               <div style="width:150px; float:left; text-align: right;
+                                   padding-right: 6px;">MySQL Version:</div>
+                               <div style="float: left;">' . $wpdb->db_version() . '
+                               </div>
+                             </div>
+                             <div style="clear:left;">
+                               <div style="width:150px; float:left; text-align: right;
+                                   padding-right: 6px;">PHP Version:</div>
+                               <div style="float: left;">' . phpversion() .'</div>
+                             </div>
+                             <div style="clear:left;">
+                               <div style="width:150px; float:left; text-align: right;
+                                   padding-right: 6px;">PHP Web App Peak RAM:</div>
+                               <div style="float: left;">' . sprintf('%0.2d MB',memory_get_peak_usage(true)/1024/1024) .'</div>
+                             </div>                                 <div style="clear:left;">
+                               <div style="width:150px; float:left; text-align: right;
+                                   padding-right: 6px;">PHP Modules:</div>
+                               <div style="float: left;">' .
+                                 implode('<br/>',$this->csl_php_modules) . '
+                               </div>
+                             </div>
+                             <div style="clear:left;">&nbsp;</div>
+                           </div>
+                         </p>',
+                    'auto' => false,
+                    'start_collapsed' => true
+                )
+            );
+
+            $this->add_item(
+                'Plugin Environment',
+                'Enable Debugging Output: ',
+                'debugging',
+                'checkbox'
+            );
+
+            $this->add_section(array(
+                    'name' => 'Plugin Info',
+                    'div_id' => 'csa_plugin_info',
+                    'description' => $this->get_broadcast(),
+                    'auto' => false
+                )
+            );
+        }
+    }
+
+    /**
+     * Get the news broadcast from the remote server.
+     *
+     * @return string the HTML for the news panel
+     */
      function get_broadcast() {
          $content = '';
          
@@ -200,15 +209,15 @@ class wpCSL_settings__slplus {
         }
      }
      
-    /**------------------------------------
-     ** method: default_broadcast
-     **
-     **/
+     /**
+      * Set the default HTML string if the server if offline.
+      *
+      * @return string
+      */
      function default_broadcast() {
          return
                         '
-                        <div class="cybersprocket-cslbox">
-                         <div class="cybersprocket-cslinfo">
+                        <div class="csa-infobox">
                          <h4>This plugin has been brought to you by <a href="http://www.charlestonsw.com"
                                 target="_new">Charleston Software Associates</a></h4>
                          <p>If there is anything I can do to improve my work or if you wish to hire me to customize
@@ -217,14 +226,16 @@ class wpCSL_settings__slplus {
                             and let me know.
                          </p>
                          </div>
-                         </div>
                          ' ;
      }
 
-    /**------------------------------------
-     ** method: add_section
-     **
-     **/
+     /**
+      * Create a settings page panel.
+      *
+      * Does not render the panel, it simply creates the container to add stuff to for later rendering.
+      *
+      * @param array $params named array of the section properties, name is required.
+      */
     function add_section($params) {
         if (!isset($this->sections[$params['name']])) {
             $this->sections[$params['name']] = new wpCSL_settings_section__slplus(
@@ -237,16 +248,40 @@ class wpCSL_settings__slplus {
             );
         }            
     }
-    
+
+
+    /**
+     * Add a simple on/off slider to the settings array.
+     *
+     * @param string $section - slug for the parent section
+     * @param string $label - text to appear before the setting
+     * @param string $fieldID - the option value field
+     * @param string $description - the help text under the more icon expansion
+     * @param string $value - the default value to use, overrides get-option(name)
+     * @param boolean $disabled - true if the field is disabled
+     */
+    function add_slider($section,$label,$fieldID,$description=null,$value=null,$disabled=false) {
+        $this->add_item(
+                $section,
+                $label,
+                $fieldID,
+                'slider',
+                false,
+                $description,
+                null,
+                $value,
+                $disabled
+                );
+    }
 
     /**------------------------------------
      ** method: get_item
      **
      ** Return the value of a WordPress option that was saved via the settings interface.
      **/
-    function get_item($name, $default = null, $separator='-') {
+    function get_item($name, $default = null, $separator='-', $forceReload = false) {
         $option_name = $this->prefix . $separator . $name;
-        if (!isset($this->$option_name)) {            
+        if (!isset($this->$option_name) || $forceReload) {
             $this->$option_name =
                 ($default == null) ?
                     get_option($option_name) :
@@ -256,24 +291,21 @@ class wpCSL_settings__slplus {
         return $this->$option_name;
     }
     
-
-    /**------------------------------------
-     ** Class: WPCSL_Settings
-     **------------------------------------
-     ** Method: add_item
-     **
-     ** Parameters:
-     **    section name
-     **    display name, the label that shows before the input field
-     **    name, the database key for the setting
-     **    type (default: text, list, checkbox, textarea)
-     **    required setting? (default: false, true)
-     **    description (default: null) - this is what shows via the expand/collapse setting
-     **    custom (default: null, name/value pair if list
-     **    value (default: null), the value to use if not using get_option
-     **    disabled (default: false), show the input but keep it disabled
-     **
-     **/
+    /**
+     * Add a setting to a panel.
+     *
+     * @param string $section section slug
+     * @param string $display_name the label that shows before the input field
+     * @param string $name the database key for the setting
+     * @param string $type input style (default: text, list, checkbox, textarea)
+     * @param boolean $required required setting? (default: false, true)
+     * @param string $description this is what shows via the expand/collapse setting
+     * @param mixed[] $custom  (default: null, name/value pair if list)
+     * @param mixed $value (default: null), the value to use if not using get_option
+     * @param boolean $disabled (default: false), show the input but keep it disabled
+     * @param string $onChange onChange JavaScript trigger
+     * @return null
+     */
     function add_item($section, $display_name, $name, $type = 'text',
             $required = false, $description = null, $custom = null,
             $value = null, $disabled = false, $onChange = ''
@@ -372,6 +404,29 @@ class wpCSL_settings__slplus {
                 );
     }
 
+    /**
+     * Add a simple text input to the settings array.
+     *
+     * @param string $section - slug for the parent section
+     * @param string $label - text to appear before the setting
+     * @param string $fieldID - the option value field
+     * @param string $description - the help text under the more icon expansion
+     * @param string $value - the default value to use, overrides get-option(name)
+     * @param boolean $disabled - true if the field is disabled
+     */
+    function add_textbox($section,$label,$fieldID,$description=null,$value=null,$disabled=false) {
+        $this->add_item(
+                $section,
+                $label,
+                $fieldID,
+                'textarea',
+                false,
+                $description,
+                null,
+                $value,
+                $disabled
+                );
+    }
 
     /**------------------------------------
      ** Method: register
@@ -394,11 +449,10 @@ class wpCSL_settings__slplus {
         }            
     }
 
-    /**------------------------------------
-     ** method: render_settings_page
-     **
-     ** Create the HTML for the plugin settings page on the admin panel
-     **/
+    /**
+     * Create the HTML for the plugin settings page on the admin panel.
+     *
+     */
     function render_settings_page() {
         $this->header();
         
@@ -798,15 +852,16 @@ class wpCSL_settings__slplus {
 
 }
 
-/****************************************************************************
- **
- ** class: wpCSL_settings_section__slplus
- **
- **/
+/**
+ * A section panel object.
+ */
 class wpCSL_settings_section__slplus {
 
-    /**------------------------------------
-     **/
+    /**
+     * Instantiate a section panel.
+     * 
+     * @param mixed[] $params
+     */
     function __construct($params) {
         $this->headerbar = true;
         $this->innerdiv  = true;
@@ -842,8 +897,11 @@ class wpCSL_settings_section__slplus {
         }
     }
 
-    /**------------------------------------
-     **/
+    /**
+     * Render a section panel.
+     *
+     * Panels are rendered in the order they are put in the stack, FIFO.
+     */
     function display() {
         $this->header();
 
@@ -947,6 +1005,31 @@ class wpCSL_settings_item__slplus {
                     ($showThis?' checked' : '').'>';
                 break;
 
+            case "slider":
+                $setting = $this->name;
+                $label   = '';
+                $checked = ($showThis ? 'checked' : '');
+                $onClick = 'onClick="'.
+                    "jQuery('input[id={$setting}]').prop('checked',".
+                        "!jQuery('input[id={$setting}]').prop('checked')" .
+                        ");".
+                    '" ';
+
+                echo
+                    "<input type='checkbox' id='$setting' name='$setting' style='display:none;' $checked>" .
+                    "<div id='{$setting}_div' class='onoffswitch-block'>" .
+                    "<span class='onoffswitch-pretext'>$label</span>" .
+                    "<div class='onoffswitch'>" .
+                    "<input type='checkbox' name='onoffswitch' class='onoffswitch-checkbox' id='{$setting}-checkbox' $checked>" .
+                    "<label class='onoffswitch-label' for='{$setting}-checkbox'  $onClick>" .
+                    '<div class="onoffswitch-inner"></div>'.
+                    "<div class='onoffswitch-switch'></div>".
+                    '</label>'.
+                    '</div>' .
+                    '</div>'
+                    ;
+                break;
+
             case "list":
                 echo $this->create_option_list();
                 break;
@@ -987,6 +1070,9 @@ class wpCSL_settings_item__slplus {
      * If $type is 'list' then $custom is a hash used to make a <select>
      * drop-down representing the setting.  This function returns a
      * string with the markup for that list.
+     *
+     * The selected value will use the get_option() on the name of the drop down,
+     * with a default being allowed in the $value parameter.
      */
     function create_option_list() {
         $content =
@@ -997,7 +1083,7 @@ class wpCSL_settings_item__slplus {
                 ;
 
         foreach ($this->custom as $key => $value) {
-            if (get_option($this->name) === $value) {
+            if (get_option($this->name, $this->value) === $value) {
                 $content .= "<option class='csl_option' value=\"$value\" " .
                     "selected=\"selected\">$key</option>\n";
             }

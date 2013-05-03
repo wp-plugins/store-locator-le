@@ -1,12 +1,15 @@
 <?php
 /*
 Plugin Name: Store Locator Plus
-Plugin URI: http://www.charlestonsw.com/products/store-locator-plus/
-Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Gooogle Maps.  This is a highly customizable, easily expandable, enterprise-class location management system.
-Version: 3.8.7
+Plugin URI: http://www.charlestonsw.com/product-category/slplus/
+Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Google Maps.  This is a highly customizable, easily expandable, enterprise-class location management system.
+Version: 3.10.3
 Author: Charleston Software Associates
 Author URI: http://www.charlestonsw.com
 License: GPL3
+
+Text Domain: csa-slplus
+Domain Path: /languages/
 
 Copyright 2013  Charleston Software Associates (info@charlestonsw.com)
 
@@ -31,9 +34,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * The plugin object extended data ($slplus_plugin->data[]) elements are documented with @see http://goo.gl/UAXly
 
 */
+if (defined('SLPLUS_VERSION') === false) {
+    define('SLPLUS_VERSION', '3.10.3');
+}
 
-if (isset($_SERVER['SERVER_NAME']) && ($_SERVER['SERVER_NAME']==='d.csa.com')){
-    error_reporting(E_ALL);
+if ( 
+        (get_option('blogname'          ,'') === 'CSA Testing'    ) &&
+        (get_option('blogdescription'  ,'') === 'Lance Testing' ) 
+    ){
+    error_reporting(-1);
+    ini_set('display_errors','1');
 }
 
 
@@ -98,10 +108,165 @@ if (defined('SLPLUS_PREFIX') === false) {
     define('SLPLUS_PREFIX', 'csl-slplus');
 }
 
-// Include our needed files
-//
+//====================================================================
+// Main Plugin Configuration
+//====================================================================
+
+/**
+ * @var SLPlus $slplus_plugin an extended wpCSL object for this plugin.
+ */
 global $slplus_plugin;
-include_once(SLPLUS_PLUGINDIR . '/include/config.php'	);
+
+/**
+ * We need the generic WPCSL plugin class, since that is the
+ * foundation of much of our plugin.  So here we make sure that it has
+ * not already been loaded by another plugin that may also be
+ * installed, and if not then we load it.
+ */
+if (defined('SLPLUS_PLUGINDIR')) {
+
+    // Hook up WPCSL
+    //
+    if (class_exists('wpCSL_plugin__slplus') === false) {
+        require_once(SLPLUS_PLUGINDIR.'WPCSL-generic/classes/CSL-plugin.php');
+    }
+
+    // SLPlus Base Class
+    //
+    if (class_exists('SLPlus') == false) {
+        require_once(SLPLUS_PLUGINDIR.'include/class.slplus.php');
+    }
+
+    // Hook up the Activation class
+    //
+    if (class_exists('SLPlus_Activation') == false) {
+        require_once(SLPLUS_PLUGINDIR.'include/storelocatorplus-activation_class.php');
+    }
+
+    // Hook up the Locations class
+    //
+    if (class_exists('SLPlus_Location') == false) {
+        require_once(SLPLUS_PLUGINDIR.'include/class.location.php');
+    }
+
+    /**
+     * This section defines the settings for the admin menu.
+     */
+    global $wpdb;
+    $slplus_plugin = new SLPlus(
+        array(
+            'on_update' => array('SLPlus_Activate', 'update'),
+            'version' => SLPLUS_VERSION,
+
+            /**
+             * @property database - elements related to the SLP database tables
+             */
+            'database'             =>
+                array(
+                    'table'     => ' '.$wpdb->prefix.'store_locator '   ,
+                    'table_ns'  => $wpdb->prefix.'store_locator'        ,
+                    'query'     =>
+                        array(
+                            'fromslp'   => ' FROM '         .$wpdb->prefix.'store_locator ' ,
+                            'selectall' => 'SELECT * FROM ' .$wpdb->prefix.'store_locator ' ,
+                            'selectthis'=> 'SELECT %s FROM '.$wpdb->prefix.'store_locator ' ,
+                            'whereslid' => 'WHERE sl_id=%d '                                ,
+                        ),
+                ),
+
+            // Plugin data elements, helps make data lookups more efficient
+            //
+            // 'data' is where actual values are stored
+            // 'dataElements' is used to fetch/initialize values whenever helper->loadPluginData() is called
+            //
+            'data'                  => array(),
+            'dataElements'          =>
+                array(
+                      array(
+                        'sl_admin_locations_per_page',
+                        'get_option',
+                        array('sl_admin_locations_per_page','25')
+                      ),
+                      array(
+                        'sl_map_end_icon'                   ,
+                        'get_option'                ,
+                        array('sl_map_end_icon'         ,SLPLUS_ICONURL.'bulb_azure.png'    )
+                      ),
+                      array('sl_map_home_icon'              ,
+                          'get_option'              ,
+                          array('sl_map_home_icon'      ,SLPLUS_ICONURL.'box_yellow_home.png'  )
+                      ),
+                      array('sl_map_height'         ,
+                          'get_option'              ,
+                          array('sl_map_height'         ,'480'                                  )
+                      ),
+                      array('sl_map_height_units'   ,
+                          'get_option'              ,
+                          array('sl_map_height_units'   ,'px'                                   )
+                      ),
+                      array('sl_map_width'          ,
+                          'get_option'              ,
+                          array('sl_map_width'          ,'100'                                  )
+                      ),
+                      array('sl_map_width_units'    ,
+                          'get_option'              ,
+                          array('sl_map_width_units'    ,'%'                                    )
+                      ),
+                      array('theme'                 ,
+                          'get_item'                ,
+                          array('theme'                 ,'default'                              )
+                      ),
+                ),
+
+            // We don't want default wpCSL objects, let's set our own
+            //
+            'use_obj_defaults'      => false,
+            'cache_obj_name'        => 'none',
+            'helper_obj_name'       => 'default',
+            'license_obj_name'      => 'default',
+            'notifications_obj_name'=> 'default',
+            'products_obj_name'     => 'none',
+            'settings_obj_name'     => 'default',
+
+            'themes_enabled'        => true,
+            'themes_obj_name'       => 'default',
+            'no_default_css'        => true,
+
+            'prefix'                => SLPLUS_PREFIX,
+            'css_prefix'            => SLPLUS_PREFIX,
+            'name'                  => 'Store Locator Plus',
+            'sku'                   => 'SLPLUS',
+            'admin_slugs'           => array('slp_general_settings'),
+
+            'url'                   => 'http://www.charlestonsw.com/',
+            'support_url'           => 'http://www.charlestonsw.com/support/documentation/store-locator-plus/',
+            'purchase_url'          => 'http://www.charlestonsw.com/product-category/slplus/',
+            'rate_url'              => 'http://wordpress.org/extend/plugins/store-locator-le/',
+            'forum_url'             => 'http://www.charlestonsw.com/forums/',
+            'updater_url'           => 'http://www.charlestonsw.com/paypal/updater.php',
+            'broadcast_url'         => 'http://www.charlestonsw.com/signage/index.php?sku=SLPLUS&version='.SLPLUS_VERSION,
+
+            'basefile'              => SLPLUS_BASENAME,
+            'plugin_path'           => SLPLUS_PLUGINDIR,
+            'plugin_url'            => SLPLUS_PLUGINURL,
+            'cache_path'            => SLPLUS_PLUGINDIR . 'cache',
+
+            'uses_money'            => false,
+
+            'driver_type'           => 'none',
+
+            'display_settings'       => true,
+            'has_packages'           => false,
+            'show_locale'            => false, 
+            'debug_instructions'     => __('Turn debugging off via General Settings in the Plugin Environment panel.','csa-slplus')
+        )
+    );
+}
+
+//====================================================================
+// Add Required Libraries
+//====================================================================
+
 
 // Errors?
 //
@@ -123,13 +288,15 @@ require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-activation_class.php'
 require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-ui_class.php');
 $slplus_plugin->UI = new SLPlus_UI(array('parent'=>$slplus_plugin));
 
-// TODO Pro Pack Temp Include
-require_once(SLPLUS_PLUGINDIR . '/slp-pro/slp-pro.php');
-
 require_once(SLPLUS_PLUGINDIR . '/include/mobile-listener.php');
 
 require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-ajax_handler_class.php');
 $slplus_plugin->AjaxHandler = new SLPlus_AjaxHandler(array('parent'=>$slplus_plugin));     // Lets invoke this and make it an object
+
+
+//====================================================================
+// WordPress Hooks and Filters
+//====================================================================
 
 
 // Regular Actions
@@ -144,20 +311,6 @@ add_action('shutdown'           ,array($slplus_plugin->Actions,'shutdown')      
 //
 add_action('admin_menu'         ,array($slplus_plugin->Actions,'admin_menu')           );
 add_action('admin_init'         ,array($slplus_plugin->Actions,'admin_init'),10        );
-if (isset($slplus_plugin->ProPack)) {
-    add_action('admin_head'         ,array($slplus_plugin->ProPack,'report_downloads')     );
-}
-
-// Short Codes
-//
-add_shortcode('STORE-LOCATOR', array($slplus_plugin->UI,'render_shortcode'));
-add_shortcode('SLPLUS',array($slplus_plugin->UI,'render_shortcode'));
-add_shortcode('slplus',array($slplus_plugin->UI,'render_shortcode'));
-
-// Text Domains
-//
-load_plugin_textdomain(SLPLUS_PREFIX, false, SLPLUS_COREDIR . 'languages/');
-
 
 //------------------------
 // AJAX Hooks
@@ -183,4 +336,15 @@ add_action('wp_ajax_nopriv_csl_ajax_onload'     , array($slplus_plugin->AjaxHand
 // License resets
 add_action('wp_ajax_license_reset_pages'        , array($slplus_plugin->AjaxHandler,'license_reset_pages'));
 add_action('wp_ajax_license_reset_propack'      , array($slplus_plugin->AjaxHandler,'license_reset_propack'));
+
+
+//====================================================================
+// WordPress Shortcodes and Text Filters
+//====================================================================
+
+// Short Codes
+//
+add_shortcode('STORE-LOCATOR', array($slplus_plugin->UI,'render_shortcode'));
+add_shortcode('SLPLUS',array($slplus_plugin->UI,'render_shortcode'));
+add_shortcode('slplus',array($slplus_plugin->UI,'render_shortcode'));
 

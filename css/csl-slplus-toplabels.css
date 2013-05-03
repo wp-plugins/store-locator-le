@@ -65,8 +65,35 @@
     right: 0px;
     }
 
+/**
+ * All of Store Locator Div
+ **/
+#sl_div {
+	padding:10px;
+	font-weight:bold;
+}
+#sl_div a {
+}
+#sl_div a.storelocatorlink {
+	color:#0000FF;
+}
+#sl_div a:hover.storelocatorlink {
+	color:#4444FF;
+}
+#sl_div img {
+	background-color:transparent;
+	background-image:none;
+	max-width:none;
+}
+#sl_div table, #sl_div tr, #sl_div td {
+	border:none;
+}
 
-/***** Area Above Map DIV. Contains Search Form Inputs *****/
+
+
+/**
+ * Search Form
+ **/
 .sl_header img, .sl_header td {
     border: none;
     cursor: pointer;   
@@ -136,65 +163,37 @@
     padding-bottom: 3px;
 }
 
-
-#address_search SELECT {
-    background: #E9E9FF;
-	border:solid 1px silver;
+#address_search INPUT,
+#address_search SELECT
+{
+    background: #F9F9F9;
+	border: 1px solid silver;
+    color: black;
     font-size: 16px;
 
     height: 30px;
-    line-height: 30px;
-	padding: 4px 0 0 3px;
+    line-height: inherit;
+	padding: 4px;
 
     /* Corners */
-    -webkit-border-radius:9px;
-    -moz-border-radius:9px;
-    border-radius:9px;
-     -khtml-border-radius: 9px;
+    -webkit-border-radius:4px;
+    -moz-border-radius:4px;
+    border-radius:4px;
+     -khtml-border-radius: 4px;
 
      /* Shadow */
-     -moz-box-shadow: 0px 1px 4px #AAA;
-     -webkit-box-shadow: 0px 1px 4px #AAA;
-     box-shadow: 0px 1px 4px #AAA;
+     -moz-box-shadow: 0px;
+     -webkit-box-shadow: 0px;
+     box-shadow: 0px;
+
+	 width: 256px;
 }
-
-#address_search INPUT {
-    background: #E9E9FF;
-	border:solid 1px silver;
-    height: 30px;
-	margin: 3px 6px 0px 0px;
-
-
-    /* Corners */
-    -webkit-border-radius:9px;
-    -moz-border-radius:9px;
-    border-radius:9px;
-     -khtml-border-radius: 9px;
-
-     /* Shadow */
-     -moz-box-shadow: 0px 1px 4px #AAA;
-     -webkit-box-shadow: 0px 1px 4px #AAA;
-     box-shadow: 0px 1px 4px #AAA;
-}
-
-#address_search .search_item INPUT {
-	padding-left:3px;
-	color: black;
-	margin:0px 6px 0px 0px;
-	width: 256px;
-	padding-top:0px;
-}
-
 
 #address_search .search_item {
 	display: block;
 	float: none;
 	clear: both;
 }
-
-
-
-
 #addy_in_city {
     clear: both;
     float: left;
@@ -237,32 +236,27 @@
 #map_box_map {
     display: none;
 }
+/* Hide the default Google bubble shadow */
+div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
+    display:none;
+}
+div.entry-content div#sl_div #map_table IMG {
+	max-width:none;
+    box-shadow: none;
+    border-radius: 0px;
+    border: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+/**
+ * Tagline
+ **/
 div#slp_tagline {
     text-align: right;
     padding-right: 3px;
 }
 
-/***** Store Locator Map DIV *****/
-#sl_div {
-	padding:10px;
-	font-weight:bold;
-}
-#sl_div a {
-}
-#sl_div a.storelocatorlink {
-	color:#0000FF;
-}
-#sl_div a:hover.storelocatorlink {
-	color:#4444FF;
-}
-#sl_div img {
-	background-color:transparent;
-	background-image:none;
-	max-width:none; 
-}
-#sl_div table, #sl_div tr, #sl_div td {
-	border:none;
-}
 #sl_div #map { 
 	color:black; 
 	font-weight:normal;
@@ -321,8 +315,7 @@ div#slp_tagline {
 /*****Search Results Area *****/
 .searchResultsTable td {
 	line-height:12px;
-	font-family: Verdana;
-	font-size:10px;
+	font-size:11px;
 	text-align:left;
 }
 .text_below_map {
@@ -330,7 +323,7 @@ div#slp_tagline {
 	font-family:Arial;
 	padding:20px;
 	font-size:18px;
-	text-align:justified;
+	text-align:justify;
 }
 .no_results_found {
 	/*shown if no results found */
@@ -347,13 +340,15 @@ div#slp_tagline {
 }
 .results_entry {
 	cursor:pointer;
-	cursor:hand;
 	padding:4px;
-	border-bottom:solid silver 1px;
+	border: none;
 	background-color:transparent;
+    font-family: Arial;
+    font-size: 12px;
+    font-weight: 500;
 }
 .results_entry:hover {
-	background-color:salmon;
+	background-color:#F9F9F9;
 }
 .results_row_left_column {
 	width:30%;
@@ -389,4 +384,15 @@ span.slp_result_phone {
 }
 span.slp_result_phone {
     padding-top: 6px;
+}
+
+span.slp_result_contact {
+    width: 100%;
+    white-space: nowrap;
+}
+
+div#sl_div div.no_results_found h2 {
+   font-family: Arial;
+   font-size: 16px;
+   font-weight: 500;
 }
