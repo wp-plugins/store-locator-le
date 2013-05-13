@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
 Tags: mapping,map,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 3.10.3
+Stable tag: 3.11
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
 
@@ -276,6 +276,20 @@ I update about once per month or more frequently as needed.
 Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
 
 I was listing the entire change log here but with weekly/bi-weekly updates it as getting much too long.
+
+= 3.11 =
+
+* Change: Rework how attributes and script localization works.
+* Change: Minor patches to assist new Enhanced Maps add-on.
+* Enhancement: Add version ID to script enqueue, helps with getting cache systems to flush data.
+* Enhancement: Editing lat/long on an existing location is not part of the base product.
+* Enhancement: Manage locations colors rows on hover.
+* Enhancement: Manage locations row coloring is 100% admin.CSS driven, tr.slp_managelocations_row.even/odd/invalid.
+* Enhancement: [New filter](/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/) slp_location_filters_for_AJAX makes it easier for 3rd party add-ons to filter the AJAX location data.
+* Fix: set the location ID properly on manage locations editing, helps other add-ons work consistently.
+* Fix: stop losing lat/long when editing a property.
+* Fix: if not all map locations have a custom marker via tagalong, pro pack, enhanced maps add-ons the map would not render location markers.
+* Fix: stop generating google map javascript errors if no results are returned
 
 = 3.10.3 =
 

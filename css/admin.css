@@ -141,7 +141,9 @@
      border: solid 1px #888;
      font-family: "Courier", sans-serif;
  }
-div.csl-slplus-input {
+div.csl-slplus-input,
+div.csl-slplus-input-disabled
+{
     float: left;
 }
 div.csl-slplus-input textarea {
@@ -446,6 +448,13 @@ table.manual_add_table LABEL,
     background: none;
     background-color: #228b22;
 }
+
+/* Add / Edit Locations */
+div.add_location_form input.iconfield {
+    width: 31em;
+    margin-bottom: 12px;
+}
+
 input#bulk_file {
     width: 70%;
 }
@@ -548,6 +557,24 @@ td.slp_manage_locations_cell {
     display: table-cell;
     word-wrap: break-word;
     word-break: keep-all;
+}
+tr.slp_managelocations_row.even {
+    background-color: #FFFFFF;
+}
+tr.slp_managelocations_row.even:hover {
+    background-color: #FFFFCC;
+}
+tr.slp_managelocations_row.odd {
+    background-color: #DDDDDD;
+}
+tr.slp_managelocations_row.odd:hover {
+    background-color: #FFFF99;
+}
+tr.slp_managelocations_row.invalid {
+    background-color: #FFCCCC;
+}
+tr.slp_managelocations_row.invalid:hover {
+    background-color: #FFDDDD;
 }
 #manage_locations_table {
    margin: 0px;
@@ -842,17 +869,6 @@ td.optionpack {
     width: 250px;
 }
 
-.cybersprocket-csllogo {
-    clear: both;
-    text-align: center;    
-}
-
-.cybersprocket-cslinfo {
-    clear: both;
-    margin-top: 12px;
-}
-
-
 /***************************
  * Reporting Interface
  */
@@ -1017,8 +1033,10 @@ div.action_buttons{
     vertical-align: top;
 }
 
-.form-table .input_label {
-    coor: #222;
+.form-table .input_label,
+.form-table .input_label-disabled
+{
+    color: #222;
     font-size: 12px;
     font-weight:500;
     line-height: 3em;
@@ -1026,6 +1044,8 @@ div.action_buttons{
     text-align: right;
     vertical-align: top;
 }
+.form-table .input_label-disabled {
+    color: #CCCCCC;
 
 div#wpbody-content div.wrap div.updated,
 div.csa_info_msg,

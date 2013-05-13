@@ -121,9 +121,9 @@ class SLPlus_Location {
      *  array[] ['store_categories']
      *       int[] ['stores']
      *
-     * @var mixed[] $settings
+     * @var mixed[] $attributes
      */
-    private $settings;
+    private $attributes;
 
     /**
      * The related store_page custom post type properties.
@@ -204,7 +204,7 @@ class SLPlus_Location {
             $header = 
                     'location.crupdate_Page() page # ' . 
                     $touched_pageID . 
-                    (($touched_pageID != $this->linked_postid) ? 'Created':'Updated')
+                    (($touched_pageID != $this->linked_postid) ? ' Created':' Updated')
                     ;
            $this->plugin->debugMP('pr',$header,$this->pageData,__FILE__,__LINE__);
 
@@ -215,6 +215,7 @@ class SLPlus_Location {
             if ($touched_pageID != $this->linked_postid) {
                 $this->linked_postid = $touched_pageID;
                 $this->MakePersistent();
+                $this->plugin->debugMP('msg','Make new linked post ID ' . $this->linked_postid . ' persistent.');
             }
 
 
@@ -243,6 +244,14 @@ class SLPlus_Location {
             return $this->$property;
         }
         return null;
+    }
+
+    public function debugProperties() {
+        $output='currentLocation.Properties are:<br/>';
+        foreach ($this->dbFields as $property) {
+            $output .= $property . ' = ' . $this->$property . '<br/>';
+        }
+        $this->plugin->debugMP('msg',$output);
     }
 
     /**
@@ -289,7 +298,7 @@ class SLPlus_Location {
         //
         } else {
             $this->pageData = array(
-                'ID'            => $this->linked_postid,
+                'ID'            => '',
                 'post_type'     => $this->pageType,
                 'post_status'   => $this->pageDefaultStatus,
                 'post_title'    => $this->store,
@@ -416,7 +425,7 @@ class SLPlus_Location {
 
             // Deserialize the option_value field
             //
-            $this->settings = maybe_unserialize($this->option_value);
+            $this->attributes = maybe_unserialize($this->option_value);
 
             // Debugging Output
             //

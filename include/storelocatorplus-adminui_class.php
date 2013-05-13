@@ -893,11 +893,19 @@ class SLPlus_AdminUI {
      * @return string the form HTML output
      */
     function create_InputElement($fldName,$fldLabel,$fldValue, $inputClass='', $noBR = false, $inType='input') {
+        $matches = array();
+        $matchStr = '/(.+)\[(.*)\]/';
+        if (preg_match($matchStr,$fldName,$matches)) {
+            $fldName = $matches[1];
+            $subFldName = '['.$matches[2].']';
+        } else {
+            $subFldName='';
+        }
         return
-            (empty($fldLabel)?'':"<label  for='{$fldName}-{$this->plugin->currentLocation->id}'>{$fldLabel}</label>").
-            "<{$inType} "                                                   .
-                "id='edit-{$fldName}' "                                     .
-                "name='{$fldName}-{$this->plugin->currentLocation->id}' "   .
+            (empty($fldLabel)?'':"<label  for='{$fldName}-{$this->plugin->currentLocation->id}{$subFldName}'>{$fldLabel}</label>").
+            "<{$inType} "                                                                .
+                "id='edit-{$fldName}{$subFldName}' "                                     .
+                "name='{$fldName}-{$this->plugin->currentLocation->id}{$subFldName}' "   .
                 (($inType==='input')?
                         "value='{$fldValue}' "  :
                         "rows='5' cols='17'  "
@@ -917,7 +925,7 @@ class SLPlus_AdminUI {
      * @return string HTML of the form inputs
      */
     function filter_EditLocationLeft_Address($HTML) {
-        return
+        $theHTML =
             $this->plugin->helper->create_SubheadingLabel(__('Address','csa-slplus')).
             $this->create_InputElement(
                 'store',
@@ -958,9 +966,26 @@ class SLPlus_AdminUI {
                 'country',
                 __('Country','csa-slplus'),
                 $this->plugin->currentLocation->country
-                ).
-            $HTML
-            ;
+                );
+
+            // Edit Location Only
+            //
+            if ($this->plugin->AdminUI->addingLocation === false) {
+                $theHTML .=
+                    $this->plugin->AdminUI->create_InputElement(
+                            'latitude',
+                            __('Latitude (N/S)', 'csa-slp-pro'),
+                            $this->plugin->currentLocation->latitude
+                            ).
+                    $this->plugin->AdminUI->create_InputElement(
+                            'longitude',
+                            __('Longitude (E/W)', 'csa-slp-pro'),
+                            $this->plugin->currentLocation->longitude
+                            )
+                        ;
+            }
+
+        return $theHTML.$HTML;
     }
 
     /**

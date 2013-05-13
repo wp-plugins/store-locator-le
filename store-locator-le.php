@@ -3,7 +3,7 @@
 Plugin Name: Store Locator Plus
 Plugin URI: http://www.charlestonsw.com/product-category/slplus/
 Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Google Maps.  This is a highly customizable, easily expandable, enterprise-class location management system.
-Version: 3.10.3
+Version: 3.11
 Author: Charleston Software Associates
 Author URI: http://www.charlestonsw.com
 License: GPL3
@@ -35,7 +35,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 */
 if (defined('SLPLUS_VERSION') === false) {
-    define('SLPLUS_VERSION', '3.10.3');
+    define('SLPLUS_VERSION', '3.11');
 }
 
 if ( 
@@ -172,50 +172,6 @@ if (defined('SLPLUS_PLUGINDIR')) {
                             'selectthis'=> 'SELECT %s FROM '.$wpdb->prefix.'store_locator ' ,
                             'whereslid' => 'WHERE sl_id=%d '                                ,
                         ),
-                ),
-
-            // Plugin data elements, helps make data lookups more efficient
-            //
-            // 'data' is where actual values are stored
-            // 'dataElements' is used to fetch/initialize values whenever helper->loadPluginData() is called
-            //
-            'data'                  => array(),
-            'dataElements'          =>
-                array(
-                      array(
-                        'sl_admin_locations_per_page',
-                        'get_option',
-                        array('sl_admin_locations_per_page','25')
-                      ),
-                      array(
-                        'sl_map_end_icon'                   ,
-                        'get_option'                ,
-                        array('sl_map_end_icon'         ,SLPLUS_ICONURL.'bulb_azure.png'    )
-                      ),
-                      array('sl_map_home_icon'              ,
-                          'get_option'              ,
-                          array('sl_map_home_icon'      ,SLPLUS_ICONURL.'box_yellow_home.png'  )
-                      ),
-                      array('sl_map_height'         ,
-                          'get_option'              ,
-                          array('sl_map_height'         ,'480'                                  )
-                      ),
-                      array('sl_map_height_units'   ,
-                          'get_option'              ,
-                          array('sl_map_height_units'   ,'px'                                   )
-                      ),
-                      array('sl_map_width'          ,
-                          'get_option'              ,
-                          array('sl_map_width'          ,'100'                                  )
-                      ),
-                      array('sl_map_width_units'    ,
-                          'get_option'              ,
-                          array('sl_map_width_units'    ,'%'                                    )
-                      ),
-                      array('theme'                 ,
-                          'get_item'                ,
-                          array('theme'                 ,'default'                              )
-                      ),
                 ),
 
             // We don't want default wpCSL objects, let's set our own

@@ -288,10 +288,24 @@ class SLPlus_AdminUI_ManageLocations {
                 if (($slpFieldName === 'latitude') || ($slpFieldName === 'longitude')) {
                     if (!is_numeric(trim($this->plugin->AdminUI->slp_escape($sl_value)))) { continue; }
                 }
-                $field_value_str.=
-                        $this->plugin->currentLocation->dbFieldPrefix.$slpFieldName.
-                        "='".trim($this->plugin->AdminUI->slp_escape($sl_value))."', "
-                        ;
+
+                // Input field is a name array
+                //
+                if (is_array($sl_value)) {
+                    $field_value_str.=
+                            $this->plugin->currentLocation->dbFieldPrefix.$slpFieldName.
+                            "='".trim(serialize($this->plugin->AdminUI->slp_escape($sl_value)))."', "
+                            ;
+
+                // Input field is a simple value
+                //
+                } else {
+                    $field_value_str.=
+                            $this->plugin->currentLocation->dbFieldPrefix.$slpFieldName.
+                            "='".trim($this->plugin->AdminUI->slp_escape($sl_value))."', "
+                            ;
+                }
+
                 $_POST[$slpFieldName]=$sl_value;
                 $persistentData[$this->plugin->currentLocation->dbFieldPrefix.$slpFieldName] = $sl_value;
             }
@@ -299,6 +313,8 @@ class SLPlus_AdminUI_ManageLocations {
 
         // Set our current location data from the inputs.
         //
+        $persistentData['sl_id'] = $_REQUEST['locationID'];
+        $this->plugin->debugMP('pr','ManageLocations.location_save()',$persistentData);
         $this->plugin->currentLocation->set_PropertiesViaArray($persistentData);
 
         // Clean up the SQL data strings
@@ -754,20 +770,21 @@ class SLPlus_AdminUI_ManageLocations {
 
             // Render The Data
             //
-            $bgcol = '#eee';
+            $colorClass = 'even';
             foreach ($slpLocations as $sl_value) {
                 // Set our current location
                 //
                 $this->currentLocation->set_PropertiesViaArray($sl_value);
 
                 // Row color
-                // no lat/long = salmon
-                // otherwise alternate
                 //
-                $bgcol=($sl_value['sl_latitude']=="" || $sl_value['sl_longitude']=="")?
-                        "salmon" :
-                        (($bgcol=="#eee")?"#fff":"#eee")
-                        ;
+                if (($this->plugin->currentLocation->latitude === '') ||
+                    ($this->plugin->currentLocation->longitude === '')
+                    ) {
+                    $colorClass = 'invalid';
+                } else {
+                    $colorClass = (($colorClass==='even')?'odd':'even');
+                }
 
                 // Clean Up Data with trim()
                 //
@@ -779,7 +796,7 @@ class SLPlus_AdminUI_ManageLocations {
                 //
                 if (isset($_GET['edit']) && ($locID==$_GET['edit'])) {
                     print
-                        "<tr id='slp_location_edit_row'>"               .
+                        "<tr id='slp_location_edit_row'>"                .
                         "<td class='slp_locationinfoform_cell' colspan='".(count($this->columns)+4)."'>".
                         '<input type="hidden" id="act" name="act" value="save"/>'. 
                         $this->plugin->AdminUI->createString_LocationInfoForm($sl_value, $locID) .
@@ -819,9 +836,10 @@ class SLPlus_AdminUI_ManageLocations {
 
                     $cleanName = urlencode($this->plugin->currentLocation->store);
                     print
-                        "<tr style='background-color:$bgcol' "                                                  .
+                        "<tr "                                                  .
                             "id='location-{$this->plugin->currentLocation->id}' "                               .
-                            "name='{$cleanName}' "                          .
+                            "name='{$cleanName}' "                                                              .
+                            "class='slp_managelocations_row $colorClass' "                                                   .
                             ">"                                                                                 .
                         "<th class='th_checkbox'><input type='checkbox' name='sl_id[]' value='$locID'></th>"    .
                         "<th class='thnowrap'><div class='action_buttons'>".

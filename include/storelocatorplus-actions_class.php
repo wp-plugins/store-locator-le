@@ -237,6 +237,7 @@ class SLPlus_Actions {
      */
     function init() {
         if (!$this->set_Plugin()) { return; }
+
         load_plugin_textdomain('csa-slplus', false, SLPLUS_PLUGINDIR . 'languages/');
 
         // Fire the SLP init starting trigger
@@ -349,7 +350,9 @@ class SLPlus_Actions {
             $language = '&language='.$slplus_plugin->helper->getData('map_language','get_item',null,'en');
             wp_enqueue_script(
                     'google_maps',
-                    'http'.(is_ssl()?'s':'').'://'.get_option('sl_google_map_domain','maps.google.com').'/maps/api/js?sensor=false' . $api_key . $language
+                    'http'.(is_ssl()?'s':'').'://'.get_option('sl_google_map_domain','maps.google.com').'/maps/api/js?sensor=false' . $api_key . $language,
+                    array(),
+                    SLPLUS_VERSION
                     );
         }
 
@@ -362,12 +365,11 @@ class SLPlus_Actions {
                 'csl_script',
                 $sslURL.'/core/js/csl.js',
                 array('jquery'),
-                false,
+                SLPLUS_VERSION,
                 !$force_load
         );
 
         $slplus_plugin->UI->localizeCSLScript();
-        wp_localize_script('csl_script','csl_ajax',array('ajaxurl' => admin_url('admin-ajax.php'), 'nonce' => wp_create_nonce('em')));
     }     
 
 

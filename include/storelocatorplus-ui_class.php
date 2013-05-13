@@ -154,8 +154,7 @@ class SLPlus_UI {
      */
     function create_DefaultMap() {
         if(!$this->setPlugin()) { return; }
-
-         $this->plugin->helper->loadPluginData();
+        $this->loadPluginData();
 
         // Start the map table
         //
@@ -259,7 +258,7 @@ class SLPlus_UI {
             get_option('sl_search_label',__('Address','csa-slplus')),
             '',
             (get_option(SLPLUS_PREFIX.'_hide_address_entry',0) == 1),
-            'add_in_address',
+            'addy_in_address',
             apply_filters('slp_search_default_address','')
             );
 
@@ -465,7 +464,18 @@ class SLPlus_UI {
              return sprintf(__('%s is not ready','csa-slplus'),__('Store Locator Plus','csa-slplus'));
         }
 
-        // Get Approved Shortcode Attributes
+        // Force some plugin data properties
+        //
+        $this->plugin->data['radius_options'] =
+                (isset($this->plugin->data['radius_options'])?$this->plugin->data['radius_options']:'');
+
+        // Load from options table first,
+        // attributes trump options
+        //
+        $this->loadPluginData();
+
+        // Then load the attributes
+        //
         $attributes =
             shortcode_atts(
                 apply_filters('slp_shortcode_atts',array()),
@@ -477,14 +487,10 @@ class SLPlus_UI {
                 (array) $attributes
             );
 
-        // Setup our plugin data
-        //
-        $this->plugin->helper->loadPluginData();
-
-        $unit_display      = get_option('sl_distance_unit','mi');
-
-        $this->plugin->data['radius_options'] =
-                (isset($this->plugin->data['radius_options'])?$this->plugin->data['radius_options']:'');
+        // Localize the CSL Script
+        // .. this is called too late..
+        $this->plugin->debugMP('pr','render_shortcode()',$this->plugin->data,__FILE__,__LINE__);
+        $this->localizeCSLScript();
 
         // Radius Options
         //
@@ -505,7 +511,7 @@ class SLPlus_UI {
                 $selected=(preg_match('/\(.*\)/', $radius))? " selected='selected' " : "" ;
                 $radius=preg_replace('/[^0-9]/', '', $radius);
                 $this->plugin->data['radius_options'].=
-                        "<option value='$radius' $selected>$radius $unit_display</option>";
+                        "<option value='$radius' $selected>$radius ".get_option('sl_distance_unit','mi')."</option>";
             }
         }
 
@@ -526,14 +532,6 @@ class SLPlus_UI {
         add_action('slp_render_search_form' ,array($this,'create_DefaultSearchForm'));
         add_action('slp_render_map'         ,array($this,'create_DefaultMap'));
 
-        //todo: make sure map type gets set to a sane value before getting here. Maybe not...
-        //todo: if we allow map setting overrides via shortcode attributes we will need
-        // to re-localize the script.  It was moved to the actions class so we can
-        // localize prior to enqueue in the header.
-        //
-        // Localize the CSL Script
-        $this->localizeCSLScript();
-
         return
             '<div id="sl_div">' .
                 $this->create_Search() .
@@ -543,6 +541,17 @@ class SLPlus_UI {
             ;
     }
 
+    /**
+     * Load Plugin Data once.
+     * 
+     * Call $this->plugin->helper->loadPluginData(); to force a reload.
+     */
+    function loadPluginData() {
+        if (!$this->plugin->pluginDataLoaded) {
+            $this->plugin->helper->loadPluginData();
+            $this->plugin->pluginDataLoaded = true;
+        }
+    }
 
     /**
      * Localize the CSL Script
@@ -550,7 +559,7 @@ class SLPlus_UI {
      */
     function localizeCSLScript() {
         if (!$this->setPlugin()) { return false; }
-        $this->plugin->helper->loadPluginData();
+        $this->loadPluginData();
 
         $slplus_home_icon_file = str_replace(SLPLUS_ICONURL,SLPLUS_ICONDIR,$this->plugin->data['sl_map_home_icon']);
         $slplus_end_icon_file  = str_replace(SLPLUS_ICONURL,SLPLUS_ICONDIR,$this->plugin->data['sl_map_end_icon']);
@@ -601,7 +610,11 @@ class SLPlus_UI {
             'zoom_level'        => get_option('sl_zoom_level',12),
             'zoom_tweak'        => get_option('sl_zoom_tweak',1)
             );
+
+        $this->plugin->debugMP('pr','UI.localizeCSLScript() scriptData',$scriptData,__FILE__,__LINE__);
+
         wp_localize_script('csl_script','slplus',apply_filters('slp_script_data',$scriptData));
+        wp_localize_script('csl_script','csl_ajax',array('ajaxurl' => admin_url('admin-ajax.php'), 'nonce' => wp_create_nonce('em')));
     }
 
     /**
@@ -677,7 +690,7 @@ class SLPlus_UI {
      */
     function setup_stylesheet_for_slplus() {
         if (!$this->setPlugin()) { return false; }
-        $this->plugin->helper->loadPluginData();
+        $this->loadPluginData();
         if (!isset($this->parent->data['theme']) || empty($this->parent->data['theme'])) {
             $this->parent->data['theme'] = 'default';
         }
@@ -727,7 +740,7 @@ class SLPlus_UI {
         //
         if ($showany) {
             print "<option value=''>".
-                __('Any',SLPLUS_PREFIX).
+                get_option(SLPLUS_PREFIX.'_tag_pulldown_first',__('Any','csa-slplus')).
                 '</option>';
         }
 

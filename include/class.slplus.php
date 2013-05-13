@@ -48,12 +48,44 @@ class SLPlus extends wpCSL_plugin__slplus {
      * Anything stored in here also gets passed to the csl.js via the slplus.options object.
      * Reference the settings in the csl.js via slplus.options.<key>
      *
+     * These elements are LOADED EVERY TIME the plugin starts.
+     *
      * @var mixed[] $options
      */
     public  $options                = array(
-        'initial_radius'        => '',
+        'initial_radius'        => '10000',
         'slplus_version'        => SLPLUS_VERSION
         );
+
+    /**
+     * The settings that impact how the plugin renders.
+     * 
+     * These elements are ONLY WHEN wpCSL.helper.loadPluginData() is called.
+     *
+     * @var mixed[] $data
+     */
+    public $data;
+
+    /**
+     * Sets the values of the $data array.
+     *
+     * Drives the wpCSL loadPluginData method.
+     *
+     * This has a method to tell it HOW to load the data.
+     *   via a simple get_option() call or via the wpCSL.settings.getitem() call.
+     *
+     * wpCSL getitem() looks for variations in the option names based on an option "root" name.
+     *
+     * @var mixed $dataElements
+     */
+    public $dataElements;
+
+    /**
+     * Set to true if the plugin data was already loaded.
+     *
+     * @var boolean $pluginDataLoaded
+     */
+    public $pluginDataLoaded = false;
 
     /**
      * Initialize a new SLPlus Object
@@ -67,6 +99,7 @@ class SLPlus extends wpCSL_plugin__slplus {
         $this->currentLocation = new SLPlus_Location(array('plugin'=>$this));
         $this->themes->css_dir = SLPLUS_PLUGINDIR . 'css/';
         $this->initOptions();
+        $this->initData();
         do_action('slp_invocation_complete');
     }
 
@@ -78,7 +111,79 @@ class SLPlus extends wpCSL_plugin__slplus {
         if (is_array($dbOptions)) {
             $this->options = array_merge($this->options,$dbOptions);
         }
-        $this->debugMP('pr','SLP initOptions',$this->options,__FILE__,__LINE__);
+    }
+
+    /**
+     * Set the plugin data property.
+     *
+     * Plugin data elements, helps make data lookups more efficient
+     *
+     * 'data' is where actual values are stored
+     * 'dataElements' is used to fetch/initialize values whenever helper->loadPluginData() is called
+     *
+     * FILTER: slp_attribute_values
+     * This filter only fires at the very start of SLP, it may not run add-on pack stuff.
+     *
+     * FILTER: wpcsl_loadplugindata__slplus
+     * This filter fires much later, only when loadplugindata() methods are called in wpcsl.
+     *
+     * The slp_attribute_values fitler takes an array of arrays.
+     *
+     * The outter array is a list of instructions for setting the data property of this class.
+     *
+     * The inner array has 3 elements:
+     *     first element is the name of the data property, the 'blah' in $this->data['blah'].
+     *     second element is the method to employ to set the element, 'get_option' or 'get_item'.
+     *     third element is the parameters to send along to the get_option or get_item method.
+     *
+     * If the second element is 'get_option' the third element can be:
+     *     null - in this case $this->data['blah'] is set to get_option('blah')
+     *     array('moreblah') - in this case $this->data['blah'] = get_option('moreblah')
+     *     array('moreblah','default') - $this->data['blah'] = get_option('moreblah','default')
+     *
+     * get_option('moreblah','default') returns the value 'default' if the option 'moreblah' does not exist in the WP options table.
+     */
+    function initData() {
+        $this->data = array();
+        $this->dataElements =
+            apply_filters('slp_attribute_values',
+                array(
+                      array(
+                        'sl_admin_locations_per_page',
+                        'get_option',
+                        array('sl_admin_locations_per_page','25')
+                      ),
+                      array(
+                        'sl_map_end_icon'                   ,
+                        'get_option'                ,
+                        array('sl_map_end_icon'         ,SLPLUS_ICONURL.'bulb_azure.png'    )
+                      ),
+                      array('sl_map_home_icon'              ,
+                          'get_option'              ,
+                          array('sl_map_home_icon'      ,SLPLUS_ICONURL.'box_yellow_home.png'  )
+                      ),
+                      array('sl_map_height'         ,
+                          'get_option'              ,
+                          array('sl_map_height'         ,'480'                                  )
+                      ),
+                      array('sl_map_height_units'   ,
+                          'get_option'              ,
+                          array('sl_map_height_units'   ,'px'                                   )
+                      ),
+                      array('sl_map_width'          ,
+                          'get_option'              ,
+                          array('sl_map_width'          ,'100'                                  )
+                      ),
+                      array('sl_map_width_units'    ,
+                          'get_option'              ,
+                          array('sl_map_width_units'    ,'%'                                    )
+                      ),
+                      array('theme'                 ,
+                          'get_item'                ,
+                          array('theme'                 ,'default'                              )
+                      ),
+                )
+           );
     }
 
     /**

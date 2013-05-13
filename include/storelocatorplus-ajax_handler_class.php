@@ -90,6 +90,7 @@ class SLPlus_AjaxHandler {
               'distance'    => $row['sl_distance'],
               'tags'        => ((get_option(SLPLUS_PREFIX.'_show_tags',0) ==1)? esc_attr($row['sl_tags']) : ''),
               'option_value'=> esc_js($row['sl_option_value']),
+              'attributes'  => maybe_unserialize($row['sl_option_value']),
               'id'          => $row['sl_id'],
           );
 
@@ -135,7 +136,7 @@ class SLPlus_AjaxHandler {
         // Reporting
         // Insert the query into the query DB
         //
-        if (get_option(SLPLUS_PREFIX.'-reporting_enabled','off') === 'on') {
+        if (get_option(SLPLUS_PREFIX.'-reporting_enabled','0') === '1') {
             $qry = sprintf(
                     "INSERT INTO {$this->plugin->db->prefix}slp_rep_query ".
                                "(slp_repq_query,slp_repq_tags,slp_repq_address,slp_repq_radius) ".
@@ -161,7 +162,7 @@ class SLPlus_AjaxHandler {
                 // Reporting
                 // Insert the results into the reporting table
                 //
-                if (get_option(SLPLUS_PREFIX.'-reporting_enabled') === "on") {
+                if (get_option(SLPLUS_PREFIX.'-reporting_enabled','0') === '1') {
                     $wpdb->query(
                         sprintf(
                             "INSERT INTO {$this->plugin->db->prefix}slp_rep_query_results
@@ -213,26 +214,20 @@ class SLPlus_AjaxHandler {
         // Post options that tweak the query
         //........
 
-        // Tag Filters
-        //
-        $tagFilter = '';
-        if (
-            isset($_POST['tags']) && ($_POST['tags'] != '')
-           ){
-            $posted_tag = preg_replace('/^\s+(.*?)/','$1',$_POST['tags']);
-            $posted_tag = preg_replace('/(.*?)\s+$/','$1',$posted_tag);
-            $tagFilter = " AND ( sl_tags LIKE '%%". $posted_tag ."%%') ";
-        }
-
         // Name Filters
         //
-        $nameFilter = '';
         if ((get_option(SLPLUS_PREFIX.'_show_name_search') == 1) &&
             isset($_POST['name']) && ($_POST['name'] != ''))
         {
-            $posted_name = preg_replace('/^\s+(.*?)/','$1',$_POST['name']);
-            $posted_name = preg_replace('/(.*?)\s+$/','$1',$posted_name);
-            $nameFilter = " AND (sl_store LIKE '%%".$posted_name."%%')";
+            add_filter('slp_location_filters_for_AJAX',array($this,'filter_JSONP_SearchByStore'));
+        }
+
+        // Add all the location filters together for SQL statement.
+        // FILTER: slp_location_filters_for_AJAX
+        //
+        $locationFilters = array();
+        foreach (apply_filters('slp_location_filters_for_AJAX',$locationFilters) as $filter) {
+            $filterClause .= $filter;
         }
 
         // Set the query
@@ -243,8 +238,7 @@ class SLPlus_AjaxHandler {
             "( $multiplier * acos( cos( radians('%s') ) * cos( radians( sl_latitude ) ) * cos( radians( sl_longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( sl_latitude ) ) ) ) AS sl_distance ".
             "FROM {$this->plugin->db->prefix}store_locator ".
             "WHERE sl_longitude<>'' and sl_latitude<>'' ".
-            $tagFilter.
-            $nameFilter .
+            $filterClause .
             "HAVING (sl_distance < %d) ".
             'ORDER BY sl_distance ASC '.
             'LIMIT %d'
@@ -283,6 +277,20 @@ class SLPlus_AjaxHandler {
         return $result;
     }
 
+    /**
+     * Add the store name condition to the MySQL statement used to fetch locations with JSONP.
+     *
+     * @param type $currentFilters
+     * @return type
+     */
+    function filter_JSONP_SearchByStore($currentFilters) {
+        $posted_name = preg_replace('/^\s+(.*?)/','$1',$_POST['name']);
+        $posted_name = preg_replace('/(.*?)\s+$/','$1',$posted_name);
+        return array_merge(
+                $currentFilters,
+                array(" AND (sl_store LIKE '%%".$posted_name."%%')")
+                );
+    }
 
     /**
      * Output a JSON response based on the incoming data and die.

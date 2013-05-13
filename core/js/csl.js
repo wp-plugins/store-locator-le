@@ -624,16 +624,12 @@ var csl = {
             var markerCount = markerList.length;
 			if (markerCount > 25) animation = csl.Animation.None;
 
-			this.debugSearch('create latlng bounds for shifts');
 			var bounds;
             var locationIcon;
-			this.debugSearch('number results ' + markerList.length);
             for (var markerNumber = 0 ; markerNumber < markerCount; ++markerNumber) {
-				this.debugSearch(markerList[markerNumber]);
 				var position = new google.maps.LatLng(markerList[markerNumber].lat, markerList[markerNumber].lng);
 
 				if (markerNumber === 0) {
-					this.debugSearch('create initial bounds');
 					bounds = new google.maps.LatLngBounds();
 					if (this.homePoint) {
                         bounds.extend(this.homePoint);
@@ -650,9 +646,14 @@ var csl = {
 					bounds.extend(position);
 				}
 
-				this.debugSearch(position);
-
-                locationIcon = ((typeof markerList[markerNumber].icon !== 'undefined') && (markerList[markerNumber].icon.length > 4)?markerList[markerNumber].icon:this.mapEndIconUrl);
+                locationIcon =
+                        (
+                          (markerList[markerNumber].icon !== null)               &&
+                          (typeof markerList[markerNumber].icon !== 'undefined') &&
+                          (markerList[markerNumber].icon.length > 4)                    ?
+                            markerList[markerNumber].icon :
+                            this.mapEndIconUrl
+                        );
 				this.markers.push(new csl.Marker(animation, this, "", position, locationIcon, this.mapEndIconWidth, this.mapEndIconHeight ));
 				_this = this;
 
@@ -664,6 +665,7 @@ var csl = {
 				}
 
 				//create info windows
+                //
 				google.maps.event.addListener(this.markers[markerNumber].__gmarker, 'click',
 				(function (infoData, marker) {
 					return function() {
@@ -672,6 +674,9 @@ var csl = {
 				})(markerList[markerNumber], this.markers[markerNumber]));
 
 				if (this.loadedOnce) {
+                    
+                    // Whenever the location result entry is <clicked> do this...
+                    //
 					google.maps.event.addDomListener(sidebarEntry, 'click',
 					(function(infoData, marker) {
 						return function() {
@@ -685,20 +690,19 @@ var csl = {
 
 			//check for results
 			if (markerList.length === 0) {
-                            if ( (typeof this.homePoint !== 'undefined') &&
-                                 (this.homePoint !== null)
-                               ) {
-				this.gmap.panTo(this.homePoint);
-                            }
+                if ( (typeof this.homePoint !== 'undefined') &&
+                     (this.homePoint !== null)
+                   ) {
+                    this.gmap.panTo(this.homePoint);
+                }
                 var sidebar = document.getElementById('map_sidebar');
-				sidebar.innerHTML = '<div class="no_results_found"><h2>'+slplus.msg_noresults+'</h2></div>';
+                sidebar.innerHTML = '<div class="no_results_found"><h2>'+slplus.msg_noresults+'</h2></div>';
                 jQuery('#map_sidebar').trigger('contentchanged');
-			} else {
+            } else {
                 jQuery('#map_sidebar').trigger('contentchanged');
             }
 
-			if (bounds !== null) {
-				this.debugSearch('rebounded');
+			if ((bounds !== null) && (typeof bounds !== 'undefined')) {
 				this.bounds = bounds;
 				this.gmap.fitBounds(this.bounds);
 
@@ -728,7 +732,6 @@ var csl = {
   	  	 */
 		this.bounceMarkers = function(markerList) {
 			this.clearMarkers();
-			this.debugSearch('bounce');
 			this.putMarkers(markerList, csl.Animation.None);
 		};
 
@@ -1016,49 +1019,47 @@ var csl = {
   	  	 */
 		this.loadMarkers = function(center, radius, tags) {
 
-                    //determines if we need to invent real variables (usually only done at the beginning)
-                    this.debugSearch('doing search@' + center + ' for radius of ' + radius);
-                    if (center === null) { center = this.gmap.getCenter(); }
-                    if (radius === null) { radius = 40000; }
-                    this.lastCenter = center;
-                    this.lastRadius = radius;
-                    if (tags === null) { tags = ''; }
-                    this.debugSearch('searching: ' + center.lat() +','+ center.lng());
+            //determines if we need to invent real variables (usually only done at the beginning)
+            if (center === null) { center = this.gmap.getCenter(); }
+            if (radius === null) { radius = 40000; }
+            this.lastCenter = center;
+            this.lastRadius = radius;
+            if (tags === null) { tags = ''; }
 
-                    var _this = this;
-                    var ajax = new csl.Ajax();
+            var _this = this;
+            var ajax = new csl.Ajax();
 
-                    // Setup our variables sent to the AJAX listener.
-                    //
-                    var action = {
-                        address : this.saneValue('addressInput', 'no address entered'),
-                        formdata: jQuery('#searchForm').serialize(),
-                        lat     : center.lat(),
-                        lng     : center.lng(),
-                        name    : this.saneValue('nameSearch', ''),
-                        radius  : radius,
-                        tags    : tags
-                     };
+            // Setup our variables sent to the AJAX listener.
+            //
+            var action = {
+                address : this.saneValue('addressInput', 'no address entered'),
+                formdata: jQuery('#searchForm').serialize(),
+                lat     : center.lat(),
+                lng     : center.lng(),
+                name    : this.saneValue('nameSearch', ''),
+                radius  : radius,
+                tags    : tags
+             };
 
-                    // On Load
-                    if (slplus.load_locations === '1') {
-                        action.action = 'csl_ajax_onload';
-                        slplus.load_locations = '0';
+            // On Load
+            if (slplus.load_locations === '1') {
+                action.action = 'csl_ajax_onload';
+                slplus.load_locations = '0';
 
-                    // Search
+            // Search
+            } else {
+                action.action = 'csl_ajax_search';
+            }
+
+            // Send AJAX call
+            //
+            ajax.send(action, function (response) {
+                    if (typeof response.response !== 'undefined') {
+                        _this.bounceMarkers.call(_this, response.response);
                     } else {
-                        action.action = 'csl_ajax_search';
+                        if (window.console) { console.log('SLP server did not send back a valid JSONP response for ' + action.action + '.'); }
                     }
-
-                    // Send AJAX call
-                    //
-                    ajax.send(action, function (response) {
-                            if (typeof response.response !== 'undefined') {
-                                _this.bounceMarkers.call(_this, response.response);
-                            } else {
-                                if (window.console) { console.log('SLP server did not send back a valid JSONP response for ' + action.action + '.'); }
-                            }
-                        });
+                });
 		};
 
 		/***************************
