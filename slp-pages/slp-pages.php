@@ -3,13 +3,13 @@
  * Plugin Name: Store Locator Plus : Store Pages
  * Plugin URI: http://www.charlestonsw.com/product/store-locator-plus-store-pages/
  * Description: A premium add-on pack for Store Locator Plus that creates custom pages for your locations.
- * Version: 3.8.2
+ * Version: 3.8.15
  * Author: Charleston Software Associates
  * Author URI: http://charlestonsw.com/
  * Requires at least: 3.3
- * Test up to : 3.4.2
+ * Test up to : 3.5.1
  *
- * Text Domain: csl-slplus
+ * Text Domain: csa-slplus
  * Domain Path: /languages/
  *
  * @package StoreLocatorPlus
@@ -102,6 +102,32 @@ if ( ! class_exists( 'SLPPages' ) ) {
         //====================================================
         // Helpers
         //====================================================
+
+        /**
+         * Add Store Pages to the SLP universe.
+         *
+         * @global wpCSL_plugin__slplus $slplus_plugin
+         */
+        function add_package() {
+            global $slplus_plugin;
+
+            // Setup metadata
+            //
+            $myPurl = 'http://www.charlestonsw.com/product/store-locator-plus-store-pages/';
+            $slplus_plugin->license->add_licensed_package(
+                    array(
+                        'name'              => 'Store Pages',
+                        'help_text'         => 'Create individual WordPress pages from your locations data. Great for SEO.  ' .
+                                               'See the <a href="'.$myPurl.'" target="newinfo">product page</a> for details.  If you purchased this add-on ' .
+                                               'come back to this page to enter the license key to activate the new features.',
+                        'sku'               => 'SLPLUS-PAGES',
+                        'paypal_button_id'  => 'CT449P2ZH454E',
+                        'paypal_upgrade_button_id' => 'CT449P2ZH454E',
+                        'purchase_url'      => $myPurl
+                    )
+                );
+        }
+
 
         /**
          * Debug for action hooks.
