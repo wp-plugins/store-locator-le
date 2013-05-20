@@ -2,10 +2,10 @@
 Plugin Name:  Store Locator Plus
 Contributors: charlestonsw
 Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
-Tags: mapping,map,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
+Tags: store locator,mapping,map,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 3.11
+Stable tag: 3.11.1
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
 
@@ -276,6 +276,13 @@ I update about once per month or more frequently as needed.
 Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
 
 I was listing the entire change log here but with weekly/bi-weekly updates it as getting much too long.
+
+= 3.11.1 =
+
+* Fix: address without geocodes are highlighted again
+* Enhancement: [New filter](/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/) slp_manage_location_where 3rd party add-ons can control the manage locations screen.
+* Enhancement: Added ja_JP language files, thanks Shohei Tanaka.
+* Enhancement: Force alternate index keys to 255 characters to try to fix WordPress dbDelta bug.
 
 = 3.11 =
 

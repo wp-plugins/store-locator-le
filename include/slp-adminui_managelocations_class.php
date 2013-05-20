@@ -685,19 +685,26 @@ class SLPlus_AdminUI_ManageLocations {
         //------------------------------------------------------------------------
         // QUERY BUILDING
         //------------------------------------------------------------------------
+
+        // Where Clause
+        //
+
+        // Search for a specific name/address
+        //
         $qry = isset($_REQUEST['searchfor']) ? $_REQUEST['searchfor'] : '';
         $where=($qry!='')?
                 " CONCAT_WS(';',sl_store,sl_address,sl_address2,sl_city,sl_state,sl_zip,sl_country,sl_tags) LIKE '%$qry%'" :
                 '' ;
 
-        /* Uncoded items */
-        if (isset($_REQUEST['act'])) {
-            if ($_REQUEST['act'] == 'show_uncoded') {
-                $where .= " sl_latitude NOT REGEXP '^[0-9]|-' or sl_longitude NOT REGEXP '^[0-9]|-'";
-            }
-        }
+        // FILTER: slp_manage_location_where
+        //
+        $where = apply_filters('slp_manage_location_where',$where);
+
+        if (trim($where) != '') { $where = "WHERE $where"; }
 
 
+        // Sort Direction
+        //
         $opt= (isset($_GET['o']) && (trim($_GET['o']) != ''))
         ? $_GET['o'] : "sl_store";
         $dir= (isset($_GET['sortorder']) && (trim($_GET['sortorder'])=='DESC'))
@@ -713,7 +720,6 @@ class SLPlus_AdminUI_ManageLocations {
 
         // Pagination
         //
-        if (trim($where) != false) { $where = "WHERE $where"; }
         $totalLocations=$wpdb->get_var("SELECT count(sl_id) FROM ".$wpdb->prefix."store_locator $where");
         $start=(isset($_GET['start'])&&(trim($_GET['start'])!=''))?$_GET['start']:0;
         if ($totalLocations>0) {
@@ -778,8 +784,8 @@ class SLPlus_AdminUI_ManageLocations {
 
                 // Row color
                 //
-                if (($this->plugin->currentLocation->latitude === '') ||
-                    ($this->plugin->currentLocation->longitude === '')
+                if (($this->plugin->currentLocation->latitude == '') ||
+                    ($this->plugin->currentLocation->longitude == '')
                     ) {
                     $colorClass = 'invalid';
                 } else {

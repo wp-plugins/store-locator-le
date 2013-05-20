@@ -109,9 +109,9 @@ class SLPlus_Activate {
                 sl_option_value longtext NULL,
                 sl_lastupdated  timestamp NOT NULL default current_timestamp,			
                 PRIMARY KEY  (sl_id),
-                KEY (sl_store),
-                KEY (sl_longitude),
-                KEY (sl_latitude)
+                KEY (sl_store(255)),
+                KEY (sl_longitude(255)),
+                KEY (sl_latitude(255))
                 ) 
                 $charset_collate
                 ";
@@ -417,7 +417,7 @@ class SLPlus_Activate {
         // Update Tables, Setup Roles
         //
         $updater->install_main_table();
-        $updater->drop_duplicate_indexes();
+        //$updater->drop_duplicate_indexes();
         $updater->install_reporting_tables();
         $updater->add_splus_roles_and_caps();
         /* $updater->get_addonpack_metadata(); */
