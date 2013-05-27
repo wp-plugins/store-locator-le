@@ -211,6 +211,14 @@ div#slp_tagline {
     text-align: right;
     padding-right: 3px;
 }
+div.entry-content div#sl_div #map_table IMG {
+	max-width:none;
+    box-shadow: none;
+    border-radius: 0px;
+    border: none;
+    padding: 0px;
+    margin: 0px;
+}
 
 /***** Store Locator Map DIV *****/
 #sl_div {
@@ -300,7 +308,7 @@ div#slp_tagline {
 	font-family:Arial;
 	padding:20px;
 	font-size:18px;
-	text-align:justified;
+	text-align:justify;
 }
 .no_results_found {
 	/*shown if no results found */
@@ -315,13 +323,15 @@ div#slp_tagline {
 	height:250px;
 	font-size: 11px;
 }
-
+/* Hide the default Google bubble shadow */
+div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
+    display:none;
+}
 /*-----------------------------------
  * Results Table Under The Map
  */
 .results_entry {
 	cursor:pointer;
-	cursor:hand;
 	padding:0px;
 	border-bottom:none;
 	background-color: #404040;
@@ -373,4 +383,9 @@ span.slp_result_address {
 }
 span.slp_result_phone {
     padding-top: 6px;
+}
+
+span.slp_result_contact {
+    width: 100%;
+    white-space: nowrap;
 }
