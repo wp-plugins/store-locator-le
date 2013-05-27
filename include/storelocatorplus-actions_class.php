@@ -194,9 +194,26 @@ class SLPlus_Actions {
             // Remove the duplicate menu entry
             //
             remove_submenu_page($this->plugin->prefix, $this->plugin->prefix);
+
+            $this->plugin->debugMP('slp.main','msg','SLP admin_menu() action complete.');
         }
     }
 
+
+    /**
+     * Create a Map Settings Debug My Plugin panel.
+     *
+     * @return null
+     */
+    function create_DMPPanels() {
+        if (!isset($GLOBALS['DebugMyPlugin'])) { return; }
+        if (class_exists('DMPPanelSLPMain') == false) {
+            require_once(SLPLUS_PLUGINDIR.'include/class.dmppanels.php');
+        }
+        $GLOBALS['DebugMyPlugin']->panels['slp.main']           = new DMPPanelSLPMain();
+        $GLOBALS['DebugMyPlugin']->panels['slp.mapsettings']    = new DMPPanelSLPMapSettings();
+        $GLOBALS['DebugMyPlugin']->panels['slp.managelocs']     = new DMPPanelSLPManageLocations();
+    }
 
     /**
      * Retrieves map setting options, whether serialized or not.

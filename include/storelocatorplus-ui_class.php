@@ -469,13 +469,14 @@ class SLPlus_UI {
         $this->plugin->data['radius_options'] =
                 (isset($this->plugin->data['radius_options'])?$this->plugin->data['radius_options']:'');
 
-        // Load from options table first,
+        // Load from plugin object data table first,
         // attributes trump options
         //
         $this->loadPluginData();
 
         // Then load the attributes
         //
+        add_filter('slp_shortcode_atts',array($this,'filter_SetAllowedShortcodes'));
         $attributes =
             shortcode_atts(
                 apply_filters('slp_shortcode_atts',array()),
@@ -487,9 +488,13 @@ class SLPlus_UI {
                 (array) $attributes
             );
 
+        // Now set options to attributes
+        //
+        $this->plugin->options = array_merge($this->plugin->options, (array) $attributes);
+
         // Localize the CSL Script
         // .. this is called too late..
-        $this->plugin->debugMP('pr','render_shortcode()',$this->plugin->data,__FILE__,__LINE__);
+        $this->plugin->debugMP('slp.main','pr','render_shortcode()',$this->plugin->data,__FILE__,__LINE__);
         $this->localizeCSLScript();
 
         // Radius Options
@@ -539,6 +544,20 @@ class SLPlus_UI {
                 $this->create_Results().
             '</div>'
             ;
+    }
+
+    /**
+     * Set the allowed shortcode attributes
+     * 
+     * @param mixed[] $atts
+     */
+    function filter_SetAllowedShortcodes($atts) {
+        return array_merge(
+                array(
+                    'initial_radius'     => $this->plugin->options['initial_radius'],
+                    ),
+                $atts
+            );
     }
 
     /**
@@ -611,7 +630,7 @@ class SLPlus_UI {
             'zoom_tweak'        => get_option('sl_zoom_tweak',1)
             );
 
-        $this->plugin->debugMP('pr','UI.localizeCSLScript() scriptData',$scriptData,__FILE__,__LINE__);
+        $this->plugin->debugMP('slp.main','pr','UI.localizeCSLScript() scriptData',$scriptData,__FILE__,__LINE__);
 
         wp_localize_script('csl_script','slplus',apply_filters('slp_script_data',$scriptData));
         wp_localize_script('csl_script','csl_ajax',array('ajaxurl' => admin_url('admin-ajax.php'), 'nonce' => wp_create_nonce('em')));

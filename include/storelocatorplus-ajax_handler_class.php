@@ -225,6 +225,7 @@ class SLPlus_AjaxHandler {
         // Add all the location filters together for SQL statement.
         // FILTER: slp_location_filters_for_AJAX
         //
+        $filterClause = '';
         $locationFilters = array();
         foreach (apply_filters('slp_location_filters_for_AJAX',$locationFilters) as $filter) {
             $filterClause .= $filter;

@@ -264,7 +264,7 @@ class SLPlus_AdminUI_MapSettings {
         //
         array_walk($_REQUEST,array($this->plugin,'set_ValidOptions'));
         update_option(SLPLUS_PREFIX.'-options', $this->plugin->options);
-        $this->plugin->debugMP('pr','Map Settins Saved to '.SLPLUS_PREFIX.'-options',$this->plugin->options,__FILE__,__LINE__);
+        $this->plugin->debugMP('slp.mapsettings','pr','Map Settins Saved to '.SLPLUS_PREFIX.'-options',$this->plugin->options,__FILE__,__LINE__);
     }
 
     //=======================================
@@ -307,7 +307,7 @@ class SLPlus_AdminUI_MapSettings {
             $this->plugin->helper->CreateCheckboxDiv(
                     'sl_load_locations_default',
                     __('Immediately Show Locations', 'csa-slplus'),
-                    __('Display locations as soon as map loads, based on map center and default radius','csa-slplus'),
+                    __('Display locations as soon as map loads, based on map center and default radius. ','csa-slplus'),
                     '',
                     false,
                     0
@@ -323,7 +323,11 @@ class SLPlus_AdminUI_MapSettings {
             $this->CreateInputDiv(
                     'initial_radius',
                     __('Radius To Search Initially','csa-slplus'),
-                    __('What should immediately show locations use as the default search radius? Leave empty to use map radius default or set to a large number like 25000 to search everywhere.','csa-slplus'),
+                    __('What should immediately show locations use as the default search radius? Leave empty to use map radius default or set to a large number like 25000 to search everywhere.','csa-slplus') .
+                    sprintf(
+                        __('Can be set with <a href="%s" target="csa">shortcode attribute initial_radius</a> if Force Load JavaScript is turned off.','csa-slplus'),
+                        $this->plugin->url . 'support/documentation/store-locator-plus/shortcodes/'
+                    ),
                     '',
                     $this->plugin->options['initial_radius']
                     )

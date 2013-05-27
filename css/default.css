@@ -170,6 +170,7 @@ div.entry-content div#sl_div #map_table IMG {
 }
 #address_search SELECT {
 	margin:0px 6px 0px 0px;
+    width: 100px;
 }
 #address_search INPUT {
 	margin:0px 6px 0px 0px;
@@ -209,6 +210,8 @@ div.entry-content div#sl_div #map_table IMG {
     float: left;
     padding-top: 3px;
     padding-right: 12px;
+    white-space: nowrap;
+    width: 250px;
 }
 #radius_in_submit {
     float: left;
@@ -341,4 +344,7 @@ span.slp_result_phone {
 span.slp_result_contact {
     width: 100%;
     white-space: nowrap;
+}
+div#map_sidebar {
+    overflow: auto;
 }

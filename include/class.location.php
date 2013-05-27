@@ -185,14 +185,14 @@ class SLPlus_Location {
         if ($this->linked_postid > 0) {
             $touched_pageID = wp_update_post($this->pageData);
             $crupdateOK = ($touched_pageID > 0);
-            $this->plugin->debugMP('msg','location.crupdate_Page()','update post',__FILE__,__LINE__);
+            $this->plugin->debugMP('slp.main','msg','location.crupdate_Page()','update post',__FILE__,__LINE__);
 
 
         // Create a new page.
         } else {
             $touched_pageID = wp_insert_post($this->pageData, true);
             $crupdateOK = !is_wp_error($touched_pageID);
-            $this->plugin->debugMP('msg','location.crupdate_Page()','insert post',__FILE__,__LINE__);
+            $this->plugin->debugMP('slp.main','msg','location.crupdate_Page()','insert post',__FILE__,__LINE__);
         }
 
         // Ok - we are good...
@@ -206,7 +206,7 @@ class SLPlus_Location {
                     $touched_pageID . 
                     (($touched_pageID != $this->linked_postid) ? ' Created':' Updated')
                     ;
-           $this->plugin->debugMP('pr',$header,$this->pageData,__FILE__,__LINE__);
+           $this->plugin->debugMP('slp.main','pr',$header,$this->pageData,__FILE__,__LINE__);
 
             // If we created a page or changed the page ID,
             // set it in our location property and make it
@@ -215,7 +215,7 @@ class SLPlus_Location {
             if ($touched_pageID != $this->linked_postid) {
                 $this->linked_postid = $touched_pageID;
                 $this->MakePersistent();
-                $this->plugin->debugMP('msg','Make new linked post ID ' . $this->linked_postid . ' persistent.');
+                $this->plugin->debugMP('slp.main','msg','Make new linked post ID ' . $this->linked_postid . ' persistent.');
             }
 
 
@@ -223,7 +223,7 @@ class SLPlus_Location {
         //
         } else {
             $this->plugin->notifications->add_notice('error','Could not create or update the custom page for this location.');
-            $this->plugin->debugMP('pr','location.crupdate_Page() failed',$touched_pageID->get_error_messages(),__FILE__,__LINE__);
+            $this->plugin->debugMP('slp.main','pr','location.crupdate_Page() failed',$touched_pageID->get_error_messages(),__FILE__,__LINE__);
         }
 
 
@@ -251,7 +251,7 @@ class SLPlus_Location {
         foreach ($this->dbFields as $property) {
             $output .= $property . ' = ' . $this->$property . '<br/>';
         }
-        $this->plugin->debugMP('msg',$output);
+        $this->plugin->debugMP('slp.main','msg',$output);
     }
 
     /**
@@ -284,7 +284,7 @@ class SLPlus_Location {
             $this->pageData = array(
                 'ID'            => $this->linked_postid,
             );
-           $this->plugin->debugMP(
+           $this->plugin->debugMP('slp.main',
                    'msg',
                    'location.set_PageData()',
                    ' pre-existing post ID ' . $this->linked_postid . '<br/>' .
@@ -304,7 +304,7 @@ class SLPlus_Location {
                 'post_title'    => $this->store,
                 'post_content'  => ''
             );
-           $this->plugin->debugMP(
+           $this->plugin->debugMP('slp.main',
                    'msg',
                    'location.set_PageData()',
                    ' new post ID ' . $this->linked_postid . '<br/>' .
@@ -321,7 +321,7 @@ class SLPlus_Location {
         $this->pageData = apply_filters('slp_location_page_attributes', $this->pageData);
 
         // Debugging
-        $this->plugin->debugMP('pr','location.set_PageData() post-filter',$this->pageData,__FILE__,__LINE__);
+        $this->plugin->debugMP('slp.main','pr','location.set_PageData() post-filter',$this->pageData,__FILE__,__LINE__);
 
         return $this->pageData;
     }
@@ -429,14 +429,14 @@ class SLPlus_Location {
 
             // Debugging Output
             //
-            $this->plugin->debugMP('pr','location.set_PropertiesViaArray()',$locationData,__FILE__,__LINE__);
+            $this->plugin->debugMP('slp.main','pr','location.set_PropertiesViaArray()',$locationData,__FILE__,__LINE__);
 
             return true;
         }
 
         // Debugging Output
         //
-        $this->plugin->debugMP('msg','location.set_PropertiesViaArray()','ERROR: location data not in array format.',__FILE__,__LINE__);
+        $this->plugin->debugMP('slp.main','msg','location.set_PropertiesViaArray()','ERROR: location data not in array format.',__FILE__,__LINE__);
         return false;
     }
 

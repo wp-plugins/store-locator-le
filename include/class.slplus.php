@@ -101,6 +101,7 @@ class SLPlus extends wpCSL_plugin__slplus {
         $this->initOptions();
         $this->initData();
         do_action('slp_invocation_complete');
+        $this->debugMP('slp.main','msg','Store Locator Plus invocation complete.');
     }
 
     /**
@@ -195,7 +196,7 @@ class SLPlus extends wpCSL_plugin__slplus {
     function set_ValidOptions($val,$key) {
         if (array_key_exists($key, $this->options)) {
             $this->options[$key] = $val;
-            $this->debugMP('msg',"SLP.set_ValidOptions $key was set to $val.");
+            $this->debugMP('slp.main','msg',"SLP.set_ValidOptions $key was set to $val.");
         }
      }
 

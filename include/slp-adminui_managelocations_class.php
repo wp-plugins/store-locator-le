@@ -314,7 +314,7 @@ class SLPlus_AdminUI_ManageLocations {
         // Set our current location data from the inputs.
         //
         $persistentData['sl_id'] = $_REQUEST['locationID'];
-        $this->plugin->debugMP('pr','ManageLocations.location_save()',$persistentData);
+        $this->plugin->debugMP('slp.managelocs','pr','ManageLocations.location_save()',$persistentData);
         $this->plugin->currentLocation->set_PropertiesViaArray($persistentData);
 
         // Clean up the SQL data strings
@@ -544,8 +544,8 @@ class SLPlus_AdminUI_ManageLocations {
         //--------------------------------
         // Debug Output : Post/Server Vars
         //--------------------------------
-        $this->plugin->debugMP('pr','ManageLocations.render_adminpage() _REQUEST'  ,$_REQUEST,__FILE__,__LINE__);
-        $this->plugin->debugMP('pr','ManageLocations.render_adminpage() _SERVER'    ,$_SERVER,__FILE__,__LINE__);
+        $this->plugin->debugMP('slp.managelocs','pr','ManageLocations.render_adminpage() _REQUEST'  ,$_REQUEST,__FILE__,__LINE__);
+        $this->plugin->debugMP('slp.managelocs','pr','ManageLocations.render_adminpage() _SERVER'    ,$_SERVER,__FILE__,__LINE__);
 
         //--------------------------------
         // Create the hidden inputs string
