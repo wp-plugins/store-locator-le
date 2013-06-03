@@ -840,7 +840,7 @@ class SLPlus_AdminUI {
                 $resultOfAdd = $this->plugin->AdminUI->add_this_addy($locationData);
                 print "<div class='updated fade'>".
                         $_POST['store-'] ." " .
-                        __("Added Succesfully",'csa-slplus') . '.</div>';
+                        __("Added Successfully",'csa-slplus') . '.</div>';
 
             /** Bulk Upload
              **/

@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
 Tags: store locator,mapping,map,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 3.11.2
+Stable tag: 3.11.3
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
 
@@ -277,6 +277,11 @@ Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/su
 
 I was listing the entire change log here but with weekly/bi-weekly updates it as getting much too long.
 
+= 3.11.3 =
+
+* Enhancement: Remove some defunct code and scripts.
+* Fix: Editing locations on page 2+ on manage locations was restarting at first page.
+
 = 3.11.2 =
 
 * Fix: update default.css theme to set radius drop down formatting (some themes were overriding SELECT).
@@ -302,24 +307,3 @@ I was listing the entire change log here but with weekly/bi-weekly updates it as
 * Fix: stop losing lat/long when editing a property.
 * Fix: if not all map locations have a custom marker via tagalong, pro pack, enhanced maps add-ons the map would not render location markers.
 * Fix: stop generating google map javascript errors if no results are returned
-
-= 3.10.3 =
-
-* Fix: Fax field on edit form was repeating phone field.
-
-= 3.10.2 =
-
-* Fix: Fix missing icons, etc. when immediately show locations radius is not set.
-
-= 3.10.1 =
-
-* Fix: Website URL not rendering in results.
-
-= 3.10 =
-
-* Change: Pro Pack is now a separate download .zip file.
-* Enhancement: Hours is now a text field.
-* Enhancement: Remove some unused image files.
-* Enhancement: [Hooks & Filters](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/) Added slp_addlocations_with_csv hook.
-* Fix: Patch the plugin upgrade/info system so it does not take over other plugins (view info on add new plugin was blank).
-* Fix: If not locations are found the backend was returning an invalid SQL message causing all hell to break loose.

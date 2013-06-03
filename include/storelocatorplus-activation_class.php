@@ -368,13 +368,6 @@ class SLPlus_Activate {
             // Save Image and Lanuages Files
             $filesSaved = $updater->save_important_files();
 
-            // TODO: elminate this when PRO becomes a download product.
-            //
-            if (get_option(SLPLUS_PREFIX.'-SLPLUS-PRO-lk','') == '') {
-                update_option(SLPLUS_PREFIX.'-SLPLUS-PRO-lk',get_option(SLPLUS_PREFIX.'-SLPLUS-lk',''));
-                update_option(SLPLUS_PREFIX.'-SLPLUS-PRO-isenabled',get_option(SLPLUS_PREFIX.'-SLPLUS-isenabled',''));
-            }
-
             // Core Icons Moved
             // 3.8.6
             //

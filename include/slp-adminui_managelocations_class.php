@@ -75,25 +75,21 @@ class SLPlus_AdminUI_ManageLocations {
 
             // Base Admin URL = must have params
             //
-            if (isset($_REQUEST['page'])) {
-                $queryParams['page'] = $_REQUEST['page'];
-            }
+            if (isset($_REQUEST['page'])) { $queryParams['page'] = $_REQUEST['page']; }
             $this->baseAdminURL = $this->cleanAdminURL . '?' . build_query($queryParams);
 
 
             // Hangover URL = params we like to carry around sometimes
             //
-            if (isset($_REQUEST['searchfor'])) {
-                $queryParams['searchfor'] = $_REQUEST['searchfor'];
-            }
+            if (isset($_REQUEST['searchfor'])) { $queryParams['searchfor']  = $_REQUEST['searchfor']; }
+            if (isset($_REQUEST['start']    )) { $queryParams['start']      = $_REQUEST['start']    ; }
             $this->hangoverURL = $this->cleanAdminURL . '?' . build_query($queryParams);
 
-            $this->plugin->helper->bugout('<pre>'.
-                    'cleanAdminURL: '.$this->cleanAdminURL."\n".
-                    'baseAdminURL:  '.$this->baseAdminURL ."\n".
-                    'hangoverURL:   '.$this->hangoverURL.
-                    '</pre>',
-                    '','Manage Locations UI',__FILE__,__LINE__
+            $this->plugin->debugMP('slp.managelocs','msg',
+                    'ManageLocations',
+                    '<br/>cleanAdminURL: '.$this->cleanAdminURL."<br/>".
+                    'baseAdminURL:  '.$this->baseAdminURL ."<br/>".
+                    'hangoverURL:   '.$this->hangoverURL  ."<br/>"
                     );
         }
 
@@ -730,6 +726,15 @@ class SLPlus_AdminUI_ManageLocations {
                     );
         }
 
+        // Fix start if we deleted the last location on a page
+        //
+        if (
+            ($_REQUEST['act']=='delete') &&
+            isset($_REQUEST['start'])    &&
+            ($_REQUEST['start'] == ($totalLocations-1))
+            ) {
+            $this->hangoverURL = str_replace('&start=','&prevstart=',$this->hangoverURL);
+        }
 
         //--------------------------------
         // Render: Start of Form
