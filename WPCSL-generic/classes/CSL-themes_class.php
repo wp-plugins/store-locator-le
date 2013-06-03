@@ -1,21 +1,19 @@
 <?php
 
-/***********************************************************************
-* Class: wpCSL_themes
-*
-* Manage the theme system for WordPress plugins.
-*
-************************************************************************/
-
+/**
+ * The wpCSL Themes Class
+ *
+ * @package wpCSL\Themes
+ * @author Lance Cleveland <lance@charlestonsw.com>
+ * @copyright 2012-2013 Charleston Software Associates, LLC
+ *
+ */
 class wpCSL_themes__slplus {
-    
 
-
-    /*-------------------------------------
-     * method: __construct
-     *
-     * Overload of the default class instantiation.
-     *
+    /**
+     * Theme constructor.
+     * 
+     * @param mixed[] $params named array of properties
      */
     function __construct($params) {
         
@@ -32,8 +30,7 @@ class wpCSL_themes__slplus {
         // Append plugin path to the directories
         //
         $this->css_url = $this->plugin_url . '/'. $this->css_dir;
-        $this->css_dir = $this->plugin_path . 
-            $this->css_dir;       
+        $this->css_dir = $this->plugin_path . $this->css_dir;       
     }
     
     /*-------------------------------------
@@ -127,7 +124,8 @@ class wpCSL_themes__slplus {
                 $this->support_url.
                 '" target="CSA">documentation</a> for more info.',
                 WPCSL__slplus__VERSION),
-            $themeArray
+            $themeArray,
+            'default'
         );        
     }    
     
