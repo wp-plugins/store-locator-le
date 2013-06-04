@@ -81,26 +81,23 @@ class wpCSL_settings__slplus {
             $this->csl_php_modules = get_loaded_extensions();
             natcasesort($this->csl_php_modules);
             global $wpdb;
+            $this->parent->metadata = get_plugin_data($this->parent->fqfile, false, false);
+
             $this->add_section(
                 array(
                     'name' => 'Plugin Environment',
                     'description' =>
-                        '<p>Here are the technical details about your plugin:<br />
-                           <div style="border: solid 1px #E0E0E0; padding: 6px; margin: 6px;
-                               background-color: #F4F4F4;">
+                        '<p>Here are the technical details about your plugin:<br />'.
+                    
+                        $this->create_EnvDiv($this->parent->metadata['Name'].' Version' ,$this->parent->metadata['Version'] ).
+                        $this->create_EnvDiv('WPCSL Version'                            ,WPCSL__slplus__VERSION             ).
+                        $this->create_EnvDiv('WordPress Version'                        ,$GLOBALS['wp_version']             ).
+                        $this->create_EnvDiv('MySQL Version'                            ,$wpdb->db_version()                ).
+                        $this->create_EnvDiv('PHP Version'                              ,phpversion()                       ).
+                        $this->create_EnvDiv('CSA IP Addresses'                         ,
+                                gethostbyname('charlestonsw.com') .' and ' .gethostbyname('license.charlestonsw.com')       ).
 
-
-                             <div style="clear:left;">
-                               <div style="width:150px; float:left; text-align: right;
-                                   padding-right: 6px;">CSA IP Addresses:</div>
-                               <div style="float: left;">' .
-                                    gethostbyname('charlestonsw.com') .
-                                    ' and ' .
-                                    gethostbyname('license.charlestonsw.com') .
-                                '</div>
-                             </div>
-
-                             <div style="clear:left;">
+                        '<div style="clear:left;">
                                <div style="width:150px; float:left; text-align: right;
                                    padding-right: 6px;">Active WPCSL:</div>
                                <div style="float: left;">' . plugin_dir_path(__FILE__) . '</div>
@@ -110,41 +107,22 @@ class wpCSL_settings__slplus {
                                    padding-right: 6px;">Site URL:</div>
                                <div style="float: left;">' . get_option('siteurl') . '</div>
                              </div>
-                             <div style="clear:left;">
-                               <div style="width:150px; float:left; text-align: right;
-                                   padding-right: 6px;">Encryption Key:</div>
-                               <div style="float: left;">' . md5(get_option($this->prefix.'-license_key')) . '</div>
-                             </div>
-                             <div style="clear:left;">
+                             '
+                             .(
+                             $this->parent->no_license?
+                                '':
+                                '<div style="clear:left;">
+                                  <div style="width:150px; float:left; text-align: right;
+                                      padding-right: 6px;">Encryption Key:</div>
+                                  <div style="float: left;">' . md5(get_option($this->prefix.'-license_key')) . '</div>
+                                </div>
+                                <div style="clear:left;">
                                <div style="width:150px; float:left; text-align: right;
                                    padding-right: 6px;">License Key:</div>
                                <div style="float: left;">' . (get_option($this->prefix.'-purchased')?'licensed':'unlicensed') . '</div>
-                             </div>
-
-                             <div style="clear:left;">
-                               <div style="width:150px; float:left; text-align: right;
-                                   padding-right: 6px;">WPCSL Version:</div>
-                               <div style="float: left;">' . WPCSL__slplus__VERSION . '
-                               </div>
-                             </div>
-                             <div style="clear:left;">
-                               <div style="width:150px; float:left; text-align: right;
-                                   padding-right: 6px;">WordPress Version:</div>
-                               <div style="float: left;">' . $GLOBALS['wp_version'] . '
-                               </div>
-                             </div>
-                             <div style="clear:left;">
-                               <div style="width:150px; float:left; text-align: right;
-                                   padding-right: 6px;">MySQL Version:</div>
-                               <div style="float: left;">' . $wpdb->db_version() . '
-                               </div>
-                             </div>
-                             <div style="clear:left;">
-                               <div style="width:150px; float:left; text-align: right;
-                                   padding-right: 6px;">PHP Version:</div>
-                               <div style="float: left;">' . phpversion() .'</div>
-                             </div>
-                             <div style="clear:left;">
+                             </div>'
+                             ).
+                             '<div style="clear:left;">
                                <div style="width:150px; float:left; text-align: right;
                                    padding-right: 6px;">PHP Web App Peak RAM:</div>
                                <div style="float: left;">' . sprintf('%0.2d MB',memory_get_peak_usage(true)/1024/1024) .'</div>
@@ -159,15 +137,8 @@ class wpCSL_settings__slplus {
                            </div>
                          </p>',
                     'auto' => false,
-                    'start_collapsed' => true
+                    'start_collapsed' => false
                 )
-            );
-
-            $this->add_item(
-                'Plugin Environment',
-                'Enable Debugging Output: ',
-                'debugging',
-                'checkbox'
             );
 
             $this->add_section(array(
@@ -178,6 +149,25 @@ class wpCSL_settings__slplus {
                 )
             );
         }
+    }
+
+    /**
+     * Create a plugin environment div.
+     *
+     * @param string $label
+     * @param string $content
+     * @return string
+     */
+    function create_EnvDiv($label,$content) {
+        return'<div style="clear:left;">' .
+            '<div style="width:150px; float:left; text-align: right; padding-right: 6px;">'.
+            $label .
+            ':</div>' .
+            '<div style="float: left;">' .
+            $content .
+            '</div>' .
+            '</div>'
+            ;
     }
 
     /**

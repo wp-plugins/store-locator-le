@@ -67,6 +67,13 @@ class SLPlus extends wpCSL_plugin__slplus {
     public $data;
 
     /**
+     * Full path to this plugin directory.
+     *
+     * @var string $dir
+     */
+    private $dir;
+
+    /**
      * Sets the values of the $data array.
      *
      * Drives the wpCSL loadPluginData method.
@@ -88,6 +95,20 @@ class SLPlus extends wpCSL_plugin__slplus {
     public $pluginDataLoaded = false;
 
     /**
+     * What slug do we go by?
+     *
+     * @var string $slug
+     */
+    public $slug;
+
+    /**
+     * Full URL to this plugin directory.
+     *
+     * @var string $url
+     */
+    public $url;
+
+    /**
      * Initialize a new SLPlus Object
      *
      * @param mixed[] $params - a named array of the plugin options for wpCSL.
@@ -95,6 +116,10 @@ class SLPlus extends wpCSL_plugin__slplus {
     public function __construct($params) {
         global $wpdb;
         $this->db = $wpdb;
+        $this->url  = plugins_url('',__FILE__);
+        $this->dir  = plugin_dir_path(__FILE__);
+        $this->slug = plugin_basename(__FILE__);
+
         parent::__construct($params);
         $this->currentLocation = new SLPlus_Location(array('plugin'=>$this));
         $this->themes->css_dir = SLPLUS_PLUGINDIR . 'css/';

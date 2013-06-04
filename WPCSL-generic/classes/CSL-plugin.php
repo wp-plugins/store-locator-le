@@ -50,7 +50,7 @@
  *
  *
  **/
-if (!defined('WPCSL__slplus__VERSION')) { define('WPCSL__slplus__VERSION', '2.2'); }
+if (!defined('WPCSL__slplus__VERSION')) { define('WPCSL__slplus__VERSION', '2.3'); }
 
 // WP App Store Affiliate ID
 if (!defined('WPAS_AFFILIATE_ID')) { define('WPAS_AFFILIATE_ID','3368'); }
@@ -61,7 +61,6 @@ if (!defined('WPAS_AFFILIATE_ID')) { define('WPAS_AFFILIATE_ID','3368'); }
 // Wrap inside the init and check the class properties first?
 // 
 require_once('CSL-helper_class.php');
-require_once('CSL-license_class.php');
 require_once('CSL-settings_class.php');
 
 /**
@@ -84,6 +83,13 @@ class wpCSL_plugin__slplus {
      * @var boolean $display_settings render the display panel on the settings interface?
      */
     private $display_settings = false;
+
+    /**
+     * The plugin meta data.
+     *
+     * @var mixed[] $metadata
+     */
+    public $metadata;
     
     /**
      * The notification object, for display messages to users in the admin panel.
@@ -283,6 +289,7 @@ class wpCSL_plugin__slplus {
          * License Object Config (if needed)
          */
         if ($this->has_packages || !$this->no_license) {
+            require_once('CSL-license_class.php');
             $this->license_config = array(
                 'prefix'        => $this->prefix,
                 'http_handler'  => $this->http_handler,

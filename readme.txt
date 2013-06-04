@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
 Tags: store locator,mapping,map,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 3.11.3
+Stable tag: 3.11.4
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
 
@@ -276,6 +276,15 @@ I update about once per month or more frequently as needed.
 Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
 
 I was listing the entire change log here but with weekly/bi-weekly updates it as getting much too long.
+
+= 3.11.4 =
+
+* Fix: Eliminate double headers on JSON response.
+* Enhancement: Show plugin version on General tab.
+* Enhancement: Remove license reset codes.
+* Enhancement: Remove license engine hooks.
+* Enhancement: Simplify some wpCSL methods, smaller memory footprint + faster execution speeds.
+* Fix: Setting themes not working, [issue #27](https://bitbucket.org/lance_cleveland/store-locator-plus/issue/27/setting-themes-is-not-working).
 
 = 3.11.3 =
 

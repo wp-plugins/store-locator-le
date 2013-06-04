@@ -302,7 +302,6 @@ class SLPlus_AjaxHandler {
      * @return null dies on execution
      */
     function renderJSON_Response($data) {
-        header( "Content-Type: application/json" );
 
         // What do you mean we didn't get an array?
         //

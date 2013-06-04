@@ -3,7 +3,7 @@
 Plugin Name: Store Locator Plus
 Plugin URI: http://www.charlestonsw.com/product-category/slplus/
 Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Google Maps.  This is a highly customizable, easily expandable, enterprise-class location management system.
-Version: 3.11.3
+Version: 3.11.4
 Author: Charleston Software Associates
 Author URI: http://www.charlestonsw.com
 License: GPL3
@@ -35,7 +35,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 */
 if (defined('SLPLUS_VERSION') === false) {
-    define('SLPLUS_VERSION', '3.11.3');
+    define('SLPLUS_VERSION', '3.11.4');
 }
 
 // Drive Path Defines
@@ -170,10 +170,12 @@ if (defined('SLPLUS_PLUGINDIR')) {
             'use_obj_defaults'      => false,
             'cache_obj_name'        => 'none',
             'helper_obj_name'       => 'default',
-            'license_obj_name'      => 'default',
+            'license_obj_name'      => 'none',
             'notifications_obj_name'=> 'default',
             'products_obj_name'     => 'none',
             'settings_obj_name'     => 'default',
+
+            'no_license'            => true,
 
             'themes_enabled'        => true,
             'themes_obj_name'       => 'default',
@@ -193,6 +195,7 @@ if (defined('SLPLUS_PLUGINDIR')) {
             'updater_url'           => 'http://www.charlestonsw.com/paypal/updater.php',
             'broadcast_url'         => 'http://www.charlestonsw.com/signage/index.php?sku=SLPLUS&version='.SLPLUS_VERSION,
 
+            'fqfile'                => __FILE__,
             'basefile'              => SLPLUS_BASENAME,
             'plugin_path'           => SLPLUS_PLUGINDIR,
             'plugin_url'            => SLPLUS_PLUGINURL,
@@ -281,11 +284,6 @@ add_action('wp_ajax_nopriv_csl_get_closest_location', array('csl_mobile_listener
 //
 add_action('wp_ajax_csl_ajax_onload'            , array($slplus_plugin->AjaxHandler,'csl_ajax_onload'));
 add_action('wp_ajax_nopriv_csl_ajax_onload'     , array($slplus_plugin->AjaxHandler,'csl_ajax_onload'));
-
-// License resets
-add_action('wp_ajax_license_reset_pages'        , array($slplus_plugin->AjaxHandler,'license_reset_pages'));
-add_action('wp_ajax_license_reset_propack'      , array($slplus_plugin->AjaxHandler,'license_reset_propack'));
-
 
 //====================================================================
 // WordPress Shortcodes and Text Filters

@@ -709,11 +709,11 @@ class SLPlus_UI {
      */
     function setup_stylesheet_for_slplus() {
         if (!$this->setPlugin()) { return false; }
-        $this->loadPluginData();
+        $this->parent->helper->loadPluginData();
         if (!isset($this->parent->data['theme']) || empty($this->parent->data['theme'])) {
             $this->parent->data['theme'] = 'default';
         }
-        $this->parent->themes->assign_user_stylesheet($this->parent->data['theme']);
+        $this->parent->themes->assign_user_stylesheet($this->parent->data['theme'],true);
     }
 
 
