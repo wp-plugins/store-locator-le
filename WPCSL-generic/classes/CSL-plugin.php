@@ -1001,17 +1001,18 @@ class wpCSL_plugin__slplus {
      * @param string $message - what you want to say
      * @param string $file - file of the call (__FILE__)
      * @param int $line - line number of the call (__LINE__)
+     * @param boolean $notime - show time? default true = yes.
      * @return null
      */
-    function debugMP($panel='main', $type='msg', $header='wpCSL DMP',$message='',$file=null,$line=null) {
+    function debugMP($panel='main', $type='msg', $header='wpCSL DMP',$message='',$file=null,$line=null,$notime=false) {
         if (!isset($GLOBALS['DebugMyPlugin'])) { return; }
         if (!isset($GLOBALS['DebugMyPlugin']->panels[$panel])) { return; }
         switch (strtolower($type)):
             case 'pr':
-                $GLOBALS['DebugMyPlugin']->panels[$panel]->addPR($header,$message,$file,$line);
+                $GLOBALS['DebugMyPlugin']->panels[$panel]->addPR($header,$message,$file,$line,$notime);
                 break;
             default:
-                $GLOBALS['DebugMyPlugin']->panels[$panel]->addMessage($header,$message,$file,$line);
+                $GLOBALS['DebugMyPlugin']->panels[$panel]->addMessage($header,$message,$file,$line,$notime);
         endswitch;
     }
 

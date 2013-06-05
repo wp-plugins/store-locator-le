@@ -729,6 +729,7 @@ class SLPlus_AdminUI_ManageLocations {
         // Fix start if we deleted the last location on a page
         //
         if (
+            isset($_REQUEST['act'])      &&
             ($_REQUEST['act']=='delete') &&
             isset($_REQUEST['start'])    &&
             ($_REQUEST['start'] == ($totalLocations-1))
