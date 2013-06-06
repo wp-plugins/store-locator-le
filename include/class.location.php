@@ -173,6 +173,7 @@ class SLPlus_Location {
      * @return int $linke_postid - return the page ID linked to this location.
      */
     public function crupdate_Page() {
+        $this->plugin->debugMP('slp.main','msg','location.crupdate_Page()','',null,null,true);
         
         $crupdateOK = false;
 
@@ -185,7 +186,7 @@ class SLPlus_Location {
         if ($this->linked_postid > 0) {
             $touched_pageID = wp_update_post($this->pageData);
             $crupdateOK = ($touched_pageID > 0);
-            $this->plugin->debugMP('slp.main','msg','location.crupdate_Page()','update post',__FILE__,__LINE__);
+            $this->plugin->debugMP('slp.main','pr','updated existing page '.$touched_pageID,$this->pageData,null,null,true);
 
 
         // Create a new page.

@@ -402,6 +402,9 @@ class SLPlus_Actions {
      * Called when the <head> tags are rendered.
      */
     function wp_head() {
+        if (!isset($this->plugin)               ) { return; }
+        if (!isset($this->plugin->settings)     ) { return; }
+        if (!is_object($this->plugin->settings) ) { return; }
         $output = strip_tags($this->plugin->settings->get_item('custom_css',''));
         if ($output != '') {
             echo '<!-- SLP Custom CSS -->'."\n".'<style type="text/css">'."\n" . $output . '</style>'."\n\n";
