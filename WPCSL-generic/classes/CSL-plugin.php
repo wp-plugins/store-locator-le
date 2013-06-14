@@ -1,34 +1,8 @@
 <?php
-/************************************************************************
-*
-* file: CSL-plugin.php
-*
-* The main library for communicating effectively with 
-* WordPress.   This class manages the related helper classes so we can 
-* share a code libary and reduce code redundancy.
-* 
-************************************************************************/
-if (!defined('WPCSL__slplus__VERSION')) { define('WPCSL__slplus__VERSION', '2.0.15'); }
-
-// WP App Store Affiliate ID
-if (!defined('WPAS_AFFILIATE_ID')) { define('WPAS_AFFILIATE_ID','3368'); }
-
-// These helper files should only be loaded if needed by the plugin
-// that is asking for WPCSL-Generic services.
-//
-// Wrap inside the init and check the class properties first?
-// 
-require_once('CSL-helper_class.php');
-require_once('CSL-license_class.php');
-require_once('CSL-notifications_class.php');
-require_once('CSL-settings_class.php');
-require_once('CSL-themes_class.php');
-
-
-/*****************************************************************************
-* Class: WPCSL_plugin
-*
-* This class does most of the heavy lifting for creating a plugin.
+/**
+ * A collection of classes that help us provide a consistent plugin experience for WordPress.
+ * 
+ * This class does most of the heavy lifting for creating a plugin.
 * It takes a hash as its one constructor argument, which can have the
 * following keys and values:
 *
@@ -72,30 +46,94 @@ require_once('CSL-themes_class.php');
 *
  *    * 'admin_slugs' :: and array (or single string) of valid admin page slugs for this plugin.
  *
-*/
+ *
+ *
+ *
+ **/
+if (!defined('WPCSL__slplus__VERSION')) { define('WPCSL__slplus__VERSION', '2.3.1'); }
+
+// WP App Store Affiliate ID
+if (!defined('WPAS_AFFILIATE_ID')) { define('WPAS_AFFILIATE_ID','3368'); }
+
+// These helper files should only be loaded if needed by the plugin
+// that is asking for WPCSL-Generic services.
+//
+// Wrap inside the init and check the class properties first?
+// 
+require_once('CSL-helper_class.php');
+require_once('CSL-settings_class.php');
+
+/**
+ * The base WPCSL class, to which all the other WPCSL objects get attached.
+ *
+ * @author Lance Cleveland <lance@charlestonsw.com>
+ * @copyright 2013 Charleston Sofware Associates, LLC
+ * @package wpCSL
+ * @version 2.3.1
+ */
 class wpCSL_plugin__slplus {
 
-    /**-------------------------------------
-     **/
+    //---------------------------------------------
+    // Properties
+    //---------------------------------------------
+
+    /**
+     * Render the display panel on the settings interface? true = yes.
+     *
+     * @var boolean $display_settings render the display panel on the settings interface?
+     */
+    private $display_settings = false;
+
+    /**
+     * The plugin meta data.
+     *
+     * @var mixed[] $metadata
+     */
+    public $metadata;
+    
+    /**
+     * The notification object, for display messages to users in the admin panel.
+     * 
+     * @var wpCSL_notifications__slplus $notifications 
+     */
+    public  $notifications;
+
+    /**
+     * Turn on/off the monetary l10n settings.
+     *
+     * @var boolean $show_locale
+     */
+    private $show_locale;
+
+    //---------------------------------------------
+    // Methods
+    //---------------------------------------------
+
+    /**
+     * Run this whenever the class is instantiated.
+     *
+     * @param mixed[] $params a named array where key is the string of a wpCSL_plugin__slplus property, key is the initial value.
+     */
     function __construct($params) {
 
         // These settings can be overridden
         //
-        $this->no_license       = false;
-        $this->themes_enabled   = false;
-        $this->columns          = 1;
-        $this->driver_type      = 'Panhandler';
-        $this->css_prefix       = '';
-        $this->sku              = '';
-        $this->uses_money       = true;
-        $this->has_packages     = false;
-        $this->display_settings = true;
-        $this->display_settings_collapsed = false;
-        $this->show_locale      = true;
-        $this->broadcast_url    = 'http://www.charlestonsw.com/signage/index.php';
-        $this->shortcode_was_rendered = false;
-        $this->current_admin_page = '';
-        $this->prefix           = '';
+        $this->broadcast_url                = 'http://www.charlestonsw.com/signage/index.php';
+        $this->columns                      = 1;
+        $this->css_prefix                   = '';
+        $this->current_admin_page           = '';
+        $this->display_settings             = false;
+        $this->display_settings_collapsed   = false;
+        $this->driver_type                  = 'Panhandler';
+        $this->has_packages                 = false;
+        $this->no_license                   = false;
+        $this->prefix                       = '';
+        $this->show_locale                  = true;
+        $this->shortcode_was_rendered       = false;
+        $this->sku                          = '';
+        $this->themes_enabled               = false;
+        $this->use_obj_defaults             = true;
+        $this->uses_money                   = true;
         
         // Set current admin page
         //
@@ -194,15 +232,14 @@ class wpCSL_plugin__slplus {
             print "WordPress HTTP Handler is not available.<br/>\n";
         }
 
+        // Plugin Author URL
+        //
+        $this->url         = (isset($this->url          ) ? $this->url          : 'http://www.charlestonsw.com/');
+        $this->support_url = (isset($this->support_url  ) ? $this->support_url  : $this->url                    );
+
         // Debugging Flag
         $this->debugging = (get_option($this->prefix.'-debugging') == 'on');
 
-        $this->notifications_config = array(
-            'prefix' => $this->prefix,
-            'name' => $this->name,
-            'url' => 'options-general.php?page='.$this->prefix.'-options',
-        );
-        
         if ($this->driver_type != 'none') {
             require_once('CSL-products_class.php');
             $this->products_config = array(
@@ -219,7 +256,7 @@ class wpCSL_plugin__slplus {
             'css_prefix'        => $this->css_prefix,
             'plugin_url'        => $this->plugin_url,
             'name'              => $this->name,
-            'url'               => $this->url,
+            'url'               => (isset($this->url)?$this->url:null),
             'paypal_button_id'  => $this->paypal_button_id,
             'no_license'        => $this->no_license,
             'sku'               => $this->sku,
@@ -235,7 +272,7 @@ class wpCSL_plugin__slplus {
             require_once('CSL-cache_class.php');
             $this->cache_config = array(
                 'prefix' => $this->prefix,
-                'path' => $this->cache_path
+                'path' => (isset($this->cache_path)?$this->cache_path:$this->plugin_path)
             );
         }
 
@@ -252,6 +289,7 @@ class wpCSL_plugin__slplus {
          * License Object Config (if needed)
          */
         if ($this->has_packages || !$this->no_license) {
+            require_once('CSL-license_class.php');
             $this->license_config = array(
                 'prefix'        => $this->prefix,
                 'http_handler'  => $this->http_handler,
@@ -260,14 +298,6 @@ class wpCSL_plugin__slplus {
                 'parent'        => $this
             );
         }            
-
-        $this->themes_config = array(
-            'prefix'        => $this->prefix,
-            'plugin_path'   => $this->plugin_path,
-            'plugin_url'    => $this->plugin_url,  
-            'support_url'   => $this->support_url,
-            'parent'        => $this
-        );
 
         $this->initialize();
     }
@@ -360,22 +390,24 @@ class wpCSL_plugin__slplus {
         }
     }    
 
-    /**-------------------------------------
-     ** method: create_notifications
-     **/
+    /**
+     * Setup the WPCSL Notifications Object.
+     *
+     * Does not include the class or invoke the object if the class type is 'none'.
+     *
+     * @param string $class - 'none' to disable notifications
+     */
     function create_notifications($class = 'none') {
-        switch ($class) {
-            case 'none':
-                break;
-
-            case 'wpCSL_notifications__slplus':
-            case 'default':
-            default:
-                $this->notifications = 
-                    new wpCSL_notifications__slplus($this->notifications_config);
-        }
+        if ($class==='none') { return; }
+        require_once('CSL-notifications_class.php');
+        $this->notifications_config = array(
+            'prefix' => $this->prefix,
+            'name' => $this->name,
+            'url' => 'options-general.php?page='.$this->prefix.'-options',
+        );
+        $this->notifications = 
+            new wpCSL_notifications__slplus($this->notifications_config);
     }
-    
    
     /**-------------------------------------
      ** method: create_products
@@ -411,23 +443,25 @@ class wpCSL_plugin__slplus {
         }
     }
 
-   
-    /**-------------------------------------
-     ** method: create_themes
-     **/
+
+    /**
+     * Create the theme object and attach it.
+     *
+     * @param string $class 'none' to disable themes.
+     * @return null
+     */
     function create_themes($class = 'none') {
-        switch ($class) {
-            case 'none':
-                break;
-
-            case 'wpCSL_products__slplus':
-            case 'default':
-            default:
-                $this->themes = new wpCSL_themes__slplus($this->themes_config);
-
-        }
+        if ($class === 'none') { return; }
+        require_once('CSL-themes_class.php');
+        $this->themes_config = array(
+            'prefix'        => $this->prefix,
+            'plugin_path'   => $this->plugin_path,
+            'plugin_url'    => $this->plugin_url,
+            'support_url'   => $this->support_url,
+            'parent'        => $this
+        );
+        $this->themes = new wpCSL_themes__slplus($this->themes_config);
     }    
-    
 
     /**-------------------------------------
      ** method: create_license
@@ -679,13 +713,9 @@ class wpCSL_plugin__slplus {
         return $links;
     }
 
-    /**-------------------------------------
-     ** method: admin_init
-     **
-     ** What we do whenever an admin page is initialized.
-     ** This is called by Wordpress.
-     **
-     **/
+    /**
+     * WordPress admin_init hook (runs after admin_menu has run)
+     */
     function admin_init() {
         if ($this->display_settings) { $this->add_display_settings(); }
         $this->settings->register();
@@ -795,12 +825,11 @@ class wpCSL_plugin__slplus {
         }
     }
 
-    /**-------------------------------------
-     * method: add_display_settings
-     *
+    /**
      * Add the display settings section to the admin panel.
      *
-     **/
+     * @return none
+     */
     function add_display_settings() {      
         $this->settings->add_section(array(
                 'name' => __('Display Settings',WPCSL__slplus__VERSION),
@@ -812,16 +841,23 @@ class wpCSL_plugin__slplus {
         if ($this->themes_enabled) {
             $this->themes->add_admin_settings();
         }
-        
-        
-        if (get_option($this->prefix.'-locale')) {
-            setlocale(LC_MONETARY, get_option($this->prefix.'-locale'));
-        }
 
         // If we have an exec function and get locales, show the pulldown.
         //        
         if ($this->show_locale){
-            if (function_exists('exec')) {
+            setlocale(LC_MONETARY, get_option($this->prefix.'-locale',get_locale()));
+
+            // Exec function exists.
+            // Exec is not disabled.
+            // Safe Mode is not on.
+            $exec_enabled =
+                 function_exists('exec')                                            &&
+                 !in_array('exec', array_map('trim',explode(', ', ini_get('disable_functions'))))     &&
+                 (strtolower( ini_get( 'safe_mode' ) ) != 'off')
+                 ;
+
+            if ($exec_enabled) {
+
                 if (exec('locale -a', $locales)) {
                     $locale_custom = array();
         
@@ -856,8 +892,8 @@ class wpCSL_plugin__slplus {
         // Show money pulldown if we are using Panhandler or have set the uses_money flag
         //
         if  (
-            (($this->driver_type == 'Panhandler') || $this->uses_money) && 
-            (function_exists('money_format')) 
+            ($this->show_locale) &&
+            (($this->driver_type == 'Panhandler') || $this->uses_money) && (function_exists('money_format')) 
             ) {
                 $this->settings->add_item(
                     'Display Settings', 
@@ -879,12 +915,11 @@ class wpCSL_plugin__slplus {
        if (isset($this->rate_url)){
 
         	$time = time(); 
-            $destruct_time =($time+(3*24*60*60));
             
             //-use this to force the notification for 72 hours checked or not
             //update_option($this->prefix."-notice-countdown", $destruct_time);
             
-            $destruct_time = get_option($this->prefix."-notice-countdown", $destruct_time);
+            $destruct_time = get_option($this->prefix."-notice-countdown", ($time+(3*24*60*60)));
             // have we already expired a timer
             if ($destruct_time === false) {
                 return;
@@ -927,20 +962,17 @@ class wpCSL_plugin__slplus {
                     //add our notice
                     $this->notifications->add_notice(
                         9,
-                        sprintf(
-                            __('Let us know how awesome '.$this->name.' is! Go to 
-                            <a href="'.$this->rate_url.'" target="_blank">the plugin page</a>.  
-                            and rate the plugin.  </br> Turn off this message in 
-                            <a href="'.admin_url().'/options-general.php?page='.$this->prefix.'-options#display_settings">Display Settings.</a> 
-                            Is something not right? <a href="'.$this->forum_url.'" target="_blank">Let us know.</a>
-                            This message will self destruct in: '.$hours_remaining.'',WPCSL__slplus__VERSION)
-                            )
-                        
-        			);
-                    }
-        		}
+                        __('Let us know how awesome '.$this->name.' is! Go to 
+                        <a href="'.$this->rate_url.'" target="_blank">the plugin page</a>.  
+                        and rate the plugin.  </br> Turn off this message in 
+                        <a href="'.admin_url().'/options-general.php?page='.$this->prefix.'-options#display_settings">Display Settings.</a> 
+                        Is something not right? <a href="'.$this->forum_url.'" target="_blank">Let us know.</a>
+                        This message will self destruct in: '.$hours_remaining,WPCSL__slplus__VERSION)                        
+                    );
+                }
+
             //checkbox was hit, so update to false
-            else {
+            } else {
                 update_option($this->prefix."-notice-countdown", false);
             }
             
@@ -958,6 +990,30 @@ class wpCSL_plugin__slplus {
 
             update_option($this->prefix."-notice-countdown", $destruct_time);
         }
+    }
+
+    /**
+     * Add DebugMyPlugin messages.
+     *
+     * @param string $panel - panel name
+     * @param string $type - what type of debugging (msg = simple string, pr = print_r of variable)
+     * @param string $header - the header
+     * @param string $message - what you want to say
+     * @param string $file - file of the call (__FILE__)
+     * @param int $line - line number of the call (__LINE__)
+     * @param boolean $notime - show time? default true = yes.
+     * @return null
+     */
+    function debugMP($panel='main', $type='msg', $header='wpCSL DMP',$message='',$file=null,$line=null,$notime=false) {
+        if (!isset($GLOBALS['DebugMyPlugin'])) { return; }
+        if (!isset($GLOBALS['DebugMyPlugin']->panels[$panel])) { return; }
+        switch (strtolower($type)):
+            case 'pr':
+                $GLOBALS['DebugMyPlugin']->panels[$panel]->addPR($header,$message,$file,$line,$notime);
+                break;
+            default:
+                $GLOBALS['DebugMyPlugin']->panels[$panel]->addMessage($header,$message,$file,$line,$notime);
+        endswitch;
     }
 
     /**-------------------------------------
