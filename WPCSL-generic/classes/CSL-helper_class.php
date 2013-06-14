@@ -228,7 +228,7 @@ class wpCSL_helper__slplus {
     function SaveCheckboxToDB($boxname,$prefix = null, $separator='-') {
         if ($prefix === null) { $prefix = $this->parent->prefix; }
         $whichbox = $prefix.$separator.$boxname;
-        $_POST[$whichbox] = isset($_POST[$whichbox])?1:0;
+        $_POST[$whichbox] = (isset($_POST[$whichbox])&&!empty($_POST[$whichbox]))?1:0;
         $this->SavePostToOptionsTable($whichbox,0);
     }
 
