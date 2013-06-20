@@ -44,24 +44,16 @@
 *     * 'has_packages' :: defaults to false, if true that means the main product is
 *       not licensed but we still need the license class to manage add-ons.
 *
- *    * 'admin_slugs' :: and array (or single string) of valid admin page slugs for this plugin.
- *
- *
- *
- *
- **/
-if (!defined('WPCSL__slplus__VERSION')) { define('WPCSL__slplus__VERSION', '2.3.1'); }
+**/
+
+
+// The wpCSL version
+//
+if (!defined('WPCSL__slplus__VERSION')) { define('WPCSL__slplus__VERSION', '2.4'); }
 
 // WP App Store Affiliate ID
-if (!defined('WPAS_AFFILIATE_ID')) { define('WPAS_AFFILIATE_ID','3368'); }
-
-// These helper files should only be loaded if needed by the plugin
-// that is asking for WPCSL-Generic services.
 //
-// Wrap inside the init and check the class properties first?
-// 
-require_once('CSL-helper_class.php');
-require_once('CSL-settings_class.php');
+if (!defined('WPAS_AFFILIATE_ID')) { define('WPAS_AFFILIATE_ID','3368'); }
 
 /**
  * The base WPCSL class, to which all the other WPCSL objects get attached.
@@ -69,7 +61,8 @@ require_once('CSL-settings_class.php');
  * @author Lance Cleveland <lance@charlestonsw.com>
  * @copyright 2013 Charleston Sofware Associates, LLC
  * @package wpCSL
- * @version 2.3.1
+ * @version 2.4
+ *
  */
 class wpCSL_plugin__slplus {
 
@@ -78,11 +71,29 @@ class wpCSL_plugin__slplus {
     //---------------------------------------------
 
     /**
+     * The registered admin page hooks for the plugin.
+     * 
+     * @var string[] $admin_slugs
+     */
+     private $admin_slugs = array();
+
+    /**
      * Render the display panel on the settings interface? true = yes.
      *
      * @var boolean $display_settings render the display panel on the settings interface?
      */
     private $display_settings = false;
+
+    /**
+     * Debug My Plugin stack
+     * 
+     * named array, key is the panel ID
+     * 
+     * key is an array that is the params for the DMP function calls.
+     * 
+     * @var mixed[]
+     */
+    private $dmpStack = array('main' => array());
 
     /**
      * The plugin meta data.
@@ -99,11 +110,32 @@ class wpCSL_plugin__slplus {
     public  $notifications;
 
     /**
+     * The fully qualified directory name where the plugin is installed.
+     *
+     * @var string $plugin_path
+     */
+    public $plugin_path;
+
+    /**
+     * The URL that reaches the home directory for the plugin.
+     *
+     * @var string $plugin_url
+     */
+    public $plugin_url;
+
+    /**
      * Turn on/off the monetary l10n settings.
      *
      * @var boolean $show_locale
      */
     private $show_locale;
+
+    /**
+     * The wpCSL style sheet handle.
+     * 
+     * @var string $styleHandle
+     */
+    private $styleHandle = 'wpcsl';
 
     //---------------------------------------------
     // Methods
@@ -115,6 +147,11 @@ class wpCSL_plugin__slplus {
      * @param mixed[] $params a named array where key is the string of a wpCSL_plugin__slplus property, key is the initial value.
      */
     function __construct($params) {
+
+        // TODO: Move these into the object init as needed.
+        //
+        require_once('CSL-helper_class.php');
+        require_once('CSL-settings_class.php');
 
         // These settings can be overridden
         //
@@ -261,8 +298,7 @@ class wpCSL_plugin__slplus {
             'no_license'        => $this->no_license,
             'sku'               => $this->sku,
             'has_packages'      => $this->has_packages,
-            'parent'            => $this
-            
+            'parent'            => $this            
         );
 
         /**
@@ -299,7 +335,12 @@ class wpCSL_plugin__slplus {
             );
         }            
 
-        $this->initialize();
+        // Initialize
+        $this->create_objects();
+        $this->add_refs();
+        if (isset($this->driver_name))
+            $this->load_driver();
+        $this->add_wp_actions();
     }
 
     /**-------------------------------------
@@ -353,6 +394,20 @@ class wpCSL_plugin__slplus {
         }
 
         return false;                 // And tell our "callers"    
+    }
+
+    /**
+     * Create a Map Settings Debug My Plugin panel.
+     *
+     * @return null
+     */
+    function create_DMPPanels() {
+        if (!isset($GLOBALS['DebugMyPlugin'])) { return; }
+        if (class_exists('DMPPanelSLPMain') == false) {
+            require_once($this->plugin_path.'/WPCSL-generic/classes/class.dmppanels.php');
+        }
+        $GLOBALS['DebugMyPlugin']->panels['wpcsl.main']        = new DMPPanelWPCSLMain();
+        $GLOBALS['DebugMyPlugin']->panels['wpcsl.settings']    = new DMPPanelWPCSLSettings();
     }
 
     /**-------------------------------------
@@ -621,30 +676,19 @@ class wpCSL_plugin__slplus {
         }
     }
 
-    /**-------------------------------------
-     ** method: initialize
-     **/
-    function initialize() {
-        $this->create_objects();
-        $this->add_refs();
-        if (isset($this->driver_name))
-            $this->load_driver();
-        $this->add_wp_actions();
-    }
-
-    /**-------------------------------------
-     ** method: add_wp_actions
-     **
-     ** What we do when WordPress is initializing actions
-     **
-     ** Note: admin_menu is not called on every admin page load
-     ** Reference: http://codex.wordpress.org/Plugin_API/Action_Reference
-     **/
+    /**
+     * Setup WordPress action scripts.
+     *
+     * Note: admin_menu is not called on every admin page load
+     * Reference: http://codex.wordpress.org/Plugin_API/Action_Reference
+     */
     function add_wp_actions() {
         if ( is_admin() ) {
-            add_action('admin_menu', array($this, 'create_options_page'));
-            add_action('admin_init', array($this, 'admin_init'),50);
-            add_action('admin_notices', array($this->notifications, 'display'));          
+            add_action('admin_menu'             ,array($this,'create_options_page'      )   );
+            add_action('admin_init'             ,array($this,'admin_init'               ),50);
+            add_action('admin_enqueue_scripts'  ,array($this,'enqueue_admin_stylesheet' )   );
+            add_action('admin_notices'          ,array($this->notifications, 'display'  )   );
+            add_action('dmp_addpanel'           ,array($this,'create_DMPPanels'         )   );
         } else {
             if (!$this->themes_enabled && !$this->no_default_css) {
                 // non-admin enqueues, actions, and filters
@@ -962,12 +1006,16 @@ class wpCSL_plugin__slplus {
                     //add our notice
                     $this->notifications->add_notice(
                         9,
-                        __('Let us know how awesome '.$this->name.' is! Go to 
-                        <a href="'.$this->rate_url.'" target="_blank">the plugin page</a>.  
-                        and rate the plugin.  </br> Turn off this message in 
-                        <a href="'.admin_url().'/options-general.php?page='.$this->prefix.'-options#display_settings">Display Settings.</a> 
-                        Is something not right? <a href="'.$this->forum_url.'" target="_blank">Let us know.</a>
-                        This message will self destruct in: '.$hours_remaining,WPCSL__slplus__VERSION)                        
+                        __("<a href='{$this->rate_url}' target='_blank'>Rating {$this->name}</a> "                  .
+                        'a great, and free, way to show your support!  '                                              .
+                        "Is something not right? <a href='{$this->forum_url}' target='_blank'>Let me know</a>. "    .
+                        '<br/>'                                                                                     .
+                        'This message will self destruct in: '.$hours_remaining.' '                                 .
+                        'You can turn off this message sooner via the Display Settings on the <a href="'                                    .
+                            admin_url().'/options-general.php?page='.$this->prefix.'-options#display_settings">'    .
+                        'general settings page.</a> '
+                        ,
+                        WPCSL__slplus__VERSION)
                     );
                 }
 
@@ -1004,9 +1052,29 @@ class wpCSL_plugin__slplus {
      * @param boolean $notime - show time? default true = yes.
      * @return null
      */
-    function debugMP($panel='main', $type='msg', $header='wpCSL DMP',$message='',$file=null,$line=null,$notime=false) {
-        if (!isset($GLOBALS['DebugMyPlugin'])) { return; }
-        if (!isset($GLOBALS['DebugMyPlugin']->panels[$panel])) { return; }
+    function debugMP($panel='main', $type='msg', $header='wpCSL DMP',$message='',$file=null,$line=null,$notime=false,$clearingStack=false) {
+
+        // Panel not setup yet?  Push onto stack.
+        //
+        if (
+            !isset($GLOBALS['DebugMyPlugin']) ||
+            !isset($GLOBALS['DebugMyPlugin']->panels[$panel])
+           ) {
+            if (!isset($this->dmpStack[$panel])) { $this->dmpStack[$panel] = array(); }
+            array_push($this->dmpStack[$panel],array($type,$header,$message,$file,$line,$notime));
+            return;
+        }
+
+        // Have waiting messages?  Pop off stack.
+        //
+        if (!$clearingStack && isset($this->dmpStack[$panel]) && is_array($this->dmpStack[$panel])) {
+            while ($dmpMessage = array_shift($this->dmpStack[$panel])) {
+                $this->debugMP($panel,$dmpMessage[0],$dmpMessage[1],$dmpMessage[2],$dmpMessage[3],$dmpMessage[4],$dmpMessage[5],true);
+            }
+        }
+
+        // Do normal real-time message output.
+        //
         switch (strtolower($type)):
             case 'pr':
                 $GLOBALS['DebugMyPlugin']->panels[$panel]->addPR($header,$message,$file,$line,$notime);
@@ -1253,7 +1321,36 @@ class wpCSL_plugin__slplus {
 
         return $results;
     }
-    
+
+    /**
+     * Enqueue the admin stylesheet when needed.
+     *
+     * @var string $hook
+     */
+    function enqueue_admin_stylesheet($hook) {
+        $this->debugMP('main','msg','wpCSL.enqueue_admin_stylesheet('.$hook.')','',NULL,NULL,true);
+
+        // The CSS file must exists where we expect it and
+        // The admin page being rendered must be in "our family" of admin pages
+        //
+        if (    file_exists($this->plugin_path.'/WPCSL-generic/assets/wpcsl.css') &&
+                array_search($hook, apply_filters('wpcsl_admin_slugs',$this->admin_slugs))
+           ) {
+            wp_register_style($this->styleHandle, $this->plugin_url .'/WPCSL-generic/assets/wpcsl.css');
+            wp_enqueue_style($this->styleHandle);
+
+            if (file_exists($this->plugin_path.'/WPCSL-generic/assets/wpcsl-admin-interface.js')) {
+                wp_enqueue_script(
+                        $this->styleHandle,
+                        $this->plugin_url .'/WPCSL-generic/assets/wpcsl-admin-interface.js',
+                        'jquery',
+                        WPCSL__slplus__VERSION,
+                        true
+                        );
+            }
+        }
+    }
+
     /**-----------------------------------
      * method: http_result_is_ok()
      *
