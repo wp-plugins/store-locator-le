@@ -125,19 +125,6 @@ class SLPlus_AdminUI {
             // Set the in-memory location property
             //
             $this->set_CurrentLocationVal('sl_linked_postid',wp_insert_post($slpNewListing));
-
-            // Debugging output
-            //
-            $this->plugin->helper->bugout(
-                    sprintf(__('Created linked page %s for location # %s.','csa-slplus'),
-                            $this->get_CurrentLocationVal('sl_linked_postid'),
-                            $this->get_CurrentLocationVal('sl_id')
-                            ),
-                    '',
-                    'AdminUI.getorcreate_PageID()',
-                    __FILE__,
-                    __LINE__
-                    );
         }
 
         return $this->get_CurrentLocationVal('sl_linked_postid');

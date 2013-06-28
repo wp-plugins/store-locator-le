@@ -358,7 +358,7 @@ class SLPlus_AdminUI_MapSettings {
                 $selected=($this->plugin->helper->getData('map_language','get_item',null,'en')==$sl_value)?" selected " : "";
                 $slpDescription .= "<option value='$sl_value' $selected>$key</option>\n";
             }
-            $slpDescription .= "</select></div></div>";
+            $slpDescription .= "</select></div>";
             $mapSettings['features'] = apply_filters('slp_map_features_settings',$slpDescription);
 
             // Settings
