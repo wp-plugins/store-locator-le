@@ -356,16 +356,6 @@ class SLPlus_Location {
                         );
             }
         }
-
-        $this->plugin->helper->bugout(
-                (($this->id<=0) ? 'Created':'Updated') .
-                   ' location record '.$this->id.
-                   ' <pre>'.print_r($dataToWrite,true).'</pre>',
-                '',
-                'SLPlus_Location.MakePersistent()',
-                __FILE__,
-                __LINE__
-                );
     }
 
     /**

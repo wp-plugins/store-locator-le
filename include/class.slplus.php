@@ -231,8 +231,8 @@ class SLPlus extends wpCSL_plugin__slplus {
      * @param string $slug
      */
     public function register_addon($slug) {
-        list ($t1, $t2) = explode('/', $slug);
-        $this->addons[] = str_replace('.php', '', $t2);
+        $slugparts = explode('/', $slug);
+        $this->addons[] = str_replace('.php','',$slugparts[count($slugparts)-1]);
     }
 
     /**
