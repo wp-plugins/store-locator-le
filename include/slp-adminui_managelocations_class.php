@@ -571,8 +571,11 @@ class SLPlus_AdminUI_ManageLocations {
 
         if (isset($_REQUEST['act'])) {
 
-            // SAVE
-            if ($_REQUEST['act']=='save') {
+            // SAVE or EDIT
+            if (
+                ($_REQUEST['act']=='save') ||
+                ($_REQUEST['act']=='edit')
+                ){
                 $this->location_save();
 
             // DELETE
