@@ -526,6 +526,7 @@ class SLPlus_AdminUI_MapSettings {
                     __('Hong Kong'     ,'csa-slplus')=>'maps.google.com.hk',
                     __('Hungary'       ,'csa-slplus')=>'maps.google.hu',
                     __('India'         ,'csa-slplus')=>'maps.google.co.in',
+                    __('Phillipines'   ,'csa-slplus')=>'maps.google.com.ph',
                     __('Republic of Ireland','csa-slplus')=>'maps.google.ie',
                     __('Israel'        ,'csa-slplus')=>'maps.google.co.il',
                     __('Italy'         ,'csa-slplus')=>'maps.google.it',

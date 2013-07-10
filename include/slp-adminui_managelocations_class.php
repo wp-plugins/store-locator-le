@@ -500,17 +500,6 @@ class SLPlus_AdminUI_ManageLocations {
                 if (confirm(message)) {	location.href=href; }
                 else  { return false; }
             }
-            function checkAll(cbox,formObj) {
-                var i=0;
-                if (cbox.checked==true)
-                    cbox.checked==false;
-                else
-                    cbox.checked==true;
-                while (formObj.elements[i]!=null) {
-                    formObj.elements[i].checked=cbox.checked;
-                    i++;
-                }
-            }
             function doAction(theAction,thePrompt) {
                 if((thePrompt == '') || confirm(thePrompt)){
                     LF=document.forms['locationForm'];
@@ -780,14 +769,6 @@ class SLPlus_AdminUI_ManageLocations {
             //
             print  "<div id='location_table_wrapper'>";
 
-            // Add Form (hidden)
-            //
-            print
-                '<div id="add_location_form" style="display:none;">'.
-                $this->plugin->AdminUI->createString_LocationInfoForm(array(),'', true) .
-                '</div>'
-                ;
-
             // Manage
             //
             print  "<table id='manage_locations_table' class='slplus wp-list-table widefat fixed posts' cellspacing=0>" .
@@ -866,7 +847,7 @@ class SLPlus_AdminUI_ManageLocations {
                             "name='{$cleanName}' "                                                              .
                             "class='slp_managelocations_row $colorClass' "                                                   .
                             ">"                                                                                 .
-                        "<th class='th_checkbox'><input type='checkbox' name='sl_id[]' value='$locID'></th>"    .
+                        "<th class='th_checkbox'><input type='checkbox' class='slp_checkbox' name='sl_id[]' value='$locID'></th>"    .
                         "<th class='thnowrap'><div class='action_buttons'>".
                             $actionButtonsHTML . 
                         "</div></th>"

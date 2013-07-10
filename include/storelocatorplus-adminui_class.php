@@ -697,10 +697,14 @@ class SLPlus_AdminUI {
      */
     function manage_locations_table_header($slpManageColumns,$slpCleanURL,$opt,$dir) {
         $tableHeaderString =
-                "<thead>
-                <tr >
-                    <th id='top_of_checkbox_column'><input type='checkbox' onclick='checkAll(this,document.forms[\"locationForm\"])' class='button'></th>
-                    <th id='top_of_actions_column'>".__("Actions", 'csa-slplus')."</th>"
+            '<thead>'                                                                                                           .
+                '<tr >'                                                                                                         .
+                    "<th id='top_of_checkbox_column'>"                                                                          .
+                        "<input type='checkbox' onclick='jQuery(\".slp_checkbox\").attr(\"checked\",true);' class='button'>"    .
+                    '</th>'                                                                                                     .
+                    "<th id='top_of_actions_column'>"                                                                           .
+                        __('Actions', 'csa-slplus')                                                                             .
+                    '</th>'
                 ;
         foreach ($slpManageColumns as $slpField => $slpLabel) {
             $tableHeaderString .= $this->slpCreateColumnHeader($slpCleanURL,$slpField,$slpLabel,$opt,$dir);

@@ -375,7 +375,6 @@ class SLPlus_UI {
                     "<tr id='search_form_table_row'>".
                         "<td id='search_form_table_cell' valign='top'>".
                             "<div id='address_search'>".
-            $this->plugin->helper->get_string_from_phpexec(SLPLUS_COREDIR . 'templates/search_form.php') .
             apply_filters('slp_search_form_divs','') .
             '</div></td></tr></tbody></table></form>'
             ;
