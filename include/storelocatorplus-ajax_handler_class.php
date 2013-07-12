@@ -214,14 +214,6 @@ class SLPlus_AjaxHandler {
         // Post options that tweak the query
         //........
 
-        // Name Filters
-        //
-        if ((get_option(SLPLUS_PREFIX.'_show_name_search') == 1) &&
-            isset($_POST['name']) && ($_POST['name'] != ''))
-        {
-            add_filter('slp_location_filters_for_AJAX',array($this,'filter_JSONP_SearchByStore'));
-        }
-
         // Add all the location filters together for SQL statement.
         // FILTER: slp_location_filters_for_AJAX
         //
@@ -239,7 +231,7 @@ class SLPlus_AjaxHandler {
             "( $multiplier * acos( cos( radians('%s') ) * cos( radians( sl_latitude ) ) * cos( radians( sl_longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( sl_latitude ) ) ) ) AS sl_distance ".
             "FROM {$this->plugin->db->prefix}store_locator ".
             "WHERE sl_longitude<>'' and sl_latitude<>'' ".
-            $filterClause .
+            $filterClause . ' ' .
             "HAVING (sl_distance < %d) ".
             'ORDER BY sl_distance ASC '.
             'LIMIT %d'
@@ -276,21 +268,6 @@ class SLPlus_AjaxHandler {
         // Return the results
         //
         return $result;
-    }
-
-    /**
-     * Add the store name condition to the MySQL statement used to fetch locations with JSONP.
-     *
-     * @param type $currentFilters
-     * @return type
-     */
-    function filter_JSONP_SearchByStore($currentFilters) {
-        $posted_name = preg_replace('/^\s+(.*?)/','$1',$_POST['name']);
-        $posted_name = preg_replace('/(.*?)\s+$/','$1',$posted_name);
-        return array_merge(
-                $currentFilters,
-                array(" AND (sl_store LIKE '%%".$posted_name."%%')")
-                );
     }
 
     /**

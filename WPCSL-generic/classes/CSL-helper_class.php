@@ -143,7 +143,8 @@ class wpCSL_helper__slplus {
          * @return string - the HTML
          */
         function CreateHelpDiv($divname,$msg) {
-            return "<a class='moreinfo_clicker' onclick=\"jQuery('div#".$this->parent->css_prefix."-help$divname').toggle('slow');\" href=\"javascript:;\">".
+            $jqDivName = str_replace(']','\\\\]',str_replace('[','\\\\[',$divname));
+            return "<a class='moreinfo_clicker' onclick=\"jQuery('div#".$this->parent->css_prefix."-help$jqDivName').toggle('slow');\" href=\"javascript:;\">".
                 '<div class="'.$this->parent->css_prefix.'-moreicon" title="click for more info"><br/></div>'.
                 "</a>".
                 "<div id='".$this->parent->css_prefix."-help$divname' class='input_note' style='display: none;'>".
