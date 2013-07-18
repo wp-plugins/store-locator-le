@@ -509,8 +509,10 @@ var csl = {
                 // If immediately show locations is enabled.
                 //
                 if (slplus.load_locations === '1') {
+                        if (slplus.options.no_homeicon_at_start !== '1') {
                         this.homePoint = center;
                         this.addMarkerAtCenter();
+                        }
                         var tag_to_search_for = this.saneValue('tag_to_search_for', '');
 
                         // Default radius for immediately show locations
@@ -711,7 +713,11 @@ var csl = {
                 //
                 var newZoom =
                     Math.max(Math.min(
-                        ((this.loadedOnce ||(markerList.length >1)) ?
+                        (
+                         (
+                          (slplus.options.no_autozoom !== "1") &&
+                          (this.loadedOnce || (markerList.length >1))
+                          ) ?
                           this.gmap.getZoom() - parseInt(slplus.zoom_tweak) :
                           parseInt(slplus.zoom_level)
                         )
@@ -1114,7 +1120,6 @@ var csl = {
   	  	 * @returns {string} a html div with the data properly displayed
   	  	 */
 		this.createSidebar = function(aMarker) {
-			document.getElementById('map_sidebar_td').style.display='block';
 			var div = document.createElement('div');
 			var link = '';
 			var street = aMarker.address;
@@ -1184,11 +1189,15 @@ var csl = {
             //
             String.prototype.format = function() {
              var args = arguments;
-             return this.replace(/{(\d+)(\.(\w+))*}/g, function(match, number, dotsubname, subname) {
+             return this.replace(/{(\d+)(\.(\w+)\.?(\w+)?)?}/g, function(match, number, dotsubname, subname,subsubname) {
                return typeof args[number] !== 'undefined'
                  ? typeof args[number] !== 'object'
                      ? args[number]
-                     : args[number][subname]
+                     : typeof args[number][subname] !== 'object'
+                         ? args[number][subname]
+                         : (args[number][subname] !== null)
+                            ? args[number][subname][subsubname]
+                            : ''
                  : match
                ;
              });
@@ -1440,7 +1449,7 @@ jQuery(document).ready(
 
                 // Our map initialization
                 //
-                if (jQuery('div#sl_div').is(":visible")) {
+                if (jQuery('div#map').is(":visible")) {
                     InitializeTheMap();
                 }
     }

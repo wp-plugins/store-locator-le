@@ -2,10 +2,10 @@
 Plugin Name:  Store Locator Plus
 Contributors: charlestonsw
 Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
-Tags: store locator,mapping,map,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
+Tags: store locator,location management,location map,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 3.11.8
+Stable tag: 3.11.14
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
 
@@ -190,6 +190,8 @@ Users that opt not to purchase the Pro Pack can still customize the look by edit
 
 = Special Thanks =
 
+Thank you, [Jan de Baat](www.de-baat.nl), for the Dutch translation.
+
 Thanks to [Nicolas Mollet](http://mapicons.nicolasmollet.com/) and Icons-Land (http://www.icons-land.com/) via Icon Finder for some of the great icons.
 
 [Massive Creative](http://www.massivecreativeinc.com) for some of our banners and other creative work.
@@ -276,6 +278,37 @@ I update about once per month or more frequently as needed.
 Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
 
 I was listing the entire change log here but with weekly/bi-weekly updates it as getting much too long.
+
+= 3.11.14 =
+
+* Enhancement: Tweak the results output handler to accommodate new results fields with the {18.*} results code.
+* Enhancement: Added United Arab Emirates (maps.google.ae) to the countries list.
+
+= 3.11.13 =
+
+* Enhancement: Added Dutch (Netherlands, language code: NL) translation files.
+
+= 3.11.12 =
+
+* Enhancement: Remove call to defunct php file, increasing search form rendering speed.
+* Enhancement: Add Philippines (maps.google.com.ph) to the countries list.
+* Fix: Check all on manage locations no longer selects Tagalong tags.
+
+= 3.11.11 =
+
+* Enhancement: General Settings/Plugin News shows the current published date and version of the base plugin.
+* Enhancement: General Settings/Plugin News highlights the active installed add-on packs.
+* Fix: Edit locations saving.
+
+= 3.11.10 =
+
+* Fix: registering of add-on packs is more accurate, for widget pack update
+
+= 3.11.9 =
+
+* Enhancement: Inherit SLP 4.0 Admin interface
+* Fix: Help icons fixed on multiple settings.
+* Fix: Div structures on admin pages.
 
 = 3.11.8 =
 

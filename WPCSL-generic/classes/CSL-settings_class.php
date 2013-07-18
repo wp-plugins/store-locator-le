@@ -10,6 +10,25 @@
  */
 class wpCSL_settings__slplus {
 
+    //-----------------------------
+    // Properties
+    //-----------------------------
+
+    /**
+     * The main WPCSL object.
+     * 
+     * @var wpCSL_plugin__slplus
+     */
+    private $parent;
+
+    /**
+     * The settings page "containers" for settings.
+     * 
+     * @var \wpCSL_settings_section__slplus $sections
+     */
+    private $sections;
+
+
     /**------------------------------------
      ** method: __construct
      **
@@ -24,7 +43,7 @@ class wpCSL_settings__slplus {
         $this->save_text =__('Save Changes',WPCSL__slplus__VERSION);
         $this->css_prefix = '';
         $this->has_packages = false;
-
+        
         // Passed Params
         //
         foreach ($params as $name => $value) {
@@ -34,121 +53,67 @@ class wpCSL_settings__slplus {
         // Only do this if we are on admin panel
         //
         if (isset($this->parent) && (is_admin() && $this->parent->isOurAdminPage)) {
-            add_action('admin_init',array($this,'create_SettingsPanel'));
+            add_action('admin_init',array($this,'create_InfoSection'));
         }
     }
 
     /**
-     * Create the settings panel when admin is ready to init.
+     * Create the plugin news section.
+     *
+     */
+    function create_InfoSection() {
+        $this->add_section(array(
+                'name'          => 'Plugin News',
+                'div_id'        => 'plugin_news',
+                'description'   => $this->get_broadcast(),
+                'auto'          => true,
+                'innerdiv'      => true,
+            )
+        );
+    }
+
+    /**
+     * Create the Environment Panel
      *
      * @global type $wpdb
      */
-    function create_SettingsPanel() {
+    function create_EnvironmentPanel() {
+        if (!isset($this->parent))          { return; }
+        if (!is_admin())                    { return; }
+        if (!$this->parent->isOurAdminPage) { return; }
+        if (!$this->render_csl_blocks)      { return; }
+
         global $wpdb;
-
-        // Only show the license section if the plugin settings
-        // wants a license module
-        if (!$this->no_license) {
-            $this->license_section_title = 'Plugin License';
-            $this->add_section(array(
-                    'name' => $this->license_section_title,
-                    'description' => "<p>To obtain a key, please purchase this plugin " .
-                        "from <a href=\"{$this->url}\" target=\"_new\">{$this->url}</a>.</p>",
-                    'auto' => false,
-                    'div_id' => 'csl_license_block'
-                )
-            );
-
-        // We don't have a main license but we have paid option
-        // packages
-        } else if ($this->has_packages) {
-            $this->license_section_title = 'Premium Options';
-            $this->add_section(array(
-                    'name' => $this->license_section_title,
-                    'description' => "<h1>{$this->name} has premium options available.</h1>" .
-                        "<p>Visit <a href=\"{$this->url}\" target=\"_new\">{$this->url}</a> to " .
-                        "learn more about the available add-on packages.<br/> After you purchase " .
-                        "an add-on package come back here to activate your add-on packages.</p>",
-                    'auto' => false,
-                    'div_id' => 'csl_license_block'
-                )
-            );
-        }
-
-        // Render CSL Blocks - if set false we don't need this overhead
-        //
-        if ($this->render_csl_blocks) {
-            $this->csl_php_modules = get_loaded_extensions();
-            natcasesort($this->csl_php_modules);
-            global $wpdb;
-            $this->parent->metadata = get_plugin_data($this->parent->fqfile, false, false);
-
-            $this->add_section(
-                array(
-                    'name' => 'Plugin Environment',
-                    'description' =>
-                        '<p>Here are the technical details about your plugin:<br />'.
-                    
-                        $this->create_EnvDiv($this->parent->metadata['Name'].' Version' ,$this->parent->metadata['Version'] ).
-                        $this->create_EnvDiv('WPCSL Version'                            ,WPCSL__slplus__VERSION             ).
-                        $this->create_EnvDiv('WordPress Version'                        ,$GLOBALS['wp_version']             ).
-                        $this->create_EnvDiv('MySQL Version'                            ,$wpdb->db_version()                ).
-                        $this->create_EnvDiv('PHP Version'                              ,phpversion()                       ).
-                        $this->create_EnvDiv('CSA IP Addresses'                         ,
-                                gethostbyname('charlestonsw.com') .' and ' .gethostbyname('license.charlestonsw.com')       ).
-
-                        '<div style="clear:left;">
-                               <div style="width:150px; float:left; text-align: right;
-                                   padding-right: 6px;">Active WPCSL:</div>
-                               <div style="float: left;">' . plugin_dir_path(__FILE__) . '</div>
-                             </div>
-                             <div style="clear:left;">
-                               <div style="width:150px; float:left; text-align: right;
-                                   padding-right: 6px;">Site URL:</div>
-                               <div style="float: left;">' . get_option('siteurl') . '</div>
-                             </div>
-                             '
-                             .(
-                             $this->parent->no_license?
-                                '':
-                                '<div style="clear:left;">
-                                  <div style="width:150px; float:left; text-align: right;
-                                      padding-right: 6px;">Encryption Key:</div>
-                                  <div style="float: left;">' . md5(get_option($this->prefix.'-license_key')) . '</div>
-                                </div>
-                                <div style="clear:left;">
-                               <div style="width:150px; float:left; text-align: right;
-                                   padding-right: 6px;">License Key:</div>
-                               <div style="float: left;">' . (get_option($this->prefix.'-purchased')?'licensed':'unlicensed') . '</div>
-                             </div>'
-                             ).
-                             '<div style="clear:left;">
-                               <div style="width:150px; float:left; text-align: right;
-                                   padding-right: 6px;">PHP Web App Peak RAM:</div>
-                               <div style="float: left;">' . sprintf('%0.2d MB',memory_get_peak_usage(true)/1024/1024) .'</div>
-                             </div>                                 <div style="clear:left;">
-                               <div style="width:150px; float:left; text-align: right;
-                                   padding-right: 6px;">PHP Modules:</div>
-                               <div style="float: left;">' .
-                                 implode('<br/>',$this->csl_php_modules) . '
-                               </div>
-                             </div>
-                             <div style="clear:left;">&nbsp;</div>
-                           </div>
-                         </p>',
-                    'auto' => false,
-                    'start_collapsed' => false
-                )
-            );
-
-            $this->add_section(array(
-                    'name' => 'Plugin Info',
-                    'div_id' => 'csa_plugin_info',
-                    'description' => $this->get_broadcast(),
-                    'auto' => false
-                )
-            );
-        }
+        $this->csl_php_modules = get_loaded_extensions();
+        natcasesort($this->csl_php_modules);
+        $this->parent->metadata = get_plugin_data($this->parent->fqfile, false, false);
+        $this->add_section(
+            array(
+                'name' => 'Plugin Environment',
+                'description' =>
+                    $this->create_EnvDiv($this->parent->metadata['Name'] . ' Version' ,$this->parent->metadata['Version'] ).
+                    $this->create_EnvDiv('CSA IP Addresses'                         ,
+                            gethostbyname('charlestonsw.com') .' and ' .gethostbyname('license.charlestonsw.com')       ).
+                    '<br/><br/>' .
+                    $this->create_EnvDiv('WPCSL Version'                            ,WPCSL__slplus__VERSION             ).
+                    $this->create_EnvDiv('Active WPCSL'                             ,plugin_dir_path(__FILE__)          ).
+                    '<br/><br/>' .
+                    $this->create_EnvDiv('WordPress Version'                        ,$GLOBALS['wp_version']             ).
+                    $this->create_EnvDiv('Site URL'                                 ,get_option('siteurl')              ).
+                    '<br/><br/>' .
+                    $this->create_EnvDiv('MySQL Version'                            ,$wpdb->db_version()                ).
+                    '<br/><br/>' .
+                    $this->create_EnvDiv('PHP Version'                              ,phpversion()                       ).
+                    $this->create_EnvDiv('PHP Peak RAM'                             ,
+                            sprintf('%0.2d MB',memory_get_peak_usage(true)/1024/1024)                                   ).
+                    $this->create_EnvDiv('PHP Modules'                              ,
+                            '<pre>'.print_r($this->csl_php_modules,true).'</pre>'                                       )
+                    ,
+                'auto'              => true,
+                'innerdiv'          => true,
+                'start_collapsed'   => false
+            )
+        );
     }
 
     /**
@@ -159,15 +124,7 @@ class wpCSL_settings__slplus {
      * @return string
      */
     function create_EnvDiv($label,$content) {
-        return'<div style="clear:left;">' .
-            '<div style="width:150px; float:left; text-align: right; padding-right: 6px;">'.
-            $label .
-            ':</div>' .
-            '<div style="float: left;">' .
-            $content .
-            '</div>' .
-            '</div>'
-            ;
+        return "<p class='envinfo'><span class='label'>{$label}:</span>{$content}</p>";
     }
 
     /**
@@ -199,6 +156,25 @@ class wpCSL_settings__slplus {
         }
      }
      
+   /**
+    * Call parent DebugMP only if parent has been set.
+    * 
+    *
+    * @param string $panel - panel name
+    * @param string $type - what type of debugging (msg = simple string, pr = print_r of variable)
+    * @param string $header - the header
+    * @param string $message - what you want to say
+    * @param string $file - file of the call (__FILE__)
+    * @param int $line - line number of the call (__LINE__)
+    * @param boolean $notime - show time? default true = yes.
+    * @return null
+    */
+    function debugMP($panel='main', $type='msg', $header='wpCSL DMP',$message='',$file=null,$line=null,$notime=false) {
+         if (is_object($this->parent)) {
+             $this->parent->debugMP($panel,$type,$header,$message,$file,$line,$notime);
+         }
+     }
+
      /**
       * Set the default HTML string if the server if offline.
       *
@@ -231,8 +207,9 @@ class wpCSL_settings__slplus {
             $this->sections[$params['name']] = new wpCSL_settings_section__slplus(
                 array_merge(
                     $params,
-                    array('plugin_url' => $this->plugin_url,
-                          'css_prefix' => $this->css_prefix,                       
+                    array('plugin_url'  => $this->plugin_url,
+                          'css_prefix'  => $this->css_prefix,
+                          'settingsObj' => $this            ,
                             )
                 )
             );
@@ -442,22 +419,77 @@ class wpCSL_settings__slplus {
     /**
      * Create the HTML for the plugin settings page on the admin panel.
      *
+     * @var $section \wpCSL_settings_section__slplus
      */
     function render_settings_page() {
-        $this->header();
         
-        // Redner all top menus first.
+        // Will add debug environment panel at end of general settings panel only.
+        //
+        $this->create_EnvironmentPanel();
+
+        $this->header();
+
+        // Render all top menus first.
         //
         foreach ($this->sections as $section) {
+            $this->debugMP('wpcsl.settings','msg',
+                    "{$section->name} first:{$section->first} is_topmenu:{$section->is_topmenu}",
+                    '',
+                    NULL,NULL,true);
             if (isset($section->is_topmenu) && ($section->is_topmenu)) {
                 $section->display();
             }
-        }        
+        }
+
+        // Main area with left sidebar
+        //
+        print '<div id="main">';
+
+        // Menu Area
+        //
+        $selectedNav = isset($_REQUEST['selected_nav_element'])?
+                $_REQUEST['selected_nav_element']:
+                ''
+                ;
+        $firstOne = true;
+        print '<div id="wpcsl-nav" style="display: block;">';
+        print '<ul>';
+        foreach ($this->sections as $section) {
+            if ($section->auto) {
+                $friendlyName = strtolower(strtr($section->name, ' ', '_'));
+                $friendlyDiv  = (isset($section->div_id) ?  $section->div_id : $friendlyName);
+                $firstClass   = (
+                                 ("#wpcsl-option-{$friendlyDiv}" == $selectedNav) ||
+                                 ($firstOne && ($selectedNav == ''))
+                                )?
+                                ' first current open' :
+                                '';
+                $firstOne = false;
+
+                print "<li class='top-level general {$firstClass}'>"       .
+                      '<div class="arrow"><div></div></div>'            .
+                      '<span class="icon"></span>'                      .
+                      "<a href='#wpcsl-option-{$friendlyDiv}' "     .
+                            "title='{$section->name}'>"                 .
+                      $section->name                                    .
+                      '</a>'                                            .
+                      '</li>'
+                    ;
+            }
+        }
+        print '</ul>';
+        print '<div class="navsave">'.$this->generate_save_button_string().'</div>';
+        print '</div>';
+
+
+        // Content Area
+        //
+        print '<div id="content">';
 
         // Show the plugin environment and info section on every plugin
         //
-        if ($this->render_csl_blocks && isset($this->sections['Plugin Info'])) {
-            $this->sections['Plugin Info']->display();
+        if ($this->render_csl_blocks && isset($this->sections['Plugin News'])) {
+            $this->sections['Plugin News']->display();
         }
 
         // Only render license section if plugin settings
@@ -468,12 +500,17 @@ class wpCSL_settings__slplus {
                 $this->show_plugin_settings();
                 $this->sections[$this->license_section_title]->footer();
             }
-        }            
+        }
 
         // Draw each settings section as defined in the plugin config file
         //
+        $firstClass = true;
         foreach ($this->sections as $section) {
             if ($section->auto) {
+                if ($firstClass) {
+                    $section->first = true;
+                    $firstClass = false;
+                }
                 $section->display();
             }
         }
@@ -483,7 +520,15 @@ class wpCSL_settings__slplus {
         if ($this->render_csl_blocks && isset($this->sections['Plugin Environment'])) {
             $this->sections['Plugin Environment']->display();
         }
-        $this->render_javascript();
+
+        // Close Content
+        //
+        print '</div>';
+
+        // Close Main
+        //
+        print '</div>';
+
         $this->footer();
     }
 
@@ -756,29 +801,12 @@ class wpCSL_settings__slplus {
      * Output the settings page header HTML
      */
     function header() {
-        echo "<div class='wrap'>\n";
+        $selectedNav = isset($_REQUEST['selected_nav_element'])?$_REQUEST['selected_nav_element']:'';
+        echo '<div id="wpcsl_container" class="wrap">';
         screen_icon(preg_replace('/\W/','_',$this->name));
-        echo "<h2>{$this->name}</h2>\n";
-        echo "<form method='post' action='".$this->form_action."'>\n";
+        echo "<h2>{$this->name}</h2><form method='post' action='{$this->form_action}'>";
+        echo "<input type='hidden' id='selected_nav_element' name='selected_nav_element' value='{$selectedNav}'/>";
         echo settings_fields($this->prefix.'-settings');
-
-        echo '<div id="csa_admin_wrapper" class="metabox-holder">' .
-                '<div class="meta-box-sortables">'
-           ;
-?>
-<script type="text/javascript">
-         jQuery(document).ready(function($) {
-             $('.postbox').children('h3, .handlediv').click(function(){
-                 $(this).siblings('.inside').toggle();
-             });
-         });
-         jQuery(document).ready(function($) {
-             $('.<?php echo $this->css_prefix;?>-moreicon').click(function(){
-                 $(this).siblings('.<?php echo $this->css_prefix; ?>-moretext').toggle();
-             });
-         });
-</script>
-<?php
     }
 
     /**------------------------------------
@@ -786,7 +814,7 @@ class wpCSL_settings__slplus {
      **
      **/
     function footer() {
-        print '</div></div>' .
+        print 
               $this->generate_save_button_string() .
              '</form></div>';
     }
@@ -799,19 +827,6 @@ class wpCSL_settings__slplus {
         return sprintf('<input type="submit" class="button-primary" value="%s" />',
          $this->save_text
          );                    
-    }
-
-    /**------------------------------------
-     ** method: render_javascript
-     **
-     **/
-    function render_javascript() {
-        echo "<script type=\"text/javascript\">
-            function swapVisibility(id) {
-              var item = document.getElementById(id);
-              item.style.display = (item.style.display == 'block') ? 'none' : 'block';
-            }
-          </script>";
     }
 
     /**------------------------------------
@@ -843,9 +858,88 @@ class wpCSL_settings__slplus {
 }
 
 /**
- * A section panel object.
+ * Manage sections of admin settings pages.
+ *
+ * @package wpCSL\Settings\Section
+ * @author Lance Cleveland <lance@charlestonsw.com>
+ * @copyright 2013 Charleston Software Associates, LLC
  */
 class wpCSL_settings_section__slplus {
+
+    //-----------------------------
+    // Properties
+    //-----------------------------
+
+    /**
+     *
+     * @var boolean auto
+     */
+    public $auto = true;
+
+    /**
+     * The ID to go in the div.
+     * 
+     * @var string div_id
+     */
+    public $div_id;
+
+    /**
+     * True if the first rendered section on the panel.
+     * 
+     * @var boolean first
+     */
+    public $first = false;
+
+    /**
+     *
+     * @var boolean headerbar
+     */
+    private $headerbar = true;
+
+    /**
+     *
+     * @var boolean innerdiv
+     */
+    private $innerdiv = true;
+
+    /**
+     * True if this is a top-of-page menu.
+     * 
+     * @var boolean is_topmenu
+     */
+    public $is_topmenu = false;
+
+    /**
+     * The collection of section items that are in this section.
+     * 
+     * @var \wpCSL_settings_item__slplus[] $items
+     */
+    private $items;
+
+    /**
+     * The title of the section.
+     *
+     * @var string name
+     */
+    public $name;
+
+    /**
+     * The settings object this section is attached to.
+     *
+     * @var \wpCSL_settings__PLUGIN_NAME_
+     */
+    private $settingsObj;
+
+    /**
+     * Start "open" or collapsed.
+     *
+     * @var boolean start_collapsed
+     */
+    private $start_collapsed = false;
+
+    //-----------------------------
+    // Methods
+    //-----------------------------
 
     /**
      * Instantiate a section panel.
@@ -853,13 +947,9 @@ class wpCSL_settings_section__slplus {
      * @param mixed[] $params
      */
     function __construct($params) {
-        $this->headerbar = true;
-        $this->innerdiv  = true;
         foreach ($params as $name => $value) {
             $this->$name = $value;
         }
-        
-        if (!isset($this->auto)) $this->auto = true;
     }
 
     /**------------------------------------
@@ -904,51 +994,76 @@ class wpCSL_settings_section__slplus {
         $this->footer();
     }
 
-    /**------------------------------------
-     **/
+    /**
+     * Render a section header.
+     */
     function header() {
-        echo "<div class=\"postbox\" " . (isset($this->div_id) ?  "id='$this->div_id'" : '') . ">";
+        $friendlyName = strtolower(strtr($this->name, ' ', '_'));
+        $friendlyDiv  = (isset($this->div_id) ?  $this->div_id : $friendlyName);
+        $groupClass   = $this->is_topmenu?'':'group';
+
+        echo '<div '                                        .
+            "id='wpcsl-option-{$friendlyDiv}' "                          .
+            "class='{$groupClass}' "  .
+            "style='display: block;' "             .
+            ">";
         
         if ($this->headerbar) {
-            echo "<div class=\"handlediv\" title=\"Click to toggle\"><br/></div>
-             <h3 class=\"hndle\">
-               <span>{$this->name}</span>
-               <a name=\"".strtolower(strtr($this->name, ' ', '_'))."\"></a>
-             </h3>";
+            echo "<h1 class='subtitle'>{$this->name}</h1>";
         }             
 
         if ($this->innerdiv) {
-            echo"<div class=\"inside\" " . (isset($this->start_collapsed) && $this->start_collapsed ? 'style="display:none;"' : '') .
-                 "><div class='section_description'>";
+            echo "<div class='inside section' " .
+                    (isset($this->start_collapsed) && $this->start_collapsed ? 'style="display:none;"' : '') .
+                    ">".
+                 "<div class='section_description'>"
+                 ;
          }
+         
          echo $this->description;
+
          if ($this->innerdiv) {         
-            echo '</div><table class="form-table" style="margin-top: 0pt;">';
+            echo '</div>'.
+                 '<table class="form-table" style="margin-top: 0pt;">'
+                 ;
          }
     }
 
-    /**------------------------------------
-     **/
+    /**
+     * Should the section be show (display:block) now?
+     * 
+     * @return boolean
+     */
+    function show_now() {
+        return ($this->first || $this->is_topmenu);
+    }
+
+    /**
+     * Render a section footer.
+     */
     function footer() {
         if ($this->innerdiv) {
-            echo '</table></div></div>';
+            echo '</table></div>';
         }
+        echo '</div>';
     }
 
 }
 
-/****************************************************************************
- **
- ** class: wpCSL_settings_item__slplus
- **
- ** Settings Page : Items Class
- ** This class manages individual settings on the admin panel settings page.
- **
- **/
+/**
+ * This class manages individual settings on the admin panel settings page.
+ *
+ * @package wpCSL\Settings\Item
+ * @author Lance Cleveland <lance@charlestonsw.com>
+ * @copyright 2013 Charleston Software Associates, LLC
+ */
 class wpCSL_settings_item__slplus {
 
-    /**------------------------------------
-     **/
+    /**
+     * Constructor.
+     *
+     * @param mixed[] $params
+     */
     function __construct($params) {
         foreach ($params as $name => $value) {
             $this->$name = $value;
@@ -961,8 +1076,9 @@ class wpCSL_settings_item__slplus {
         register_setting( $prefix.'-settings', $this->name );
     }
 
-    /**------------------------------------
-     **/
+    /**
+     * Render the item to the page.
+     */
     function display() {
         $this->header();
         if (isset($this->value)) {

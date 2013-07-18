@@ -355,17 +355,11 @@ class SLPlus_Location {
                         sprintf(__('Could not add %s as a new location','csa-slplus'),$this->store)
                         );
             }
+            
+            // Set our location ID to be the newly inserted record!
+            //
+            $this->id = $this->plugin->db->insert_id;
         }
-
-        $this->plugin->helper->bugout(
-                (($this->id<=0) ? 'Created':'Updated') .
-                   ' location record '.$this->id.
-                   ' <pre>'.print_r($dataToWrite,true).'</pre>',
-                '',
-                'SLPlus_Location.MakePersistent()',
-                __FILE__,
-                __LINE__
-                );
     }
 
     /**

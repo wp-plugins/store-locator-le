@@ -233,7 +233,6 @@ class SLPlus_AdminUI_ManageLocations {
         $errorMessage = '';
         foreach ($delQueries as $delQuery) {
             $delete_result = $wpdb->query($delQuery);
-            $this->plugin->helper->bugout("<pre>Delete Instruction:\n$delQuery\nResult:".print_r($delete_result,true)."</pre>",'','Delete Queries',__FILE__,__LINE__);
             if ($delete_result == 0) {
                 $errorMessage .= __("Could not delete the locations.  ", 'csa-slplus');
                 $theDBError = htmlspecialchars(mysql_error($wpdb->dbh),ENT_QUOTES);
@@ -404,9 +403,7 @@ class SLPlus_AdminUI_ManageLocations {
      */
     function render_actionbar() {
         if (!$this->set_Plugin()) { return; }
-
         $this->plugin->helper->loadPluginData();
-
 
          if (get_option('sl_location_table_view') == 'Expanded') {
              $altViewText = __('Switch to normal view?','csa-slplus');
@@ -503,17 +500,6 @@ class SLPlus_AdminUI_ManageLocations {
                 if (confirm(message)) {	location.href=href; }
                 else  { return false; }
             }
-            function checkAll(cbox,formObj) {
-                var i=0;
-                if (cbox.checked==true)
-                    cbox.checked==false;
-                else
-                    cbox.checked==true;
-                while (formObj.elements[i]!=null) {
-                    formObj.elements[i].checked=cbox.checked;
-                    i++;
-                }
-            }
             function doAction(theAction,thePrompt) {
                 if((thePrompt == '') || confirm(thePrompt)){
                     LF=document.forms['locationForm'];
@@ -574,8 +560,11 @@ class SLPlus_AdminUI_ManageLocations {
 
         if (isset($_REQUEST['act'])) {
 
-            // SAVE
-            if ($_REQUEST['act']=='save') {
+            // SAVE or EDIT
+            if (
+                ($_REQUEST['act']=='save') ||
+                ($_REQUEST['act']=='edit')
+                ){
                 $this->location_save();
 
             // DELETE
@@ -765,7 +754,6 @@ class SLPlus_AdminUI_ManageLocations {
                 "$where ORDER BY $opt $dir ".
                  "LIMIT $start,".$this->plugin->data['sl_admin_locations_per_page']
             ;
-        $this->plugin->helper->bugout($dataQuery, '', 'SQL Data', __FILE__, __LINE__);
 
         //---------------------------------------------------------
         // Display a list of the locations that match our query.
@@ -776,8 +764,14 @@ class SLPlus_AdminUI_ManageLocations {
             // Get the manage locations table header
             //
             $tableHeaderString = $this->plugin->AdminUI->manage_locations_table_header($this->columns,$slpCleanURL,$opt,$dir);
-            print  "<div id='location_table_wrapper'>" .
-                        "<table id='manage_locations_table' class='slplus wp-list-table widefat fixed posts' cellspacing=0>" .
+
+            // Locations
+            //
+            print  "<div id='location_table_wrapper'>";
+
+            // Manage
+            //
+            print  "<table id='manage_locations_table' class='slplus wp-list-table widefat fixed posts' cellspacing=0>" .
                             $tableHeaderString;
 
             // Render The Data
@@ -853,7 +847,7 @@ class SLPlus_AdminUI_ManageLocations {
                             "name='{$cleanName}' "                                                              .
                             "class='slp_managelocations_row $colorClass' "                                                   .
                             ">"                                                                                 .
-                        "<th class='th_checkbox'><input type='checkbox' name='sl_id[]' value='$locID'></th>"    .
+                        "<th class='th_checkbox'><input type='checkbox' class='slp_checkbox' name='sl_id[]' value='$locID'></th>"    .
                         "<th class='thnowrap'><div class='action_buttons'>".
                             $actionButtonsHTML . 
                         "</div></th>"
