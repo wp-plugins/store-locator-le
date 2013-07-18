@@ -545,8 +545,9 @@ class SLPlus_AdminUI_MapSettings {
                     __('Spain'         ,'csa-slplus')=>'maps.google.es',
                     __('Sweden'        ,'csa-slplus')=>'maps.google.se',
                     __('Switzerland'   ,'csa-slplus')=>'maps.google.ch',
-                    __('Taiwan'        ,'csa-slplus')=>'maps.google.com.tw',
-                    __('United Kingdom','csa-slplus')=>'maps.google.co.uk',
+                    __('Taiwan'                 ,'csa-slplus')=>'maps.google.com.tw',
+                    __('United Arab Emirates'   ,'csa-slplus')=>'maps.google.ae',
+                    __('United Kingdom'         ,'csa-slplus')=>'maps.google.co.uk',
                     )
                  );
      }
