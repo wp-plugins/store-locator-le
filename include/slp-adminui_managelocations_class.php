@@ -259,7 +259,7 @@ class SLPlus_AdminUI_ManageLocations {
      * Save a location.
      */
     function location_save() {
-        if (!is_numeric($_REQUEST['locationID'])) { return; }
+        if (!isset($_REQUEST['locationID']) || !is_numeric($_REQUEST['locationID'])) { return; }
         $this->plugin->notifications->delete_all_notices();
 
 

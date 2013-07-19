@@ -825,7 +825,7 @@ class SLPlus_AdminUI {
                 foreach ($_POST as $key=>$sl_value) {
                     if (preg_match('#\-$#', $key)) {
                         $fieldName='sl_'.preg_replace('#\-$#','',$key);
-                        $locationData[$fieldName]=stripslashes($this->slp_escape($sl_value));
+                        $locationData[$fieldName]=$this->slp_escape(stripslashes($sl_value));
                     }
                 }
                 $resultOfAdd = $this->plugin->AdminUI->add_this_addy($locationData);
