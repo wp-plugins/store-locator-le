@@ -11,8 +11,8 @@ A full featured location management system. Add a location finder or directory t
 
 == Description ==
 
-Learn more about [Store Locator Plus at CSA](http://www.charlestonsw.com/product/store-locator-plus-2).
-The website offers [more screen shots](http://www.charlestonsw.com/product/store-locator-plus-2/), [technical documentation](http://www.charlestonsw.com/support/documentation/technical-documentation/), and [full release notes](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/).
+Learn more about [Store Locator Plus on the Charleston Software Associates website](http://www.charlestonsw.com/product-category/slplus/).
+The website offers [more screen shots](http://www.charlestonsw.com/product-category/slplus/), [technical documentation](http://www.charlestonsw.com/support/documentation/technical-documentation/), and [full release notes](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/).
 
 Store Locator Plus is an advanced system for managing multiple physical locations via a fully integrated WordPress solution.
 Whether you have ten locations or ten-thousand, you manage them with ease right from within your WordPress admin panel.
@@ -30,14 +30,16 @@ Change map types (terrain, satellite, standard views).
 Add details like a store description, hours, a website address, an email address.
 Re-label entry fields and results fields.
 
+[youtube http://www.youtube.com/watch?v=v1IIIMre-CQ]
+
 = Features =
 
 * Very active support via the [free support forum](http://www.charlestonsw.com/forums/).
-* Regularly updated [online documentation](http://wordpress.org/support/plugin/store-locator-le).
-* Multiple [premium add-ons available](http://wordpress.org/support/plugin/store-locator-le).
-* You can use it for a [variety of countries](http://wordpress.org/support/plugin/store-locator-le), as supported by Google Maps.
-* Supports [international languages](http://wordpress.org/support/plugin/store-locator-le) and character sets.
-* Allows you to use [unique map icons](http://wordpress.org/support/plugin/store-locator-le) or your own custom map icons.
+* Regularly updated [online documentation](http://www.charlestonsw.com/support/documentation/store-locator-plus/).
+* Multiple [premium add-ons available](http://www.charlestonsw.com/product-category/slplus/).
+* You can use it for a [variety of countries](http://www.charlestonsw.com/support/documentation/store-locator-plus/), as supported by Google Maps.
+* Supports [international languages](http://www.charlestonsw.com/support/documentation/store-locator-plus/) and character sets.
+* Allows you to use [unique map icons](http://www.charlestonsw.com/support/documentation/store-locator-plus/) or your own custom map icons.
 * Change default map settings via the admin panel including:
 * Map type (terrain, satellite, street, etc.)
 * Inset map show/hide
