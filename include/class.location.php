@@ -224,7 +224,7 @@ class SLPlus_Location {
         //
         } else {
             $this->plugin->notifications->add_notice('error','Could not create or update the custom page for this location.');
-            $this->plugin->debugMP('slp.main','pr','location.crupdate_Page() failed',$touched_pageID->get_error_messages(),__FILE__,__LINE__);
+            $this->plugin->debugMP('slp.main','pr','location.crupdate_Page() failed',(is_object($touched_pageID)?$touched_pageID->get_error_messages():''));
         }
 
 
