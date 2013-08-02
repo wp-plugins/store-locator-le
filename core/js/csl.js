@@ -1449,7 +1449,7 @@ jQuery(document).ready(
 
                 // Our map initialization
                 //
-                if (jQuery('div#map').is(":visible")) {
+                if (jQuery('div#sl_div'          ).is(":visible")) {
                     InitializeTheMap();
                 }
     }
