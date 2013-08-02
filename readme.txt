@@ -4,8 +4,8 @@ Contributors: charlestonsw
 Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
 Tags: store locator,location management,location map,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
-Tested up to: 3.5.1
-Stable tag: 3.11.17
+Tested up to: 3.6
+Stable tag: 3.11.18
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
 
@@ -39,7 +39,7 @@ Re-label entry fields and results fields.
 * Multiple [premium add-ons available](http://www.charlestonsw.com/product-category/slplus/).
 * You can use it for a [variety of countries](http://www.charlestonsw.com/support/documentation/store-locator-plus/), as supported by Google Maps.
 * Supports [international languages](http://www.charlestonsw.com/support/documentation/store-locator-plus/) and character sets.
-* Allows you to use [unique map icons](http://www.charlestonsw.com/support/documentation/store-locator-plus/) or your own custom map icons.
+* Allows you to use [unique map markers](http://www.charlestonsw.com/support/documentation/store-locator-plus/) or your own custom map markers.
 * Change default map settings via the admin panel including:
 * Map type (terrain, satellite, street, etc.)
 * Inset map show/hide
@@ -280,6 +280,11 @@ I update about once per month or more frequently as needed.
 Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
 
 I was listing the entire change log here but with weekly/bi-weekly updates it as getting much too long.
+
+= 3.11.18 =
+
+* Update: minor verbiage change "icons" to "markers" to eliminate confusion with upcoming Tagalong updates.
+* Update: Tested on version 3.6
 
 = 3.11.17 =
 
