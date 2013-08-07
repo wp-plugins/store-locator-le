@@ -533,6 +533,7 @@ class SLPlus_AdminUI_MapSettings {
                     __('Italy'         ,'csa-slplus')=>'maps.google.it',
                     __('Japan'         ,'csa-slplus')=>'maps.google.co.jp',
                     __('Liechtenstein' ,'csa-slplus')=>'maps.google.li',
+                    __('Lithuania'     ,'csa-slplus')=>'maps.google.lt',
                     __('Mexico'        ,'csa-slplus')=>'maps.google.com.mx',
                     __('Netherlands'   ,'csa-slplus')=>'maps.google.nl',
                     __('New Zealand'   ,'csa-slplus')=>'maps.google.co.nz',

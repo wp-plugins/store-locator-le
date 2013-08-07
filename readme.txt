@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
 Tags: store locator,location management,location map,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
 Tested up to: 3.6
-Stable tag: 3.11.18
+Stable tag: 3.11.19
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
 
@@ -281,6 +281,11 @@ Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/su
 
 I was listing the entire change log here but with weekly/bi-weekly updates it as getting much too long.
 
+= 3.11.19 =
+
+* Enhancement : [New theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/themes-custom-css/) Blank Map Fix has NO custom CSS rules other than the patch to fix map images corrupted by WordPress rules.
+* Enhancement : [New country](http://www.charlestonsw.com/google-maps-tlds/) Added Lithuania, maps.google.lt.
+
 = 3.11.18 =
 
 * Update: minor verbiage change "icons" to "markers" to eliminate confusion with upcoming Tagalong updates.
@@ -304,7 +309,7 @@ I was listing the entire change log here but with weekly/bi-weekly updates it as
 = 3.11.14 =
 
 * Enhancement: Tweak the results output handler to accommodate new results fields with the {18.*} results code.
-* Enhancement: Added United Arab Emirates (maps.google.ae) to the countries list.
+* Enhancement: [New country](http://www.charlestonsw.com/google-maps-tlds/) United Arab Emirates, maps.google.ae.
 
 = 3.11.13 =
 
@@ -313,7 +318,7 @@ I was listing the entire change log here but with weekly/bi-weekly updates it as
 = 3.11.12 =
 
 * Enhancement: Remove call to defunct php file, increasing search form rendering speed.
-* Enhancement: Add Philippines (maps.google.com.ph) to the countries list.
+* Enhancement: [New country](http://www.charlestonsw.com/google-maps-tlds/) Philippines, maps.google.com.ph.
 * Fix: Check all on manage locations no longer selects Tagalong tags.
 
 = 3.11.11 =
