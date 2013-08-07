@@ -458,8 +458,11 @@ div.add_location_form input.iconfield {
 input#bulk_file {
     width: 70%;
 }
+td#slp_manual_update_table_left_cell {
+    min-width:554px;
+}
 td#slp_manual_update_table_right_cell {
-    min-width:300px;
+    min-width:554px;
 }
 table.slp_locationinfoform_table {
 	padding-left:0px; padding-right:0px;

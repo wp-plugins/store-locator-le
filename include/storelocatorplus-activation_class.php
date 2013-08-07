@@ -441,7 +441,7 @@ class SLPlus_Activate {
     function iconMapper($iconFile) {
         $newIcon = $iconFile;
 
-        // Azure Bulb Name Change (default destination icon)
+        // Azure Bulb Name Change (default destination marker)
         //
         $newIcon =
             str_replace(
@@ -451,7 +451,7 @@ class SLPlus_Activate {
             );
         if ($newIcon != $iconFile) { return $newIcon; }
 
-        // Box Yellow Home (default home icon)
+        // Box Yellow Home (default home marker)
         //
         $newIcon =
             str_replace(

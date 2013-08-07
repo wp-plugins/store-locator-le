@@ -445,7 +445,7 @@ class SLPlus_AdminUI_MapSettings {
         $slpDescription =
                     $this->plugin->data['iconNotice'] .
                     "<div class='form_entry'>".
-                        "<label for='sl_map_home_icon'>".__('Home Icon', 'csa-slplus')."</label>".
+                        "<label for='sl_map_home_icon'>".__('Home Marker', 'csa-slplus')."</label>".
                         "<input id='sl_map_home_icon' name='sl_map_home_icon' dir='rtl' size='45' ".
                                 "value='".$this->plugin->data['sl_map_home_icon']."' ".
                                 'onchange="document.getElementById(\'prev\').src=this.value">'.
@@ -453,18 +453,19 @@ class SLPlus_AdminUI_MapSettings {
                         $this->plugin->data['homeIconPicker'].
                     "</div>".
                     "<div class='form_entry'>".
-                        "<label for='sl_map_end_icon'>".__('Destination Icon', 'csa-slplus')."</label>".
+                        "<label for='sl_map_end_icon'>".__('Destination Marker', 'csa-slplus')."</label>".
                         "<input id='sl_map_end_icon' name='sl_map_end_icon' dir='rtl' size='45' ".
                             "value='".$this->plugin->data['sl_map_end_icon']."' ".
                             'onchange="document.getElementById(\'prev2\').src=this.value">'.
                         "<img id='end_icon_preview' src='".$this->plugin->data['sl_map_end_icon']."'align='top'><br/>".
                         $this->plugin->data['endIconPicker'] .
                     "</div>".
-                    "<br/><p>Saved icons live here: " . SLPLUS_UPLOADDIR . "saved-icons/</p>"
+                    "<br/><p>Saved markers live here: " . SLPLUS_UPLOADDIR . "saved-icons/</p>"
             ;
         $mapSettings['icons'] = apply_filters('slp_map_icons_settings',$slpDescription);
 
 
+        // TODO: Convert to new panel builder with add_ItemToGroup() in wpCSL (see Tagalong admin panel)
         $slpDescription =
             "<div id='map_settings'>" .
                 $this->CreateSettingsGroup(
@@ -481,7 +482,7 @@ class SLPlus_AdminUI_MapSettings {
                                     ) .
                 $this->CreateSettingsGroup(
                                     'map_icons',
-                                    __('Icons','csa-slplus'),
+                                    __('Map Markers','csa-slplus'),
                                     '',
                                     $mapSettings['icons']
                                     ) .
@@ -532,6 +533,7 @@ class SLPlus_AdminUI_MapSettings {
                     __('Italy'         ,'csa-slplus')=>'maps.google.it',
                     __('Japan'         ,'csa-slplus')=>'maps.google.co.jp',
                     __('Liechtenstein' ,'csa-slplus')=>'maps.google.li',
+                    __('Lithuania'     ,'csa-slplus')=>'maps.google.lt',
                     __('Mexico'        ,'csa-slplus')=>'maps.google.com.mx',
                     __('Netherlands'   ,'csa-slplus')=>'maps.google.nl',
                     __('New Zealand'   ,'csa-slplus')=>'maps.google.co.nz',
@@ -667,7 +669,7 @@ class SLPlus_AdminUI_MapSettings {
         if (!$this->plugin->helper->webItemExists($this->plugin->data['sl_map_home_icon'])) {
             $this->plugin->data['iconNotice'] .=
                 sprintf(
-                        __('Your home icon %s cannot be located, please select a new one.', 'csa-slplus'),
+                        __('Your home marker %s cannot be located, please select a new one.', 'csa-slplus'),
                         $this->plugin->data['sl_map_home_icon']
                         )
                         .
@@ -677,7 +679,7 @@ class SLPlus_AdminUI_MapSettings {
         if (!$this->plugin->helper->webItemExists($this->plugin->data['sl_map_end_icon'])) {
             $this->plugin->data['iconNotice'] .=
                 sprintf(
-                        __('Your destination icon %s cannot be located, please select a new one.', 'csa-slplus'),
+                        __('Your destination marker %s cannot be located, please select a new one.', 'csa-slplus'),
                         $this->plugin->data['sl_map_end_icon']
                         )
                         .
