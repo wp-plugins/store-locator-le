@@ -717,7 +717,7 @@ class SLPlus_UI {
 
 
     /**
-     * String all \r\n from the template to try to "unbreak" Theme Forest themes.
+     * Strip all \r\n from the template to try to "unbreak" Theme Forest themes.
      *
      * This is VERY ugly, but a lot of people use Theme Forest.  They have a known bug
      * that MANY Theme Forest authors have introduced which will change this:

@@ -1,0 +1,26 @@
+/**
+ ** file: blank_mapfix.css
+ ** label: Blank Theme with Map Fix
+ ** description: Only CSS rule is the map image fix, default layout mostly dictacted by active WordPress theme.
+ **
+ **/
+
+/**** Map Box
+ **
+ ** Since we only use these div IDs when a static image is present
+ ** we start with the image shown and map hidden.  JQuery will flip
+ ** this for us.
+ **
+ **/
+div#map {
+    border-top: solid 1px #CCCCCC;
+    border-left: solid 1px #CCCCCC;
+    border-right: solid 1px #CCCCCC;
+    width: auto !important;
+}
+
+/* Hide the default Google bubble shadow */
+div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
+    display:none;
+}
+

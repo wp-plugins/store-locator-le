@@ -93,7 +93,7 @@ class SLPlus_AjaxHandler {
               'attributes'  => maybe_unserialize($row['sl_option_value']),
               'id'          => $row['sl_id'],
           );
-
+          $this->plugin->currentLocation->set_PropertiesViaArray($row);
           $marker = apply_filters('slp_results_marker_data',$marker);
           return $marker;
     }

@@ -1449,8 +1449,12 @@ jQuery(document).ready(
 
                 // Our map initialization
                 //
-                if (jQuery('div#map').is(":visible")) {
-                    InitializeTheMap();
+                if (jQuery('div#sl_div'          ).is(":visible")) {
+                    if (typeof slplus !== 'undefined') {
+                        InitializeTheMap();
+                    } else {
+                        jQuery('#sl_div').html('Store Locator Plus did not initialize properly.');
+                    }
                 }
     }
 );

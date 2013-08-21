@@ -1208,7 +1208,7 @@ class SLPlus_AdminUI {
     }
 
     /**
-     * Return the icon selector HTML for the icon images in saved icons and default icon directories.
+     * Return the icon selector HTML for the icon images in saved markers and default icon directories.
      *
      * @param type $inputFieldID
      * @param type $inputImageID
