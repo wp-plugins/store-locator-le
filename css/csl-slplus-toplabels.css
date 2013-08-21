@@ -228,6 +228,17 @@
  ** this for us.
  **
  **/
+div#map {
+    border-top: solid 1px #CCCCCC;
+    border-left: solid 1px #CCCCCC;
+    border-right: solid 1px #CCCCCC;
+    width: auto !important;
+}
+
+/* Hide the default Google bubble shadow */
+div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
+    display:none;
+}
 
 #map_box_image {
     display: block; 
@@ -235,10 +246,6 @@
 
 #map_box_map {
     display: none;
-}
-/* Hide the default Google bubble shadow */
-div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
-    display:none;
 }
 div.entry-content div#sl_div #map_table IMG {
 	max-width:none;
