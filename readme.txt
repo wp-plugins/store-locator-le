@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
 Tags: store locator,location management,location map,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
 Tested up to: 3.6
-Stable tag: 3.11.20
+Stable tag: 3.11.21
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
 
@@ -89,7 +89,18 @@ Premium add-on packages are available to extend the capabilities of this plugin.
 If you are a plugin developer you will be interested in the new "Roll Your Own" program where you can create SLP based premium (or free) add-ons of your own.
 Create something great and list it on the CSA site!
 
-= Support =
+= SLP4 Is Coming =
+
+The next major release of Store Locator Plus, SLP4, is entering formal beta testing on September 1st, 2013.
+Anticipated release of the production version is early October.
+
+Upgrading to Store Locator Plus 4, when it is released, will require *paid upgrades to all premium add-on packs*.
+Customers that have purchased premium add-on packs within the past 12 months will be offered substantial discounts on upgrades.
+Customer that have purchased premium add-on packs on or after September 1st 2013 will be offered the SLP4 compatible version at no cost.
+
+= General Questions and Support =
+
+If you have a general question, please ask via the [Store Locator Plus Forum](http://www.charlestonsw.com/forums/forum/support-2/).  As a one-man show it helps me to be more efficient by answering questions once versus ten times via individual email messages.
 
 Support for the plugin can be found in the [CSA Forums](http://www.charlestonsw.com/forums/).  If you have an urgent issue or want one-on-one support you can [purchase premium support](http://www.charlestonsw.com/product/product-support).
 
@@ -137,7 +148,7 @@ I hope you appreciate my work.
 Please [rate this plugin](http://wordpress.org/extend/plugins/store-locator-le/)!
 Rating the plugin, hopefully with 5 stars, helps increase the exposure on WordPress, which generates more downloads and purchases of add-ons.
 The more add-ons I sell the easier it is to put food on the table and give me more time to code cool new features.
-No ratings, no food, more hours working as the Walmart Greeter, less coolness in the plugins.
+No ratings, no food, more hours working as the Walmart Greeter, less coolness in the plugin.
 
 Give me a chance to address your concerns if this plugin doesn't earn 5 stars by [contacting me](http://www.charlestonsw.com/mindset/contact-us/) directly or by posting in the [support forum](http://www.charlestonsw.com/forums/) at the CSA website.
 
@@ -184,11 +195,8 @@ To prevent custom icons from being over-written they will be copies to the '/wp-
 = Custom Styling =
 
 Users that want to customize the look and feel of the search form, map, and search results can do so
-with ease using the new Theme System that is part of the Pro Pack.   Copy an existing CSS file,
-change the file name and update the CSS header, upload to the server and you can now activate your
+with ease using the new Theme System .   Copy an existing CSS file, change the file name and update the CSS header, upload to the server and you can now activate your
 new theme or any of the built-in defaults by selecting it from the auto-generated pulldown menu.
-
-Users that opt not to purchase the Pro Pack can still customize the look by editing the basic CSS file that ships with the free plugin.
 
 = Special Thanks =
 
@@ -275,11 +283,11 @@ More screenshots are available via [the CSA website](http://www.charlestonsw.com
 
 == Changelog ==
 
-I update about once per month or more frequently as needed.
-
 Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
 
-I was listing the entire change log here but with weekly/bi-weekly updates it as getting much too long.
+= 3.11.21 =
+
+* Update: Add version checking, notification, and deactivation system for add-on packs in preparation for SLP4 release.
 
 = 3.11.20 =
 
