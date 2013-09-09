@@ -195,15 +195,24 @@ div#addy_in_address.search_item {
     padding-top: 3px;
 }
 
-
-
 /**** Map Box
- ** 
+ **
  ** Since we only use these div IDs when a static image is present
  ** we start with the image shown and map hidden.  JQuery will flip
  ** this for us.
  **
  **/
+div#map {
+    border-top: solid 1px #CCCCCC;
+    border-left: solid 1px #CCCCCC;
+    border-right: solid 1px #CCCCCC;
+    width: auto !important;
+}
+
+/* Hide the default Google bubble shadow */
+div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
+    display:none;
+}
 
 #map_box_image {
     display: block; 
