@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
 Tags: store locator,location management,location map,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
 Tested up to: 3.6
-Stable tag: 3.11.21
+Stable tag: 3.11.22
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
 
@@ -200,11 +200,18 @@ new theme or any of the built-in defaults by selecting it from the auto-generate
 
 = Special Thanks =
 
-Thank you, [Jan de Baat](www.de-baat.nl), for the Dutch translation.
+*Translations*
+
+* Dutch - [Jan de Baat](www.de-baat.nl)
+* French - François Serrault
+
+*Graphics*
 
 Thanks to [Nicolas Mollet](http://mapicons.nicolasmollet.com/) and Icons-Land (http://www.icons-land.com/) via Icon Finder for some of the great icons.
 
 [Massive Creative](http://www.massivecreativeinc.com) for some of our banners and other creative work.
+
+*Code*
 
 Thanks to [Google](http://www.google.com) for the maps engine as well as some of the icons.  Some of the Google open-source icons are found [at this unofficial list](http://www.visual-case.it/cgi-bin/vc/GMapsIcons.pl).
 
@@ -284,6 +291,10 @@ More screenshots are available via [the CSA website](http://www.charlestonsw.com
 == Changelog ==
 
 Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 3.11.22 =
+
+* French Translation provided by François Serrault
 
 = 3.11.21 =
 
