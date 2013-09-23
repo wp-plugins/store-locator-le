@@ -1323,6 +1323,68 @@ class wpCSL_plugin__slplus {
     }
 
     /**
+     * Compare current plugin version with minimum required.
+     *
+     * Set a notification message.
+     * Disable the requesting add-on pack if requirement is not met.
+     *
+     * $params['addon_name'] - the plain text name for the add-on pack.
+     * $params['addon_slug'] - the slug for the add-on pack.
+     * $params['min_required_version'] - the minimum required version of the base plugin.
+     *
+     * @param mixed[] $params
+     */
+    function VersionCheck($params) {
+
+        // Minimum version requirement not met.
+        //
+        if (version_compare($this->version, $params['min_required_version'], '<')) {
+            if (is_admin()) {
+                if (isset($this->notifications)) {
+                    $this->notifications->add_notice(4,
+                            '<strong>'  .
+                            sprintf(__('%s has been deactivated.'                                                           ,
+                                       'wpcsl'
+                                       ),
+                                    $params['addon_name']
+                                ) . '<br/> ' .
+                            '</strong>' .
+                            sprintf(__('You have %s version %s.'                                                            ,
+                                       'wpcsl'
+                                       ),
+                                $this->name,
+                                $this->version
+                                ) . '<br/> ' .
+                            sprintf(__('You need version %s or greater for this version of %s.'                             ,
+                                       'wpcsl'
+                                       ),
+                                $params['min_required_version'],
+                                $params['addon_name']
+                                ) . '<br/> ' .
+                            sprintf(__('Please install an older version of %s or upgrade.'                                  ,
+                                       'wpcsl'
+                                       ),
+                                    $this->name
+                                ) . '<br/> ' .
+                            sprintf(__('Upgrading major versions of %s requires paid upgrades to all related add-on packs.'  ,
+                                       'wpcsl'
+                                       ),
+                                    $this->name
+                                    ) .
+                            '<br/><br/>'
+                            );
+                    }
+                deactivate_plugins(array($params['addon_slug']));
+            }
+            return;
+        }
+
+        // Register add on if version is ok
+        //
+        $this->register_addon($params['addon_slug']);
+    }
+
+    /**
      * Enqueue the admin stylesheet when needed.
      *
      * @var string $hook

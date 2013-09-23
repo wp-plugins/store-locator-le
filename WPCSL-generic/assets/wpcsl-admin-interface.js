@@ -203,7 +203,7 @@
  		});
  		
  		// Add custom link click logic to the flyout menus, due to custom logic being required.
- 		$( '.flyout-menu a' ).live( 'click', function ( e ) {
+ 		$( '.flyout-menu a' ).on( 'click', function ( e ) {
  			var thisObj = $( this );
  			var parentObj = $( this ).parent();
  			var parentMenu = $( this ).parents( '.top-level' );
@@ -261,16 +261,6 @@
 	});
   
 })(jQuery);
-
-
-// Expand help icons
-// 
-jQuery(document).ready(function($) {
-    $('.<?php echo $this->css_prefix;?>-moreicon').click(function(){
-        $(this).siblings('.<?php echo $this->css_prefix; ?>-moretext').toggle();
-    });
-});
-
 
 // Some legacy stuff - like expand/collapse divs (defunct?)
 // TODO: check if this is needed
