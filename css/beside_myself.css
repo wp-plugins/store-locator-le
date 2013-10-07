@@ -1,0 +1,305 @@
+/**
+ ** file: beside_myself.css
+ ** label: Beside Myself
+ ** description: Search On Right Side. "Myself" palette (blue and orange).
+ ** add-ons: slp-pro, slp-enhanced-results, slp-enhanced-map, slp-enhanced-search, slp-widgets
+ ** csl-slplus-layout: <div id="sl_div"><div id="sl_leftcol">[slp_map]</div><div id="sl_rightcol">[slp_search]<div id="sl_arrow_container"><div id="sl_search_arrow"></div></div>[slp_results]</div></div>
+ ** csl-slplus_slpes[searchlayout]: <span class="search_header">Find Our Locations</span>[slp_search_element input_with_label="address"][slp_search_element dropdown_with_label="radius"][slp_search_element button="submit"]
+ ** csl-slplus_slper[resultslayout]: <div class="results_row_left_column" id="slp_left_cell_[slp_location id]" ><span class="location_name">[slp_location name]</span><span class="slp_result_address slp_result_street">[slp_location address]</span><span class="slp_result_address slp_result_street2">[slp_location address2]</span><span class="slp_result_address slp_result_citystatezip">[slp_location city_state_zip]</span><span class="slp_result_address slp_result_phone">[slp_location phone]</span></div><div class="results_row_right_column"  id="slp_right_cell_[slp_location id]" ><span class="location_distance">[slp_location distance_1] [slp_location distance_unit]</span><span class="slp_result_contact slp_result_website">[slp_location web_link]</span><span class="slp_result_contact slp_result_directions"><a href="http://[slp_location map_domain]/maps?saddr=[slp_location search_address]&daddr=[slp_location location_address]" target="_blank" class="storelocatorlink">[slp_location directions_text]</a></span></div>
+ ** sl_map_height: 100
+ ** sl_map_height_units: %
+ ** sl_remove_credits: true
+ ** sl_load_locations_default: true
+ ** sl_num_initial_displayed: 25
+ ** sl_search_label: Zip Code
+ ** csl-slplus_find_button_label: Search
+ **
+ **/
+
+
+/*---------------------
+ * Entire SLPlus UI
+ *---------------------*/
+div#sl_div {
+    position: relative;
+    height: 400px;
+    width: 100%;
+}
+
+/*---------------------
+ * Left Column
+ *---------------------*/
+div#sl_leftcol {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0px;
+    height: 400px;
+    width: 66%
+}
+
+/*---------------------
+ * Right Column
+ *---------------------*/
+div#sl_rightcol {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0px;
+    height: 400px;
+    width: 31%;
+}
+
+/*---------------------
+ * Map
+ *---------------------*/
+div#map {
+    border: solid 4px white;
+    box-shadow: 0 3px 4px rgba(0, 0, 0, 0.5);
+    height: 392px;
+    margin: 0px;
+    width: 100%
+}
+
+/* Don't let WordPress Mangle Map Images */
+div#map img {
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+    max-width: none;
+    opacity: 1.0;
+    visibility: visible;
+}
+/* Hide the default Google bubble shadow */
+div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
+    display:none;
+}
+
+/*---------------------
+ * Search Form
+ * Base + Widget Pack
+ *---------------------*/
+div#sl_arrow_container {
+    width: 100%;
+    display: block;
+    margin: 0px auto 12px auto;
+    text-align: center;
+    position: relative;
+}
+div#sl_search_arrow {
+	width: 0;
+	height: 0;
+	border-left: 14px solid transparent;
+	border-right: 14px solid transparent;
+	border-top: 14px solid #ddeef3;
+    margin: 0px auto;
+}
+div.slp_basic_widget div#sl_search_arrow {
+    display: none;
+}
+form#searchForm,
+div#slpw_searchform
+{
+    background-color: #FFFFFF;
+    background: -moz-linear-gradient(top, #ffffff 0%, #ffffff 50%, #ddeef3 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(50%,#ffffff), color-stop(100%,#ddeef3)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #ffffff 0%,#ffffff 50%,#ddeef3 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #ffffff 0%,#ffffff 50%,#ddeef3 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #ffffff 0%,#ffffff 50%,#ddeef3 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #ffffff 0%,#ffffff 50%,#ddeef3 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ddeef3',GradientType=0 ); /* IE6-9 */
+    border-radius: 6px 6px 6px 6px;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
+    padding: 12px 0px;
+    position: relative;
+    margin-bottom: 0px;
+}
+form#searchForm         .search_header,
+div#slpw_searchform     H2
+{
+    color: #6AA744;
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 14px;
+    padding: 0 0 14px;
+    text-align: center;
+    text-transform: uppercase;
+    width: 100%;
+}
+form#searchForm         #addy_in_address,
+div#slpw_searchform     #addy_in_address
+{
+    padding-bottom: 6px;
+}
+form#searchForm         LABEL,
+div#slpw_searchform     LABEL
+{
+    display: inline-block;
+    padding-right: 6px;
+    text-align: right;
+    width: 90px;
+}
+form#searchForm         INPUT,
+div#slpw_searchform     INPUT
+{
+    display: inline-block;
+}
+form#searchForm         SELECT,
+div#slpw_searchform     SELECT
+{
+    padding-right: 3px;
+}
+input#addressInput {
+    border: 1px solid #C0C0C0;
+    border-radius: 3px 3px 3px 3px;
+    display: inline;
+    height: 18px;
+    padding: 0 5px;
+    width: 134px;
+}
+div#addy_in_radius,
+div#slpw_submitline
+{
+    display: inline-block;
+    padding-top: 6px;
+}
+div#radius_in_submit {
+    display: inline-block;
+    margin-left: 8px;
+    width: 100px;
+}
+input#addressSubmit,
+input#slpw_addressSubmit
+{
+    background: linear-gradient(to bottom, #FBC762 0%, #FAB42D 4%, #F8A028 44%, #F5771D 100%) repeat scroll 0 0 transparent;
+    border: 0 none;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    color: #FFFFFF;
+    cursor: pointer;
+    font: 700 11px/20px "Open Sans",arial,sans-serif;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+    text-transform: uppercase;
+    vertical-align: text-bottom;
+    width: 54px;
+}
+
+/*---------------------
+ * Results
+ *---------------------*/
+div#map_sidebar,
+div#slpw_resultsbox #slpw_results
+{
+    background-color: #FFFFFF;
+    box-shadow: 0 3px 4px rgba(0, 0, 0, 0.5);
+    height: 267px;
+    overflow: auto;
+}
+div#slpw_resultsbox #slpw_results {
+    display: none;
+}
+div#map_sidebar     .results_wrapper,
+div#slpw_resultsbox .results_entry
+{
+    border-bottom: 1px dotted #000000;
+    padding: 6px;
+    width: 96%;
+}
+div#map_sidebar     .results_wrapper {
+    cursor: pointer;
+}
+div#map_sidebar     .results_wrapper:hover,
+div#slpw_resultsbox .results_entry:hover
+{
+    background: #ddeef3; /* Old browsers */
+    background: -moz-linear-gradient(top, #ddeef3 0%, #ffffff 50%, #ffffff 51%, #ddeef3 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ddeef3), color-stop(50%,#ffffff), color-stop(51%,#ffffff), color-stop(100%,#ddeef3)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #ddeef3 0%,#ffffff 50%,#ffffff 51%,#ddeef3 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #ddeef3 0%,#ffffff 50%,#ffffff 51%,#ddeef3 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #ddeef3 0%,#ffffff 50%,#ffffff 51%,#ddeef3 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #ddeef3 0%,#ffffff 50%,#ffffff 51%,#ddeef3 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ddeef3', endColorstr='#ddeef3',GradientType=0 ); /* IE6-9 */
+}
+div#map_sidebar     .results_row_left_column,
+div#slpw_resultsbox .results_row_left_column
+{
+   display:inline-block;
+   vertical-align: top;
+   width: 73%;
+}
+div#map_sidebar     .results_row_right_column,
+div#slpw_resultsbox .results_row_right_column
+{
+   display:inline-block;
+   vertical-align: top;
+   width: 25%;
+}
+span.location_name {
+    color: #3297B6;
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 14px;
+}
+span.slp_result_street,
+span.slp_result_street2,
+span.slp_result_citystatezip,
+span.slp_result_phone
+{
+    font-size: 11px;
+    line-height: 14px;
+}
+span.slp_result_street,
+span.slp_result_street2 {
+    display:inline-block;
+}
+span.slp_result_citystatezip,
+span.slp_result_phone
+{
+    display:block;
+}
+span.location_distance {
+    display: block;
+}
+span.slp_result_website {
+    font:700 11px/14px "Open Sans",arial,sans-serif
+}
+span.slp_result_directions {
+    font:700 11px/14px "Open Sans",arial,sans-serif
+}
+
+/* Tagalong result icons */
+.results_line.location_iconarray > a {
+    display: inline-block;
+    height: auto;
+    width: auto;
+}
+#tagalong_category_selector {
+    display: block;
+    height: 2em;
+    width: 100%;
+}
+#tagalong_category_selector .category_selector.parent {
+    display: block;
+    float: left;
+}
+#tagalong_category_selector .category_selector.child {
+    display: none;
+    float: left;
+}
+#tagalong_legend {
+    border: none;
+    padding: 12px;
+}
+#tagalong_legend .legend_text {
+    display: inline-block;
+    margin-left: 6px;
+    margin-right: 20px;
+    vertical-align: middle;
+}
+#tagalong_legend .tagalong_legend_icon {
+    display: inline-block;
+    margin-bottom: 12px;
+    min-width: 190px;
+}

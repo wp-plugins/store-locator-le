@@ -1,0 +1,180 @@
+/**
+ ** file: beside_myself_results.css
+ ** label: Beside Myself Results
+ ** description: Only the results.  "Myself" palette (blue and orange).
+ ** add-ons: slp-enhanced-results
+ **
+ **/
+
+
+/*---------------------
+ * Entire SLPlus UI
+ *---------------------*/
+div#sl_div {
+    display: block;
+    position: relative;
+    width: 100%;
+}
+
+/*---------------------
+ * Left Column
+ *---------------------*/
+div#sl_leftcol {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0px;
+    width: 0%;
+    display: none;
+}
+
+/*---------------------
+ * Right Column
+ *---------------------*/
+div#sl_rightcol {
+    margin: 0px 0px 6px 0px;
+    width: 100%;
+}
+
+/*---------------------
+ * Map
+ *---------------------*/
+div#map {
+    height: 0px;
+    width: 0px;
+    display: none;
+}
+
+/*---------------------
+ * Search Form
+ * Base + Widget Pack
+ *---------------------*/
+div#sl_arrow_container,
+div#sl_search_arrow,
+form#searchForm
+{
+    width: 0px;
+    height: 0px;
+    display: none;
+}
+
+/*---------------------
+ * Results
+ *---------------------*/
+div#map_sidebar,
+div#slpw_resultsbox #slpw_results
+{
+    background-color: #FFFFFF;
+    box-shadow: 0 3px 4px rgba(0, 0, 0, 0.5);
+    height: inherit;
+    overflow: auto;
+}
+div#slpw_resultsbox #slpw_results {
+    display: none;
+}
+div#map_sidebar     .results_wrapper,
+div#slpw_resultsbox .results_entry
+{
+    border-bottom: 1px dotted #000000;
+    padding: 0px;
+    width: 100%;
+}
+div#map_sidebar     .results_wrapper {
+    cursor: pointer;
+}
+div#map_sidebar     .results_wrapper:hover,
+div#slpw_resultsbox .results_entry:hover
+{
+    background: #ddeef3; /* Old browsers */
+    background: -moz-linear-gradient(top, #ddeef3 0%, #ffffff 50%, #ffffff 51%, #ddeef3 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ddeef3), color-stop(50%,#ffffff), color-stop(51%,#ffffff), color-stop(100%,#ddeef3)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #ddeef3 0%,#ffffff 50%,#ffffff 51%,#ddeef3 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #ddeef3 0%,#ffffff 50%,#ffffff 51%,#ddeef3 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #ddeef3 0%,#ffffff 50%,#ffffff 51%,#ddeef3 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #ddeef3 0%,#ffffff 50%,#ffffff 51%,#ddeef3 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ddeef3', endColorstr='#ddeef3',GradientType=0 ); /* IE6-9 */
+}
+div#map_sidebar     .results_row_left_column,
+div#slpw_resultsbox .results_row_left_column
+{
+   display:inline-block;
+   padding: 6px 3px 6px 6px;
+   vertical-align: top;
+   width: 72%;
+}
+div#map_sidebar     .results_row_right_column,
+div#slpw_resultsbox .results_row_right_column
+{
+   display:inline-block;
+    padding: 6px 6px 6px 0px;
+   vertical-align: top;
+   width: 25%;
+}
+span.location_name {
+    color: #3297B6;
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 14px;
+}
+span.slp_result_street,
+span.slp_result_street2,
+span.slp_result_citystatezip,
+span.slp_result_phone
+{
+    font-size: 11px;
+    line-height: 14px;
+}
+span.slp_result_street,
+span.slp_result_street2 {
+    display:inline-block;
+}
+span.slp_result_citystatezip,
+span.slp_result_phone
+{
+    display:block;
+}
+span.location_distance {
+    display: block;
+}
+span.slp_result_website {
+    font:700 11px/14px "Open Sans",arial,sans-serif
+}
+span.slp_result_directions {
+    font:700 11px/14px "Open Sans",arial,sans-serif
+}
+
+/* Tagalong result icons */
+.results_line.location_iconarray > a {
+    display: inline-block;
+    height: auto;
+    width: auto;
+}
+#tagalong_category_selector {
+    display: block;
+    height: 2em;
+    width: 100%;
+}
+#tagalong_category_selector .category_selector.parent {
+    display: block;
+    float: left;
+}
+#tagalong_category_selector .category_selector.child {
+    display: none;
+    float: left;
+}
+#tagalong_legend {
+    border: none;
+    padding: 12px;
+}
+#tagalong_legend .legend_text {
+    display: inline-block;
+    margin-left: 6px;
+    margin-right: 20px;
+    vertical-align: middle;
+}
+#tagalong_legend .tagalong_legend_icon {
+    display: inline-block;
+    margin-bottom: 12px;
+    min-width: 190px;
+}

@@ -1,0 +1,328 @@
+/**
+ ** file: beside_thepoint_2012.css
+ ** label: Beside The Point 2012
+ ** description: Search On Left Side, 2012 Compatible
+ ** add-ons: slp-pro
+ ** csl-slplus-layout: <div id="sl_div"><div id="sl_leftcol">[slp_search]<div id="sl_arrow_container"><div id="sl_search_arrow"></div></div>[slp_results]</div><div id="sl_rightcol">[slp_map]</div></div>
+ ** sl_load_locations_default: true
+ ** sl_num_initial_displayed: 25
+ ** sl_search_label: Zip
+ ** csl-slplus_find_button_label: Search
+ **
+ **/
+
+/*---------------------
+ * WordPress Tweaks
+ *---------------------*/
+.singular .entry-meta .edit-link a {
+    right: 0;
+    left: auto;
+}
+
+/*---------------------
+ * Entire SLPlus UI
+ *---------------------*/
+div#sl_div {
+    display: block;
+    height: 520px;
+    position: relative;
+    width: 100%;
+}
+
+/*---------------------
+ * Left Column
+ *---------------------*/
+div#sl_leftcol {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0px;
+    height: 600px;
+    width: 32%
+}
+
+/*---------------------
+ * Right Column
+ *---------------------*/
+div#sl_rightcol {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0px;
+    height: 400px;
+    width: 66%;
+}
+
+/*---------------------
+ * Map
+ *---------------------*/
+div#map {
+    border: solid 4px white;
+    box-shadow: 0 3px 4px rgba(0, 0, 0, 0.5);
+    height: 492px;
+    margin: 0px;
+    width: 100%
+}
+
+/* Don't let WordPress Mangle Map Images */
+div#map img {
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+    max-width: none;
+    opacity: 1.0;
+    visibility: visible;
+}
+/* Hide the default Google bubble shadow */
+div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
+    display:none;
+}
+
+div#slp_tagline {
+    padding-top: 3px;
+    text-align: right;
+    width: 100%;
+}
+
+/*---------------------
+ * Search Form
+ * Base + Widget Pack
+ *---------------------*/
+div#sl_arrow_container {
+    width: 100%;
+    display: block;
+    margin: 0px auto 12px auto;
+    text-align: center;
+    position: relative;
+}
+div#sl_search_arrow {
+    border-left: 23px solid transparent;
+    border-radius: 12px 12px 3px 3px;
+    border-right: 23px solid transparent;
+    border-top: 23px solid #DDDDDD;
+    height: 0;
+    margin: 0 auto 12px;
+    width: 0;
+}
+div.slp_basic_widget div#sl_search_arrow {
+    display: none;
+}
+form#searchForm,
+div#slpw_searchform
+{
+    background-color: #FFFFFF;
+    background: -moz-linear-gradient(top, #ddd 0%, #ffffff 40%, #ddd 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ddd), color-stop(40%,#ffffff), color-stop(100%,#ddd)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #ddd 0%,#ffffff 40%,#ddd 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #ddd 0%,#ffffff 40%,#ddd 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #ddd 0%,#ffffff 40%,#ddd 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #ddd 0%,#ffffff 40%,#ddd 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ddd', endColorstr='#ddd',GradientType=0 ); /* IE6-9 */
+    border-radius: 6px 6px 6px 6px;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
+    padding: 12px 0px;
+    position: relative;
+    margin-bottom: 0px;
+}
+form#searchForm         .search_header,
+div#slpw_searchform     H2
+{
+    color: #444;
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 14px;
+    padding: 0 0 14px;
+    text-align: center;
+    text-transform: uppercase;
+    width: 100%;
+}
+form#searchForm table,
+form#searchForm td
+{
+    border: none;
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+}
+form#searchForm         #addy_in_address,
+div#slpw_searchform     #addy_in_address
+{
+    padding-bottom: 6px;
+    text-align: center;
+}
+form#searchForm         LABEL,
+div#slpw_searchform     LABEL
+{
+    display: inline-block;
+    padding-right: 6px;
+    text-align: right;
+    width: 44px;
+}
+form#searchForm         INPUT,
+div#slpw_searchform     INPUT
+{
+    display: inline-block;
+}
+form#searchForm         SELECT,
+div#slpw_searchform     SELECT
+{
+    padding-right: 3px;
+}
+input#addressInput {
+    border: 1px solid #C0C0C0;
+    border-radius: 3px 3px 3px 3px;
+    display: inline;
+    height: 18px;
+    padding: 0 5px;
+    width: 134px;
+}
+div#addy_in_radius,
+div#slpw_submitline
+{
+    display: block;
+    padding-top: 6px;
+    text-align: center;
+}
+div#radius_in_submit {
+    display: block;
+    margin: 0px auto;
+    padding: 6px;
+    text-align: center;
+    width: 100%;
+}
+input#addressSubmit,
+input#slpw_addressSubmit
+{
+    background: linear-gradient(to bottom, #888 0%, #666 4%, #444 44%, #222 100%) repeat scroll 0 0 transparent;
+    border: 0 none;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    color: #FFFFFF;
+    cursor: pointer;
+    font: 700 11px/20px "Open Sans",arial,sans-serif;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+    width: 134px;
+    margin-top: 8px;
+    padding: 6px;
+    line-height: 1em;
+    vertical-align: top;
+}
+
+/*---------------------
+ * Results
+ *---------------------*/
+div#map_sidebar,
+div#slpw_resultsbox #slpw_results
+{
+    background-color: #EDEDED;
+    border-top: 1px solid #E4E4E4;
+    box-shadow: 0 3px 4px rgba(0, 0, 0, 0.5);
+    height: 332px;
+    overflow: auto;
+}
+div#slpw_resultsbox #slpw_results {
+    display: none;
+}
+div#map_sidebar     .results_entry,
+div#slpw_resultsbox .results_entry
+{
+    border-bottom: 1px dotted #000000;
+    padding: 5px;
+    width: 96%;
+}
+div#map_sidebar     .results_entry {
+    cursor: pointer;
+}
+div#map_sidebar     .results_entry:hover,
+div#slpw_resultsbox .results_entry:hover
+{
+    background: #ddeef3; /* Old browsers */
+    background: -moz-linear-gradient(top, #eeeeee 0%, #ffffff 45%, #ffffff 61%, #eeeeee 100%); /* FF3.6+ */
+    background: -webkit-linear-gradient(top, #eeeeee 0%,#ffffff 45%,#ffffff 61%,#eeeeee 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #eeeeee 0%,#ffffff 45%,#fffffff 61%,#eeeeee 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #eeeeee 0%,#ffffff 45%,#ffffff 61%,#eeeeee 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #eeeeee 0%,#ffffff 45%,#ffffff 61%,#eeeeee 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#eeeeee',GradientType=0 ); /* IE6-9 */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#eeeeee), color-stop(45%,#ffffff), color-stop(61%,#ffffff), color-stop(100%,#eeeeee)); /* Chrome,Safari4+ */
+}
+
+div#map_sidebar     .results_row_left_column,
+div#slpw_resultsbox .results_row_left_column,
+div#map_sidebar     .results_row_center_column,
+div#slpw_resultsbox .results_row_center_column,
+div#map_sidebar     .results_row_right_column,
+div#slpw_resultsbox .results_row_right_column
+{
+   display:block;
+   vertical-align: top;
+   width: 100%;
+}
+span.location_name {
+    color: #3297B6;
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 14px;
+}
+span.slp_result_address,
+span.slp_result_contact
+{
+    font-size: 11px;
+    line-height: 14px;
+}
+span.slp_result_street,
+span.slp_result_street2 {
+    display:inline-block;
+}
+span.slp_result_citystatezip,
+span.slp_result_phone,
+span.location_distance
+{
+    display:block;
+}
+.results_entry a.storelocatorlink {
+    overflow: hidden;
+}
+#slp_marker_email > nobr {
+    display: block;
+    overflow: hidden;
+    width: 100%;
+}
+
+
+
+/* Tagalong result icons */
+.results_line.location_iconarray > a {
+    display: inline-block;
+    height: auto;
+    width: auto;
+}
+#tagalong_category_selector {
+    display: block;
+    height: 2em;
+    width: 100%;
+}
+#tagalong_category_selector .category_selector.parent {
+    display: block;
+    float: left;
+}
+#tagalong_category_selector .category_selector.child {
+    display: none;
+    float: left;
+}
+#tagalong_legend {
+    border: none;
+    padding: 12px;
+}
+#tagalong_legend .legend_text {
+    display: inline-block;
+    margin-left: 6px;
+    margin-right: 20px;
+    vertical-align: middle;
+}
+#tagalong_legend .tagalong_legend_icon {
+    display: inline-block;
+    margin-bottom: 12px;
+    min-width: 190px;
+}

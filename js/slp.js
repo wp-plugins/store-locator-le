@@ -1,11 +1,8 @@
 /*****************************************************************
- * file: csl.js
+ * file: slp.js
  *
  *****************************************************************/
 
-/***************************
-  * CSA Labs Namespace
-  */
 var csl = {
 
    /***************************
@@ -29,11 +26,11 @@ var csl = {
 
 		this.anim = function(name, type) {
 			if (type===0)
-				document.images[name].src="/core/images/"+name+".gif";
+				document.images[name].src="/images/"+name+".gif";
 			if (type===1)
-				document.images[name].src="/core/images/"+name+"_over.gif";
+				document.images[name].src="/images/"+name+"_over.gif";
 			if (type===2)
-				document.images[name].src="/core/images/"+name+"_down.gif";
+				document.images[name].src="/images/"+name+"_down.gif";
 		};
 	},
 
@@ -120,11 +117,11 @@ var csl = {
 		 * returns: none
 		 */
 	    this.send = function (action, callback) {
-	        if (window.location.protocol !== csl_ajax.ajaxurl.substring(0, csl_ajax.ajaxurl.indexOf(':') + 1)) {
-	            csl_ajax.ajaxurl = csl_ajax.ajaxurl.replace(csl_ajax.ajaxurl.substring(0, csl_ajax.ajaxurl.indexOf(':') + 1), window.location.protocol);
+	        if (window.location.protocol !== slplus.ajaxurl.substring(0, slplus.ajaxurl.indexOf(':') + 1)) {
+	            slplus.ajaxurl = slplus.ajaxurl.replace(slplus.ajaxurl.substring(0, slplus.ajaxurl.indexOf(':') + 1), window.location.protocol);
 	        }
 
-			jQuery.post(csl_ajax.ajaxurl, action,
+			jQuery.post(slplus.ajaxurl, action,
 			function (response) {
 			    try {
 			        response = JSON.parse(response);
@@ -147,19 +144,16 @@ var csl = {
   	 * 	animationType: The Animation type to do the animation
 	 *		map: the csl.Map type to put it on
 	 *		title: the title of the marker for mouse over
-	 *		iconUrl: todo: load a custom icon, null for default
+	 *		markerImage: todo: load a custom icon, null for default
 	 *		position: the lat/long to put the marker at
   	 */
-  	Marker: function (animationType, map, title, position, iconUrl, iconSizeW, iconSizeH) {
+  	Marker: function (animationType, map, title, position, markerImage) {
 		this.__animationType = animationType;
   	  	this.__map = map;
   	  	this.__title = title;
-  	  	this.__iconUrl = iconUrl;
   	  	this.__position = position;
   	  	this.__gmarker = null;
-		this.__iconHeight = iconSizeH;
-		this.__iconWidth = iconSizeW;
-		this.__iconImage = null;
+		this.__markerImage = markerImage;
 		this.__shadowImage = null;
 
         /*------------------------
@@ -167,13 +161,9 @@ var csl = {
          */
   	  	this.__init = function() {
 
-			if (this.__iconUrl !== null) {
-				this.__iconImage = this.__iconUrl;
-			}
-
             // No icon image
             //
-			if (this.__iconImage === null) {
+			if (this.__markerImage === null) {
 				this.__gmarker = new google.maps.Marker(
                     {
                         position: this.__position,
@@ -185,9 +175,9 @@ var csl = {
 			// Use specified icon
             //
 			} else {
-                var shadowKey = this.__iconUrl;
+                var shadowKey = this.__markerImage;
                 if (typeof cslmap.shadows[shadowKey] === 'undefined') {
-                    var shadow = this.__iconUrl.replace('/_(.*?)\.png/', '_shadow.png');
+                    var shadow = this.__markerImage.replace('/_(.*?)\.png/', '_shadow.png');
                     jQuery.ajax(
                         {
                             url: shadow,
@@ -213,7 +203,7 @@ var csl = {
   	  	  	  	map: this.__map.gmap,
   	  	  	  	animation: this.__animationType,
 				shadow: this.__shadowImage,
-				icon: this.__iconImage,
+				icon: this.__markerImage,
 				zIndex: 0,
   	  	  	  	title: this.__title
   	  	  	});
@@ -255,7 +245,7 @@ var csl = {
 				writeln("</style>");
 
 				writeln("<form id='emailForm' method='GET'");
-				writeln(    " action='"+slplus.core_url+"send-email.php'>");
+				writeln(    " action='"+slplus.plugin_url +"/include/send-email.php'>");
 
 				writeln("    <div id='email_form_content'>");
 
@@ -291,7 +281,7 @@ var csl = {
 				writeln("    <div class='form_submit'>");
 				writeln("        <input type='submit' value='Send Message'>");
 				writeln("    </div>");
-                writeln("            <input type='hidden' name='valid' value=csl_ajax.nonce/>");
+                writeln("            <input type='hidden' name='valid' value=slplus.nonce/>");
 				writeln("</form>");
 				writeln("</body></html>");
 				close();
@@ -446,7 +436,6 @@ var csl = {
                 this.showTags = slplus.show_tags;
                 this.overviewControl = !!(parseInt(slplus.overview_ctrl));
                 this.useEmailForm = !!slplus.use_email_form;
-                this.websiteLabel = slplus.website_label;
                 this.disableDefaultUI = false;
 
                 if (!slplus.disable_dir) {
@@ -490,17 +479,14 @@ var csl = {
                     scaleControl: this.mapScaleControl,
                     overviewMapControlOptions: { opened: this.overviewControl }
                 };
-                this.debugSearch(this.options);
                 slpMapDiv = document.getElementById('map');
                 this.gmap = new google.maps.Map(slpMapDiv, this.options);
-                this.debugSearch(this.gmap);
                 //this forces any bad css from themes to fix the "gray bar" issue by setting the css max-width to none
                 var _this = this;
                 google.maps.event.addListener(this.gmap, 'bounds_changed', function() {
                     _this.__waitForTileLoad.call(_this);
                 });
 
-                this.debugSearch(this.usingSensor);
                 if (this.usingSensor) {
                     this.homePoint = center;
                     this.addMarkerAtCenter();
@@ -510,8 +496,8 @@ var csl = {
                 //
                 if (slplus.load_locations === '1') {
                         if (slplus.options.no_homeicon_at_start !== '1') {
-                        this.homePoint = center;
-                        this.addMarkerAtCenter();
+                            this.homePoint = center;
+                            this.addMarkerAtCenter();
                         }
                         var tag_to_search_for = this.saneValue('tag_to_search_for', '');
 
@@ -578,7 +564,7 @@ var csl = {
 				this.centerMarker.__gmarker.setMap(null);
 			}
 			if (this.homePoint) {
-				this.centerMarker = new csl.Marker(csl.Animation.None, this, "", this.homePoint, this.mapHomeIconUrl, this.mapHomeIconWidth, this.mapHomeIconHeight);
+				this.centerMarker = new csl.Marker(csl.Animation.None, this, "", this.homePoint, this.mapHomeIconUrl);
 			}
   	  	};
 
@@ -656,7 +642,7 @@ var csl = {
                             markerList[markerNumber].icon :
                             this.mapEndIconUrl
                         );
-				this.markers.push(new csl.Marker(animation, this, "", position, locationIcon, this.mapEndIconWidth, this.mapEndIconHeight ));
+				this.markers.push(new csl.Marker(animation, this, "", position, locationIcon));
 				_this = this;
 
 				//create a sidebar entry
@@ -752,7 +738,6 @@ var csl = {
   	  	 */
 		this.dropMarkers = function(markerList) {
 			this.clearMarkers();
-			this.debugSearch('dropping');
 			this.putMarkers(markerList, csl.Animation.Drop);
 		};
 
@@ -768,11 +753,7 @@ var csl = {
   	  	 * returns: none
   	  	 */
 		this.__handleInfoClicks = function(infoData, marker) {
-			this.debugSearch(infoData);
-			this.debugSearch(marker);
-			this.debugSearch(this);
 			this.infowindow.setContent(this.createMarkerContent(infoData));
-			//this.infowindow.setContent('hi');
 			this.infowindow.open(this.gmap, marker.__gmarker);
 		};
 
@@ -784,11 +765,16 @@ var csl = {
   	  	this.doGeocode = function() {
 			var geocoder = new google.maps.Geocoder();
   	  	  	var _this = this;
+            var geocodeParms = new Object();
+            geocodeParms['address'] = this.address;
+            if (slplus.options.searchnear === 'currentmap') { 
+                if (cslmap.gmap !== null) {
+                geocodeParms['bounds'] = cslmap.gmap.getBounds();
+                }
+            }
 
   	  	  	geocoder.geocode(
-				{
-					'address': this.address
-  	  	  	  	},
+                geocodeParms,
   	  	  	  	function (results, status) {
                     if (status === 'OK' && results.length > 0)
                     {
@@ -840,7 +826,7 @@ var csl = {
 
             if (typeof aMarker === "object") {
                 //add an http to the url
-                if ((slplus.use_pages_links === "on") && (aMarker.sl_pages_url !== '')) {
+                if ((slplus.options.use_pages_links === "on") && (aMarker.sl_pages_url !== '')) {
                     url = aMarker.sl_pages_url;
                 } else if (aMarker.url !== '') {
                     if ((aMarker.url.indexOf("http://" ) === -1)  &&
@@ -886,81 +872,174 @@ var csl = {
             return address;
         };
 
-		/***************************
-  	  	 * function: createMarkerContent
-  	  	 * usage:
-  	  	 * 		Builds the html div for the info window
-  	  	 * parameters:
-  	  	 * 		aMarker:
-					the ajax result to build the information from
-  	  	 * returns: an html <div>
-  	  	 */
-		this.createMarkerContent = function(aMarker) {
-			var html = '';
+        /**
+         * Create the info bubble for a map location.
+         *
+         * Shortcode format:
+         *    [<shortcode> <attribute> <modifier> <modifier argument>]
+         *
+         * @param {object} aMarker a map marker object.
+         */
+        this.createMarkerContent = function(thisMarker) {
+            
+            // Set a special attribute 'url' for use in the bubble
+            //
+            thisMarker['url'        ] = this.__getMarkerUrl(thisMarker);
+            thisMarker['fullAddress'] = this.__createAddress(thisMarker);
 
-            var url = this.__getMarkerUrl(aMarker);
+            nout = slplus.options.bubblelayout.replace(/\[(\w+)\s+(\S+)\s*(\S*)\s*(\S*)\s*\]/g,
+                function(match,shortcode,attribute,modifier,modarg) {
+                    switch(shortcode){
 
-			if (url !== '') {
-				html += "| <a href='"+url+"' target='"+((slplus.use_same_window==="on")?'_self':'_blank')+"' id='slp_marker_website' class='storelocatorlink'><nobr>" + slplus.website_label +" </nobr></a>";
-			}
+                        // SHORTCODE: slp_location
+                        // processes the location data
+                        //
+                        case 'slp_location':
+                            
+                            // Output NOTHING if attribute is empty
+                            //
+                            if (!thisMarker[attribute]) { return ''; }
 
-			if (aMarker.email.indexOf("@") !== -1 && aMarker.email.indexOf(".") !== -1) {
-				if (!this.useEmailForm) {
-					html += "| <a href='mailto:"+aMarker.email+"' target='_blank' id='slp_marker_email' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a>";
-				} else {
-					html += "| <a href='javascript:cslutils.show_email_form("+'"'+aMarker.email+'"'+");' id='slp_marker_email' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a><br/>";
-				}
-			}
+                            // Set prefix/suffix according to the modifier
+                            //
+                            prefix = '';
+                            suffix = '';
+                            switch (modifier) {
 
-			if (aMarker.image.indexOf(".") !== -1) {
-				html+="<br/><img src='"+aMarker.image+"' class='sl_info_bubble_main_image'>";
-			} else {
-				aMarker.image = "";
-			}
+                                // MODIFIER: suffix
+                                //
+                                case 'suffix':
+                                    switch(modarg) {
+                                        case 'br':
+                                            suffix = '<br/>';
+                                            break;
+                                        case 'comma':
+                                            suffix = ',';
+                                            break;
+                                        case 'space':
+                                            suffix = ' ';
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                    break;
+                                    
+                                // MODIFIER: wrap
+                                //
+                                case 'wrap':
+                                    switch(modarg) {
+                                        case 'img':
+                                            prefix = '<img src="';
+                                            suffix = '" class="sl_info_bubble_main_image">';
+                                            break;
+                                        case 'mailto':
+                                            prefix = '<a href="mailto:';
+                                            suffix = '" target="_blank" id="slp_marker_email" class="storelocatorlink">';
+                                            break;
+                                        case 'website':
+                                            prefix = '<a href="';
+                                            suffix = '" '                                                               +
+                                                     'target="'+((slplus.options.use_same_window==="on")?'_self':'_blank')+'" ' +
+                                                     'id="slp_marker_website" '                                         +
+                                                     'class="storelocatorlink" '                                        +
+                                                     '>';
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                    break;
 
-			if (aMarker.description !== '') {
-				html+="<br/>"+aMarker.description+"";
-			} else {
-				aMarker.description = '';
-			}
+                                // MODIFIER: Unknown, do nothing
+                                //
+                                default:
+                                    break;
+                            }
+                            var newOutput = (modifier === 'raw')                        ?
+                                    thisMarker[attribute]                               :
+                                    jQuery("<div/>").html(thisMarker[attribute]).text() ;
+                            return prefix + newOutput + suffix;
 
-			if (aMarker.hours !== '') {
-                var decoded = jQuery("<div/>").html(aMarker.hours).text();
-				html+="<br/><span class='location_detail_label'>"+slplus.label_hours+"</span> "+ decoded;
-			} else {
-				aMarker.hours = "";
-			}
+                        // SHORTCODE: slp_option
+                        // processes the option settings
+                        //
+                        case 'slp_option' :
+                            // Output NOTHING if attribute is empty
+                            //
+                            if (!slplus.options[attribute]) { return ''; }
 
-			if (aMarker.phone !== '') {
-				html+="<br/><span class='location_detail_label'>"+slplus.label_phone+"</span> "+aMarker.phone;
-			}
-			if (aMarker.fax !== '') {
-				html+="<br/><span class='location_detail_label'>"+slplus.label_fax+"</span> "+aMarker.fax;
-			}
+                            // Set prefix/suffix according to the modifier
+                            //
+                            prefix = '';
+                            suffix = '';
+                            switch (modifier) {
 
-			var address = this.__createAddress(aMarker);
+                                // MODIFIER: ifset
+                                // if the marker attribute specified by modarg is empty, don't output anything.
+                                //
+                                case 'ifset':
+                                    if (!thisMarker[modarg]) { return ''; }
+                                    break;
 
-			if (slplus.show_tags) {
-				if (jQuery.trim(aMarker.tags) !== '') {
-					var tagclass = 'bubble_'+aMarker.tags.replace(/\W/g,'_');
-					html += '<br/><div class="'+tagclass+'"><span class="slp_info_bubble_tags">'+aMarker.tags + '</span></div>';
-				}
-			}
+                                case 'wrap':
+                                    switch (modarg) {
+                                        case 'directions':
+                                            prefix = '<a href="http://' + slplus.map_domain +
+                                                '/maps?saddr=' + encodeURIComponent(this.cslmap.getSearchAddress(this.cslmap.address)) +
+                                                '&daddr=' + encodeURIComponent(thisMarker['fullAddress'])                              +
+                                                '" target="_blank" class="storelocatorlink">'                            ;
+                                            suffix = '</a> ';
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                    break;
 
+                                default:
+                                    break;
+                            }
+                            return prefix + jQuery('<div/>').html(slplus.options[attribute]).text() + suffix;
 
-			var complete_html = '<div id="sl_info_bubble"><!--tr><td--><strong>' + 
-                    aMarker.name + '</strong><br>' +
-                    address + '<br/> ' +
-                    '<a href="http://' + slplus.map_domain +
-                        '/maps?saddr=' + encodeURIComponent(this.getSearchAddress(this.address)) +
-                        '&daddr=' + encodeURIComponent(address) +
-                        '" target="_blank" class="storelocatorlink">'+
-                        slplus.label_directions+
-                        '</a> ' + html +
-                        '<br/><!--/td></tr--></div>';
+                        // SHORTCODE: HTML
+                        //
+                        case 'html':
 
-			return complete_html;
-		};
+                            // Doing something a little different, process the modifier FIRST
+                            // so a short circuit can happen.
+                            //
+                            switch (modifier) {
+                                
+                                // MODIFIER: ifset
+                                case 'ifset':
+                                    if (!thisMarker[modarg]) { return ''; }
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            switch (attribute) {
+
+                                // ATTRIBUTE: br
+                                case 'br':
+                                    return '<br/>';
+
+                                // ATTRIBUTE: closing_anchor
+                                case 'closing_anchor':
+                                    return '</a>';
+
+                                default:
+                                    break;
+                            }
+                            break;
+
+                        // Unknown Shortcode
+                        //
+                        default:
+                            return match + ' not supported';
+                    }
+                }
+             );
+             return nout;
+        };
 
         /**
          * Return a proper search address for directions.
@@ -979,22 +1058,6 @@ var csl = {
             }
             return searchAddress;
         };
-
-        /**
-         * debug the search mechanism
-         */
-		this.debugSearch = function(toLog) {
-		    if (slplus.debug_mode === 1) {
-                try {
-                    if (console) {
-				        console.log(toLog);
-                    }
-                }
-                catch (ex)
-                {
-                }
-			}
-		};
 
         /**
          * Get a sane value from the HTML document.
@@ -1131,16 +1194,16 @@ var csl = {
             var url = this.__getMarkerUrl(aMarker);
 
 			if (url !== '') {
-				link = link = "<a href='"+url+"' target='"+((slplus.use_same_window==="on")?'_self':'_blank')+"' class='storelocatorlink'><nobr>" + slplus.website_label +"</nobr></a><br/>";
+				link = link = "<a href='"+url+"' target='"+((slplus.options.use_same_window==="on")?'_self':'_blank')+"' class='storelocatorlink'><nobr>" + slplus.options['label_website'] +"</nobr></a><br/>";
 			}
 
 			var elink = '';
 			if (aMarker.email.indexOf('@') !== -1 && aMarker.email.indexOf('.') !== -1) {
 				if (!slplus.use_email_form) {
-					elink = "<a href='mailto:"+aMarker.email+"' target='_blank'  id='slp_marker_email' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a><br/>";
+					elink = "<a href='mailto:"+aMarker.email+"' target='_blank'  id='slp_marker_email' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a>";
 				}
 				else {
-					elink = "<a href='javascript:cslutils.show_email_form("+'"'+aMarker.email+'"'+");'  id='slp_marker_email' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a><br/>";
+					elink = "<a href='javascript:cslutils.show_email_form("+'"'+aMarker.email+'"'+");'  id='slp_marker_email' class='storelocatorlink'><nobr>" + aMarker.email +"</nobr></a>";
 				}
 			}
 
@@ -1172,16 +1235,9 @@ var csl = {
             if (jQuery.trim(zip) !== '') {
                 city_state_zip += zip;
             }
-            if (jQuery.trim(aMarker.phone) !== '') {
-                thePhone = slplus.label_phone+ aMarker.phone;
-            } else {
-                thePhone = '';
-            }
-            if (jQuery.trim(aMarker.fax) !== '') {
-                theFax = slplus.label_fax + aMarker.fax;
-            } else {
-                theFax = '';
-            }
+
+            thePhone    = (jQuery.trim(aMarker.phone) !== '') ? slplus.options['label_phone'] + aMarker.phone : '';
+            theFax      = (jQuery.trim(aMarker.fax)   !== '') ? slplus.options['label_fax'  ] + aMarker.fax   : '';
 
             var address = this.__createAddress(aMarker);
 
@@ -1190,15 +1246,33 @@ var csl = {
             String.prototype.format = function() {
              var args = arguments;
              return this.replace(/{(\d+)(\.(\w+)\.?(\w+)?)?}/g, function(match, number, dotsubname, subname,subsubname) {
+
+               // aMarker[#] is defined
                return typeof args[number] !== 'undefined'
+
+                 // aMarker[#] is not a complex object - just return the value of that field number
+                 //
                  ? typeof args[number] !== 'object'
                      ? args[number]
+
+                     // aMarker[#] is a complex oject,
+                     // check aMarker[#][subname] to see if it is an object, if not just return the value we find there
+                     //
                      : typeof args[number][subname] !== 'object'
-                         ? args[number][subname]
+                         ? typeof args[number][subname] !== 'undefined' ? args[number][subname] : ''
+
+                        // aMarker[#][subname] is a complex oject,
+                        // check aMarker[#][subname][subsubname] to see if it is an object, if not just return the value we find there
+                        //
                          : (args[number][subname] !== null)
-                            ? args[number][subname][subsubname]
-                            : ''
-                 : match
+                            ? typeof args[number][subname][subsubname] !== 'undefined' ? args[number][subname][subsubname] : ''
+
+                            // Ran out of possibilities, just return the shortcode back.
+                            //
+                            : match
+
+                 // aMarker[#] not defined, return blank
+                 : ''
                ;
              });
            };
@@ -1220,7 +1294,7 @@ var csl = {
           *              {10} slplus.map_domain,
           *              {11} encodeURIComponent(this.address),
           *              {12} encodeURIComponent(address),
-          *              {13} slplus.label_directions,
+          *              {13} slplus.options['label_directions'],
           *              {14} tagInfo,
           *              {15} aMarker.id
           *              {16} aMarker.country
@@ -1242,7 +1316,7 @@ var csl = {
                         slplus.map_domain,
                         encodeURIComponent(this.getSearchAddress(this.address)),
                         encodeURIComponent(address),
-                        slplus.label_directions,
+                        slplus.options['label_directions'],
                         tagInfo,
                         aMarker.id,
                         aMarker.country,
@@ -1250,8 +1324,8 @@ var csl = {
                         aMarker
                       )
                       ;
-			div.className = 'results_entry';
-            div.id = 'slp_results_entry_'+aMarker.id;
+			div.className = 'results_wrapper';
+            div.id = 'slp_results_wrapper_'+aMarker.id;
 
 			return div;
 		};
@@ -1357,30 +1431,6 @@ jQuery(document).ready(
                     return value.match(numberMatcher);
                 };
                 jQuery.fn.extend({
-                        /**
-                         * @parent dom
-                         * @download http://jmvcsite.heroku.com/pluginify?plugins[]=jquery/dom/form_params/form_params.js
-                         * @plugin jquery/dom/form_params
-                         * @test jquery/dom/form_params/qunit.html
-                         * <p>Returns an object of name-value pairs that represents values in a form.
-                         * It is able to nest values whose element's name has square brackets. </p>
-                         * Example html:
-                         * @codestart html
-                         * &lt;form>
-                         *   &lt;input name="foo[bar]" value='2'/>
-                         *   &lt;input name="foo[ced]" value='4'/>
-                         * &lt;form/>
-                         * @codeend
-                         * Example code:
-                         * @codestart
-                         * $('form').formParams() //-> { foo:{bar:2, ced: 4} }
-                         * @codeend
-                         *
-                         * @demo jquery/dom/form_params/form_params.html
-                         *
-                         * @param {Boolean} [convert] True if strings that look like numbers and booleans should be converted.  Defaults to true.
-                         * @return {Object} An object of name-value pairs.
-                         */
                         formParams: function( convert ) {
                             if ( this[0].nodeName.toLowerCase() == 'form' && this[0].elements ) {
 
@@ -1449,7 +1499,7 @@ jQuery(document).ready(
 
                 // Our map initialization
                 //
-                if (jQuery('div#sl_div'          ).is(":visible")) {
+                if (jQuery('div#sl_div').is(":visible")) {
                     if (typeof slplus !== 'undefined') {
                         InitializeTheMap();
                     } else {

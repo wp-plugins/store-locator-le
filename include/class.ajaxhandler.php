@@ -93,9 +93,11 @@ class SLPlus_AjaxHandler {
               'attributes'  => maybe_unserialize($row['sl_option_value']),
               'id'          => $row['sl_id'],
           );
-          $this->plugin->currentLocation->set_PropertiesViaArray($row);
-          $marker = apply_filters('slp_results_marker_data',$marker);
-          return $marker;
+
+        // FILTER: slp_results_marker_data
+        $this->plugin->currentLocation->set_PropertiesViaArray($row);
+        $marker = apply_filters('slp_results_marker_data',$marker);
+        return $marker;
     }
 
     /**
@@ -201,13 +203,13 @@ class SLPlus_AjaxHandler {
         // Distance Unit (KM or MI) Modifier
         // Since miles is default, if kilometers is selected, divide by 1.609344 in order to convert the kilometer value selection back in miles
         //
-        $multiplier=(get_option('sl_distance_unit')=="km")? 6371 : 3959;
+        $multiplier=(get_option('sl_distance_unit',__('miles', 'csa-slplus'))==__('km', 'csa-slplus'))? 6371 : 3959;
 
         // Return How Many?
         //
         if (empty($optName_HowMany)) { $optName_HowMany = SLPLUS_PREFIX.'_maxreturned'; }
         $maxReturned = trim(get_option($optName_HowMany,'25'));
-        if (!is_numeric($maxReturned)) { $maxReturned = '25'; }
+        if (!ctype_digit($maxReturned)) { $maxReturned = '25'; }
 
 
         //........
@@ -223,17 +225,21 @@ class SLPlus_AjaxHandler {
             $filterClause .= $filter;
         }
 
+        // FILTER: slp_ajaxsql_orderby
+        //
+        $orderby = apply_filters('slp_ajaxsql_orderby','sl_distance ASC');
+
         // Set the query
         // FILTER: slp_mysql_search_query
         //
-        $this->dbQuery = apply_filters('slp_mysql_search_query',
+        $this->dbQuery =  apply_filters('slp_ajaxsql_fullquery',
             "SELECT *,".
             "( $multiplier * acos( cos( radians('%s') ) * cos( radians( sl_latitude ) ) * cos( radians( sl_longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( sl_latitude ) ) ) ) AS sl_distance ".
-            "FROM {$this->plugin->db->prefix}store_locator ".
-            "WHERE sl_longitude<>'' and sl_latitude<>'' ".
-            $filterClause . ' ' .
-            "HAVING (sl_distance < %d) ".
-            'ORDER BY sl_distance ASC '.
+            "FROM {$this->plugin->database->info['table']} "                  .
+            "WHERE {$this->plugin->database->info['query']['valid_latlong']} ".
+            "{$filterClause} "                                          .
+            "HAVING (sl_distance < %d) "                                .
+            "ORDER BY {$orderby} "                                      .
             'LIMIT %d'
             );
 

@@ -88,12 +88,8 @@ div#sl_div div#address_search input[type="submit"] {
   padding: 3px;
 }
 
-/**** Map Box
- **
- ** Since we only use these div IDs when a static image is present
- ** we start with the image shown and map hidden.  JQuery will flip
- ** this for us.
- **
+/**
+ * Map Area
  **/
 div#map {
     border-top: solid 1px #CCCCCC;
@@ -102,16 +98,17 @@ div#map {
     width: auto !important;
 }
 
+/* Don't let WordPress Mangle Map Images */
+div#map img {
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+    max-width: none;
+    visibility: visible;
+}
 /* Hide the default Google bubble shadow */
 div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
     display:none;
-}
-
-div#map {
-    border-top: solid 1px #CCCCCC;
-    border-left: solid 1px #CCCCCC;
-    border-right: solid 1px #CCCCCC;
-    width: auto !important;
 }
 div.entry-content div#sl_div #map_table IMG {
 	max-width:none;
@@ -128,6 +125,8 @@ div.entry-content div#sl_div #map_table IMG {
 div#slp_tagline {
     text-align: right;
     padding-right: 3px;
+    width: 100%;
+
 }
 table.sl_footer {
     margin-bottom: 12px;
@@ -191,4 +190,40 @@ span.slp_result_phone {
 span.slp_result_contact {
     width: 100%;
     white-space: nowrap;
+}
+
+
+/* Tagalong result icons */
+.results_line.location_iconarray > a {
+    display: inline-block;
+    height: auto;
+    width: auto;
+}
+#tagalong_category_selector {
+    display: block;
+    height: 2em;
+    width: 100%;
+}
+#tagalong_category_selector .category_selector.parent {
+    display: block;
+    float: left;
+}
+#tagalong_category_selector .category_selector.child {
+    display: none;
+    float: left;
+}
+#tagalong_legend {
+    border: 3px double #444444;
+    padding: 12px;
+}
+#tagalong_legend .legend_text {
+    display: inline-block;
+    margin-left: 6px;
+    margin-right: 20px;
+    vertical-align: middle;
+}
+#tagalong_legend .tagalong_legend_icon {
+    display: inline-block;
+    margin-bottom: 12px;
+    min-width: 190px;
 }

@@ -1,11 +1,12 @@
 === Store Locator Plus ===
 Plugin Name:  Store Locator Plus
 Contributors: charlestonsw
-Donate link: http://www.charlestonsw.com/product/store-locator-plus-2/
+Donate link: http://www.charlestonsw.com/product-category/slplus/
 Tags: store locator,location management,location map,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
-Tested up to: 3.6
-Stable tag: 3.11.22
+Tested up to: 3.5.1
+Stable tag: 4.0
+License: GLPv2 or later
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
 
@@ -13,6 +14,28 @@ A full featured location management system. Add a location finder or directory t
 
 Learn more about [Store Locator Plus on the Charleston Software Associates website](http://www.charlestonsw.com/product-category/slplus/).
 The website offers [more screen shots](http://www.charlestonsw.com/product-category/slplus/), [technical documentation](http://www.charlestonsw.com/support/documentation/technical-documentation/), and [full release notes](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/).
+
+= Version 4 Major Upgrade =
+
+Version 4 is the first major upgrade in a couple of years.
+This upgrade provides new features that make it far easier to create a truly custom user exprience without having to leave the WordPress admin panel.
+You can learn more about the new release at the [Charleston Software Associates](http://www.charlestonw.com) website.
+
+= Important Note About Version 3 Premium Add Ons =
+
+If you are using premium add-on packs for Store Locator Plus version 3 you must first upgrade to the Store Locator Plus 4 compatible add-on packs.
+*Do not upgrade the base plugin if you are using SLP3 add-on packs*.   You must follow these instructions:
+
+    * Login to your [Charleston Software Associates](http://www.charlestonsw.com) account.
+    * Purchase [the SLP4 compatible version of your add-on packs](http://www.charlestonsw.com/product-category/slp4-products/).
+    * Download the SLP4 add-on pack zip files.
+    * Login to your website's WordPress admin panel.
+    * Deactivate and delete all of your SLP premium add-on packs.
+    * Upgrade Store Locator Plus to SLP version 4.x.
+    * Install your newly downloaded SLP4 add-on pack zip files.
+    * Active the newly installed add-on packs.
+
+= Details =
 
 Store Locator Plus is an advanced system for managing multiple physical locations via a fully integrated WordPress solution.
 Whether you have ten locations or ten-thousand, you manage them with ease right from within your WordPress admin panel.
@@ -50,57 +73,64 @@ Re-label entry fields and results fields.
 
 = Premium Add-Ons =
 
-Premium add-on packages are available to extend the capabilities of this plugin.
+[Premium add-on packages](http://www.charlestonsw.com/product-category/slp4-products/) are available to extend the capabilities of this plugin.
 
-* [Pro Pack](http://www.charlestonsw.com/product/store-locator-plus) : More control over the map, search form, loading locations.
-** Set a specific default location to center the map when first loaded.
-** Tag your stores and customize the map to show specific tags.
-** The search form can be customized to show or hide a country pulldown, a city and state pulldown, and tag search fields.
-** Enable pop-up email forms to help reduce spam.
-** Have more control over the map interface.
-** Admin panel CSS override, tweak the look without editing/saving CSS files.
-* [Store Pages](http://www.charlestonsw.com/product/store-locator-plus-store-pages) : Create SEO friendly WordPress pages for your store locations.
-** Create pages for each location with the click of a button.
-** Each page can be edited as an individual post.
-** Pages support their own comments, featured image, page style, and other standard WordPress page template features.
-* [Enhanced Map](http://www.charlestonsw.com/product/store-locator-plus-enhanced-map) : Get even more control over the map interface.
-** Show or hide the map.
-** Add a map slider on/off to allow users to show/hide the map.
-** Add a center map at setting.
-** Show/Hide map inset.
-** Enable/Disable scroll wheel.
-** Show/Hide Map 3D control.
-** Show/Hide Map scale.
-** Show/Hide Map type.
-* [Enhanced Results](http://www.charlestonsw.com/product/store-locator-plus-enhanced-results)
-** Order results by name or distance.
-** Wrap the phone output in a tel: href tag.
-** Hide the distance on the results table.
-* [Enhanced Search](http://www.charlestonsw.com/product/store-locator-plus-enhanced-search) : Get even more control over the basic search form.
-** Turn the search interface on/off.
-* [Icon Packs](http://www.charlestonsw.com/product/store-locator-plus-icon-packs/) : Add new icon sets to your map markers.
-* [Tagalong](http://www.charlestonsw.com/product/store-locator-plus-tagalong/) : Add custom map markers based on location categories.
-** Set a different marker for each location.
-** Categorize your stores.
-** Show markers and icons for each category.
-** Show the category selection/filter on the search form.
-* [Widget Pack](http://www.charlestonsw.com/product/store-locator-plus-widget-pack/) : The first 3rd party add-on. Put location search in your widget-hole.
+**[Enhanced Map](http://www.charlestonsw.com/product/store-locator-plus-enhanced-map) Extended Map Interface Controls**
 
-If you are a plugin developer you will be interested in the new "Roll Your Own" program where you can create SLP based premium (or free) add-ons of your own.
-Create something great and list it on the CSA site!
+* Custom tailor the map info bubble custom HTML/shortcode admin entry.
+* Center the starting map at any location in the world.
+* Turn the map display on or off or let the user decide with a slider switch.
+* Modify the built-in Google Map controls.
 
-= SLP4 Is Coming =
+**[Enhanced Results](http://www.charlestonsw.com/product/store-locator-plus-enhanced-results) Customize The Location Results**
 
-The next major release of Store Locator Plus, SLP4, is entering formal beta testing on September 1st, 2013.
-Anticipated release of the production version is early October.
+* Custom tailor the results output with a custom HTML/shortcode admin entry.
+* Change sort order on the the results.
+* Works with other add-on packs, like Tagalong, to show per-location icons.
+* Modify location field labels.
 
-Upgrading to Store Locator Plus 4, when it is released, will require *paid upgrades to all premium add-on packs*.
-Customers that have purchased premium add-on packs within the past 12 months will be offered substantial discounts on upgrades.
-Customer that have purchased premium add-on packs on or after September 1st 2013 will be offered the SLP4 compatible version at no cost.
+**[Enhanced Search](http://www.charlestonsw.com/product/store-locator-plus-enhanced-search) Customize The Search Form**
 
-= General Questions and Support =
+* Custom tailor the search form with a HTML/shortcode admin entry.
+* Turn the search interface on/off.
+* Works with other add-on packs to display category drop downs, tag drop downs, and other search features.
 
-If you have a general question, please ask via the [Store Locator Plus Forum](http://www.charlestonsw.com/forums/forum/support-2/).  As a one-man show it helps me to be more efficient by answering questions once versus ten times via individual email messages.
+**[Pro Pack](http://www.charlestonsw.com/product/slp4-pro/) Enterprise Location Management and Reporting**
+
+* Location Sensor support.
+* Bulk Data Import.
+* Bulk Data Export.
+* Re-geocode locations in bulk.
+* Layout control to customize the order and wrapping HTML of the search form, map, and results.
+* Custom CSS via a simple admin panel entry box.
+* Location search reporting.
+* Location tags.
+
+**[Store Pages](http://www.charlestonsw.com/product/store-locator-plus-store-pages) SEO Friendly Location Pages**
+
+* Create pages for each location with the click of a button.
+* Each page can be edited as an individual post.
+* Pages support their own comments, featured image, page style, and other standard WordPress page template features.
+
+**[Tagalong](http://www.charlestonsw.com/product/store-locator-plus-tagalong/) Categorize Your Locations**
+
+* Provides a custom interface to the WordPress category manager to attach categories to locations.
+* Assign map markers and icons to locations.
+* Assign multiple categories to a single location.
+* Add a icon legend to the user interface.
+* Faster category filtering and searching than Pro Pack tags.
+
+**[Widget Pack](http://www.charlestonsw.com/product/store-locator-plus-widget-pack/) SLP Enabled Sidebar Widgets**
+
+* The first 3rd party add-on.
+* Put location search in your widget-enabled areas.
+* Direct users to the default map page, or show results right in the widget area.
+
+If you are a plugin developer you will be interested in the new "Roll Your Own" program where you can create SLP based add-ons of your own.
+Create something great and list it on the CSA site!   Revenue sharing offered for premium add-on packs.
+If they are 100% ready-to-go the revenue split is 75% to the plugin author, 25% is retained for payment processing fees and marketing expenses.
+
+= Support =
 
 Support for the plugin can be found in the [CSA Forums](http://www.charlestonsw.com/forums/).  If you have an urgent issue or want one-on-one support you can [purchase premium support](http://www.charlestonsw.com/product/product-support).
 
@@ -148,7 +178,7 @@ I hope you appreciate my work.
 Please [rate this plugin](http://wordpress.org/extend/plugins/store-locator-le/)!
 Rating the plugin, hopefully with 5 stars, helps increase the exposure on WordPress, which generates more downloads and purchases of add-ons.
 The more add-ons I sell the easier it is to put food on the table and give me more time to code cool new features.
-No ratings, no food, more hours working as the Walmart Greeter, less coolness in the plugin.
+No ratings, no food, more hours working as the Walmart Greeter, less coolness in the plugins.
 
 Give me a chance to address your concerns if this plugin doesn't earn 5 stars by [contacting me](http://www.charlestonsw.com/mindset/contact-us/) directly or by posting in the [support forum](http://www.charlestonsw.com/forums/) at the CSA website.
 
@@ -160,7 +190,7 @@ I will send you the translation files that WordPress creates, you send back the 
 Offer available to first complete translation of this plugin or for notable updates to existing translation files.
 Upon request I will also put a link to your site in the "special thanks" section.
 
-Any EASIER way to help with translations?  Load the (Codestyling Localization plugin)[http://wordpress.org/extend/plugins/codestyling-localization/] and then find it under "Tools/Localization" in your admin panel.
+Any EASIER way to help with translations?  Load the [Codestyling Localization plugin](http://wordpress.org/extend/plugins/codestyling-localization/) and then find it under "Tools/Localization" in your admin panel.
 
 Here is the process, in case you are wondering:
 1. I run php makepot.php for the plugin.
@@ -188,34 +218,37 @@ Here is the process, in case you are wondering:
 
 = Icons =
 
-The system ships with a dozen default icons in the `/wp-content/plugins/store-locator-le/core/images/icons` directory. Add your own custom icons in that directory and they will be auto-detected.
+The system ships with a dozen default icons in the `/wp-content/plugins/store-locator-le/images/icons` directory. Add your own custom icons in that directory and they will be auto-detected.
 
 To prevent custom icons from being over-written they will be copies to the '/wp-content/uploads/sl-uploads/custom-icons/' directory.  If you place your icons in that directory they will be detected on the icon selection screens.
 
 = Custom Styling =
 
 Users that want to customize the look and feel of the search form, map, and search results can do so
-with ease using the new Theme System .   Copy an existing CSS file, change the file name and update the CSS header, upload to the server and you can now activate your
+with ease using the new Theme System that is part of the Pro Pack.   Copy an existing CSS file,
+change the file name and update the CSS header, upload to the server and you can now activate your
 new theme or any of the built-in defaults by selecting it from the auto-generated pulldown menu.
+
+Users that opt not to purchase the Pro Pack can still customize the look by editing the basic CSS file that ships with the free plugin.
 
 = Special Thanks =
 
 *Translations*
 
-* Dutch - [Jan de Baat](www.de-baat.nl)
-* French - François Serrault
+* Dutch (nl_NL) by [Jan de Baat](http://www.de-baat.nl/)
+* French (fr_FR) by François Serrault
 
 *Graphics*
 
-Thanks to [Nicolas Mollet](http://mapicons.nicolasmollet.com/) and Icons-Land (http://www.icons-land.com/) via Icon Finder for some of the great icons.
-
-[Massive Creative](http://www.massivecreativeinc.com) for some of our banners and other creative work.
+* Map markers by [Nicolas Mollet](http://mapicons.nicolasmollet.com/)
+* Icons by Icons-Land (http://www.icons-land.com/) via Icon Finder.
+* Logos and other site graphics by [Massive Creative](http://www.massivecreativeinc.com).
+* Markers and icons by [Google](http://www.google.com).  Some of the Google open-source icons are found [at this unofficial list](http://www.visual-case.it/cgi-bin/vc/GMapsIcons.pl).
 
 *Code*
 
-Thanks to [Google](http://www.google.com) for the maps engine as well as some of the icons.  Some of the Google open-source icons are found [at this unofficial list](http://www.visual-case.it/cgi-bin/vc/GMapsIcons.pl).
-
-Thanks to "PennyGrit" for pointing out security issues so I can patch them before the exploit gets into the wild.
+* Security review, thanks to "PennyGrit".
+* Map engine and starting code templates thanks to [Google](http://www.google.com).
 
 
 == Frequently Asked Questions ==
@@ -240,14 +273,9 @@ This gives those customers who want more out of the plugin the extra features th
 efficient as possible for everyone else.   It also provides a great way to support future development while getting a
 "little something extra" when contributing to my efforts.
 
-Current premium add-ons:
-
-* [Enhanced Results](http://www.charlestonsw.com/product/store-locator-plus-enhanced-results) : Get even more control over the search results.
-* [Enhanced Search](http://www.charlestonsw.com/product/store-locator-plus-enhanced-search) : Get even more control over the basic search form.
-* [Pro Pack](http://www.charlestonsw.com/product/store-locator-plus) : More control over the map, search form, loading locations.
-* [Store Pages](http://www.charlestonsw.com/product/store-locator-plus-store-pages) : Create SEO friendly WordPress pages for your store locations.
-* [Tagalong](http://www.charlestonsw.com/product/store-locator-plus-tagalong/) : Add custom map markers based on location categories.
-* [Widget Pack](http://www.charlestonsw.com/product/store-locator-plus-widget-pack/) : SLP sidebar widgets.
+All plugins are true add-on packs.  They are non-destructive OPTIONAL additions to the base plugin.
+They do not require the base plugin to be uninstalled or re-installed.
+Installed an add-on pack will not change location data or modify base plugin settings.
 
 = Who is Charleston Software Associates? =
 
@@ -274,7 +302,7 @@ I am looking into working with the WPML plugin for added support for those of yo
 
 == Screenshots ==
 
-The website offers [more screen shots](http://www.charlestonsw.com/product/store-locator-plus-2/) including those from the latest updates and premium add-on packages.
+The website offers [more screen shots](http://www.charlestonsw.com/product-category/slplus/) including those from the latest updates and premium add-on packages.
 
 1. Example Map with Enhanced Maps On/Off Slider
 2. Manage Locations with Pro Pack and Store Pages
@@ -288,131 +316,97 @@ The website offers [more screen shots](http://www.charlestonsw.com/product/store
 
 More screenshots are available via [the CSA website](http://www.charlestonsw.com/product-category/slplus/).
 
+==Upgrade Notice==
+
+Store Locator Plus 4 is a MAJOR upgrade to the previous version.
+
+If you are using ANY of the [premium add-on packs](http://www.charlestonsw.com/product-category/slp4-products/) you must first deactivate and delete the premium add-on packs.
+
+You will need to purchase new [SLP4 compatible versions of the add-on packs](http://www.charlestonsw.com/product-category/slp4-products/).
+Discounts will be made available to users that purchased a premium add-on pack within 1 year of purchasing the SLP4 compatible upgrades.
+
 == Changelog ==
+
+I update about once per month or more frequently as needed.
 
 Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
 
-= 3.11.22 =
+I was listing the entire change log here but with weekly/bi-weekly updates it as getting much too long.
 
-* French Translation provided by François Serrault
+= 4.0 =
 
-= 3.11.21 =
-
-* Update: Add version checking, notification, and deactivation system for add-on packs in preparation for SLP4 release.
-
-= 3.11.20 =
-
-* Fix: Map images on misbehaving themes.
-* Fix: jQuery Migration warnings from WP3.6 updates.
-
-= 3.11.19 =
-
-* Enhancement : [New theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/themes-custom-css/) Blank Map Fix has NO custom CSS rules other than the patch to fix map images corrupted by WordPress rules.
-* Enhancement : [New country](http://www.charlestonsw.com/google-maps-tlds/) Added Lithuania, maps.google.lt.
-
-= 3.11.18 =
-
-* Update: minor verbiage change "icons" to "markers" to eliminate confusion with upcoming Tagalong updates.
-* Update: Tested on version 3.6
-
-= 3.11.17 =
-
-* Fix : Fatal error: Call to a member function get_error_messages() on a non-object in class.location.php when manipulating locations.
-
-= 3.11.16 =
-
-* Fix : Starting image overlay has been fixed.
-* Fix : No map theme has been fixed.
-
-= 3.11.15 =
-
-* Fix: Bring back the very old school (and ugly IMO) arrow and marker png files so older sites do not need to re-set their map markers.
-* Fix: Eliminate stripslashes array warning.
-* Fix: LocationID warning on manage locations.
-
-= 3.11.14 =
-
-* Enhancement: Tweak the results output handler to accommodate new results fields with the {18.*} results code.
-* Enhancement: [New country](http://www.charlestonsw.com/google-maps-tlds/) United Arab Emirates, maps.google.ae.
-
-= 3.11.13 =
-
-* Enhancement: Added Dutch (Netherlands, language code: NL) translation files.
-
-= 3.11.12 =
-
-* Enhancement: Remove call to defunct php file, increasing search form rendering speed.
-* Enhancement: [New country](http://www.charlestonsw.com/google-maps-tlds/) Philippines, maps.google.com.ph.
-* Fix: Check all on manage locations no longer selects Tagalong tags.
-
-= 3.11.11 =
-
-* Enhancement: General Settings/Plugin News shows the current published date and version of the base plugin.
-* Enhancement: General Settings/Plugin News highlights the active installed add-on packs.
-* Fix: Edit locations saving.
-
-= 3.11.10 =
-
-* Fix: registering of add-on packs is more accurate, for widget pack update
-
-= 3.11.9 =
-
-* Enhancement: Inherit SLP 4.0 Admin interface
-* Fix: Help icons fixed on multiple settings.
-* Fix: Div structures on admin pages.
-
-= 3.11.8 =
-
-* Fix: Checkbox saving on admin settings for settings that appear in two places.
-
-= 3.11.7 =
-
-* Enhancement : More map markers.
-
-= 3.11.6 =
-
-* Fix: Error of object not set in wp_head for themes that call wp_head too early.
-
-= 3.11.5 =
-
-* Fix: Eliminate an unset variable warning on manage locations page.
-
-= 3.11.4 =
-
-* Fix: Eliminate double headers on JSON response.
-* Enhancement: Show plugin version on General tab.
-* Enhancement: Remove license reset codes.
-* Enhancement: Remove license engine hooks.
-* Enhancement: Simplify some wpCSL methods, smaller memory footprint + faster execution speeds.
-* Fix: Setting themes not working, [issue #27](https://bitbucket.org/lance_cleveland/store-locator-plus/issue/27/setting-themes-is-not-working).
-
-= 3.11.3 =
-
-* Enhancement: Remove some defunct code and scripts.
-* Fix: Editing locations on page 2+ on manage locations was restarting at first page.
-
-= 3.11.2 =
-
-* Fix: update default.css theme to set radius drop down formatting (some themes were overriding SELECT).
-* Enhancement: add initial_radius shortcode to override default "immediately show locations" radius.
-
-= 3.11.1 =
-
-* Fix: address without geocodes are highlighted again
-* Enhancement: [New filter](/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/) slp_manage_location_where 3rd party add-ons can control the manage locations screen.
-* Enhancement: Added ja_JP language files, thanks Shohei Tanaka.
-* Enhancement: Force alternate index keys to 255 characters to try to fix WordPress dbDelta bug.
-
-= 3.11 =
-
-* Change: Rework how attributes and script localization works.
-* Change: Minor patches to assist new Enhanced Maps add-on.
-* Enhancement: Add version ID to script enqueue, helps with getting cache systems to flush data.
-* Enhancement: Editing lat/long on an existing location is not part of the base product.
-* Enhancement: Manage locations colors rows on hover.
-* Enhancement: Manage locations row coloring is 100% admin.CSS driven, tr.slp_managelocations_row.even/odd/invalid.
-* Enhancement: [New filter](/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/) slp_location_filters_for_AJAX makes it easier for 3rd party add-ons to filter the AJAX location data.
-* Fix: set the location ID properly on manage locations editing, helps other add-ons work consistently.
-* Fix: stop losing lat/long when editing a property.
-* Fix: if not all map locations have a custom marker via tagalong, pro pack, enhanced maps add-ons the map would not render location markers.
-* Fix: stop generating google map javascript errors if no results are returned
+* Enhancement: All of the premium add-on packs have new features and settings with a multitude of layout management options right from the admin panel.
+* Enhancement: Hundreds of lines of excess code has been eliminated.
+* Enhancement: Standardized classes and objects means a lot less back-end errors while increasing extensibility via add-on packs.
+* Enhancement: Moved multiple checkbox/input settings to appropriate add-on packs, reducing memory and disk requirements of base plugin.
+* Enhancement: Admin tab CSS changes to further compartmentalize the multiple settings.
+* Enhancement: Rework admin interface adding a second sidebar nav for settings pages.
+* Enhancement: Default HTML for search results has class "results_entry" assigned by default.
+* Enhancement: Allow results output to display any data elements returned from the backend.  This allows Enhanced Results to specify the slp_location shortcode with ANY marker.
+* Enhancement: Allow add locations to add the lat/long and avoid the geocoding calls.
+* Enhancement: Simplify the action/filter interface on manage locations.
+* Enhancement: Google Maps JavaScript is only loaded on pages with the SLPLUS shortcode, unless force load JavaScript is enabled.
+* Enhancement: Smarter disk I/O when editing/saving locations.  Only write to disk if location data changed.
+* Enhancement: Location manager interface follows standard WordPress admin interface design.
+* Enhancement: Condensed address output on manage locations table.
+* Enhancement: Tool tips on website and email links on expanded manage locations table.
+* Enhancement: Improve performance of geocoding operations during bulk address change processing.
+* Enhancement: Improve number of locations geocoded when performing bulk address operations.
+* Enhancement: Reduce disk I/O calls when geocoding a location.  Does not write if lat/long is not changed, eliminated double-disk write on adding a new location.
+* Enhancement: Lighten the wpCSL framework that manages the base WordPress interfaces.
+* Enhancement: Reduce the images, JavaScript, and CSS footprint by eliminating duplicate data.
+* Enhancement: Image field edits are now part of the base plugin.
+* Enhancement: Admin UI help icons now have tool tips with the help text.
+* Enhancement: Icon selector boxes can now be resized via a resize handle.
+* Enhancement: Adding locations is more intelligent about disk I/O, eliminating extra writes if Store Pages and/or Tagalong is active.
+* Enhancement: Geocoding maximum retry delay can be set to any value.  Higher values means slower geocoding for locations but can reduce Over Query Limit warnings.
+* Enhancement: New Dutch (nl_NL) translation.
+* Enhancement: New French (fr_FR) translation.
+* Enhancement: [New filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): wpcsl_admin_slugs to add new setting pages to the valid admin page list.
+* Enhancement: [New filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_view_features_panel to maninpulate the new UX tab : View section.
+* Enhancement: [New filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_js_options allows add-on packs to pass data to the slp.js script.
+* Enhancement: [New filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_searchlayout to modify the default search layout
+* Enhancement: [New filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): shortcode_slp_searchelement to modify the attributes when processing the slp_searchelement shortcode.
+* Enhancement: [New filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_ajaxsql_orderby provide a mechanism to change the order by on AJAX search results.
+* Enhancement: [New filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_locations_manage_bulkactions allows add-ons to add items to the manage locations bulk actions drop down.
+* Enhancement: [New filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_locations_manage_filters allows add-ons to add items to the manage locatinos filter drop down.
+* Enhancement: [New filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_extend_get_SQL provide a mechanism for extending the data interface..
+* Enhancement: [New filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_ui_headers allows add-on packs to modify the page header on the UI.
+* Enhancement: [New filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_invalid_highlight allow the manage locations class to be changed for non-geocoded rows.
+* Enhancement: [New hook](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_save_generalsettings fires when general settings are being saved.
+* Enhancement: [New hook](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_generalsettings_modify_adminpanel to manipulate the General Settings / User Interface panel.
+* Enhancement: [New hook](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_generalsettings_modify_googlepanel to manipulate the General Settings / Google panel.
+* Enhancement: [New hook](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_location_save called just before the locations admin UI calls the location_save method with currentLocation fully loaded.
+* Enhancement: [New hook](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_location_saved called just after the locations admin UI calls the location_save method with currentLocation fully loaded.
+* Enhancement: [New hook](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_location_add called just before the locations admin UI adds a new location via the location_AddToDatabase method.
+* Enhancement: [New hook](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_location_added called just before the locations admin UI adds a new location via the location_AddToDatabase method.
+* Enhancement: [New theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/themes-custom-css/) Genesis Monochrome for the Store Locator Plus interface.
+* Enhancement: [New theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/themes-custom-css/) Beside Myself that works with custom settings from the add-on packs to do a side-by-side map/search form + results layout.
+* Enhancement: [New theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/themes-custom-css/) Beside Myself Results that uses the same color scheme as Beside Myself but disables the map and search form output.
+* Enhancement: [New theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/themes-custom-css/) Beside The Point 2012 works with the add-on packs and the Twenty Twelve theme to show search + results to the left of the map.
+* Enhancement: [New theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/themes-custom-css/) Beside And Below Genesis puts the search form on the left with map and results on the right.
+* Enhancement: [New theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/themes-custom-css/) Blank Map Fix has NO custom CSS rules other than the patch to fix map images corrupted by WordPress rules.
+* Change: [Retired filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/) slp_add_search_form_label_setting
+* Change: [Retired filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/)slp_add_search_form_feature_settings
+* Change: [Retired filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/) slp_update_location_data
+* Change: [Retired filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/) slp_action_boxes
+* Change: [Retired filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/) slp_edit_location_data
+* Change: [Retired hook](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/)slp_render_search_form
+* Change: [Retired hook](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/)slp_location_updated
+* Change: [Retired hook](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/)slp_add_manage_locations_action_box
+* Change: Default UI string on search form wraps radius drop down and search button in a div with class "search_item" for easier skinning with CSS.
+* Change: Locations management is now under one tab for manage, add, and import (pro pack feature).
+* Change: The div id sl_div can now be changed by the user with the Pro Pack page layout option.   Be careful, this can break a lot of SLP themes if removed.
+* Change: The underlying code that builds the page layout HTML has been completely reworked to give Pro Pack and the Enhanced add-ons more control.
+* Change: Default map div no longer has table HTML.
+* Change: The results output is not longer table HTML based.
+* Change: Update some of the CSS rules in the provided CSS themes to match new layout.
+* Change: Immediately show locations settings moved to results sub-tab under UX tab.
+* Change: Set default Google geocode retries to 3.
+* Change: Increase time between succesive Google geocoding requests to 2 seconds/failed lookup.
+* Fix: checkbox saver for various map settings.
+* Fix: Apostrophe in location name editing/display on manage locations.
+* Fix: Sorting indicators are shown on the manage locations interface.
+* Fix: Retain sort order on manage locations when a single location is deleted.
+* Fix: Immediately show locations checkbox reflects actual default enabled state on new installs.
+* Fix: Proper loading of text domain for base plugin.

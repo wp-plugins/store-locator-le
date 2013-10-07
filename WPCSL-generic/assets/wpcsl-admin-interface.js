@@ -46,7 +46,7 @@
  	load_first_tab: function () {
         $( '.group' ).hide();
         var selectedNav = $('#selected_nav_element').val();
-        if (selectedNav == '') {
+        if ((typeof selectedNav === 'undefined') || (selectedNav == '')) {
             $( '.group:has(".section"):first' ).fadeIn(); // Fade in the first tab containing options (not just the first tab).
         } else {
             $(selectedNav).fadeIn();

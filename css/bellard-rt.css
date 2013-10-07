@@ -1,7 +1,6 @@
 /**
  ** file: bellard-rt.css
  ** label: Bellard RT
- ** columns: 1
  ** description: Side-by-Side boxes with simple colors on white.  Requires Google Fonts.  Slightly more narrow than Bellard.  Styled for RT-17 Theme.
  **
  **/
@@ -164,7 +163,15 @@ div#map {
 div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
     display:none;
 }
-
+/* Don't let WordPress Mangle Map Images */
+div#map img {
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+    max-width: none;
+    opacity: 1.0;
+    visibility: visible;
+}
 
 #map_table {
    border: none;
@@ -178,6 +185,8 @@ div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
 div#slp_tagline {
     text-align: right;
     padding-right: 3px;
+    width: 100%;
+
 }
 #map_table_row {
     width: 100%;
@@ -308,4 +317,39 @@ div.slp_hours {
     margin-top: 20px;
     white-space: normal;
     width: 300px;
+}
+
+/* Tagalong result icons */
+.results_line.location_iconarray > a {
+    display: inline-block;
+    height: auto;
+    width: auto;
+}
+#tagalong_category_selector {
+    display: block;
+    height: 2em;
+    width: 100%;
+}
+#tagalong_category_selector .category_selector.parent {
+    display: block;
+    float: left;
+}
+#tagalong_category_selector .category_selector.child {
+    display: none;
+    float: left;
+}
+#tagalong_legend {
+    border: none;
+    padding: 12px;
+}
+#tagalong_legend .legend_text {
+    display: inline-block;
+    margin-left: 6px;
+    margin-right: 20px;
+    vertical-align: middle;
+}
+#tagalong_legend .tagalong_legend_icon {
+    display: inline-block;
+    margin-bottom: 12px;
+    min-width: 190px;
 }

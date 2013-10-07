@@ -84,6 +84,13 @@ class SLPlus_Location {
     private $option_value;
     private $lastupdated;
 
+    /**
+     * The WordPress database connection.
+     * 
+     * @var \wpdb $db
+     */
+    private $db;
+
     // The database map
     //
     private $dbFields = array(
@@ -126,6 +133,22 @@ class SLPlus_Location {
     private $attributes;
 
     /**
+     * True if the location data has changed.
+     *
+     * Used to manage the MakePersistent method, if false do not write to disk.
+     * 
+     * @var boolean $dataChanged
+     */
+    public $dataChanged = true;
+
+    /**
+     * Remember the last location data array passed into set properties via DB.
+     *
+     * @var mixed[] $locationData
+     */
+    private $locationData;
+
+    /**
      * The related store_page custom post type properties.
      *
      * WordPress Standard Custom Post Type Features:
@@ -165,15 +188,21 @@ class SLPlus_Location {
         foreach ($params as $property=>$value) {
             $this->$property = $value;
         }
+        global $wpdb;
+        $this->db = $wpdb;
     }
 
     /**
      * Create or update the custom store_page page type for this location.
      *
-     * @return int $linke_postid - return the page ID linked to this location.
+     * Set MakePersistent to false if you are going to manage the persistent store later.
+     * You can check $this->dataChanged to see if the data is dirty to determine whether or not persistence might be needed.
+     *
+     * @param boolean $MakePersistent if true will write the location to disk if the linked_postid was changed.
+     * @return int return the page ID linked to this location.
      */
-    public function crupdate_Page() {
-        $this->plugin->debugMP('slp.main','msg','location.crupdate_Page()','',null,null,true);
+    public function crupdate_Page($MakePersistent=true) {
+        $this->debugMP('msg',__FUNCTION__);
         
         $crupdateOK = false;
 
@@ -186,28 +215,20 @@ class SLPlus_Location {
         if ($this->linked_postid > 0) {
             $touched_pageID = wp_update_post($this->pageData);
             $crupdateOK = ($touched_pageID > 0);
-            $this->plugin->debugMP('slp.main','pr','updated existing page '.$touched_pageID,$this->pageData,null,null,true);
+            $this->debugMP('msg','','update page '.$touched_pageID);
 
 
         // Create a new page.
         } else {
             $touched_pageID = wp_insert_post($this->pageData, true);
             $crupdateOK = !is_wp_error($touched_pageID);
-            $this->plugin->debugMP('slp.main','msg','location.crupdate_Page()','insert post',__FILE__,__LINE__);
+            $this->debugMP('msg','','added page '.$touched_pageID);
         }
 
         // Ok - we are good...
         //
         if ($crupdateOK) {
-
-            // Debugging Output (if flag turned on)
-            //
-            $header = 
-                    'location.crupdate_Page() page # ' . 
-                    $touched_pageID . 
-                    (($touched_pageID != $this->linked_postid) ? ' Created':' Updated')
-                    ;
-           $this->plugin->debugMP('slp.main','pr',$header,$this->pageData,__FILE__,__LINE__);
+           $this->debugMP('msg','','failed');
 
             // If we created a page or changed the page ID,
             // set it in our location property and make it
@@ -215,16 +236,22 @@ class SLPlus_Location {
             //
             if ($touched_pageID != $this->linked_postid) {
                 $this->linked_postid = $touched_pageID;
-                $this->MakePersistent();
-                $this->plugin->debugMP('slp.main','msg','Make new linked post ID ' . $this->linked_postid . ' persistent.');
+                $this->pages_url = get_permalink($this->linked_postid);
+                $this->dataChanged = true;
+                if ($MakePersistent) {
+                    $this->debugMP('msg','Make new linked post ID ' . $this->linked_postid . ' persistent.');
+                    $this->MakePersistent();
+                }
             }
 
 
         // We got an error... oh shit...
         //
         } else {
-            $this->plugin->notifications->add_notice('error','Could not create or update the custom page for this location.');
-            $this->plugin->debugMP('slp.main','pr','location.crupdate_Page() failed',(is_object($touched_pageID)?$touched_pageID->get_error_messages():''));
+            $this->plugin->notifications->add_notice('error',
+                    __('Could not create or update the custom page for this location.','csa-slplus')
+                    );
+            $this->debugMP('pr','location.crupdate_Page() failed',(is_object($touched_pageID)?$touched_pageID->get_error_messages():''));
         }
 
 
@@ -247,12 +274,56 @@ class SLPlus_Location {
         return null;
     }
 
+    /**
+     * Simplify the plugin debugMP interface.
+     *
+     * @param string $type
+     * @param string $hdr
+     * @param string $msg
+     */
+    function debugMP($type,$hdr,$msg='') {
+        $this->plugin->debugMP('slp.location',$type,$hdr,$msg,NULL,NULL,true);
+    }
+
+    /**
+     * Put out the dump of the current location to DebugMP slp.main panel.
+     * 
+     */
     public function debugProperties() {
-        $output='currentLocation.Properties are:<br/>';
+        $this->debugMP('msg',__FUNCTION__);
+        $output = array();
         foreach ($this->dbFields as $property) {
-            $output .= $property . ' = ' . $this->$property . '<br/>';
+            $output[$property] = $this->$property;
         }
-        $this->plugin->debugMP('slp.main','msg',$output);
+        $output['attributes'] = $this->attributes;
+        $this->debugMP('pr','',$output);
+    }
+
+
+    /**
+     * Delete this location permanently.
+     */
+    public function DeletePermanently() {
+        $this->debugMP('msg',__FUNCTION__,"Location: {$this->id}, Linked Post: {$this->linked_postid}");
+        if (!ctype_digit($this->id) || ($this->id<0)) { return; }
+
+        // ACTION: slp_deletelocation_starting
+        //
+        do_action('slp_deletelocation_starting');
+
+        // Attached Post ID?  Delete it permanently (bypass trash).
+        //
+        if (ctype_digit($this->linked_postid) && ($this->linked_postid>=0)) {
+            $post = get_post($this->linked_postid);
+            if ($post->post_type === SLPLUS::locationPostType) {
+                wp_delete_post($this->linked_postid,true);
+            }
+        }
+
+        $this->plugin->db->delete(
+            $this->plugin->database->info['table'],
+            array('sl_id' => $this->id)
+            );
     }
 
     /**
@@ -262,8 +333,37 @@ class SLPlus_Location {
      * @return mixed the value the property or a named array of all properties (default)
      */
     public function get_PersistentProperty($property='all') {
+        $this->debugMP('msg',__FUNCTION__);
         $persistentData = array_reduce($this->dbFields,array($this,'mapPropertyToField'));
-        return (($property==='all')?$persistentData:(isset($persistenData[$property])?$persistenData[$property]:null));
+        return (($property==='all')?$persistentData:(isset($persistentData[$property])?$persistentData[$property]:null));
+    }
+
+    /**
+     * Set all the db field properties to blank.
+     */
+    public function reset() {
+        foreach ($this->dbFields as $property) {
+            $this->$property = '';
+        }
+        $this->pageData = null;
+        $this->attributes = null;
+    }
+
+    /**
+     * Set latitude & longitude for this location.
+     *
+     * @param float $lat
+     * @param float $lng
+     */
+    public function set_LatLong($lat,$lng) {
+        if($this->latitude  != $lat) {
+            $this->latitude  = $lat;
+            $this->dataChanged = true;
+        }
+        if ($this->longitude != $lng) {
+            $this->longitude = $lng;
+            $this->dataChanged = true;
+        }
     }
 
     /**
@@ -284,16 +384,8 @@ class SLPlus_Location {
         if ($this->linked_postid > 0) {
             $this->pageData = array(
                 'ID'            => $this->linked_postid,
+                'slp_notes'     => 'pre-existing page'
             );
-           $this->plugin->debugMP('slp.main',
-                   'msg',
-                   'location.set_PageData()',
-                   ' pre-existing post ID ' . $this->linked_postid . '<br/>' .
-                   '   this pageType ' . $this->pageType . '<br/>' .
-                   '   this pageDefaultStatus ' . $this->pageDefaultStatus . '<br/>' .
-                   '   this store ' . $this->store
-                   ,__FILE__,__LINE__
-                   );
 
         // No page yet, default please.
         //
@@ -303,26 +395,17 @@ class SLPlus_Location {
                 'post_type'     => $this->pageType,
                 'post_status'   => $this->pageDefaultStatus,
                 'post_title'    => $this->store,
-                'post_content'  => ''
+                'post_content'  => '',
+                'slp_notes'     => 'new page'
             );
-           $this->plugin->debugMP('slp.main',
-                   'msg',
-                   'location.set_PageData()',
-                   ' new post ID ' . $this->linked_postid . '<br/>' .
-                   '   this pageType ' . $this->pageType . '<br/>' .
-                   '   this pageDefaultStatus ' . $this->pageDefaultStatus . '<br/>' .
-                   '   this store ' . $this->store
-                   ,__FILE__,__LINE__
-                   );
         }
 
         // Apply our location page data filters.
         // This is what allows add-ons to tweak page data.
         //
+        // FILTER: slp_location_page_attributes
+        //
         $this->pageData = apply_filters('slp_location_page_attributes', $this->pageData);
-
-        // Debugging
-        $this->plugin->debugMP('slp.main','pr','location.set_PageData() post-filter',$this->pageData,__FILE__,__LINE__);
 
         return $this->pageData;
     }
@@ -330,37 +413,53 @@ class SLPlus_Location {
     /**
      * Make the location data persistent.
      *
-     * Write the data to the locations table in WordPress.
+     * @return boolean data write OK
      */
     public function MakePersistent() {
+        $this->debugMP('msg',__FUNCTION__);
+
+        $dataWritten = true;
         $dataToWrite = array_reduce($this->dbFields,array($this,'mapPropertyToField'));
 
         // Location is set, update it.
         //
         if ($this->id > 0) {
             unset($dataToWrite['sl_id']);
-            if(!$this->plugin->db->update($this->plugin->database['table_ns'],$dataToWrite,array('sl_id' => $this->id))) {
+            if(!$this->plugin->db->update($this->plugin->database->info['table'],$dataToWrite,array('sl_id' => $this->id))) {
                 $this->plugin->notifications->add_notice(
                         'warning',
                         sprintf(__('Could not update %s, location id %d.','csa-slplus'),$this->store,$this->id)
                         );
+                $dataWritten = false;
             }
 
         // No location, add it.
         //
         } else {
-            if (!$this->plugin->db->insert($this->plugin->database['table_ns'],$dataToWrite)) {
+            if (!$this->plugin->db->insert($this->plugin->database->info['table'],$dataToWrite)) {
                 $this->plugin->notifications->add_notice(
                         'warning',
                         sprintf(__('Could not add %s as a new location','csa-slplus'),$this->store)
                         );
-            }
-            
+                $dataWritten = false;
+                $this->id = '';
+
             // Set our location ID to be the newly inserted record!
             //
-            $this->id = $this->plugin->db->insert_id;
+            } else {
+                $this->id = $this->plugin->db->insert_id;
+            }
+
         }
+
+        // Reset the data changed flag, used to manage MakePersistent calls.
+        // Stops MakePersistent from writing data to disk if it has not changed.
+        //
+        $this->plugin->currentLocation->dataChanged = false;
+
+        return $dataWritten;
     }
+
 
     /**
      * Return a named array that sets key = db field name, value = location property
@@ -369,6 +468,14 @@ class SLPlus_Location {
      * @return mixed[] - key = string of db field name, value = location property value
      */
     private function mapPropertyToField($result, $property) {
+        // Map attributes back into option_value
+        //
+        if ($property == 'option_value') {
+            $this->$property = maybe_serialize($this->attributes);
+        }
+
+        // Set field to property
+        //
         $result[$this->dbFieldPrefix.$property]=$this->$property;
         return $result;
     }
@@ -401,12 +508,20 @@ class SLPlus_Location {
      * @return boolean
      */
     public function set_PropertiesViaArray($locationData) {
+        $this->debugMP('msg',__FUNCTION__);
 
         // If we have an array, assume we are on the right track...
         if (is_array($locationData)) {
 
-            // Go through the named array and extract our properties.
+            // Do not set the data if it is unchanged from the last go-around
             //
+            if ($locationData === $this->locationData) {
+                return true;
+            }
+
+            // Go through the named array and extract properties.
+            //
+            $this->reset();
             foreach ($locationData as $field => $value) {
 
                 // Get rid of the leading field prefix (usually sl_)
@@ -415,23 +530,23 @@ class SLPlus_Location {
 
                 // Set our property value
                 //
-                $this->$property = $value;
+                if ($this->$property !== stripslashes_deep($value)) {
+                    $this->$property = stripslashes_deep($value);
+                    $this->plugin->currentLocation->dataChanged = true;
+                    $this->debugMP('msg','',"{$property} : {$value}");
+                }
             }
 
             // Deserialize the option_value field
             //
             $this->attributes = maybe_unserialize($this->option_value);
 
-            // Debugging Output
-            //
-            $this->plugin->debugMP('slp.main','pr','location.set_PropertiesViaArray()',$locationData,__FILE__,__LINE__);
+            $this->locationData = $locationData;
 
             return true;
         }
 
-        // Debugging Output
-        //
-        $this->plugin->debugMP('slp.main','msg','location.set_PropertiesViaArray()','ERROR: location data not in array format.',__FILE__,__LINE__);
+        $this->debugMP('msg','','ERROR: location data not in array format.');
         return false;
     }
 
@@ -445,20 +560,46 @@ class SLPlus_Location {
      * @return SLPlus_Location $this - the location object
      */
     public function set_PropertiesViaDB($locationID) {
+        $this->debugMP('msg',__FUNCTION__);
+        
+        // Reset the set_PropertiesViaArray tracker.
+        //
+        $this->locationData = null;
+
+        // Reset the data changed flag, used to manage MakePersistent calls.
+        // Stops MakePersistent from writing data to disk if it has not changed.
+        //
+        $this->plugin->currentLocation->dataChanged = false;
+
         // Our current ID does not match, load new location data from DB
         //
         if ($this->id != $locationID) {
+            $this->debugMP('msg','',"Location {$locationID} loaded from disk");
+            $this->reset();
             $this->set_PropertiesViaArray(
-                    $this->plugin->db->get_row(
-                        $this->plugin->db->prepare(
-                                $this->plugin->database['query']['selectall'] .
-                                $this->plugin->database['query']['whereslid'],
-                                $locationID
-                        ),
-                        ARRAY_A
-                    )
-                );
+                $this->plugin->database->get_Record(
+                    array('selectall','whereslid'),
+                    $locationID
+                )
+            );
         }
         return $this;
+    }
+
+    /**
+     * Update the location attributes, merging existing attributes with new attributes.
+     *
+     * @param mixed[] $newAttributes
+     */
+    function update_Attributes($newAttributes) {
+        $this->debugMP('pr',__FUNCTION__,$newAttributes);
+        if (is_array($newAttributes)) { 
+            $this->attributes =
+                is_array($this->attributes)                     ?
+                array_merge($this->attributes,$newAttributes)   :
+                $newAttributes
+                ;
+            $this->dataChanged = true;
+        }
     }
 }

@@ -58,7 +58,7 @@ class SLPlus_Actions {
     function attachAdminUI() {
         if (!$this->set_Plugin()) { return false; }
         if (!isset($this->plugin->AdminUI) || !is_object($this->plugin->AdminUI)) {
-            require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-adminui_class.php');
+            require_once(SLPLUS_PLUGINDIR . '/include/class.adminui.php');
             $this->plugin->AdminUI = new SLPlus_AdminUI();     // Lets invoke this and make it an object
         }
         return true;
@@ -82,29 +82,32 @@ class SLPlus_Actions {
         // Update system hook
         // Premium add-ons can use the admin_init hook to utilize this.
         //
-        require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-updates_class.php');
+        require_once(SLPLUS_PLUGINDIR . '/include/class.updates.php');
 
         // Activation Helpers
         // Updates are handled via WPCSL via namespace style call
         //
-        require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-activation_class.php');
+        require_once(SLPLUS_PLUGINDIR . '/include/class.activation.php');
         $this->plugin->Activate = new SLPlus_Activate();
         register_activation_hook( __FILE__, array($this->plugin->Activate,'update')); // WP built-in activation call
 
-        // Admin UI Helpers
+        // If we are on an SLP controlled admin page
         //
-        $this->attachAdminUI();
-        $this->plugin->AdminUI->set_style_as_needed();
-        $this->plugin->AdminUI->build_basic_admin_settings();
+        if ($this->plugin->check_isOurAdminPage()) {
 
-        // Action hook for 3rd party plugins
-        //
-        do_action('slp_admin_init_complete');
+            // Admin UI Helpers
+            //
+            $this->attachAdminUI();
+            add_action('admin_enqueue_scripts',array($this->plugin->AdminUI,'enqueue_admin_stylesheet'));
+            $this->plugin->AdminUI->build_basic_admin_settings();
+
+            // Action hook for 3rd party plugins
+            //
+            do_action('slp_admin_init_complete');
+        }
     }
 
     /**
-     * method: admin_menu()
-     *
      * Add the Store Locator panel to the admin sidebar.
      *
      */
@@ -123,36 +126,36 @@ class SLPlus_Actions {
                 'manage_slp',
                 $this->plugin->prefix,
                 array('SLPlus_AdminUI','renderPage_GeneralSettings'),
-                SLPLUS_COREURL . 'images/icon_from_jpg_16x16.png'
+                SLPLUS_PLUGINURL . '/images/icon_from_jpg_16x16.png'
                 );
 
             // Default menu items
             //
             $menuItems = array(
                 array(
+                    'label'             => __('Info','csa-slplus'),
+                    'slug'              => 'slp_info',
+                    'class'             => $this->plugin->AdminUI,
+                    'function'          => 'renderPage_Info'
+                ),
+                array(
+                    'label'             => __('Locations','csa-slplus'),
+                    'slug'              => 'slp_manage_locations',
+                    'class'             => $this->plugin->AdminUI,
+                    'function'          => 'renderPage_Locations'
+                ),
+                array(
+                    'label'             => __('User Experience','csa-slplus'),
+                    'slug'              => 'slp_map_settings',
+                    'class'             => $this->plugin->AdminUI,
+                    'function'          => 'renderPage_MapSettings'
+                ),
+                array(
                     'label'             => __('General Settings','csa-slplus'),
                     'slug'              => 'slp_general_settings',
                     'class'             => $this->plugin->AdminUI,
                     'function'          => 'renderPage_GeneralSettings'
                 ),
-                array(
-                    'label'             => __('Add Locations','csa-slplus'),
-                    'slug'              => 'slp_add_locations',
-                    'class'             => $this->plugin->AdminUI,
-                    'function'          => 'renderPage_AddLocations'
-                ),
-                array(
-                    'label' => __('Manage Locations','csa-slplus'),
-                    'slug'              => 'slp_manage_locations',
-                    'class'             => $this->plugin->AdminUI,
-                    'function'          => 'renderPage_ManageLocations'
-                ),
-                array(
-                    'label' => __('Map Settings','csa-slplus'),
-                    'slug'              => 'slp_map_settings',
-                    'class'             => $this->plugin->AdminUI,
-                    'function'          => 'renderPage_MapSettings'
-                )
             );
 
             // Third party plugin add-ons
@@ -211,42 +214,9 @@ class SLPlus_Actions {
             require_once(SLPLUS_PLUGINDIR.'include/class.dmppanels.php');
         }
         $GLOBALS['DebugMyPlugin']->panels['slp.main']           = new DMPPanelSLPMain();
+        $GLOBALS['DebugMyPlugin']->panels['slp.location']       = new DMPPanelSLPMapLocation();
         $GLOBALS['DebugMyPlugin']->panels['slp.mapsettings']    = new DMPPanelSLPMapSettings();
         $GLOBALS['DebugMyPlugin']->panels['slp.managelocs']     = new DMPPanelSLPManageLocations();
-    }
-
-    /**
-     * Retrieves map setting options, whether serialized or not.
-     *
-     * Simple options (non-serialized) return with a normal get_option() call result.
-     *
-     * Complex options (serialized) save any fetched result in $this->settingsData.
-     * Doing so provides a basic cache so we don't keep hammering the database when
-     * getting our map settings.  Legacy code expects a 1:1 relationship for options
-     * to settings.   This mechanism ensures on database read/page render for the
-     * complex options v. one database read/serialized element.
-     *
-     * @param string $optionName - the option name
-     * @param mixed $default - what the default value should be
-     * @return mixed the value of the option as saved in the database
-     */
-    function getCompoundOption($optionName,$default='') {
-        if (!$this->set_Plugin()) { return; }
-        $matches = array();
-        if (preg_match('/^(.*?)\[(.*?)\]/',$optionName,$matches) === 1) {
-            if (!isset($this->plugin->mapsettingsData[$matches[1]])) {
-                $this->plugin->mapsettingsData[$matches[1]] = get_option($matches[1],$default);
-            }
-            return 
-                isset($this->plugin->mapsettingsData[$matches[1]][$matches[2]]) ?
-                $this->plugin->mapsettingsData[$matches[1]][$matches[2]] :
-                ''
-                ;
-
-        } else {
-            return $this->plugin->helper->getData($optionName,'get_option',array($optionName,$default));
-            //return get_option($optionName,$default);
-        }
     }
 
     /**
@@ -254,8 +224,8 @@ class SLPlus_Actions {
      */
     function init() {
         if (!$this->set_Plugin()) { return; }
-
-        load_plugin_textdomain('csa-slplus', false, SLPLUS_PLUGINDIR . 'languages/');
+        add_filter('codestyling_localization_excludedirs',array($this,'filter_CodeStylingSkipTheseDirs'));
+        load_plugin_textdomain('csa-slplus', false, plugin_basename(dirname(SLPLUS_PLUGINDIR.'store-locator-le.php')) . '/languages');
 
         // Fire the SLP init starting trigger
         //
@@ -311,7 +281,7 @@ class SLPlus_Actions {
                         'has_archive'       => true,
                         'description'       => __('Store Locator Plus location pages.','csa-slplus'),
                         'menu_postion'      => 20,
-                        'menu_icon'         => SLPLUS_COREURL . 'images/icon_from_jpg_16x16.png',
+                        'menu_icon'         => SLPLUS_PLUGINURL . '/images/icon_from_jpg_16x16.png',
                         'show_in_menu'      => current_user_can('manage_slp'),
                         'capability_type'   => 'page',
                         'supports'          => $storepage_features,
@@ -319,7 +289,7 @@ class SLPlus_Actions {
                 );
 
             // Register Store Pages Custom Type
-            register_post_type( 'store_page',$storepage_attributes);
+            register_post_type(SLPlus::locationPostType,$storepage_attributes);
 
             register_taxonomy(
                     'stores',
@@ -337,6 +307,7 @@ class SLPlus_Actions {
 
         // Fire the SLP initialized trigger
         //
+        add_action('wp_enqueue_scripts',array($this,'wp_enqueue_scripts'));
         do_action('slp_init_complete', $this);
 
         // Update the broadcast URL with the registered plugins
@@ -348,15 +319,33 @@ class SLPlus_Actions {
     }
 
     /**
+     * Tell CodeStyling Localization to skip these directories...
+     *
+     * @param string[] $dirs
+     */
+    function filter_CodeStylingSkipTheseDirs($dirs) {
+        if ($_POST['textdomain'] !== 'csa-slplus') { return dirs; }
+        return array_merge(
+                $dirs,
+                array(
+                    SLPLUS_PLUGINDIR . '.git',
+                    SLPLUS_PLUGINDIR . 'css',
+                    SLPLUS_PLUGINDIR . 'languages',
+                    SLPLUS_PLUGINDIR . 'nbproject',
+                    SLPLUS_PLUGINDIR . 'images',
+                    SLPLUS_PLUGINDIR . 'WPCSL-generic/.git',
+                    SLPLUS_PLUGINDIR . 'WPCSL-generic/base',
+                    SLPLUS_PLUGINDIR . 'WPCSL-generic/build',
+                )
+            );
+    }
+
+    /**
      * This is called whenever the WordPress wp_enqueue_scripts action is called.
      */
-    static function wp_enqueue_scripts() {
-        global $slplus_plugin;                                        
-        $force_load = (
-                    isset($slplus_plugin) ?
-                    $slplus_plugin->settings->get_item('force_load_js',true) :
-                    false
-                );
+    function wp_enqueue_scripts() {
+        $this->plugin->debugMP('slp.main','msg','SLPlus_Actions:'.__FUNCTION__);
+        $force_load = $this->plugin->settings->get_item('force_load_js',true);
 
         //------------------------
         // Register our scripts for later enqueue when needed
@@ -364,12 +353,13 @@ class SLPlus_Actions {
         if (get_option(SLPLUS_PREFIX.'-no_google_js','off') != 'on') {
             $dbAPIKey = trim(get_option(SLPLUS_PREFIX.'-api_key',''));
             $api_key  = (empty($dbAPIKey)?'':'&key='.$dbAPIKey);
-            $language = '&language='.$slplus_plugin->helper->getData('map_language','get_item',null,'en');
+            $language = '&language='.$this->plugin->helper->getData('map_language','get_item',null,'en');
             wp_enqueue_script(
                     'google_maps',
                     'http'.(is_ssl()?'s':'').'://'.get_option('sl_google_map_domain','maps.google.com').'/maps/api/js?sensor=false' . $api_key . $language,
                     array(),
-                    SLPLUS_VERSION
+                    SLPLUS_VERSION,
+                    !$force_load
                     );
         }
 
@@ -380,13 +370,12 @@ class SLPlus_Actions {
             );
         wp_enqueue_script(
                 'csl_script',
-                $sslURL.'/core/js/csl.js',
+                $sslURL.'/js/slp.js',
                 array('jquery'),
                 SLPLUS_VERSION,
                 !$force_load
         );
-
-        $slplus_plugin->UI->localizeCSLScript();
+        $this->plugin->UI->localizeSLPScript();
     }     
 
 
@@ -405,10 +394,26 @@ class SLPlus_Actions {
         if (!isset($this->plugin)               ) { return; }
         if (!isset($this->plugin->settings)     ) { return; }
         if (!is_object($this->plugin->settings) ) { return; }
-        $output = strip_tags($this->plugin->settings->get_item('custom_css',''));
-        if ($output != '') {
-            echo '<!-- SLP Custom CSS -->'."\n".'<style type="text/css">'."\n" . $output . '</style>'."\n\n";
-        }
+        $this->plugin->loadPluginData();
+
+        echo '<!-- SLP Custom CSS -->'."\n".'<style type="text/css">'."\n" .
+
+                    // Map
+                    "div#map {\n".
+                        "width:{$this->plugin->data['sl_map_width']}{$this->plugin->data['sl_map_width_units']};\n" .
+                        "height:{$this->plugin->data['sl_map_height']}{$this->plugin->data['sl_map_height_units']};\n" .
+                    "}\n" .
+
+                    // Tagline
+                    "div#slp_tagline {\n".
+                        "width:{$this->plugin->data['sl_map_width']}{$this->plugin->data['sl_map_width_units']};\n" .
+                    "}\n" .
+
+                    // FILTER: slp_ui_headers
+                    //
+                    apply_filters('slp_ui_headers','') .
+
+             '</style>'."\n\n";
     }
 
     /**

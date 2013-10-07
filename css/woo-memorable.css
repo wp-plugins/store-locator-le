@@ -1,0 +1,67 @@
+/**
+ ** file: woo-memorable.css
+ ** label: Woo Memorable
+ ** description: a basic SLP Theme that is used on a live site running the Memorable WordPress theme by WooThemes.
+ **
+ **/
+
+/*---------------------
+ * Search
+ *---------------------*/
+
+#searchForm LABEL {
+    padding-right: 3px;
+}
+#searchForm div {
+    display: inline-block;
+}
+#searchForm input[type="submit"] {
+    padding: 0.518em 1.387em;
+}
+
+/*---------------------
+ * Map
+ *---------------------*/
+
+/* Don't let WordPress Mangle Map Images */
+div#map img {
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+    max-width: none;
+    opacity: 1.0;
+    visibility: visible;
+}
+
+/* Hide the default Google bubble shadow */
+div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
+    display:none;
+}
+
+div#slp_tagline {
+    text-align: right;
+    margin-bottom: 18px;
+}
+
+/*---------------------
+ * Results
+ *---------------------*/
+#map_sidebar .results_wrapper {
+    margin-bottom: 24px;
+    position: relative;
+}
+#map_sidebar .results_wrapper:hover {
+    background-color: #F4F4F4;
+}
+#map_sidebar .results_wrapper span {
+    display: block;
+}
+#map_sidebar .results_wrapper span.location_name {
+    font-weight: bold;
+}
+#map_sidebar .results_wrapper .results_row_right_column {
+  position: absolute;
+  right: 0;
+  text-align: right;
+  top: 0;
+}

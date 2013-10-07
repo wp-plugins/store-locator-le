@@ -1,8 +1,7 @@
 /**
  ** file: csl-slplus-boxed.css
  ** label: Basic Boxes Theme
- **
- ** Side-by-side boxes for output listing.
+ ** description: Side-by-side boxes for output listing.
  **
  **/
 
@@ -195,24 +194,30 @@ div#addy_in_address.search_item {
     padding-top: 3px;
 }
 
-/**** Map Box
- **
- ** Since we only use these div IDs when a static image is present
- ** we start with the image shown and map hidden.  JQuery will flip
- ** this for us.
- **
- **/
-div#map {
-    border-top: solid 1px #CCCCCC;
-    border-left: solid 1px #CCCCCC;
-    border-right: solid 1px #CCCCCC;
-    width: auto !important;
-}
 
+
+/*---------------------
+ * Map
+ *
+ * Since we only use these div IDs when a static image is present
+ * we start with the image shown and map hidden.  JQuery will flip
+ * this for us.
+ *
+ *---------------------*/
+/* Don't let WordPress Mangle Map Images */
+div#map img {
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+    max-width: none;
+    opacity: 1.0;
+    visibility: visible;
+}
 /* Hide the default Google bubble shadow */
 div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
     display:none;
 }
+
 
 #map_box_image {
     display: block; 
@@ -251,33 +256,30 @@ div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
 	border: solid 2px black;
 }
 
-#sl_div #map img {
-    visibility: visible;    
-}
-
 table#map_table td {
     border: none;
 }
 
-/***** Popup Info Window for Specific Location *****/
-#sl_info_bubble { 
-	padding:10px; 
-	max-width:300px; 
-	font-size:11px; 
-	font-family:Arial;
-	text-align:justify;
-	line-height:normal;
+/**
+ * Map Info Bubble
+ **/
+#sl_info_bubble {
+    font-size: xx-small;
+    font-weight: normal;
 }
 #sl_info_bubble img{
-	width:250px; 
+	width:250px;
 	max-height:200px;
 	border:0px;
 }
 #sl_info_bubble .your_location_label{
-	font-weight:bold;
+	font-weight: normal;
 }
 #sl_info_bubble .location_detail_label{
-	font-weight:bold;
+	font-weight: normal;
+}
+#sl_info_bubble .location_detail_hours{
+	white-space: pre-wrap;
 }
 
 /***** Area Below Map DIV, before Search Results Area *****/
@@ -332,10 +334,7 @@ table#map_table td {
 	height:150px;
 	font-size: 11px;
 }
-/* Hide the default Google bubble shadow */
-div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
-    display:none;
-}
+
  /***********************
  * Results Table
  ***********************/
@@ -433,4 +432,39 @@ span.slp_result_phone {
 span.slp_result_contact {
     width: 100%;
     white-space: nowrap;
+}
+
+/* Tagalong result icons */
+.results_line.location_iconarray > a {
+    display: inline-block;
+    height: auto;
+    width: auto;
+}
+#tagalong_category_selector {
+    display: block;
+    height: 2em;
+    width: 100%;
+}
+#tagalong_category_selector .category_selector.parent {
+    display: block;
+    float: left;
+}
+#tagalong_category_selector .category_selector.child {
+    display: none;
+    float: left;
+}
+#tagalong_legend {
+    border: none;
+    padding: 12px;
+}
+#tagalong_legend .legend_text {
+    display: inline-block;
+    margin-left: 6px;
+    margin-right: 20px;
+    vertical-align: middle;
+}
+#tagalong_legend .tagalong_legend_icon {
+    display: inline-block;
+    margin-bottom: 12px;
+    min-width: 190px;
 }
