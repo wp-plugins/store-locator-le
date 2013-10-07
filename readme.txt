@@ -1,7 +1,7 @@
 === Store Locator Plus ===
 Plugin Name:  Store Locator Plus
 Contributors: charlestonsw
-Donate link: http://www.charlestonsw.com/product-category/slplus/
+Donate link: http://www.charlestonsw.com/product-category/slp4-products/
 Tags: store locator,location management,location map,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
 Tested up to: 3.5.1
@@ -12,14 +12,14 @@ A full featured location management system. Add a location finder or directory t
 
 == Description ==
 
-Learn more about [Store Locator Plus on the Charleston Software Associates website](http://www.charlestonsw.com/product-category/slplus/).
-The website offers [more screen shots](http://www.charlestonsw.com/product-category/slplus/), [technical documentation](http://www.charlestonsw.com/support/documentation/technical-documentation/), and [full release notes](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/).
+Learn more about [Store Locator Plus on the Charleston Software Associates website](http://www.charlestonsw.com/product-category/slp4-products/).
+The website offers [more screen shots](http://www.charlestonsw.com/product-category/slp4-products/), [technical documentation](http://www.charlestonsw.com/support/documentation/technical-documentation/), and [full release notes](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/).
 
 = Version 4 Major Upgrade =
 
 Version 4 is the first major upgrade in a couple of years.
 This upgrade provides new features that make it far easier to create a truly custom user exprience without having to leave the WordPress admin panel.
-You can learn more about the new release at the [Charleston Software Associates](http://www.charlestonw.com) website.
+You can learn more about the new release at the [Charleston Software Associates](http://www.charlestonsw.com) website.
 
 = Important Note About Version 3 Premium Add Ons =
 
@@ -59,7 +59,7 @@ Re-label entry fields and results fields.
 
 * Very active support via the [free support forum](http://www.charlestonsw.com/forums/).
 * Regularly updated [online documentation](http://www.charlestonsw.com/support/documentation/store-locator-plus/).
-* Multiple [premium add-ons available](http://www.charlestonsw.com/product-category/slplus/).
+* Multiple [premium add-ons available](http://www.charlestonsw.com/product-category/slp4-products/).
 * You can use it for a [variety of countries](http://www.charlestonsw.com/support/documentation/store-locator-plus/), as supported by Google Maps.
 * Supports [international languages](http://www.charlestonsw.com/support/documentation/store-locator-plus/) and character sets.
 * Allows you to use [unique map markers](http://www.charlestonsw.com/support/documentation/store-locator-plus/) or your own custom map markers.
@@ -302,7 +302,7 @@ I am looking into working with the WPML plugin for added support for those of yo
 
 == Screenshots ==
 
-The website offers [more screen shots](http://www.charlestonsw.com/product-category/slplus/) including those from the latest updates and premium add-on packages.
+The website offers [more screen shots](http://www.charlestonsw.com/product-category/slp4-products/) including those from the latest updates and premium add-on packages.
 
 1. Example Map with Enhanced Maps On/Off Slider
 2. Manage Locations with Pro Pack and Store Pages
@@ -314,7 +314,7 @@ The website offers [more screen shots](http://www.charlestonsw.com/product-categ
 8. Add Locations with Pro Pack Bulk Import
 9. Directions from results link
 
-More screenshots are available via [the CSA website](http://www.charlestonsw.com/product-category/slplus/).
+More screenshots are available via [the CSA website](http://www.charlestonsw.com/product-category/slp4-products/).
 
 ==Upgrade Notice==
 
