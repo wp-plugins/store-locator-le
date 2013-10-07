@@ -103,11 +103,11 @@ if (! class_exists('csl_mobile_listener')) {
                 }
 
                 if ($this->center_lat == '') {
-                    $this->Respond(false, 'no latitude passed');
+                    $this->Respond(false, __('no latitude passed','csa-slplus'));
                 }
 
                 if ($this->center_lng == '') {
-                    $this->Respond(false, 'no longitude passed');
+                    $this->Respond(false, __('no longitude passed','csa-slplus'));
                 }
             }
 
@@ -159,7 +159,7 @@ if (! class_exists('csl_mobile_listener')) {
 	            }
 
                 // Radian multiplier to get linear distance
-                $multiplier=(get_option('sl_distance_unit')=="km")? 6371 : 3959;
+                $multiplier=(get_option('sl_distance_unit',__('miles', 'csa-slplus'))==__('km'    ,'csa-slplus'))? 6371 : 3959;
 
 	            $option[SLPLUS_PREFIX.'_maxreturned']=(trim(get_option(SLPLUS_PREFIX.'_maxreturned'))!="")? 
                 get_option(SLPLUS_PREFIX.'_maxreturned') : 
@@ -241,7 +241,7 @@ if (! class_exists('csl_mobile_listener')) {
 				            'hours' => esc_attr($row['sl_hours']),
 				            'phone' => esc_attr($row['sl_phone']),
 				            'fax' => esc_attr($row['sl_fax']),
-                            'units' => get_option('sl_distance_unit'),
+                            'units' => get_option('sl_distance_unit',__('miles', 'csa-slplus')),
 				            'image' => esc_attr($row['sl_image']),
 				            'distance' => $row['sl_distance'],
 				            'tags' => ($slplus_show_tags) ? esc_attr($row['sl_tags']) : ''

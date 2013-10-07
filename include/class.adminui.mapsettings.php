@@ -15,11 +15,14 @@ class SLPlus_AdminUI_MapSettings {
     /**
      * The SLPlus plugin object.
      *
-     * @var SLPlus $plugin
+     * @var \SLPlus $plugin
      */
     private $plugin;
 
-    public $settings = null;
+    /**
+     * @var \wpCSL_settings__slplus $settings
+     */
+    public $settings;
 
     //-----------------------------
     // Methods
@@ -37,10 +40,11 @@ class SLPlus_AdminUI_MapSettings {
 
         $this->settings = new wpCSL_settings__slplus(
             array(
-                    'no_license'        => true,
+                    'parent'            => $this->plugin,
                     'prefix'            => $this->plugin->prefix,
+                    'css_prefix'        => $this->plugin->prefix,
                     'url'               => $this->plugin->url,
-                    'name'              => $this->plugin->name . ' - Map Settings',
+                    'name'              => $this->plugin->name . __(' - User Experience','csa-slplus'),
                     'plugin_url'        => $this->plugin->plugin_url,
                     'render_csl_blocks' => false,
                     'form_action'       => '',
@@ -65,9 +69,22 @@ class SLPlus_AdminUI_MapSettings {
         return (isset($this->plugin) && ($this->plugin != null));
     }
 
-    //=======================================
-    // HELPER FUNCTIONS
-    //=======================================
+    /**
+     * Add the UX View Section on the User Experience Tab
+     */
+    function action_AddUXViewSection() {
+        $this->plugin->helper->loadPluginData();
+        $sectName = __('View','csa-slplus');
+        $this->settings->add_section(array('name' => $sectName));
+
+        // Theme Selector
+        //
+        $this->plugin->themes->add_admin_settings($this->settings,$sectName,'Style');
+
+        // ACTION: slp_uxsettings_modify_viewpanel
+        //    params: settings object, section name
+        do_action('slp_uxsettings_modify_viewpanel',$this->settings,$sectName);
+    }
 
     /**
      * Generate the HTML for an input settings interface element.
@@ -77,15 +94,20 @@ class SLPlus_AdminUI_MapSettings {
      * @param string $msg
      * @param string $prefix
      * @param string $default
+     * @param string $value - forced value
      * @return string HTML for the div box.
      */
-    function CreateInputDiv($boxname,$label='',$msg='',$prefix=SLPLUS_PREFIX, $default='') {
+    function CreateInputDiv($boxname,$label='',$msg='',$prefix=SLPLUS_PREFIX, $default='',$value=null) {
+        $this->plugin->debugMP('slp.main','msg','SLPlus_AdminUI_MapSettings:'.__FUNCTION__);
         $whichbox = $prefix.$boxname;
+        if ($value===null) { 
+            $value = $this->getCompoundOption($whichbox,$default);
+        }
         return
             "<div class='form_entry'>" .
-                "<div class='".SLPLUS_PREFIX."-input'>" .
+                "<div class='wpcsl-input wpcsl-list'>" .
                     "<label for='$whichbox'>$label:</label>".
-                    "<input  name='$whichbox' value='".$this->plugin->Actions->getCompoundOption($whichbox,$default)."'>".
+                    "<input  name='$whichbox' value='$value'>".
                 "</div>".
                 $this->plugin->helper->CreateHelpDiv($boxname,$msg).
              "</div>"
@@ -109,7 +131,7 @@ class SLPlus_AdminUI_MapSettings {
 
         $content =
                 "<div class='form_entry'>".
-                    "<div class='".SLPLUS_PREFIX."-input'>" .
+                "<div class='wpcsl-input wpcsl-list'>" .
                         "<label for='$whichbox'>$label:</label>" .
                         "<select name='$whichbox'>"
                 ;
@@ -129,34 +151,6 @@ class SLPlus_AdminUI_MapSettings {
         return $content;
     }
 
-     /**
-      * Create a settings group box.
-      *
-      * @param string $slug - a unique div ID (slug) for this group box, required.  alpha_numeric _ and - only please.
-      * @param string $header - the text to put in the header
-      * @param string $intro - the text to put directly under the header
-      * @param string $content - the settings HTML
-      * @return string HTML
-      */
-     function CreateSettingsGroup($slug=null, $header='Settings',$intro='',$content='') {
-         if ($slug === null) { return ''; }
-
-         $content =
-            "<div class='section_column' id='slp_settings_group-$slug'>" .
-                "<h2>$header</h2>" .
-                (($intro != '')     ?
-                    "<div class='section_column_intro' id='slp_settings_group_intro-$slug'>$intro</div>" :
-                    ''
-                ).
-                (($content != '')   ?
-                    "<div class='section_column_content' id='slp_settings_group_content-$slug'>$content</div>" :
-                    ''
-                ).
-            '</div>'
-            ;
-         return apply_filters('slp_settings_group-'.$slug,$content);
-     }
-
     /**
      * Generate the HTML for a text area settings interface element.
      * 
@@ -165,15 +159,20 @@ class SLPlus_AdminUI_MapSettings {
      * @param string $msg
      * @param string $prefix
      * @param string $default
+     * @param boolean $usedefault if set use this value explicitly without get_option fetch.
      * @return string HTML
      */
-    function CreateTextAreaDiv($boxname,$label='',$msg='',$prefix=SLPLUS_PREFIX, $default='') {
+    function CreateTextAreaDiv($boxname,$label='',$msg='',$prefix=SLPLUS_PREFIX, $default='', $usedefault = false) {
         $whichbox = $prefix.$boxname;
+        $value =
+                $usedefault                                                ?
+                $default                                                   :
+                stripslashes(esc_textarea(get_option($whichbox,$default))) ;
         return
-            "<div class='form_entry'>" .
-                "<div class='".SLPLUS_PREFIX."-input'>" .
+            "<div class='wpcsl-setting'>" .
+                "<div class='wpcsl-input wpcsl-textarea'>" .
                     "<label for='$whichbox'>$label:</label>".
-                    "<textarea  name='$whichbox'>".stripslashes(esc_textarea(get_option($whichbox,$default)))."</textarea>".
+                    "<textarea  name='$whichbox'>{$value}</textarea>".
                 "</div>".
                 $this->plugin->helper->CreateHelpDiv($boxname,$msg).
              "</div>"
@@ -224,7 +223,6 @@ class SLPlus_AdminUI_MapSettings {
                     'sl_distance_unit'                      ,
                     'sl_radius_label'                       ,
                     'sl_search_label'                       ,
-                    'sl_starting_image'                     ,
                     'sl_website_label'                      ,
                     SLPLUS_PREFIX.'_label_directions'       ,
                     SLPLUS_PREFIX.'_label_fax'              ,
@@ -233,6 +231,7 @@ class SLPlus_AdminUI_MapSettings {
                     SLPLUS_PREFIX.'_tag_search_selections'  ,
                     SLPLUS_PREFIX.'-map_language'           ,
                     SLPLUS_PREFIX.'_maxreturned'            ,
+                    SLPLUS_PREFIX.'-theme'                  ,
                 )
             );
         foreach ($BoxesToHit as $JustAnotherBox) {
@@ -244,16 +243,15 @@ class SLPlus_AdminUI_MapSettings {
         $BoxesToHit =
             apply_filters('slp_save_map_settings_checkboxes',
                 array(
-                    SLPLUS_PREFIX.'_show_tag_search'            ,
-                    SLPLUS_PREFIX.'_show_tag_any'               ,
+                    SLPLUS_PREFIX.'_use_email_form'             ,
                     SLPLUS_PREFIX.'_email_form'                 ,
                     SLPLUS_PREFIX.'_disable_find_image'         ,
-                    SLPLUS_PREFIX.'_disable_initialdirectory'   ,
                     SLPLUS_PREFIX.'-force_load_js'              ,
                     'sl_load_locations_default'                 ,
                     'sl_remove_credits'                         ,
                     )
                 );
+        $this->plugin->debugMP('slp.mapsettings','pr','save_settings() Checkboxes',$BoxesToHit,NULL,NULL,true);
         foreach ($BoxesToHit as $JustAnotherBox) {
             $this->plugin->helper->SaveCheckBoxToDB($JustAnotherBox, '','');
         }
@@ -264,7 +262,7 @@ class SLPlus_AdminUI_MapSettings {
         //
         array_walk($_REQUEST,array($this->plugin,'set_ValidOptions'));
         update_option(SLPLUS_PREFIX.'-options', $this->plugin->options);
-        $this->plugin->debugMP('slp.mapsettings','pr','Map Settins Saved to '.SLPLUS_PREFIX.'-options',$this->plugin->options,__FILE__,__LINE__);
+        $this->plugin->debugMP('slp.mapsettings','pr','Map Settings Saved to '.SLPLUS_PREFIX.'-options',$this->plugin->options,__FILE__,__LINE__);
     }
 
     //=======================================
@@ -281,109 +279,8 @@ class SLPlus_AdminUI_MapSettings {
         // Features
         //
         $slpDescription =
-            "<div class='section_column_content'>" .
-
             $this->plugin->helper->create_SubheadingLabel(__('Look and Feel','csa-slplus')) .
-
-            $this->plugin->helper->CreateCheckboxDiv(
-                    'sl_remove_credits',
-                    __('Remove Credits','csa-slplus'),
-                    __('Remove the search provided by tagline under the map.','csa-slplus'),
-                    '',
-                    false,
-                    0
-                    ).
-
-            $this->plugin->helper->CreateCheckboxDiv(
-                '-force_load_js',
-                __('Force Load JavaScript','csa-slplus'),
-                __('Force the JavaScript for Store Locator Plus to load on every page with early loading. ' .
-                'This can slow down your site, but is compatible with more themes and plugins.', 'csa-slplus'),
-                SLPLUS_PREFIX,
-                false,
-                1
-                ).
-
-            $this->plugin->helper->CreateCheckboxDiv(
-                    'sl_load_locations_default',
-                    __('Immediately Show Locations', 'csa-slplus'),
-                    __('Display locations as soon as map loads, based on map center and default radius. ','csa-slplus'),
-                    '',
-                    false,
-                    0
-                    ).
-
-            $this->CreateInputDiv(
-                    'sl_num_initial_displayed',
-                    __('Number To Show Initially','csa-slplus'),
-                    __('How many locations should be shown when Immediately Show Locations is checked.  Recommended maximum is 50.','csa-slplus'),
-                    ''
-                    ).
-
-            $this->CreateInputDiv(
-                    'initial_radius',
-                    __('Radius To Search Initially','csa-slplus'),
-                    __('What should immediately show locations use as the default search radius? Leave empty to use map radius default or set to a large number like 25000 to search everywhere.','csa-slplus') .
-                    sprintf(
-                        __('Can be set with <a href="%s" target="csa">shortcode attribute initial_radius</a> if Force Load JavaScript is turned off.','csa-slplus'),
-                        $this->plugin->url . 'support/documentation/store-locator-plus/shortcodes/'
-                    ),
-                    '',
-                    $this->plugin->options['initial_radius']
-                    )
-                ;
-
-            // Features : Country
-            $slpDescription .=
-                $this->plugin->helper->create_SubheadingLabel(__('Country','csa-slplus')) .
-                "<div class='form_entry'>" .
-                "<label for='google_map_domain'>". __("Map Domain", 'csa-slplus') . "</label>" .
-                "<select name='google_map_domain'>"
-                ;
-            foreach ($this->get_map_domains() as $key=>$sl_value) {
-                $selected=(get_option('sl_google_map_domain')==$sl_value)?" selected " : "";
-                $slpDescription .= "<option value='$key:$sl_value' $selected>$key ($sl_value)</option>\n";
-            }
-            $slpDescription .=
-                "</select></div>";
-
-            // Language Selection
-            //
-            $slpDescription .=
-                "<div class='form_entry'>" .
-                "<label for='".SLPLUS_PREFIX."-map_language'>".__('Map Language', 'csa-slplus')."</label>" .
-                "<select name='".SLPLUS_PREFIX."-map_language'>"
-                ;
-            foreach ($this->get_map_languages() as $key=>$sl_value) {
-                $selected=($this->plugin->helper->getData('map_language','get_item',null,'en')==$sl_value)?" selected " : "";
-                $slpDescription .= "<option value='$sl_value' $selected>$key</option>\n";
-            }
-            $slpDescription .= "</select></div>";
-            $mapSettings['features'] = apply_filters('slp_map_features_settings',$slpDescription);
-
-            // Settings
-            //
-            $slpDescription =
-                $this->plugin->helper->create_SubheadingLabel(__('Dimensions','csa-slplus')) .
-
-                $this->CreatePulldownDiv(
-                    'sl_zoom_level',
-                    array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19),
-                    __('Zoom Level', 'csa-slplus'),
-                    __('Initial zoom level of the map if "immediately show locations" is NOT selected or if only a single location is found.  0 = world view, 19 = house view.', 'csa-slplus'),
-                    '',
-                    4
-                    ) .
-
-                $this->CreatePulldownDiv(
-                    'sl_zoom_tweak',
-                    array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19),
-                    __('Zoom Adjustment', 'csa-slplus'),
-                    __('Changes how tight auto-zoom bounds the locations shown.  Lower numbers are closer to the locations.', 'csa-slplus'),
-                    '',
-                    4
-                    ) .
-
+                
                 $this->CreateInputDiv(
                     'sl_map_height',
                     __('Map Height','csa-slplus'),
@@ -408,7 +305,6 @@ class SLPlus_AdminUI_MapSettings {
                     '',
                     '640'
                     ) .
-
                 $this->CreatePulldownDiv(
                     'sl_map_width_units',
                     array('%','px','em','pt'),
@@ -417,20 +313,77 @@ class SLPlus_AdminUI_MapSettings {
                     '',
                     '%'
                     ) .
-
-                $this->plugin->helper->create_SubheadingLabel(__('General','csa-slplus')) .
-
-                $this->CreatePulldownDiv(
+            $this->CreatePulldownDiv(
                     'sl_map_type',
                     array('roadmap','hybrid','satellite','terrain'),
                     __('Default Map Type', 'csa-slplus'),
                     __('What style Google Map should we use?', 'csa-slplus'),
                     '',
                     'roadmap'
+                    ) .
+            $this->plugin->helper->CreateCheckboxDiv(
+                    'sl_remove_credits',
+                    __('Remove Credits','csa-slplus'),
+                    __('Remove the search provided by tagline under the map.','csa-slplus'),
+                    '',
+                    false,
+                    0
+                    )
+                ;
+
+            $mapSettings['features'] = apply_filters('slp_map_features_settings',$slpDescription);
+
+            // Settings
+            //
+            $slpDescription =
+                $this->plugin->helper->create_SubheadingLabel(__('Behavior','csa-slplus'))
+                ;
+            
+            $slpDescription .=
+                "<div class='form_entry'>" .
+                "<label for='google_map_domain'>". __("Map Domain", 'csa-slplus') . "</label>" .
+                "<select name='google_map_domain'>"
+                ;
+                foreach ($this->get_map_domains() as $key=>$sl_value) {
+                    $selected=(get_option('sl_google_map_domain')==$sl_value)?" selected " : "";
+                    $slpDescription .= "<option value='$key:$sl_value' $selected>$key ($sl_value)</option>\n";
+                }
+            $slpDescription .=
+                    "</select></div>";
+
+                // Language Selection
+                //
+            $slpDescription .=
+                    "<div class='form_entry'>" .
+                    "<label for='".SLPLUS_PREFIX."-map_language'>".__('Map Language', 'csa-slplus')."</label>" .
+                    "<select name='".SLPLUS_PREFIX."-map_language'>"
+                    ;
+                foreach ($this->get_map_languages() as $key=>$sl_value) {
+                    $selected=($this->plugin->helper->getData('map_language','get_item',null,'en')==$sl_value)?" selected " : "";
+                    $slpDescription .= "<option value='$sl_value' $selected>$key</option>\n";
+                }
+            $slpDescription .=
+                    "</select></div>";
+
+            $slpDescription .=
+                $this->CreatePulldownDiv(
+                    'sl_zoom_level',
+                    array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19),
+                    __('Zoom Level', 'csa-slplus'),
+                    __('Initial zoom level of the map if "immediately show locations" is NOT selected or if only a single location is found.  0 = world view, 19 = house view.', 'csa-slplus'),
+                    '',
+                    4
+                    ) .
+
+                $this->CreatePulldownDiv(
+                    'sl_zoom_tweak',
+                    array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19),
+                    __('Zoom Adjustment', 'csa-slplus'),
+                    __('Changes how tight auto-zoom bounds the locations shown.  Lower numbers are closer to the locations.', 'csa-slplus'),
+                    '',
+                    4
                     )
                     ;
-
-            $slpDescription .= "</div>";
 
 
             $mapSettings['settings'] = 
@@ -460,40 +413,40 @@ class SLPlus_AdminUI_MapSettings {
                         "<img id='end_icon_preview' src='".$this->plugin->data['sl_map_end_icon']."'align='top'><br/>".
                         $this->plugin->data['endIconPicker'] .
                     "</div>".
-                    "<br/><p>Saved markers live here: " . SLPLUS_UPLOADDIR . "saved-icons/</p>"
+                    '<br/><p>'.
+                    __('Saved markers live here: ','csa-slplus') . SLPLUS_UPLOADDIR . "saved-icons/</p>"
             ;
         $mapSettings['icons'] = apply_filters('slp_map_icons_settings',$slpDescription);
 
-
         // TODO: Convert to new panel builder with add_ItemToGroup() in wpCSL (see Tagalong admin panel)
-        $slpDescription =
-            "<div id='map_settings'>" .
-                $this->CreateSettingsGroup(
+        $mapSections =
+                $this->plugin->settings->create_SettingsGroup(
                                     'map_features',
-                                    __('Features','csa-slplus'),
+                                    __('Map Features','csa-slplus'),
                                     '',
                                     $mapSettings['features']
                                     ) .
-                $this->CreateSettingsGroup(
+                $this->plugin->settings->create_SettingsGroup(
                                     'map_settings',
-                                    __('Settings','csa-slplus'),
+                                    __('Map Settings','csa-slplus'),
                                     '',
                                     $mapSettings['settings']
                                     ) .
-                $this->CreateSettingsGroup(
+                $this->plugin->settings->create_SettingsGroup(
                                     'map_icons',
                                     __('Map Markers','csa-slplus'),
                                     '',
                                     $mapSettings['icons']
-                                    ) .
-            "</div>"
+                                    )
             ;
 
         $this->settings->add_section(
             array(
                     'name'          => __('Map','csa-slplus'),
-                    'description'   => $slpDescription,
-                    'auto'          => true
+                    'div_id'        => 'map',
+                    'description'   => $mapSections,
+                    'auto'          => true,
+                    'innerdiv'      => true
                 )
          );
      }
@@ -621,6 +574,40 @@ class SLPlus_AdminUI_MapSettings {
                 );
      }
 
+    /**
+     * Retrieves map setting options, whether serialized or not.
+     *
+     * Simple options (non-serialized) return with a normal get_option() call result.
+     *
+     * Complex options (serialized) save any fetched result in $this->settingsData.
+     * Doing so provides a basic cache so we don't keep hammering the database when
+     * getting our map settings.  Legacy code expects a 1:1 relationship for options
+     * to settings.   This mechanism ensures on database read/page render for the
+     * complex options v. one database read/serialized element.
+     *
+     * @param string $optionName - the option name
+     * @param mixed $default - what the default value should be
+     * @return mixed the value of the option as saved in the database
+     */
+    function getCompoundOption($optionName,$default='') {
+        if (!$this->set_Plugin()) { return; }
+        $matches = array();
+        if (preg_match('/^(.*?)\[(.*?)\]/',$optionName,$matches) === 1) {
+            if (!isset($this->plugin->mapsettingsData[$matches[1]])) {
+                $this->plugin->mapsettingsData[$matches[1]] = get_option($matches[1],$default);
+            }
+            return
+                isset($this->plugin->mapsettingsData[$matches[1]][$matches[2]]) ?
+                $this->plugin->mapsettingsData[$matches[1]][$matches[2]] :
+                ''
+                ;
+
+        } else {
+            return $this->plugin->helper->getData($optionName,'get_option',array($optionName,$default));
+        }
+    }
+
+
      /**
       * Render the map settings admin page.
       */
@@ -697,24 +684,25 @@ class SLPlus_AdminUI_MapSettings {
         //-------------------------
         // Navbar Section
         //-------------------------
-        $this->plugin->AdminUI->MapSettings->settings->add_section(
+        $this->settings->add_section(
             array(
                 'name'          => 'Navigation',
-                'div_id'        => 'slplus_navbar_wrapper',
+                'div_id'        => 'navbar_wrapper',
                 'description'   => $this->plugin->AdminUI->create_Navbar(),
-                'auto'          => false,
-                'headerbar'     => false,
                 'innerdiv'      => false,
-                'is_topmenu'    => true
+                'is_topmenu'    => true,
+                'auto'          => false,
+                'headerbar'     => false
             )
         );
 
         //------------------------------------
         // Create The Search Form Settings Panel
         //
-        add_action('slp_build_map_settings_panels',array($this,'search_form_settings') ,10);
-        add_action('slp_build_map_settings_panels',array($this,'map_settings')         ,20);
-        add_action('slp_build_map_settings_panels',array($this,'results_settings')     ,30);
+        add_action('slp_build_map_settings_panels',array($this,'search_form_settings'   ),10);
+        add_action('slp_build_map_settings_panels',array($this,'map_settings'           ),20);
+        add_action('slp_build_map_settings_panels',array($this,'results_settings'       ),30);
+        add_action('slp_build_map_settings_panels',array($this,'action_AddUXViewSection'),40);
 
         //------------------------------------
         // Render It
@@ -730,37 +718,49 @@ class SLPlus_AdminUI_MapSettings {
       */
      function results_settings() {
 
-        // ===== Location Info
-        //
-        // -- Search Results
-        //
         $slpDescription =
-                '<h2>' . __('Location Info','csa-slplus').'</h2>'.
-                '<p class="slp_admin_info" style="clear:both;"><strong>'.__('Search Results','csa-slplus').'</strong></p>' 
-                ;
-        $slpDescription .= $this->CreateInputDiv(
-                    '_maxreturned',
-                    __('Max search results','csa-slplus'),
-                    __('How many locations does a search return? Default is 25.','csa-slplus')
-                    );
+            $this->plugin->helper->create_SubheadingLabel(__('Search Results','csa-slplus')) .
+            $this->CreateInputDiv(
+                        '_maxreturned',
+                        __('Max Search Results','csa-slplus'),
+                        __('How many locations does a search return? Default is 25.','csa-slplus')
+                        ).
+            $this->plugin->helper->CreateCheckboxDiv(
+                    'sl_load_locations_default',
+                    __('Immediately Show Locations', 'csa-slplus'),
+                    __('Display locations as soon as map loads, based on map center and default radius. ','csa-slplus'),
+                    '',
+                    false,
+                    1
+                    ).
+            $this->CreateInputDiv(
+                    'sl_num_initial_displayed',
+                    __('Number To Show Initially','csa-slplus'),
+                    __('How many locations should be shown when Immediately Show Locations is checked.  Recommended maximum is 50.','csa-slplus'),
+                    ''
+                    ).
+                $this->CreateInputDiv(
+                        'initial_radius',
+                        __('Radius To Search Initially','csa-slplus'),
+                        __('What should immediately show locations use as the default search radius? Leave empty to use map radius default or set to a large number like 25000 to search everywhere.','csa-slplus') .
+                        sprintf(
+                            __('Can be set with <a href="%s" target="csa">shortcode attribute initial_radius</a> if Force Load JavaScript is turned off.','csa-slplus'),
+                            $this->plugin->url . 'support/documentation/store-locator-plus/shortcodes/'
+                        ),
+                        '',
+                        $this->plugin->options['initial_radius']
+                        )
+            ;
 
         // FILTER: slp_settings_results_locationinfo - add input fields to results locaiton info
         //
-        $slpDescription = apply_filters('slp_settings_results_locationinfo',$slpDescription);
+        $resultSettings['features'] = apply_filters('slp_settings_results_locationinfo',$slpDescription);
 
-        $slpDescription =
-            "<div class='section_column' id='results_location_info'>".
-                "<div class='map_designer_settings'>".
-                $slpDescription .
-                "</div>" .
-            "</div>"
-            ;
 
         // ===== Labels
         //
-        $slpDescription .=
-            "<div class='section_column'>" .
-                '<h2>'.__('Labels', 'csa-slplus') . '</h2>' .
+        $slpDescription =
+                $this->plugin->helper->create_SubheadingLabel(__('Results Labels','csa-slplus')) .
                 $this->CreateInputDiv(
                    'sl_website_label',
                    __('Website URL', 'csa-slplus'),
@@ -807,32 +807,46 @@ class SLPlus_AdminUI_MapSettings {
 
         // FILTER: slp_settings_results_labels - add input fields to results labels
         //
-        $slpDescription = apply_filters('slp_settings_results_labels',$slpDescription);
+        $resultSettings['labels'] = apply_filters('slp_settings_results_labels',$slpDescription);
 
-
-        $slpDescription .= '</div>';
-
+        // TODO: Convert to new panel builder with add_ItemToGroup() in wpCSL (see Tagalong admin panel)
+        $resultSections =
+            $this->plugin->settings->create_SettingsGroup(
+                'result_features',
+                __('Results Features','csa-slplus'),
+                '',
+                $resultSettings['features']
+                ).
+            $this->plugin->settings->create_SettingsGroup(
+                'result_labels',
+                __('Results Labels','csa-slplus'),
+                '',
+                $resultSettings['labels']
+                )
+                ;
 
         // Render the results setting
         //
         $this->settings->add_section(
             array(
                     'name'          => __('Results','csa-slplus'),
-                    'description'   => $slpDescription,
-                    'auto'          => true
+                    'div_id'        => 'results',
+                    'description'   => $resultSections,
+                    'auto'          => true,
+                    'innerdiv'      => true
                 )
          );
      }
 
     /**
      * Add the search form panel to the map settings page on the admin UI.
-     *
+     * TODO : Convert this to wpCSL add_ItemToGroup model.
      */
      function search_form_settings() {
         $slpDescription =
-            "<div id='search_settings'>" .
+            "<div id='search_settings' class='section'>" .
                 "<div class='section_column'>" .
-                    "<h2>".__('Features', 'csa-slplus')."</h2>"
+                    "<h2>".__('Search Features', 'csa-slplus')."</h2>"
             .
 
             $this->CreateInputDiv(
@@ -847,11 +861,11 @@ class SLPlus_AdminUI_MapSettings {
                 "<label for='sl_distance_unit'>".__('Distance Unit', 'csa-slplus').':</label>' .
                     "<select name='sl_distance_unit'>"
             ;
-
-        $sl_the_distance_unit[__("Kilometers", 'csa-slplus')]="km";
-        $sl_the_distance_unit[__("Miles", 'csa-slplus')]="miles";
-        foreach ($sl_the_distance_unit as $key=>$sl_value) {
-            $selected=(get_option('sl_distance_unit')==$sl_value)?" selected " : "";
+        foreach (array(
+                        __('Kilometers' , 'csa-slplus')=>__('km'    ,'csa-slplus'),
+                        __('Miles'      , 'csa-slplus')=>__('miles' ,'csa-slplus'),
+                    ) as $key=>$sl_value) {
+            $selected=(get_option('sl_distance_unit','miles')==$sl_value)?" selected " : "";
             $slpDescription .= "<option value='$sl_value' $selected>$key</option>\n";
         }
         $slpDescription .=
@@ -868,17 +882,7 @@ class SLPlus_AdminUI_MapSettings {
                 ;
 
         // FILTER: slp_settings_search_features
-        $slpDescription = apply_filters('slp_settings_search_features',$slpDescription);
-
-        // Legacy Action Call to setup new features
-        // This really should have been a filter.
-        // TODO: find all uses and deprecate
-        //
-        ob_start();
-        do_action('slp_add_search_form_features_setting');
-        $slpDescription .= ob_get_clean();
-
-        $slpDescription .= '</div>';
+        $slpDescription = apply_filters('slp_settings_search_features',$slpDescription) . '</div>';
 
         // Search Form Labels
         //
@@ -900,29 +904,21 @@ class SLPlus_AdminUI_MapSettings {
             ;
 
         // FILTER: slp_settings_search_labels
-        $settingsHTML = apply_filters('slp_settings_search_labels',$settingsHTML);
-
-        // Legacy Action Call to setup new features
-        // This really should have been a filter.
-        // TODO: find all uses and deprecate
-        //
-        ob_start();
-        do_action('slp_add_search_form_label_setting');
-        $settingsHTML .= ob_get_clean() . '</div>';
-
-        $slpDescription .= $this->CreateSettingsGroup(
+        $settingsHTML = apply_filters('slp_settings_search_labels',$settingsHTML) . '</div>';
+        $slpDescription .= $this->plugin->settings->create_SettingsGroup(
                                 'search_labels',
-                                __('Labels','csa-slplus'),
+                                __('Search Labels','csa-slplus'),
                                 '',
                                 $settingsHTML
                                 );
 
         $this->settings->add_section(
             array(
-                    'div_id'        => 'csa_mapsettings_searchform',
                     'name'          => __('Search Form','csa-slplus'),
+                    'div_id'        => 'search',
                     'description'   => apply_filters('slp_map_settings_searchform',$slpDescription),
-                    'auto'          => true
+                    'auto'          => true,
+                    'innerdiv'      => true
                 )
          );
      }

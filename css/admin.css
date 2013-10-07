@@ -1,26 +1,13 @@
-/***************************
- * Anywhere
- */
-
-/* Base WP Override */
-.about-wrap h2 .nav-tab {
-    font-size: 16px;
-    margin: 0 3px -1px 0;
-    padding: 4px 10px 6px;
-    vertical-align: top;
+/*--------------------------
+ * WordPress Overrides
+ *--------------------------*/
+#wpbody-content {
+    width: auto;
 }
 
-/* SLP Custom */
- div#icon-edit.icon32.icon32-posts-store_page,
- #icon-Store_Locator_Plus___Map_Settings,
- #icon-Store_Locator_Plus___Reporting,
- #icon-Store_Locator_Plus,
- #icon-edit-locations, 
- #icon-add-locations, 
- #icon-locations 
- {
-    background: url("../core/images/StoreLocatorPlus_icons32.png") no-repeat scroll -75px -3px transparent;
-}
+/*--------------------------
+ * WordPress Overrides
+ *--------------------------*/
 
 /* Slider from proto.io/freebies/onoff/
 */
@@ -147,13 +134,15 @@ div.csl-slplus-input-disabled
     float: left;
 }
 div.csl-slplus-input textarea {
-    width: 252px;
-    border: solid 1px #666666;
+    min-height: 150px;
+    margin-left: 3px;
+    min-width: 300px;
+    width: 100%;
 }
- 
+
 /* More Info Box */
 div.csl-slplus-moreicon {
-    background: url("../core/images/General_icons16.png") 
+    background: url("../WPCSL-generic/assets/General_icons16.png")
         no-repeat scroll 
         -15px 0px
         transparent; 
@@ -245,167 +234,113 @@ p.message{
 /***************************
  * The Navbar
  */
+
+/* WP3.8 (MP6) Tweaks */
+#slplus_navbar .nav-tab-wrapper {
+    margin-bottom: 0px;
+}
+
  div#csa_admin_wrapper.metabox-holder {
      margin: 0px;
      padding: 0px;
  }
 
- div#slplus_navbar_wrapper {
-     background: none;
-     border: none;
+/***************************
+ * Action Bar Dropdowns
+ */
+#wpcsl-option-manage .tablenav {
+    margin: 0px;
+}
+#wpcsl-option-manage .tablenav INPUT[type="text"]{
+    padding: 2px;
+    height: 2em;
+    margin-right: 6px;
+}
+
+/*-- Bulk Actions */
+.bulk_extras {
+    background-color: #FAFAD2;
+    border: 1px solid gray;
+    padding: 12px;
+    position: absolute;
+    top: 30px;
+    left: 60px;
+    display: none;
+}
+div.bulkextras{
+    border: solid 1px silver;
+    display: inline-block;
+    min-width: 180px;
+}
+div.bulkextras:last-child{
+    border:none;
+}
+
+/*-- Pagination --*/
+ div#slp_pagination {
+     margin: 3px 0px 0px;
+     overflow: auto;
+     padding: 0px;
+     position: relative;
+     width: 100%;
  }
-
-div#slplus_navbar,
-div#slplus_actionbar
-{
-    background: none;
-    border: none;
-    margin: 0px;
-    padding: 0px;
-    left: -15px;
-}
-
-#slplus_navbar ul,
-#slplus_actionbar ul
-{
-    margin: 0px;
-}
-#slplus_navbar li,
-#slplus_actionbar li
-{
-  float: left;
-  margin: 6px;
-  padding: 3px;
-}
-
-#slplus_navbar div .handlediv,
-#slplus_actionbar div .handlediv
-{
-    display: none;
-    visibility: hidden;
-}
-#slplus_navbar h3 .hndle,
-#slplus_actionbar h3 .hndle
-{
-    display: none;
-    visibility: hidden;
-}
-
-div#csa_mapsettings_searchform,
+ div#slp_pagination a.nav-tab {
+     background-color: #EEEEDD;
+     color: #6666AA;
+ }
+ div#slp_pagination a.nav-tab-active {
+     background-color: #DDDDCC;
+     color: #333333;
+ }
+ div.subtab-wrap {
+     padding: 0px;
+     margin: 0px;
+     border-bottom: solid 1px #CCC;
+ }
+ div#slp_pagination_pages {
+    background-color: white;
+    bottom: 4px;
+    margin-bottom: 0;
+    margin-right: 0;
+    margin-top: 0;
+    padding: 0 0 0 24px;
+    right: 0;
+    text-align: right;
+    white-space: nowrap;
+ }
+ a.page-button {
+     margin: 0px 2px;
+ }
+ a.page-button.thispage {
+    font-weight: bold;
+    background-color: #FAFAD2;
+    border-color: #B8860B;
+    color: #B8860B;
+ }
+div#search,
 div#csa_plugin_info {
     margin-top: 18px;
 }
-
-/***************************************
-* Action Bar
-*/
-
-form#manage_locations_actionbar_form {
-    margin: 0px;
-    padding: 0px;
-}
-
-/* Action Bar Specific */
-
 div#action_buttons {
     display: inline;
     margin: 12px 0px 0px 0px;
     padding: 0px;
     position: relative;
-}
-div#action_bar_header,
-div#filter_bar_header
-{
-    background: none repeat scroll 0 0 #808080;
-    color: white;
-    text-align: center;
-    width: 100%;
-    height: 24px;
-}
-div#action_bar_header h3,
-div#filter_bar_header h3
-{
-    padding:3px 0px;
-    margin: 0px;
-}
-div#slplus_actionbar {
-    clear:both;
-    padding-top: 1px;
-    font-size: 12px;
-}
-div#tag_block {
-    width: 341px;
-}
-div#slplus_actionbar div#tag_actions {
-    clear: both;
-    width: 360px;
-}
-div#slplus_actionbar div#tag_actions A{
-    display: inline-block;
-}
-div#slplus_actionbar div#tagentry {
-    clear:both;
+    line-height: normal;
 }
 div#list_options select {
     padding: 0px;
     margin: 0px;
 }
-input#searchfor {
-    width: 140px;
-}
 p.centerbutton {
    margin: auto;
    width: 166px;
-}
-div#filter_buttons {
-    clear: both;
-}
-div.boxbar {
-   display: inline-block;
-   margin: 0px;
-   min-width: 360px;
-   overflow: auto;
-   padding: 0px;
-   white-space: nowrap;
-   width: 100%;
-}
-div.boxbar input:not([type="button"]) {
-    line-height: 15px;
-    padding: 3px;
-}
-div.actionbox,
-div.filterbox
-{
-    border-right: 1px solid #e6e6fa;
-    display: inline-block;
-    text-align: center;
-    padding: 0px;
-    margin: 0px;
-    min-width: 180px;
-    height: 70px;
-    vertical-align: top;
-}
-div.actionbox:last-child,
-div.filterbox:last-child
-{
-    border:none;
-}
-div.filterbox {
-    background-color: #F0FFFF;
-}
-div.actionbox {
-    background-color: #F0F8FF;
 }
 
 /***************************
  * Locations: Add Form / Edit
  */
-div.slp_bulk_upload_div {
-  background-color: #F8F7DE;
-  border: 1px solid #F6E39A;
-  margin: 6px;
-}
- div.add_location_form {
+ div.locations_div_add {
      display:block;
      position:relative;
      width: 100%;
@@ -454,15 +389,8 @@ div.add_location_form input.iconfield {
     width: 31em;
     margin-bottom: 12px;
 }
-
-input#bulk_file {
-    width: 70%;
-}
-td#slp_manual_update_table_left_cell {
-    min-width:554px;
-}
 td#slp_manual_update_table_right_cell {
-    min-width:554px;
+    min-width:300px;
 }
 table.slp_locationinfoform_table {
 	padding-left:0px; padding-right:0px;
@@ -474,6 +402,7 @@ table.slp_locationinfoform_table td {
     padding-right:0px;
 }
 
+/* Address Search */
 div#sl_div div#address_search input[type="submit"] {
     margin: 3px;
     padding: 3px;
@@ -510,52 +439,32 @@ caption, th, td {
     font-weight: normal;
     text-align: left;
 }
-.entry-content table, .comment-content table {
-    color: #757575;
-    font-size: 0.857143rem;
-    line-height: 2;
-}
-table {
-    border-collapse: collapse;
-    border-spacing: 0;
-}
-.entry-content, .entry-summary, .mu_register {
-    line-height: 1.71429;
-}
-.site-content article {
-    -moz-hyphens: auto;
-    word-wrap: break-word;
-}
-body.custom-font-enabled {
-    font-family: "Open Sans",Helvetica,Arial,sans-serif;
-}
-body {
-    color: #444444;
-    font-family: Helvetica,Arial,sans-serif;
-    font-size: 1rem;
-    text-rendering: optimizelegibility;
-}
-body {
-    line-height: 1;
-}
 div.slp_editform_section {
     clear: both;
     margin-bottom: 9px;
 }
-
 div.slp_editform_section small {
     margin-left: 9px;
 }
-div.slp_editform_section A {
-    display: inline-block;
-    margin: 1px;
-    min-width: 161px;
-    padding: 3px;
+.slp_editform_section > a {
+    vertical-align: top;
 }
 
 /***************************
  * Locations: Manage
  */
+#manage_locations_table .infoid {
+    color: gray;
+    display: block;
+    font-family: "Courier New",Courier,monospace;
+    font-size: 0.75em;
+    text-align: right;
+    width: 100%;
+}
+#manage_locations_table .infoid.floater {
+    width: auto;
+    float: right;
+}
 td.slp_manage_locations_cell {
     display: table-cell;
     word-wrap: break-word;
@@ -564,24 +473,17 @@ td.slp_manage_locations_cell {
 tr.slp_managelocations_row.even {
     background-color: #FFFFFF;
 }
-tr.slp_managelocations_row.even:hover {
-    background-color: #FFFFCC;
+tr.slp_managelocations_row:hover {
+    background-color: #FFFF99;
 }
 tr.slp_managelocations_row.odd {
     background-color: #DDDDDD;
 }
-tr.slp_managelocations_row.odd:hover {
-    background-color: #FFFF99;
-}
 tr.slp_managelocations_row.invalid {
-    background-color: #FFCCCC;
-}
-tr.slp_managelocations_row.invalid:hover {
     background-color: #FFDDDD;
 }
-#manage_locations_table {
-   margin: 0px;
-   padding: 0px;
+tr.slp_managelocations_row.invalid:hover {
+    background-color: #FFCCCC;
 }
 #manage_locations_table th {
     vertical-align: top;
@@ -589,69 +491,13 @@ tr.slp_managelocations_row.invalid:hover {
 #manage_locations_table th.thnowrap {
     white-space: nowrap;
 }
-
- div#slp_pagination {
-     margin: 0px;
-     overflow: auto;
-     padding: 0px;
-     position: relative;
-     width: 100%;
- }
- div#slp_pagination_pages {
-    bottom: 0;
-    margin: 0px;
-    padding: 0px;
-    position: absolute;
-    right: 0;
-    text-align: right;
-    white-space: nowrap;
- }
- div#location_table_wrapper {
-    border: 1px solid #CCCCCC;
-    margin: -1px 0 0;
-    padding: 0px;
- }
- a.page-button {
-     margin: 0px 2px;
- }
- a.page-button.thispage {
-    font-weight: bold;
-    background-color: #FAFAD2;
-    border-color: #B8860B;
-    color: #B8860B;
- }
- div.wrap table.slplus.widefat thead tr th {
-    background: #404040; /* for non-css3 browsers */
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#808080', endColorstr=' #404040'); /* for IE */
-    background: -webkit-gradient(linear, left top, left bottom, from(#808080), to( #404040)); /* for webkit browsers */
-    background: -moz-linear-gradient(top,  #808080,   #404040); /* for firefox 3.6+ */
-    background-image: -moz-linear-gradient(center top , #808080, #404040);
-    text-decoration: none;     
- }
- div.wrap table.slplus.widefat thead tr th,
- div.wrap table.slplus.widefat thead tr th a 
- {
-    color: #EEEEFF;
-    text-decoration: none;    
-    text-shadow: none;
-    font-size: 12px;
-    font-weight: 500;
-    font-family: "Trebuchet MS", Helvetica, sans-serif; 
- }
- div.wrap table.slplus.widefat thead tr th a {
-    color: #9999FF;
-    text-decoration: underline;
- }
- div.wrap table.slplus.widefat thead tr th input.button {
-     vertical-align: middle;
- }
  input.disabled {
     background: none repeat scroll 0 0 #FEFEFE;
     border: 1px solid #DDDDDD;
     color: #888888;     
  }
  tr td.slp_locationinfoform_cell {
-     border: 3px dashed #999999;
+     background-color: #FFFFFA;
  }
  span.slp-edit-location-id {
      display: inline-block;
@@ -676,6 +522,7 @@ div.section_column .form_entry {
     min-height: 18px;
     min-width: 475px;
     padding: 0px;
+    width: 100%;
 }
 
 .section_description {
@@ -705,7 +552,7 @@ div.section_column .form_entry {
 }
 
 .section_description INPUT {
-    width: 240px;
+    width: 270px;
 }
 
 .section_description INPUT[type="checkbox"] {
@@ -737,6 +584,7 @@ div.slp_icon_row {
     margin: 0px;
     overflow: auto;
     height: 140px;
+    resize:both;
 }
 
 div.slp_icon_selector_box {
@@ -757,15 +605,6 @@ img.slp_icon_selector {
     vertical-align: middle;
 }
 
-div#slplus_navbar_wrapper INPUT {
-    box-shadow: 12px;
-    line-height: 1em;
-    padding: 3px;
-}
-div#slplus_navbar_wrapper INPUT:focus {
-    background-color: #FFFFDD;
-}
-
 /***************************
  * Settings: General
  **/
@@ -782,34 +621,19 @@ div#slplus_navbar_wrapper INPUT:focus {
     font-weight: bold;
 }
 
-.tableRowHeader  td a,.tableRowHeader  th a,.widefat thead td a,.widefat thead th a
-{
-    color: #00aa00;
-    font-weight: bold;
-    text-decoration: underline;
-}
-
-.widefat,.widefat thead td a,.widefat thead th a,.widefat td,.widefat th
-{
-	font-size: 12px;
-	border: none;
-}
-
-.widefat td td, .widefat td, .widefat th {
-	border-bottom: none;
-}
-
-.widefat thead,.widefat thead tr {
-	background-color: #464646;
-	background-image: none;
-	color: white;
-}
-
 .highlight {
-	background-color: lightYellow;
-	border: solid gold 1px;
-	padding: 7px;
-	color: #000;
+    background-color: lightYellow;
+    border: 1px solid gold;
+    color: #000000;
+    left: auto;
+    min-width: 180px;
+    padding: 7px;
+    position: absolute;
+    right: 6px;
+    text-align: center;
+    top: 6px;
+    vertical-align: middle;
+    z-index: 9999;
 }
 
 .sl_footer td a,.sl_footer td a:link,.sl_footer td a:hover,.sl_footer td a:active,.sl_footer td a:visited
@@ -871,6 +695,11 @@ td.optionpack {
     padding-top: 7px;
     width: 250px;
 }
+#manage_locations_table th.address a{
+    display: inline-block;
+    padding: 7px 0px;
+}
+
 
 /***************************
  * Reporting Interface
@@ -905,14 +734,7 @@ td.optionpack {
     margin-top: 3px;
 }
 
-div.section_column {
-    float: left;
-    width: 520px;
-    margin: 3px 6px 0px 0px;
 
-    border: solid 1px #D0D0FF;
-    overflow: auto;
-}
 div.section_column_intro {
     padding: 0px 6px;
 }
@@ -924,15 +746,6 @@ div.section_column_content {
 p.slp_admin_info {
     clear: both;
     padding-left: 9px;
-}
-
-div.section_column h2,
-#rb_details h2 {
-    margin-bottom: 3px;  
-    margin-top: 0px;
-    padding: 0px 6px;
-    background: #D4D4FF;
-    font-size: 16px;
 }
 
 .section_description {
@@ -953,11 +766,11 @@ div.section_column h2,
 }
 
 #rb_details .headerSortUp {
-    background-image: url("../core/images/arrow_sm_black_down.png");
+    background-image: url("../images/arrow_sm_black_down.png");
 }
 
 #rb_details .headerSortDown {
-    background-image: url("../core/images/arrow_sm_black_up.png");
+    background-image: url("../images/arrow_sm_black_up.png");
 }
 
 
@@ -985,7 +798,7 @@ div.action_buttons{
     min-width: 44px;
 }
 .action_icon {
-    background: url("../core/images/General_icons16.png") no-repeat scroll transparent;
+    background: url("../WPCSL-generic/assets/General_icons16.png") no-repeat scroll transparent;
     height: 20px;
     width: 20px;
     display: inline-block;
@@ -1049,19 +862,24 @@ div.action_buttons{
 }
 .form-table .input_label-disabled {
     color: #CCCCCC;
+}
 
 div#wpbody-content div.wrap div.updated,
-div.csa_info_msg,
 div.geocode_error
 {
     clear: both;
 }
+div.geocode_error {
+    padding-bottom: 6px;
+}
 
 div.csa_info_msg {
+    clear: both;
+    border: none;
+    margin: 0px;
     padding: 12px;
     font-weight: bold;
     font-size: 1.25em;
-    
 }
 
 div#slp_edit_left_column small,

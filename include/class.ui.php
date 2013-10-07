@@ -13,13 +13,6 @@ class SLPlus_UI {
     // Properties
     //-------------------------------------
 
-    /**
-     * The custom string format used in JS printf for under-the-map results.
-     * 
-     * @var string $resultsString
-     */
-    public  $resultsString = '';
-
     //----------------------------------
     // Methods
     //----------------------------------
@@ -126,11 +119,12 @@ class SLPlus_UI {
             return ($this->plugin->settings->get_item($setting,0) == 1);
        }
     }
-
+    
     /**
      * Create a search form input div.
      */
-    function create_input_div($fldID=null,$label='',$placeholder='',$hidden=false,$divID=null,$default='') {
+    function createstring_InputDiv($fldID=null,$label='',$placeholder='',$hidden=false,$divID=null,$default='') {
+        $this->plugin->debugMP('slp.main','msg',__FUNCTION__,"field ID: {$fldID} label {$label}");
         if ($fldID === null) { return; }
         if ($divID === null) { $divID = $fldID; }
 
@@ -149,158 +143,140 @@ class SLPlus_UI {
     }
 
     /**
+     * Output the search form based on the search results layout.
+     */
+    function createstring_SearchForm() {
+        $this->plugin->debugMP('slp.main','msg','SLPlus_UI:'.__FUNCTION__);
+
+        // Register our custom shortcodes
+        // SHORTCODE: slp_search_element
+        //
+        add_shortcode('slp_search_element',array($this,'create_SearchElement'));
+
+        // Process Layout With Shortcodes
+        // 
+        // TODO: make slp_search_form_divs defunct, use filter_ModifySearchLayout and filter_ProcessSearchElement instead
+        //
+        // FILTER: slp_search_form_divs
+        // FILTER: slp_searchlayout
+        //
+        $HTML = apply_filters('slp_search_form_divs',
+                    do_shortcode(
+                        apply_filters('slp_searchlayout',$this->plugin->defaults['searchlayout'])
+                    )
+                );
+
+        // Disconnect shortcodes
+        //
+        remove_shortcode('slp_search_element');
+
+        // Make sure the search form is wrapped in the form action to make it
+        // work with the JS submit.
+        //
+        return
+            '<form '                                                    .
+                "onsubmit='cslmap.searchLocations(); return false;' "   .
+                "id='searchForm' "                                      .
+                "action=''>"                                            .
+            $this->rawDeal($HTML)                                       .
+            '</form>'
+            ;
+    }
+
+    /**
+     * Wrap a string in a give prefix/suffix.
+     *
+     * @param string $content
+     * @param string $prefix
+     * @param string $suffix
+     * @return string
+     */
+    function createstring_WrapText($content,$prefix='',$suffix='') {
+        return $prefix.$content.$suffix;
+    }
+
+    /**
      * Render the SLP map
      *
      */
     function create_DefaultMap() {
         if(!$this->setPlugin()) { return; }
-        $this->loadPluginData();
+        $this->plugin->loadPluginData();
 
-        // Start the map table
+        // Add our default map generator, priority 10
+        // FILTER: slp_map_html
         //
-        $content =
-            '<table id="map_table" width="100%" cellspacing="0px" cellpadding="0px">' .
-            '<tbody id="map_table_body">' .
-            '<tr id="map_table_row">'.
-            '<td id="map_table_cell" width="100%" valign="top">'
-            ;
+        add_filter('slp_map_html',array($this,'filter_SetDefaultMapLayout'),10);
+        $mapContent =  do_shortcode(apply_filters('slp_map_html',''));
 
-        // If starting image is set, create the overlay div.
+        // Remove the credits
         //
-        $startingImage=get_option('sl_starting_image','');
-        if ($startingImage != '') {
-            $startingImage =
-                ((preg_match('/^http/',$startingImage) <= 0) ?SLPLUS_PLUGINURL:'').
-                $startingImage
-                ;
-
-            $content .=
-                '<div id="map_box_image" ' .
-                    'style="'.
-                        "width:". $this->plugin->data['sl_map_width'].
-                                  $this->plugin->data['sl_map_width_units'] .
-                                  ';'.
-                        "height:".$this->plugin->data['sl_map_height'].
-                                  $this->plugin->data['sl_map_height_units'].
-                                  ';'.
-                    '"'.
-                '>'.
-                "<img src='$startingImage'>".
-                '</div>' .
-                '<div id="map_box_map">'
-                ;
+        if ((get_option('sl_remove_credits',0)==1)) {
+            $mapContent = preg_replace(
+                    '/<div id="slp_tagline"(.*?)<\/div>/',
+                    ''  ,
+                    $mapContent
+                    );
         }
 
-        // The Map Div
-        //
-        $content .=
-            '<div id="map" ' .
-                'style="'.
-                    "width:". $this->plugin->data['sl_map_width'].
-                              $this->plugin->data['sl_map_width_units'] .
-                              ';'.
-                    "height:".$this->plugin->data['sl_map_height'].
-                              $this->plugin->data['sl_map_height_units'].
-                              ';'.
-                '"'.
-            '>'.
-            '</div>'
-            ;
+        echo $mapContent;
+    }
 
-        // Credits Line
-        if (!(get_option('sl_remove_credits',0)==1)) {
-            $content .=
-                '<div id="slp_tagline" ' .
-                    'style="'.
-                        "width:". $this->plugin->data['sl_map_width'].
-                                  $this->plugin->data['sl_map_width_units'] .
-                                  ';'.
-                    '"'.
-                '>'.
-                __('search provided by', 'csa-slplus') .
-                ' ' .
-                "<a href='". $this->plugin->url."' target='_blank'>".
-                     $this->plugin->name.
-                "</a>".
-                '</div>'
-                ;
-        }
-
-        // If starting image is set, close the overlay div.
-        //
-        if ($startingImage != '') {
-            $content .= '</div>';
-        }
-
-        // Close the table
-        //
-        $content .= '</td></tr></tbody></table>';
-
-        // Render
-        //
-        echo apply_filters('slp_map_html',$content);
+    /**
+     *
+     * @param string $HTML current map HTML default is blank
+     * @return string modified map HTML
+     */
+    function filter_SetDefaultMapLayout($HTML) {
+        // Only set default HTML if nothing has been defined yet.
+        if (!empty($HTML)) { return $HTML; }        
+       return $this->plugin->defaults['maplayout'];
     }
 
     /**
      * Create the default search address div.
      *
      * FILTER: slp_search_default_address
-     *
-     * @global string $slp_thishtml_60
-     * @global SLPlus_UI_DivManager $slp_SearchDivs
      */
-    function create_DefaultSearchDiv_Address() {
-        global $slp_thishtml_60;
-        global $slp_SearchDivs;
-
-        $slp_thishtml_60 = $this->plugin->UI->create_input_div(
+    function createstring_DefaultSearchDiv_Address($placeholder='') {
+        $this->plugin->debugMP('msg',__FUNCTION__);
+        return $this->plugin->UI->createstring_InputDiv(
             'addressInput',
             get_option('sl_search_label',__('Address','csa-slplus')),
-            '',
+            $placeholder,
             (get_option(SLPLUS_PREFIX.'_hide_address_entry',0) == 1),
             'addy_in_address',
             apply_filters('slp_search_default_address','')
             );
-
-        add_filter('slp_search_form_divs',array($slp_SearchDivs,'buildDiv60'),60);
     }
 
     /**
      * Create the default search radius div.
-     *
-     * @global string $slp_thishtml_70
-     * @global SLPlus_UI_DivManager $slp_SearchDivs
      */
     function create_DefaultSearchDiv_Radius() {
-        global $slp_thishtml_70;
-        global $slp_SearchDivs;
-        
+        $this->plugin->debugMP('msg',__FUNCTION__);
         if (get_option(SLPLUS_PREFIX.'_hide_radius_selections',0) == 0) {
-            $slp_thishtml_70 =
+            $HTML =
                 "<div id='addy_in_radius'>".
                 "<label for='radiusSelect'>".
-                get_option('sl_radius_label','Within').
+                get_option('sl_radius_label',__('Within','csa-slplus')).
                 '</label>'.
                 "<select id='radiusSelect'>".$this->plugin->data['radius_options'].'</select>'.
                 "</div>"
                 ;
         } else {
-            $slp_thishtml_70 =$this->plugin->data['radius_options'];
+            $HTML =$this->plugin->data['radius_options'];
         }
-        add_filter('slp_search_form_divs',array($slp_SearchDivs,'buildDiv70'),70);
+        return $HTML;
     }
 
     /**
      * Create the default search submit div.
      *
      * If we are not hiding the submit button.
-     *
-     * @global string $slp_thishtml_80
-     * @global SLPlus_UI_DivManager $slp_SearchDivs
      */
     function create_DefaultSearchDiv_Submit() {
-        global $slp_thishtml_80;        
-        global $slp_SearchDivs;
+        $this->plugin->debugMP('msg',__FUNCTION__);
         if (get_option(SLPLUS_PREFIX.'_disable_search') == 0) {
 
             // Find Button Is An Image
@@ -331,38 +307,27 @@ class SLPlus_UI {
                 $button_style = 'type="submit" class="slp_ui_button"';
             }
 
-            $slp_thishtml_80 =
+            return
                 "<div id='radius_in_submit'>".
                     "<input $button_style " .
                         "value='".get_option(SLPLUS_PREFIX.'_find_button_label','Find Locations')."' ".
                         "id='addressSubmit'/>".
                 "</div>"
                 ;
-            add_filter('slp_search_form_divs',array($slp_SearchDivs,'buildDiv80'),80);
         }
+
+        return '';
     }
 
     /**
      * Render the search form for the map.
      *
-     * SLP Action: slp_render_search_form
-     *
      * FILTER: slp_search_form_divs
      * FILTER: slp_search_form_html
-     *
-     * @global SLPlus_UI_DivManager $slp_SearchDivs
      */
     function create_DefaultSearchForm() {
         if(!$this->setPlugin()) { return; }
-
-        global $slp_SearchDivs;
-        $slp_SearchDivs = new SLPlus_UI_DivManager();
-
-        // Create our search form elements.
-        //
-        $this->create_DefaultSearchDiv_Address();
-        $this->create_DefaultSearchDiv_Radius();
-        $this->create_DefaultSearchDiv_Submit();
+        $this->plugin->debugMP('slp.main','msg',__FUNCTION__);
 
         // The search_form template sets up a bunch of DIV filters for the search form.
         //
@@ -376,6 +341,9 @@ class SLPlus_UI {
                         "<td id='search_form_table_cell' valign='top'>".
                             "<div id='address_search'>".
             apply_filters('slp_search_form_divs','') .
+            $this->createstring_DefaultSearchDiv_Address() .
+            $this->create_DefaultSearchDiv_Radius()  .
+            $this->create_DefaultSearchDiv_Submit()  .
             '</div></td></tr></tbody></table></form>'
             ;
         
@@ -394,36 +362,103 @@ class SLPlus_UI {
     }
 
     /**
-     * Create the HTML for the search results.
+     * Create the map div needed by Google
+     *
      */
-    function create_Results() {
-        $HTML =  
-            "<table id='results_table'>".
-                "<tr id='cm_mapTR' class='slp_map_search_results'>".
-                    "<td width='' valign='top' id='map_sidebar_td'>".
-                        "<div id='map_sidebar' ".
-                            "style='width:{$this->plugin->data['sl_map_width']}{$this->plugin->data['sl_map_width_units']};'" .
-                            ">".
-                            "<div class='text_below_map'>".
-                                get_option('sl_instruction_message',__('Enter Your Address or Zip Code Above.','csa-slplus')) .
-                            "</div>".
-                        "</div>".
-                    "</td>".
-                "</tr>".
-            "</table>"
-            ;
-        return $this->rawDeal($HTML);
+    function create_MapContent() {
+        // FILTER: slp_googlemapdiv
+        return apply_filters('slp_googlemapdiv','<div id="map"></div>');
     }
 
     /**
-     * Create the HTML for the search form.
+     * Create the map tagline for SLP link
      *
-     * HOOK: slp_render_search_form
      */
-    function create_Search() {
-        ob_start();
-        do_action('slp_render_search_form');
-        return $this->rawDeal(ob_get_clean());
+    function create_MapTagline() {
+        return sprintf('<div id="slp_tagline">%s</div>',
+                __('search provided by', 'csa-slplus') . ' ' .
+                "<a href='{$this->plugin->url}' target='_blank'>{$this->plugin->name}</a>"
+            );
+    }
+    /**
+     * Create the HTML for the search results.
+     */
+    function create_Results() {
+        return
+            $this->rawDeal(
+                '<div id="map_sidebar">'.
+                    '<div class="text_below_map">'.
+                        get_option('sl_instruction_message',__('Enter Your Address or Zip Code Above.','csa-slplus')) .
+                    '</div>'.
+                '</div>'
+            );
+    }
+
+    /**
+     * Process shortcodes for search form.
+     */
+    function create_SearchElement($attributes, $content = null) {
+        $this->plugin->debugMP('slp.main','pr','SLPlus_UI:'.__FUNCTION__,$attributes);
+
+        // Pre-process the attributes.
+        //
+        // This allows third party plugins to man-handle the process by
+        // tweaking the attributes.  If, for example, they were to return
+        // array('hard_coded_value','blah blah blah') that is all we would return.
+        //
+        // FILTER: shortcode_slp_searchelement
+        //
+        $attributes = apply_filters('shortcode_slp_searchelement',$attributes);
+
+        foreach ($attributes as $name=>$value) {
+
+            switch (strtolower($name)) {
+
+                // Hard coded entries take precedence.
+                //
+                case 'hard_coded_value':
+                    return $value;
+                    break;
+
+                case 'dropdown_with_label':
+                    switch ($value) {
+                        case 'radius':
+                            return $this->create_DefaultSearchDiv_Radius();
+                            break;
+
+                        default:
+                            break;
+                    }
+                    break;
+
+                case 'input_with_label':
+                    switch ($value) {
+                        case 'address':
+                            return $this->createstring_DefaultSearchDiv_Address();
+                            break;
+
+                        default:
+                            break;
+                    }
+                    break;
+
+                case 'button':
+                    switch ($value) {
+                        case 'submit':
+                            return $this->create_DefaultSearchDiv_Submit();
+                            break;
+
+                        default:
+                            break;
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        return '';
     }
 
     /**
@@ -462,6 +497,7 @@ class SLPlus_UI {
          if (!$this->setPlugin()) {
              return sprintf(__('%s is not ready','csa-slplus'),__('Store Locator Plus','csa-slplus'));
         }
+        $this->plugin->debugMP('slp.main','msg','SLPlus_UI:'.__FUNCTION__);
 
         // Force some plugin data properties
         //
@@ -471,9 +507,10 @@ class SLPlus_UI {
         // Load from plugin object data table first,
         // attributes trump options
         //
-        $this->loadPluginData();
+        $this->plugin->loadPluginData();
 
         // Then load the attributes
+        // FILTER: slp_shortcode_atts
         //
         add_filter('slp_shortcode_atts',array($this,'filter_SetAllowedShortcodes'));
         $attributes =
@@ -492,12 +529,138 @@ class SLPlus_UI {
         $this->plugin->options = array_merge($this->plugin->options, (array) $attributes);
 
         // Localize the CSL Script
-        // .. this is called too late..
-        $this->plugin->debugMP('slp.main','pr','render_shortcode()',$this->plugin->data,__FILE__,__LINE__);
-        $this->localizeCSLScript();
-
-        // Radius Options
+        //  This localize modifies the CSLScript with any shortcode attributes.
         //
+        $this->plugin->debugMP('slp.main','pr','',$this->plugin->data);
+        $this->localizeSLPScript();
+        $this->set_RadiusOptions();
+
+        // Set our flag for later processing
+        // of JavaScript files
+        //
+        if (!defined('SLPLUS_SHORTCODE_RENDERED')) {
+            define('SLPLUS_SHORTCODE_RENDERED',true);
+        }
+        $this->plugin->shortcode_was_rendered = true;
+
+        // Setup the style sheets
+        //
+        $this->setup_stylesheet_for_slplus();
+
+        // Map Actions
+        //
+        add_action('slp_render_map'         ,array($this,'create_DefaultMap'));
+
+        // FILTER: slp_layout
+        //
+        return do_shortcode(apply_filters('slp_layout',$this->plugin->defaults['layout']));
+    }
+
+    /**
+     * Set the allowed shortcode attributes
+     * 
+     * @param mixed[] $atts
+     */
+    function filter_SetAllowedShortcodes($atts) {
+        return array_merge(
+                array(
+                    'initial_radius'     => $this->plugin->options['initial_radius'],
+                    'theme'              => null,                    
+                    ),
+                $atts
+            );
+    }
+
+    /**
+     * Localize the CSL Script
+     *
+     */
+    function localizeSLPScript() {
+        if (!$this->setPlugin()) { return false; }
+        $this->plugin->debugMP('slp.main','msg','SLPlus_UI:'.__FUNCTION__);
+        $this->plugin->loadPluginData();
+
+        $slplus_home_icon_file = str_replace(SLPLUS_ICONURL,SLPLUS_ICONDIR,$this->plugin->data['sl_map_home_icon']);
+        $slplus_end_icon_file  = str_replace(SLPLUS_ICONURL,SLPLUS_ICONDIR,$this->plugin->data['sl_map_end_icon']);
+        $this->plugin->data['home_size'] =(function_exists('getimagesize') && file_exists($slplus_home_icon_file))?
+            getimagesize($slplus_home_icon_file) :
+            array(0 => 20, 1 => 34);
+        $this->plugin->data['end_size']  =(function_exists('getimagesize') && file_exists($slplus_end_icon_file)) ?
+            getimagesize($slplus_end_icon_file)  :
+            array(0 => 20, 1 => 34);
+
+        // The shortcodes we will care about...
+        //
+        add_shortcode('slp_location',array($this,'process_slp_location_Shortcode'));
+        $resultString =
+                do_shortcode(
+                    stripslashes(
+                        esc_textarea(
+                            apply_filters('slp_javascript_results_string',$this->plugin->defaults['resultslayout'])
+                        )
+                    )
+                );
+
+        // Lets get some variables into our script
+        //
+        $scriptData = array(
+            'plugin_url'        => SLPLUS_PLUGINURL,
+            'core_url'          => SLPLUS_COREURL,
+            'disable_scroll'    => (get_option(SLPLUS_PREFIX.'_disable_scrollwheel')==1),
+            'distance_unit'     => esc_attr(get_option('sl_distance_unit'),__('miles', 'csa-slplus')),
+            'load_locations'    => (get_option('sl_load_locations_default','1')==1),
+            'map_3dcontrol'     => (get_option(SLPLUS_PREFIX.'_disable_largemapcontrol3d')==0),
+            'map_country'       => $this->set_MapCenter(),
+            'map_domain'        => get_option('sl_google_map_domain','maps.google.com'),
+            'map_home_icon'     => $this->plugin->data['sl_map_home_icon'],
+            'map_home_sizew'    => $this->plugin->data['home_size'][0],
+            'map_home_sizeh'    => $this->plugin->data['home_size'][1],
+            'map_end_icon'      => $this->plugin->data['sl_map_end_icon'],
+            'map_end_sizew'     => $this->plugin->data['end_size'][0],
+            'map_end_sizeh'     => $this->plugin->data['end_size'][1],
+            'use_sensor'        => (get_option(SLPLUS_PREFIX.'_use_location_sensor',0 )==1),
+            'map_scalectrl'     => (get_option(SLPLUS_PREFIX.'_disable_scalecontrol'  )==0),
+            'map_type'          => get_option('sl_map_type','roadmap'),
+            'map_typectrl'      => (get_option(SLPLUS_PREFIX.'_disable_maptypecontrol')==0),
+            'msg_noresults'     => $this->plugin->settings->get_item('message_noresultsfound','No results found.','_'),
+            'results_string'    => $resultString,
+            'show_tags'         => (get_option(SLPLUS_PREFIX.'_show_tags')==1),
+            'overview_ctrl'     => get_option('sl_map_overview_control',0),
+            'use_email_form'    => (get_option(SLPLUS_PREFIX.'_use_email_form',0)==1),
+            'zoom_level'        => get_option('sl_zoom_level',12),
+            'zoom_tweak'        => get_option('sl_zoom_tweak',1),
+
+            // FILTER: slp_js_options
+            'options'           => apply_filters('slp_js_options',$this->plugin->options)
+            );
+
+        remove_shortcode('slp_location');
+
+        // AJAX URL Stuff
+        //
+        $scriptData['ajaxurl']  = admin_url('admin-ajax.php');
+        $scriptData['nonce']    = wp_create_nonce('em');
+
+        // FILTER: slp_script_data
+        //
+        $scriptData = apply_filters('slp_script_data',$scriptData);
+
+        wp_localize_script('csl_script' ,'slplus'   , $scriptData);
+    }
+
+    /**
+     * Set the starting point for the center of the map.
+     *
+     * Uses country by default.
+     */
+    function set_MapCenter() {
+        return apply_filters('slp_map_center',esc_attr(get_option('sl_google_map_country','United States')));
+    }
+
+    /**
+     * Set the plugin data radius options.
+     */
+    function set_RadiusOptions() {
         $radiusSelections = get_option('sl_map_radii','1,5,10,(25),50,100,200,500');
 
         // Hide Radius, set the only (or default) radius
@@ -511,195 +674,13 @@ class SLPlus_UI {
         // Build Pulldown
         } else {
             $radiusSelectionArray  = explode(",",$radiusSelections);
+            $this->plugin->data['radius_options'] = '';
             foreach ($radiusSelectionArray as $radius) {
                 $selected=(preg_match('/\(.*\)/', $radius))? " selected='selected' " : "" ;
                 $radius=preg_replace('/[^0-9]/', '', $radius);
                 $this->plugin->data['radius_options'].=
-                        "<option value='$radius' $selected>$radius ".get_option('sl_distance_unit','mi')."</option>";
+                        "<option value='$radius' $selected>$radius ".get_option('sl_distance_unit',__('miles', 'csa-slplus'))."</option>";
             }
-        }
-
-        // Set our flag for later processing
-        // of JavaScript files
-        //
-        if (!defined('SLPLUS_SHORTCODE_RENDERED')) {
-            define('SLPLUS_SHORTCODE_RENDERED',true);
-        }
-        $this->parent->shortcode_was_rendered = true;
-
-        // Setup the style sheets
-        //
-        $this->setup_stylesheet_for_slplus();
-
-        // Search / Map Actions
-        //
-        add_action('slp_render_search_form' ,array($this,'create_DefaultSearchForm'));
-        add_action('slp_render_map'         ,array($this,'create_DefaultMap'));
-
-        return
-            '<div id="sl_div">' .
-                $this->create_Search() .
-                $this->create_Map().
-                $this->create_Results().
-            '</div>'
-            ;
-    }
-
-    /**
-     * Set the allowed shortcode attributes
-     * 
-     * @param mixed[] $atts
-     */
-    function filter_SetAllowedShortcodes($atts) {
-        return array_merge(
-                array(
-                    'initial_radius'     => $this->plugin->options['initial_radius'],
-                    ),
-                $atts
-            );
-    }
-
-    /**
-     * Load Plugin Data once.
-     * 
-     * Call $this->plugin->helper->loadPluginData(); to force a reload.
-     */
-    function loadPluginData() {
-        if (!$this->plugin->pluginDataLoaded) {
-            $this->plugin->helper->loadPluginData();
-            $this->plugin->pluginDataLoaded = true;
-        }
-    }
-
-    /**
-     * Localize the CSL Script
-     *
-     */
-    function localizeCSLScript() {
-        if (!$this->setPlugin()) { return false; }
-        $this->loadPluginData();
-
-        $slplus_home_icon_file = str_replace(SLPLUS_ICONURL,SLPLUS_ICONDIR,$this->plugin->data['sl_map_home_icon']);
-        $slplus_end_icon_file  = str_replace(SLPLUS_ICONURL,SLPLUS_ICONDIR,$this->plugin->data['sl_map_end_icon']);
-        $this->plugin->data['home_size'] =(function_exists('getimagesize') && file_exists($slplus_home_icon_file))?
-            getimagesize($slplus_home_icon_file) :
-            array(0 => 20, 1 => 34);
-        $this->plugin->data['end_size']  =(function_exists('getimagesize') && file_exists($slplus_end_icon_file)) ?
-            getimagesize($slplus_end_icon_file)  :
-            array(0 => 20, 1 => 34);
-
-        $this->setResultsString();
-
-
-        // Lets get some variables into our script
-        //
-        $scriptData = array(
-            'plugin_url'        => SLPLUS_PLUGINURL,
-            'core_url'          => SLPLUS_COREURL,
-            'debug_mode'        => (get_option(SLPLUS_PREFIX.'-debugging') == 'on'),
-            'disable_scroll'    => (get_option(SLPLUS_PREFIX.'_disable_scrollwheel')==1),
-            'disable_dir'       => (get_option(SLPLUS_PREFIX.'_disable_initialdirectory' )==1),
-            'distance_unit'     => esc_attr(get_option('sl_distance_unit'),'miles'),
-            'load_locations'    => (get_option('sl_load_locations_default','1')==1),
-            'label_directions'  => esc_attr(get_option(SLPLUS_PREFIX.'_label_directions',   'Directions')  ),
-            'label_fax'         => esc_attr(get_option(SLPLUS_PREFIX.'_label_fax',          'Fax: ')         ),
-            'label_hours'       => esc_attr(get_option(SLPLUS_PREFIX.'_label_hours',        'Hours: ')       ),
-            'label_phone'       => esc_attr(get_option(SLPLUS_PREFIX.'_label_phone',        'Phone: ')       ),
-            'map_3dcontrol'     => (get_option(SLPLUS_PREFIX.'_disable_largemapcontrol3d')==0),
-            'map_country'       => $this->set_MapCenter(),
-            'map_domain'        => get_option('sl_google_map_domain','maps.google.com'),
-            'map_home_icon'     => $this->plugin->data['sl_map_home_icon'],
-            'map_home_sizew'    => $this->plugin->data['home_size'][0],
-            'map_home_sizeh'    => $this->plugin->data['home_size'][1],
-            'map_end_icon'      => $this->plugin->data['sl_map_end_icon'],
-            'map_end_sizew'     => $this->plugin->data['end_size'][0],
-            'map_end_sizeh'     => $this->plugin->data['end_size'][1],
-            'use_sensor'        => (get_option(SLPLUS_PREFIX."_use_location_sensor",0)==1),
-            'map_scalectrl'     => (get_option(SLPLUS_PREFIX.'_disable_scalecontrol')==0),
-            'map_type'          => get_option('sl_map_type','roadmap'),
-            'map_typectrl'      => (get_option(SLPLUS_PREFIX.'_disable_maptypecontrol')==0),
-            'msg_noresults'     => $this->plugin->settings->get_item('message_noresultsfound','No results found.','_'),
-            'results_string'    => apply_filters('slp_javascript_results_string',$this->resultsString),
-            'show_tags'         => (get_option(SLPLUS_PREFIX.'_show_tags')==1),
-            'options'           => $this->plugin->options,
-            'overview_ctrl'     => get_option('sl_map_overview_control',0),
-            'use_email_form'    => (get_option(SLPLUS_PREFIX.'_use_email_form',0)==1),
-            'website_label'     => esc_attr(get_option('sl_website_label','Website')),
-            'zoom_level'        => get_option('sl_zoom_level',12),
-            'zoom_tweak'        => get_option('sl_zoom_tweak',1)
-            );
-
-        $this->plugin->debugMP('slp.main','pr','UI.localizeCSLScript() scriptData',$scriptData,__FILE__,__LINE__);
-
-        wp_localize_script('csl_script','slplus',apply_filters('slp_script_data',$scriptData));
-        wp_localize_script('csl_script','csl_ajax',array('ajaxurl' => admin_url('admin-ajax.php'), 'nonce' => wp_create_nonce('em')));
-    }
-
-    /**
-     * Set the starting point for the center of the map.
-     *
-     * Uses country by default.
-     */
-    function set_MapCenter() {
-        return apply_filters('slp_map_center',esc_attr(get_option('sl_google_map_country','United States')));
-    }
-
-
-    /**
-     * Set the default results string for stuff under the map.
-     *
-     * Results Output String In JavaScript Format
-     *
-     *              {0} aMarker.name,
-     *              {1} parseFloat(aMarker.distance).toFixed(1),
-     *              {2} slplus.distance_unit,
-     *              {3} street,
-     *              {4} street2,
-     *              {5} city_state_zip,
-     *              {6} thePhone,
-     *              {7} theFax,
-     *              {8} link,
-     *              {9} elink,
-     *              {10} slplus.map_domain,
-     *              {11} encodeURIComponent(this.address),
-     *              {12} encodeURIComponent(address),
-     *              {13} slplus.label_directions,
-     *              {14} tagInfo,
-     *              {15} aMarker.id
-     *              {16} aMarker.country
-     *              {17} aMarker.hours
-     *
-     */
-    function setResultsString() {
-        if ($this->resultsString === '') {
-            $this->resultsString =
-                '<center>' .
-                    '<table width="96%" cellpadding="4px" cellspacing="0" class="searchResultsTable" id="slp_results_table_{15}">'  .
-                        '<tr class="slp_results_row" id="slp_location_{15}">'  .
-                            '<td class="results_row_left_column" id="slp_left_cell_{15}">'.
-                                '<span class="location_name">{0}</span>'.
-                                '<span class="location_distance"><br/>{1} {2}</span>'.
-                            '</td>'  .
-                            '<td class="results_row_center_column" id="slp_center_cell_{15}">' .
-                                '<span class="slp_result_address slp_result_street">{3}</span>'.
-                                '<span class="slp_result_address slp_result_street2">{4}</span>' .
-                                '<span class="slp_result_address slp_result_citystatezip">{5}</span>' .
-                                '<span class="slp_result_address slp_result_country">{16}</span>'.
-                                '<span class="slp_result_address slp_result_phone">{6}</span>' .
-                                '<span class="slp_result_address slp_result_fax">{7}</span>' .
-                            '</td>'   .
-                            '<td class="results_row_right_column" id="slp_right_cell_{15}">' .
-                                '<span class="slp_result_contact slp_result_website">{8}</span>' .
-                                '<span class="slp_result_contact slp_result_email">{9}</span>' .
-                                '<span class="slp_result_contact slp_result_directions"><a href="http://{10}' .
-                                '/maps?saddr={11}'  .
-                                '&daddr={12}'  .
-                                '" target="_blank" class="storelocatorlink">{13}</a></span>'.
-                                '<span class="slp_result_contact slp_result_tags">{14}</span>'.
-                            '</td>'  .
-                        '</tr>'  .
-                    '</table>'  .
-                '</center>';
         }
     }
 
@@ -708,13 +689,114 @@ class SLPlus_UI {
      */
     function setup_stylesheet_for_slplus() {
         if (!$this->setPlugin()) { return false; }
-        $this->parent->helper->loadPluginData();
-        if (!isset($this->parent->data['theme']) || empty($this->parent->data['theme'])) {
-            $this->parent->data['theme'] = 'default';
+        $this->plugin->helper->loadPluginData();
+        if (!isset($this->plugin->data['theme']) || empty($this->plugin->data['theme'])) {
+            $this->plugin->data['theme'] = 'default';
         }
-        $this->parent->themes->assign_user_stylesheet($this->parent->data['theme'],true);
+        $this->plugin->themes->assign_user_stylesheet($this->plugin->data['theme'],true);
     }
 
+    /**
+     * Process the [slp_location] shortcode in a results string.
+     *
+     * Attributes for [slp_location] include:
+     *     <field name> where field name is a locations table field.
+     *
+     * Usage: [slp_location country]
+     *
+     * @param array[] $atts
+     */
+    function process_slp_location_Shortcode($atts) {
+        $this->plugin->debugMP('slp.main','msg','SLPlus_UI:'.__FUNCTION__);
+
+        // Set prefix/suffix based on modifiers
+        $content = '';
+        $prefix = '';
+        $suffix = '';
+        $fldName = '';
+
+        // Process the keys
+        //
+        if (is_array($atts)) {
+            foreach ($atts as $key=>$value) {
+                $key=strtolower($key);
+                $value = preg_replace('/\W/','',htmlspecialchars_decode($value));
+                switch ($key) {
+
+                    // First attribute : field name placeholders
+                    //
+                    case '0':
+                        $fldName = strtolower($value);
+                        switch ($fldName):
+                            case 'distance_1'     :
+                                $content = '{1}';
+                                break;
+                            case 'distance_unit'  :
+                                $content =  '{2}';
+                                break;
+                            case 'city_state_zip' :
+                                $content =  '{5}';
+                                break;
+                            case 'web_link'       :
+                                $content =  '{8}';
+                                break;
+                            case 'email_link'     :
+                                $content =  '{9}';
+                                break;
+                            case 'map_domain'     :
+                                $content =  '{10}';
+                                break;
+                            case 'search_address' :
+                                $content =  '{11}';
+                                break;
+                            case 'location_address':
+                                $content =  '{12}';
+                                break;
+                            case 'directions_text':
+                                $content =  '{13}';
+                                break;
+                            case 'pro_tags':
+                                $content =  '{14}';
+                                break;
+                            case 'id':
+                                $content =  '{15}';
+                                break;
+                            case 'hours':
+                                $content =  '{17}';
+                                break;
+                            default:
+                                $content =  '{18.'.$fldName.'}';
+                                break;
+                        endswitch;
+                        break;
+
+                    // Wrapper attribute
+                    //
+                    case 'wrap':
+                        switch ($value) {
+                            case 'fullspan':
+                                $prefix = '<span class="results_line location_[fldName]">';
+                                $suffix = '</span>';
+                                break;
+                            default:
+                                break;
+                        }
+
+                    default:
+                        break;
+                }
+            }
+        }
+        
+        // If prefix has [fldName] placeholder and $fldName is set,
+        // do the replacement.
+        //
+        if (!empty($fldName) && strpos($prefix,'[fldName]')) {
+            $prefix = str_replace('[fldName]',$fldName,$prefix);
+        }
+
+        return $this->createstring_WrapText($content,$prefix,$suffix);
+    }
 
     /**
      * Strip all \r\n from the template to try to "unbreak" Theme Forest themes.
@@ -767,74 +849,6 @@ class SLPlus_UI {
             print "<option value='$clean_selection' ";
             print (preg_match('#\(.*\)#', $selection))? " selected='selected' " : '';
             print ">$clean_selection</option>";
-        }
-        print "</select>";
-    }
-}
-
-/**
- * Store Locator Plus map page div output manager.
- *
- * @package StoreLocatorPlus\UI\DivManager
- * @author Lance Cleveland <lance@charlestonsw.com>
- * @copyright 2012-2013 Charleston Software Associates, LLC
- */
-class SLPlus_UI_DivManager {
-
-    function DivStr($str1, $str2) {
-        if ($str2 == '') {
-            return $str1;
-        } else {
-            return $str1.$str2;
-        }
-    }
-
-    function buildDiv10($blank) {
-        global $slp_thishtml_10;
-        $content = $this->DivStr($blank,$slp_thishtml_10);
-        $slp_thishtml_10 = '';
-        return $content;
-    }
-
-    function buildDiv20($blank) {
-        global $slp_thishtml_20;
-        $content = $this->DivStr($blank,$slp_thishtml_20);
-        $slp_thishtml_20 = '';
-        return $content;
-    }
-
-    function buildDiv30($blank) {
-        global $slp_thishtml_30;
-        $content = $this->DivStr($blank,$slp_thishtml_30);
-        $slp_thishtml_30 = '';
-        return $content;
-    }
-
-    function buildDiv60($blank) {
-        global $slp_thishtml_60;
-        $content = $this->DivStr($blank,$slp_thishtml_60);
-        $slp_thishtml_60 = '';
-        return $content;
-    }
-
-    function buildDiv70($blank) {
-        global $slp_thishtml_70;
-        $content = $this->DivStr($blank,$slp_thishtml_70);
-        $slp_thishtml_70 = '';
-        return $content;
-    }
-
-    function buildDiv80($blank) {
-        global $slp_thishtml_80;
-        $content = $this->DivStr($blank,$slp_thishtml_80);
-        $slp_thishtml_80 = '';
-        return $content;
-    }
-
-    function buildDiv90($blank) {
-        global $slp_thishtml_90;
-        $content = $this->DivStr($blank,$slp_thishtml_90);
-        $slp_thishtml_90 = '';
-        return $content;
+        }print "</select>";
     }
 }

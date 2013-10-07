@@ -10,6 +10,35 @@
  */
 class wpCSL_themes__slplus {
 
+    //-------------------------------------
+    // Properties
+    //-------------------------------------
+
+    /**
+     * The theme CSS directory, absolute.
+     * 
+     * @var string $css_dir
+     */
+    public $css_dir;
+
+    /**
+     * The theme CSS URL, absolute.
+     *
+     * @var string $css_url
+     */
+    public $css_url;
+
+    /**
+     * The CSS and name space prefix for the plugin.
+     * 
+     * @var string $prefix
+     */
+    public $prefix;
+
+    //-------------------------------------
+    // Methods
+    //-------------------------------------
+
     /**
      * Theme constructor.
      * 
@@ -19,7 +48,6 @@ class wpCSL_themes__slplus {
         
         // Properties with default values
         //
-        $this->columns = 1;                 // How many columns/row in our display output.
         $this->css_dir = 'css/';
         
         foreach ($params as $name => $value) {            
@@ -32,18 +60,18 @@ class wpCSL_themes__slplus {
         $this->css_url = $this->plugin_url . '/'. $this->css_dir;
         $this->css_dir = $this->plugin_path . $this->css_dir;       
     }
-    
-    /*-------------------------------------
-     * method: add_admin_settings
-     *
+
+    /**
      * Add the theme settings to the admin panel.
      *
+     * @param mixed[] $settingsObj
+     * @return type
      */
-    function add_admin_settings($settingsObj = null) {        
+    function add_admin_settings($settingsObj = null,$section=null,$group=null) {
         if ($settingsObj == null) {
             $settingsObj = $this->settings;
         }
-        
+
         // Exit is directory does not exist
         //
         if (!is_dir($this->css_dir)) {
@@ -53,12 +81,12 @@ class wpCSL_themes__slplus {
                     sprintf(
                         __('The theme directory:<br/>%s<br/>is missing. ' .
                             'Create it to enable themes and get rid of this message.',
-                            WPCSL__slplus__VERSION
-                            ),                        
+                            WPCSL__slplusVERSION
+                            ),
                         $this->css_dir
                         )
                 );
-            }            
+            }
             return;
         }
 
@@ -68,25 +96,25 @@ class wpCSL_themes__slplus {
         $themeArray = get_option($this->prefix.'-theme_array');
         if (count($themeArray, COUNT_RECURSIVE) < 2) {
             $themeArray = array('Default' => 'default');
-        } 
-    
+        }
+
         // Check for theme files
         //
         $lastNewThemeDate = get_option($this->prefix.'-theme_lastupdated');
         $newEntry = array();
         if ($dh = opendir($this->css_dir)) {
             while (($file = readdir($dh)) !== false) {
-                
+
                 // If not a hidden file
                 //
-                if (!preg_match('/^\./',$file)) {                
+                if (!preg_match('/^\./',$file)) {
                     $thisFileModTime = filemtime($this->css_dir.$file);
-                    
+
                     // We have a new theme file possibly...
                     //
                     if ($thisFileModTime > $lastNewThemeDate) {
                         $newEntry = $this->GetThemeInfo($this->css_dir.$file);
-                        $themeArray = array_merge($themeArray, array($newEntry['label'] => $newEntry['file']));                                        
+                        $themeArray = array_merge($themeArray, array($newEntry['label'] => $newEntry['file']));
                         update_option($this->prefix.'-theme_lastupdated', $thisFileModTime);
                     }
                 }
@@ -102,8 +130,8 @@ class wpCSL_themes__slplus {
         // Delete the default theme if we have specific ones
         //
         $resetDefault = false;
-        
-        if ((count($themeArray, COUNT_RECURSIVE) > 1) && isset($themeArray['Default'])){        
+
+        if ((count($themeArray, COUNT_RECURSIVE) > 1) && isset($themeArray['Default'])){
             unset($themeArray['Default']);
             $resetDefault = true;
         }
@@ -112,23 +140,94 @@ class wpCSL_themes__slplus {
         //
         if ((count($newEntry, COUNT_RECURSIVE) > 1) || $resetDefault) {
             update_option($this->prefix.'-theme_array',$themeArray);
-        }  
-                            
-        $settingsObj->add_item(
-            __('Display Settings',WPCSL__slplus__VERSION), 
-            __('Select A Theme',WPCSL__slplus__VERSION),   
-            'theme',    
-            'list', 
-            false, 
-            __('How should the plugin UI elements look?  Check the <a href="'.
-                $this->support_url.
-                '" target="CSA">documentation</a> for more info.',
-                WPCSL__slplus__VERSION),
-            $themeArray,
-            'default'
-        );        
-    }    
-    
+        }
+
+        if ($section==null) { $section = 'Display Settings'; }
+        $settingsObj->add_itemToGroup(
+                array(
+                    'section'       => $section                                     ,
+                    'group'         => $group                                       ,
+                    'label'         => __('Select A Theme','wpcsl')                 ,
+                    'setting'       => 'theme'                                      ,
+                    'type'          => 'list'                                       ,
+                    'custom'        => $themeArray                                  ,
+                    'value'         => 'default'                                    ,
+                    'description'   =>
+                        __('How should the plugin UI elements look?  Check the <a href="'.
+                            $this->support_url.
+                            '" target="CSA">documentation</a> for more info.',
+                            'wpcsl'),
+                    'onChange'      =>
+                        "jQuery('.theme_details').hide();" .
+                        "jQuery('#'+jQuery('option:selected',this).val()+'_details').show();"
+                )
+            );
+
+        // Add Theme Details Divs
+        //
+        $settingsObj->add_ItemToGroup(
+                array(
+                    'section'       => $section     ,
+                    'group'         => $group       ,
+                    'setting'       => 'themedesc'  ,
+                    'type'          => 'subheader'  ,
+                    'label'         => '',
+                    'description'   => $this->setupThemeDetails($themeArray),
+                    'show_label'    => false
+                ));
+    }
+
+    /**
+     * Create the details divs for the SLP themes.
+     *
+     * @param mixed[] $themeArray
+     * @return string the div HTML
+     */
+    function setupThemeDetails($themeArray) {
+        $HTML = '';
+        $newDetails = false;
+        $themeDetails = get_option($this->prefix.'-theme_details');
+
+        // Check all our themes for details
+        //
+        foreach ($themeArray as $label=>$themeFile) {
+
+            // No details? Read from the CSS File.
+            //
+            if (
+                !isset($themeDetails[$themeFile]) || empty($themeDetails[$themeFile]) ||
+                !isset($themeDetails[$themeFile]['label']) || empty($themeDetails[$themeFile]['label'])
+                ) {
+                $themeData = $this->GetThemeInfo($this->css_dir.$themeFile.'.css');
+                $themeData['fqfname'] = $this->css_dir.$themeFile.'.css';
+                $themeDetails[$themeFile] = $themeData;
+                $newDetails = true;
+            }
+
+            $HTML .=
+                "<div id='{$themeFile}_details' class='theme_details'>" .
+                    (!empty($themeDetails[$themeFile]['description'])?
+                        $themeDetails[$themeFile]['description']:
+                        __('No description has been set for this theme.','wpcsl')
+                    ) .
+                    (!empty($themeDetails[$themeFile]['add-ons'])?
+                        '<br/><br/>' .
+                        __('Works best with the following add-on packs enabled: ','wpcsl') .
+                        $themeDetails[$themeFile]['add-ons']:
+                        ''
+                    ) .
+                '</div>'
+                ;
+        }
+        
+        // If we read new details, go save to disk.
+        //
+        if ($newDetails) {
+            update_option($this->prefix.'-theme_details',$themeDetails);
+        }
+
+        return $HTML;
+    }
 
     /**
      * Extract the label & key from a CSS file header.
@@ -140,10 +239,10 @@ class wpCSL_themes__slplus {
         $dataBack = array();
         if ($filename != '') {
            $default_headers = array(
-                'columns' => 'columns',
-                'description' => 'description',
-                'file' => 'file',
-                'label' => 'label',
+                'add-ons'       => 'add-ons',
+                'description'   => 'description',
+                'file'          => 'file',
+                'label'         => 'label',
                );
 
            $dataBack = get_file_data($filename,$default_headers,'');
@@ -160,9 +259,6 @@ class wpCSL_themes__slplus {
       */
      function configure_theme($themeFile) {
         $newEntry = $this->GetThemeInfo($this->css_dir.$themeFile);
-        if (isset($this->products)) {
-            $this->products->columns = (isset($newEntry['columns'])?$newEntry['columns']:0);
-        }
      }
      
 

@@ -132,26 +132,28 @@ class SLPlus_Activate {
         }         
 
         //set up google maps v3
-        $old_option = get_option('sl_map_type');
-        $new_option = 'roadmap';
-        switch ($old_option) {
-            case 'G_NORMAL_MAP':
-                $new_option = 'roadmap';
-                break;
-            case 'G_SATELLITE_MAP':
-                $new_option = 'satellite';
-                break;
-            case 'G_HYBRID_MAP':
-                $new_option = 'hybrid';
-                break;
-            case 'G_PHYSICAL_MAP':
-                $new_option = 'terrain';
-                break;
-            default:
-                $new_option = 'roadmap';
-                break;
+        $old_option = get_option('sl_map_type','roadmap');
+        if (!in_array($old_option,array('roadmap','satellite','hybrid','terrain'))) {
+            $new_option = 'roadmap';
+            switch ($old_option) {
+                case 'G_NORMAL_MAP':
+                    $new_option = 'roadmap';
+                    break;
+                case 'G_SATELLITE_MAP':
+                    $new_option = 'satellite';
+                    break;
+                case 'G_HYBRID_MAP':
+                    $new_option = 'hybrid';
+                    break;
+                case 'G_PHYSICAL_MAP':
+                    $new_option = 'terrain';
+                    break;
+                default:
+                    $new_option = 'roadmap';
+                    break;
+            }
+            update_option('sl_map_type', $new_option);
         }
-        update_option('sl_map_type', $new_option);
     }
 
     /*************************************
@@ -274,9 +276,9 @@ class SLPlus_Activate {
     function drop_index($idxName) {
         global $wpdb;
         if ($wpdb->get_var('SELECT count(*) FROM information_schema.statistics '.
-                "WHERE table_name='".$this->plugin->database['table']."' " .
+                "WHERE table_name='".$this->plugin->database->info['table']."' " .
                     "AND index_name='{$idxName}'" ) > 0) {
-            $wpdb->query("DROP INDEX {$idxName} ON " . $this->plugin->database['table']);
+            $wpdb->query("DROP INDEX {$idxName} ON " . $this->plugin->database->info['table']);
         }
     }
 
@@ -422,7 +424,7 @@ class SLPlus_Activate {
      * @return null
      */
     function get_addonpack_metadata() {
-        require_once(SLPLUS_PLUGINDIR . '/include/storelocatorplus-updates_class.php');
+        require_once(SLPLUS_PLUGINDIR . '/include/class.updates.php');
         $this->Updates = new SLPlus_Updates(
                 $this->plugin->version,
                 $this->plugin->updater_url,

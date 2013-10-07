@@ -13,28 +13,33 @@ class wpCSL_settings__slplus {
     //-----------------------------
     // Properties
     //-----------------------------
+    
+    /**
+     * Skip the save button.
+     * 
+     * @var boolean $no_save_button
+     */
+    public $no_save_button = false;
 
     /**
      * The main WPCSL object.
      * 
      * @var wpCSL_plugin__slplus
      */
-    private $parent;
+    public $parent;
 
     /**
      * The settings page "containers" for settings.
      * 
-     * @var \wpCSL_settings_section__slplus $sections
+     * @var \wpCSL_settings_section__slplus[] $sections
      */
     private $sections;
 
-
-    /**------------------------------------
-     ** method: __construct
-     **
-     ** Overload of the default class instantiation.
-     **
-     **/
+    /**
+     * Instantiate a settings object.
+     *
+     * @param mixed[] $params
+     */
     function __construct($params) {
         // Default Params
         //
@@ -42,7 +47,6 @@ class wpCSL_settings__slplus {
         $this->form_action = 'options.php';     // The form action for this page
         $this->save_text =__('Save Changes',WPCSL__slplus__VERSION);
         $this->css_prefix = '';
-        $this->has_packages = false;
         
         // Passed Params
         //
@@ -50,9 +54,14 @@ class wpCSL_settings__slplus {
             $this->$name = $value;
         }
 
-        // Only do this if we are on admin panel
+        // Set helper for help on settings panel items.
         //
-        if (isset($this->parent) && (is_admin() && $this->parent->isOurAdminPage)) {
+        $this->helper =
+                (isset($this->parent) && isset($this->parent->helper))  ?
+                $this->parent->helper                                   :
+                new wpCSL_helper__slplus(array('parent'=>$this)) ;
+
+        if (isset($this->parent) && $this->parent->check_isOurAdminPage()){
             add_action('admin_init',array($this,'create_InfoSection'));
         }
     }
@@ -72,6 +81,34 @@ class wpCSL_settings__slplus {
         );
     }
 
+     /**
+      * Create a settings group box.
+      *
+      * @param string $slug - a unique div ID (slug) for this group box, required.  alpha_numeric _ and - only please.
+      * @param string $header - the text to put in the header
+      * @param string $intro - the text to put directly under the header
+      * @param string $content - the settings HTML
+      * @return string HTML
+      */
+     function create_SettingsGroup($slug=null, $header='Settings',$intro='',$content='') {
+         if ($slug === null) { return ''; }
+
+         $content =
+            "<div class='section_column wpcsl-group' id='wpcsl_settings_group-$slug'>" .
+                "<h2>$header</h2>" .
+                (($intro != '')     ?
+                    "<div class='section_column_intro' id='wpcsl_settings_group_intro-$slug'>$intro</div>" :
+                    ''
+                ).
+                (($content != '')   ?
+                    "<div class='section_column_content' id='wpcsl_settings_group_content-$slug'>$content</div>" :
+                    ''
+                ).
+            '</div>'
+            ;
+         return apply_filters('wpcsl_settings_group-'.$slug,$content);
+     }
+
     /**
      * Create the Environment Panel
      *
@@ -79,9 +116,9 @@ class wpCSL_settings__slplus {
      */
     function create_EnvironmentPanel() {
         if (!isset($this->parent))          { return; }
-        if (!is_admin())                    { return; }
         if (!$this->parent->isOurAdminPage) { return; }
         if (!$this->render_csl_blocks)      { return; }
+        if (!is_admin())                    { return; }
 
         global $wpdb;
         $this->csl_php_modules = get_loaded_extensions();
@@ -134,9 +171,6 @@ class wpCSL_settings__slplus {
      */
      function get_broadcast() {
          $content = '';
-         
-        // HTTP Handler is not set fail the license check
-        //
         if (isset($this->http_handler)) { 
             if ($this->broadcast_url != '') {
                 $result = $this->http_handler->request( 
@@ -209,7 +243,7 @@ class wpCSL_settings__slplus {
                     $params,
                     array('plugin_url'  => $this->plugin_url,
                           'css_prefix'  => $this->css_prefix,
-                          'settingsObj' => $this            ,
+                          'parent'      => $this            ,
                             )
                 )
             );
@@ -271,14 +305,22 @@ class wpCSL_settings__slplus {
      * @param mixed $value (default: null), the value to use if not using get_option
      * @param boolean $disabled (default: false), show the input but keep it disabled
      * @param string $onChange onChange JavaScript trigger
+     * @param string $group group heading
+     * @param string $separator separator for prefix
+     * @param boolean $show_label if true prepend output with label
+     * @param boolean $use_prefix if true prepend name with prefix and separator
      * @return null
      */
     function add_item($section, $display_name, $name, $type = 'text',
             $required = false, $description = null, $custom = null,
-            $value = null, $disabled = false, $onChange = ''
+            $value = null, $disabled = false, $onChange = '', $group = null,
+            $separator = '-',$show_label=true,$use_prefix = true
             ) {
 
-        $name = $this->prefix .'-'.$name;
+        // Prefix not provided, prepend name with this->prefix and separator
+        if ($use_prefix) {
+            $name = $this->prefix .$separator.$name;
+        }
 
         //** Need to check the section exists first. **/
         if (!isset($this->sections[$section])) {
@@ -293,19 +335,23 @@ class wpCSL_settings__slplus {
             }
             return;
         }
+
         $this->sections[$section]->add_item(
             array(
-                'prefix' => $this->prefix,
-                'css_prefix' => $this->css_prefix,
-                'display_name' => $display_name,
-                'name' => $name,
-                'type' => $type,
-                'required' => $required,
-                'description' => $description,
-                'custom' => $custom,
-                'value' => $value,
-                'disabled' => $disabled,
-                'onChange' => $onChange
+                'parent'        => $this,
+                'prefix'        => $this->prefix,
+                'css_prefix'    => $this->css_prefix,
+                'display_name'  => $display_name,
+                'name'          => $name,
+                'type'          => $type,
+                'required'      => $required,
+                'description'   => $description,
+                'custom'        => $custom,
+                'value'         => $value,
+                'disabled'      => $disabled,
+                'onChange'      => $onChange,
+                'group'         => $group,
+                'show_label'    => $show_label
             )
         );
 
@@ -321,6 +367,33 @@ class wpCSL_settings__slplus {
                 }
             }
         }
+    }
+
+    /**
+     * Same as add_item but uses named params.
+     *
+     * 'type' => textarea, text, checkbox, dropdown, slider, list, submit_button, ..custom..
+     * 
+     * @param mixed $params
+     */
+    function add_ItemToGroup($params) {
+        $defaultSettingName = wp_generate_password(8,false);
+        $this->add_item(
+                isset($params['section']    )?$params['section']            :'Settings',
+                isset($params['label']      )?$params['label']              :'Setting '.$defaultSettingName,
+                isset($params['setting']    )?$params['setting']            : $defaultSettingName,              // item->name
+                isset($params['type']       )?$params['type']               : 'text',
+                isset($params['required']   )?$params['required']           : false,
+                isset($params['description'])?$params['description']        : null,
+                isset($params['custom']     )?$params['custom']             : null,                             // item->custom
+                isset($params['value']      )?$params['value']              : null,
+                isset($params['disabled']   )?$params['disabled']           : false,
+                isset($params['onChange']   )?$params['onChange']           : '',                               // item->onChange
+                isset($params['group']      )?$params['group']              : null,
+                isset($params['separator']  )?$params['separator']          : '-',
+                isset($params['show_label'] )?$params['show_label']         : true,
+                isset($params['use_prefix'] )?$params['use_prefix']         : true
+                );
     }
 
     /**
@@ -402,9 +475,6 @@ class wpCSL_settings__slplus {
      **
      **/
     function register() {
-        if (isset($this->license)) {
-            $this->license->initialize_options();
-        }
         if (isset($this->cache)) {
             $this->cache->initialize_options();
         }
@@ -478,7 +548,7 @@ class wpCSL_settings__slplus {
             }
         }
         print '</ul>';
-        print '<div class="navsave">'.$this->generate_save_button_string().'</div>';
+        if (!$this->no_save_button) { print '<div class="navsave">'.$this->generate_save_button_string().'</div>'; }
         print '</div>';
 
 
@@ -490,16 +560,6 @@ class wpCSL_settings__slplus {
         //
         if ($this->render_csl_blocks && isset($this->sections['Plugin News'])) {
             $this->sections['Plugin News']->display();
-        }
-
-        // Only render license section if plugin settings
-        // asks for it
-        if (isset($this->license_section_title) && (isset($this->sections[$this->license_section_title]))) {
-            if ($this->has_packages || !$this->no_license) {
-                $this->sections[$this->license_section_title]->header();
-                $this->show_plugin_settings();
-                $this->sections[$this->license_section_title]->footer();
-            }
         }
 
         // Draw each settings section as defined in the plugin config file
@@ -532,271 +592,6 @@ class wpCSL_settings__slplus {
         $this->footer();
     }
 
-    /**------------------------------------
-     ** method: show_plugin_settings
-     **
-     ** This is a function specifically for showing the licensing stuff,
-     ** should probably be moved over to the licensing submodule
-     **/
-    function show_plugin_settings() {
-       $theLicenseKey = get_option($this->prefix.'-license_key');
-
-       $license_ok =(  (get_option($this->prefix.'-purchased') == '1')   &&
-                      ($theLicenseKey != '')
-                          );
-
-        // If has_packages is true that means we have an unlicensed product
-        // so we don't want to show the license box
-        //
-        if (!$this->has_packages) {
-            $content = "<tr valign=\"top\">\n";
-            $content .= "  <th  class=\"input_label\" scope=\"row\">License Key *</th>";
-            $content .= "    <td>";
-            $content .= "<input type=\"text\"".
-                ((!$license_ok) ?
-                    "name=\"{$this->prefix}-license_key\"" :
-                    '') .
-                " value=\"". $theLicenseKey .
-                "\"". ($license_ok?'disabled' :'') .
-                " />";
-
-            if ($license_ok) {
-                $content .=
-                    '<p class="slp_license_info">'.$theLicenseKey.'</p>'        .
-                    '<input type="hidden" name="'.$this->prefix.'-license_key" '.
-                        'value="'.$theLicenseKey.'"/>'                          .
-                    '<span><img src="'. $this->plugin_url                       .
-                              '/images/check_green.png" border="0" '            .
-                              'style="padding-left: 5px;" '                     .
-                              'alt="License validated!" '                       .
-                              'title="License validated!"></span>'              ;
-            }
-
-            $content .= (!$license_ok) ?
-                ('<span><font color="red"><br/>Without a license key, this plugin will ' .
-                    'only function for Admins</font></span>') :
-                '';
-            $content .= (!(get_option($this->prefix.'-license_key') == '') &&
-                        !get_option($this->prefix.'-purchased')) ?
-                ('<span><font color="red">Your license key could not be verified</font></span>') :
-                '';
-
-            if (!$license_ok) {
-                $content .= $this->MakePayPalButton($this->paypal_button_id);
-            }
-
-            $content .= '<div id="prodsku">sku: ';
-            if (isset($this->sku) && ($this->sku != '')) {
-                $content .= $this->sku;
-            } else {
-                $content .= 'not set';
-            }
-            $content .= '</div>';
-
-
-
-        // If we are using has_packages we need to seed our content string
-        //
-        } else {
-            $content ='';
-        }
-
-        // List Packages
-        //
-        $content .= $this->ListThePackages($license_ok);
-
-        // If the main product or packages show the license box
-        // Then show a save button here
-        //
-       $license_ok =(  (get_option($this->prefix.'-purchased') == '1')   &&
-                      (get_option($this->prefix.'-license_key') != '')
-                          );
-        if (!$license_ok) {
-            $content .= '<tr><td colspan="2">' .
-                $this->generate_save_button_string().
-                '</td></tr>';
-        }
-
-        echo $content;
-    }
-
-
-    /**
-     * Create the package license otuput for the admin interface.
-     */
-    function ListThePackages($license_ok = false) {
-        $content = '';
-        if (isset($this->parent->license->packages) && ($this->parent->license->packages > 0)) {
-            $content .= '<tr valign="top"><td class="optionpack" colspan="2">';
-            foreach ($this->parent->license->packages as $package) {
-                $content .= '<div class="optionpack_box" id="pack_'.$package->sku.'">';
-                $content .= '<div class="optionpack_name">'.$package->name.'</div>';
-                $content .= '<div class="optionpack_info">'.$this->EnabledOrBuymeString($license_ok,$package).'</div>';
-                $content .= '</div>';
-            }
-            $content .= '</td></tr>';
-        }
-        return $content;
-    }
-    
-    /**------------------------------------
-     ** method: EnabledOrBuymeString
-     **
-     **/
-    function EnabledOrBuymeString($mainlicenseOK, $package) {
-        $content = '';
-
-        // If the main product is licensed or we want to force
-        // the packages list, show the checkbox or buy/validate button.
-        //
-        if ($mainlicenseOK || $this->has_packages) {
-
-            // Check if package is licensed now.
-            //
-
-            $package->isenabled = (
-
-                    $package->force_enabled ||
-
-                    $package->parent->check_license_key(
-                        $package->sku,
-                        true,
-                        ($this->has_packages ? $package->license_key : ''),
-                        true // Force a server check
-                    )
-                );
-
-            $installed_version = (isset($package->force_version)?
-                        $package->force_version :
-                        get_option($this->prefix.'-'.$package->sku.'-version')
-                        );
-            $latest_version = get_option($this->prefix.'-'.$package->sku.'-latest-version');
-
-            // Upgrade is available if the current package version < the latest available
-            // -AND- the current package version is has been set
-            $upgrade_available = (
-                        ($installed_version != '') &&
-                        (   get_option($this->prefix.'-'.$package->sku.'-version-numeric') <
-                            get_option($this->prefix.'-'.$package->sku.'-latest-version-numeric')
-                        )
-                    );
-
-            // Package is enabled, just show that
-            //
-            if ($package->isenabled && ($package->license_key != '')) {
-                $packString = $package->name . ' is enabled!';
-
-                $content .=
-                    '<div class="csl_info_package_license">'.
-                    (($package->sku!='')?'SKU: '.$package->sku.'<br/>':'').
-                    (($package->license_key!='')?'License Key: '.$package->license_key.'<br/>':'').
-                    '<img src="'. $this->plugin_url .
-                    '/images/check_green.png" border="0" style="padding-left: 5px;" ' .
-                    'alt="'.$packString.'" title="'.$packString.'">' .
-                    (($installed_version != '')?'Version: ' . $installed_version : '') .
-                    '</div>'.
-                    '<input type="hidden" '.
-                            'name="'.$package->lk_option_name.'" '.
-                            ' value="'.$package->license_key.'" '.
-                            ' />';
-                    ;
-
-                // OK - the license was verified, this package is valid
-                // but the mainlicense was not set...
-                // go set it.
-                if (!$mainlicenseOK && ($package->license_key != '')) {
-                    update_option($this->prefix.'-purchased',true);
-                    update_option($this->prefix.'-license_key',$package->license_key);
-                }
-
-            // Package not enabled, show buy button
-            //
-            }
-
-            if (!$package->isenabled || $upgrade_available || ($package->license_key == '')) {
-                if ($package->isenabled && $upgrade_available) {
-                    $content .= '<b>There is a new version available: ' . $latest_version . '</b><br>';
-                    $content .= $this->MakePayPalButton($package->paypal_upgrade_button_id, $package->help_text);
-                    $content .= "Once you've made your purchase, the plugin will automatically re-validate with the latest version.";
-                } else {
-                    $content .= $this->MakePayPalButton($package->paypal_button_id, $package->help_text);
-                }
-
-                // Show license entry box if we need to
-                //
-                if (
-                        ($this->has_packages && !$upgrade_available) ||
-                        ($package->license_key == '')
-                    ){
-                    $content .= "{$package->sku} Activation Key: <input type='text' ".
-                            "name='{$package->lk_option_name}'" .
-                            " value='' ".
-                            " />";
-                    if ($package->license_key != '') {
-                        $content .=
-                            "<br/><span class='csl_info'>".
-                            "The key {$package->license_key} could not be validated.".
-                            "</span>";
-                    }
-                }
-            }
-
-        // Main product not licensed, tell them.
-        //
-        } else {
-            $content .= '<span>You must license the product before you can purchase add-on packages.</span>';
-        }
-
-        return $content;
-    }
-
-    /**------------------------------------
-     ** method: MakePayPalButton
-     **
-     **/
-    function MakePayPalButton($buttonID, $helptext = '') {
-        
-        // Set default help text
-        //
-        if ($helptext == '') {
-            $helptext = 'Your license key is emailed within minutes of your purchase.<br/>'. 
-                  'If you do not receive your license check your spam '.
-                     'folder then <a href="http://www.charlestonsw.com/mindsetcontact-us/" '.
-                     'target="csa">Contact us</a>.';
-        }
-        
-        // PayPal Form String
-        $ppFormString = 
-                    "<form action='https://www.paypal.com/cgi-bin/webscr' target='_blank' method='post'>".
-                    "<input type='hidden' name='cmd' value='_s-xclick'>".
-                    "<input type='hidden' name='hosted_button_id' value='$buttonID'>".
-                    "<input type='hidden' name='on0' value='Main License Key'>".
-                    "<input type='hidden' name='os0' value='" . get_option($this->prefix.'-license_key') . "'>".                    "<input type='image' src='https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif' border='0' name='submit' alt='Lobby says buy more sprockets!'>".
-                    "<img alt='' border='0' src='https://www.paypalobjects.com/en_US/i/scr/pixel.gif' width='1' height='1'>".                    
-                    "</form>"
-                ;
-        
-        // Modal Form Helpers
-        //
-        // 
-        //
-        $modalFormSetup = '
-            <script>
-            jQuery(function() {
-                jQuery( "#ppform_iframe_'.$buttonID.'" ).contents().find("body").html("'.$ppFormString.'");                                
-            });
-            </script>        
-            ';
-            
-        // Build paypal form and send it back
-        //
-        return $modalFormSetup .
-        '<div><iframe height="70" scrolling="no" id="ppform_iframe_'.$buttonID.'" name="ppform_iframe_'.$buttonID.'" src=""></iframe></div>'.                
-                '<div>'.
-                  '<p>'.$helptext.'</p>'.
-                '</div>';
-    }
-    
     /**
      * Output the settings page header HTML
      */
@@ -824,6 +619,7 @@ class wpCSL_settings__slplus {
      **
      **/
     function generate_save_button_string() {
+        if ($this->no_save_button) { return ''; }
         return sprintf('<input type="submit" class="button-primary" value="%s" />',
          $this->save_text
          );                    
@@ -857,6 +653,103 @@ class wpCSL_settings__slplus {
 
 }
 
+if (class_exists('wpCSL_settings_group') == false) {
+
+    /**
+     * Manage sections of admin settings pages.
+     *
+     * @package wpCSL\Settings\Group
+     * @author Lance Cleveland <lance@charlestonsw.com>
+     * @copyright 2013 Charleston Software Associates, LLC
+     *
+     * @property string $header the header
+     * @property string $intro the starting text
+     * @property \wpCSL_plugin__slplus parent wpCSL object
+     * @property string $slug the slug
+     */
+    class wpCSL_settings_group {
+        public $css_prefix;
+        public $intro;
+        public $items;
+        public $header;
+        public $parent;
+        public $plugin_url;
+        public $slug;
+
+        /**
+         * Instantiate a group.
+         *
+         * @param mixed[] $params
+         */
+        function __construct($params) {
+            foreach ($params as $name => $value) {
+                $this->$name = $value;
+            }
+            $this->parent->debugMP('wpcsl.settings','msg',
+                    "Created group {$params['slug']} in section {$this->parent->name}.",
+                    '',NULL,NULL,true);
+        }
+
+        /**
+         * Add an item to the group.
+         * 
+         * @param mixed[] $params
+         */
+        function add_item($params) {
+            $this->parent->debugMP('wpcsl.settings','msg','',"settings group added {$params['name']} item",NULL,NULL,true);
+            $this->items[] = new wpCSL_settings_item__slplus(
+                array_merge(
+                    $params,
+                    array(
+                          'parent'     => $this->parent,
+                          'plugin_url' => $this->plugin_url,
+                          'css_prefix' => $this->css_prefix,
+                          )
+                )
+            );
+        }
+
+        /**
+         * Render a group.
+         */
+        function render_Group() {
+            $this->parent->debugMP('wpcsl.settings','msg','',
+                    "render_Group {$this->slug}",
+                    NULL,NULL,true);
+            $this->render_Header();
+            if (isset($this->items)) {
+                foreach ($this->items as $item) {
+                    $item->display();
+                }
+            }
+            $this->render_Footer();
+        }
+
+        /**
+         * Output the group footer.
+         */
+        function render_Footer() {
+            print '</div>';
+        }
+
+        /**
+         * Output the group header.
+         */
+        function render_Header() {
+            print
+                "<div class='section_column wpcsl-group' id='wpcsl_settings_group-{$this->slug}'>" .
+                "<h2>{$this->header}</h2>" .
+                (
+                    ($this->intro != '')                                                                                   ?
+                    "<div class='section_column_intro' id='wpcsl_settings_group_intro-{$this->slug}'>{$this->intro}</div>" :
+                    ''
+                )
+                ;
+        }
+    }
+
+}
+
 /**
  * Manage sections of admin settings pages.
  *
@@ -872,68 +765,68 @@ class wpCSL_settings_section__slplus {
 
     /**
      *
-     * @var boolean auto
+     * @var boolean $auto
      */
     public $auto = true;
 
     /**
      * The ID to go in the div.
      * 
-     * @var string div_id
+     * @var string $div_id
      */
     public $div_id;
 
     /**
      * True if the first rendered section on the panel.
      * 
-     * @var boolean first
+     * @var boolean $first
      */
     public $first = false;
 
     /**
      *
-     * @var boolean headerbar
+     * @var boolean $headerbar
      */
     private $headerbar = true;
 
     /**
      *
-     * @var boolean innerdiv
+     * @var boolean $innerdiv
      */
     private $innerdiv = true;
 
     /**
      * True if this is a top-of-page menu.
      * 
-     * @var boolean is_topmenu
+     * @var boolean $is_topmenu
      */
     public $is_topmenu = false;
 
     /**
      * The collection of section items that are in this section.
      * 
-     * @var \wpCSL_settings_item__slplus[] $items
+     * @var \wpCSL_settings_group $groups
      */
-    private $items;
+    private $groups;
 
     /**
      * The title of the section.
      *
-     * @var string name
+     * @var string $name
      */
     public $name;
 
     /**
-     * The settings object this section is attached to.
+     * The main settings parent.
      *
-     * @var \wpCSL_settings__PLUGIN_NAME_
+     * @var \wpCSL_settings__slplus $parent
      */
-    private $settingsObj;
+    public $parent;
 
     /**
      * Start "open" or collapsed.
      *
-     * @var boolean start_collapsed
+     * @var boolean $start_collapsed
      */
     private $start_collapsed = false;
 
@@ -950,26 +843,42 @@ class wpCSL_settings_section__slplus {
         foreach ($params as $name => $value) {
             $this->$name = $value;
         }
+        $this->parent->debugMP('wpcsl.settings','msg',"Created section {$params['name']}",'',NULL,NULL,true);
     }
 
-    /**------------------------------------
-     ** Class: wpCSL_settings_section
-     ** Method: add_item
-     **
-     **/
-    function add_item($params) {
-        $this->items[] = new wpCSL_settings_item__slplus(
-            array_merge(
-                $params,
-                array('plugin_url' => $this->plugin_url,
-                      'css_prefix' => $this->css_prefix,
-                      )
-            )
-        );
+    /**
+     * Add an item to a section.
+     * 
+     * @param string $params
+     */
+    function add_item($params) {        
+        
+        // Manage Groups
+        //
+        if (empty($params['group'])) { $params['group'] = 'Settings'; }
+        $groupSlug = strtolower(str_replace(' ','_',$params['group']));
+        if (!isset($this->groups[$groupSlug])) {
+            $this->groups[$groupSlug] =
+                    new wpCSL_settings_group(
+                                array(
+                                    'parent'    => $this->parent,
+                                    'slug'      => $groupSlug,
+                                    'header'    => $params['group'],
+                                    'intro'     => isset($this->description)?$this->description:''
+                                )
+                            );
+            $this->description = '';
+        }
+
+        $this->groups[$groupSlug]->add_item($params);
     }
 
-    /**------------------------------------
-     **/
+    /**
+     * Register the setting.
+     *
+     * @param mixed[] $prefix
+     * @return mixed false if not items
+     */
     function register($prefix) {
         if (!isset($this->items)) return false;
         foreach ($this->items as $item) {
@@ -984,13 +893,11 @@ class wpCSL_settings_section__slplus {
      */
     function display() {
         $this->header();
-
-        if (isset($this->items)) {
-            foreach ($this->items as $item) {
-                $item->display();
+        if (isset($this->groups)) {
+            foreach ($this->groups as $group) {
+                $group->render_Group();
             }
         }
-
         $this->footer();
     }
 
@@ -1015,17 +922,12 @@ class wpCSL_settings_section__slplus {
         if ($this->innerdiv) {
             echo "<div class='inside section' " .
                     (isset($this->start_collapsed) && $this->start_collapsed ? 'style="display:none;"' : '') .
-                    ">".
-                 "<div class='section_description'>"
-                 ;
-         }
-         
-         echo $this->description;
-
+                    ">";
+            if (!empty($this->description)) { print "<div class='section_description'>"; }
+         }         
+         if (!empty($this->description)) { echo $this->description; }
          if ($this->innerdiv) {         
-            echo '</div>'.
-                 '<table class="form-table" style="margin-top: 0pt;">'
-                 ;
+            if (!empty($this->description)) { echo '</div>'; }
          }
     }
 
@@ -1053,11 +955,59 @@ class wpCSL_settings_section__slplus {
 /**
  * This class manages individual settings on the admin panel settings page.
  *
+ * Items go inside sections.
+ *
  * @package wpCSL\Settings\Item
  * @author Lance Cleveland <lance@charlestonsw.com>
  * @copyright 2013 Charleston Software Associates, LLC
  */
 class wpCSL_settings_item__slplus {
+
+
+    //-------------------------
+    // Properties
+    //-------------------------
+
+    /**
+     * The name attribute for an input item.
+     *
+     * @var string $name
+     */
+    private $name;
+
+    /**
+     * The onChange JavaScript for an input item.
+     * 
+     * @var string $onChange
+     */
+    private $onChange;
+
+    /**
+     * What comes after the label during rendering.
+     *
+     * @var string $post_label
+     */
+    private $post_label = ':';
+
+    /**
+     * Show a label for this entry when rendered?
+     *
+     * @var boolean $show_label
+     */
+    private $show_label = true;
+
+    /**
+     * What type of item is it?
+     *
+     * Values: checkbox, custom (default), dropdown/list, slider, subheader, submitbutton, text, textarea
+     *
+     * @var string $type
+     */
+    private $type = 'custom';
+
+    //-------------------------
+    // Methods
+    //-------------------------
 
     /**
      * Constructor.
@@ -1070,26 +1020,35 @@ class wpCSL_settings_item__slplus {
         }
     }
 
-    /**------------------------------------
-     **/
+    /**
+     *
+     * @param string $prefix
+     */
     function register($prefix) {
         register_setting( $prefix.'-settings', $this->name );
     }
 
     /**
      * Render the item to the page.
+     *
      */
     function display() {
-        $this->header();
-        if (isset($this->value)) {
-            $showThis = $this->value;
-        } else {
-            $showThis = get_option($this->name);
+
+        $showThis = htmlspecialchars((isset($this->value)?$this->value:get_option($this->name)));
+
+        echo '<div class="wpcsl-setting">';
+
+        // Show label wrapper.
+        //
+        $disabledClass = ($this->disabled?'disabled':'');
+        echo "<div class='wpcsl-input wpcsl-{$this->type} {$disabledClass}'>";
+        if ($this->show_label) {
+            $requiredMark  = ($this->required?' * ':'');
+            echo "<label for='{$this->name}'>{$this->display_name}{$requiredMark}{$this->post_label}</label>";
         }
-        $showThis = htmlspecialchars($showThis);
-        
-        echo '<div class="'.$this->css_prefix.'-input'.($this->disabled?'-disabled':'').'">';
-        
+
+        // Type Processing
+        //
         switch ($this->type) {
             case 'textarea':
                 echo '<textarea name="'.$this->name.'" '.
@@ -1105,13 +1064,13 @@ class wpCSL_settings_item__slplus {
                     'value="'. $showThis .'" />';
                 break;
 
-            case "checkbox":
+            case 'checkbox':
                 echo '<input type="checkbox" name="'.$this->name.'" '.
                     ($this->disabled?'disabled="disabled" ':'').                
                     ($showThis?' checked' : '').'>';
                 break;
 
-            case "slider":
+            case 'slider':
                 $setting = $this->name;
                 $label   = '';
                 $checked = ($showThis ? 'checked' : '');
@@ -1136,25 +1095,55 @@ class wpCSL_settings_item__slplus {
                     ;
                 break;
 
-            case "list":
-                echo $this->create_option_list();
+            // TYPE: subheader
+            // Displays  the label (display_name) in a H3 tag with the description in a paragraph below.
+            //
+            case 'subheader':
+                if (!empty($this->display_name)) { echo "<h3>{$this->display_name}</h3>"; }
+                echo "<p class='wpcsl_subheader_description' id='{$this->name}_p'>{$this->description}</p>";
+                $this->description = null;
+                break;
+
+            // TYPE: dropdown
+            //
+            case 'dropdown':
+                echo
+                    $this->parent->helper->createstring_DropDownMenu(
+                        array(
+                            'id'        => $this->name,
+                            'name'      => $this->name,
+                            'items'     => $this->custom,
+                            'onchange'  => $this->onChange,
+                        )
+                     );
+                break;
+
+            // TYPE: list
+            //
+            case 'list':
+                echo $this->createstring_List();
                 break;
                 
-            case "submit_button":
+            // TYPE: submit_button
+            //
+            case 'submit_button':
                 echo '<input class="button-primary" type="submit" value="'.$showThis.'">';
                 break;                
 
+            // TYPE: custom
+            //
             default:
                 echo $this->custom;
                 break;
 
         }
+
+        // Close show label wrapper.
+        //
         echo '</div>';
 
-        if ($this->description != null) {
-            $this->display_description_icon();
-        }
-
+        // Required Icon
+        //
         if ($this->required) {
             echo ((get_option($this->name) == '') ?
                 '<div class="'.$this->css_prefix.'-reqbox">'.
@@ -1164,36 +1153,44 @@ class wpCSL_settings_item__slplus {
                 : ''
                 );
         }
-        
+
+        // Help text via description.
+        //
         if ($this->description != null) {
-            $this->display_description_text();
+            print $this->parent->helper->CreateHelpDiv($this->name,$this->description);
         }
-        
-        $this->footer();
+
+        // Close the div.
+        //
+        echo '</div>';
     }
 
-    /**------------------------------------
+    /**
+     * Create the drop down for the 'list' input types.
+     *
      * If $type is 'list' then $custom is a hash used to make a <select>
      * drop-down representing the setting.  This function returns a
      * string with the markup for that list.
      *
      * The selected value will use the get_option() on the name of the drop down,
      * with a default being allowed in the $value parameter.
+     *
+     * @return string
      */
-    function create_option_list() {
+    function createstring_List() {
         $content =
             "<select class='csl_select' ".
                 "name='".$this->name."' ".
-                "onChange='".$this->onChange."' ".
+                'onChange="'.$this->onChange.'" '.
                 "/>"
                 ;
+        $selectMatch = get_option($this->name, $this->value);
 
         foreach ($this->custom as $key => $value) {
-            if (get_option($this->name, $this->value) === $value) {
+            if ($selectMatch === $value) {
                 $content .= "<option class='csl_option' value=\"$value\" " .
                     "selected=\"selected\">$key</option>\n";
-            }
-            else {
+            } else {
                 $content .= "<option class='csl_option'  value=\"$value\">$key</option>\n";
             }
         }
@@ -1201,39 +1198,5 @@ class wpCSL_settings_item__slplus {
         $content .= "</select>\n";
 
         return $content;
-    }
-
-    /**------------------------------------
-     **/
-    function header() {
-        echo "<tr><th class='input_label".($this->disabled?'-disabled':'')."' scope='row'>" .
-        "<a name='" .
-        strtolower(strtr($this->display_name, ' ', '_')).
-            "'></a>{$this->display_name}".
-            (($this->required) ? ' *' : '').
-            '</th><td>';
-
-    }
-
-    /**------------------------------------
-     **/
-    function footer() {
-        echo '</td></tr>';
-    }
-
-    /**------------------------------------
-     **/
-    function display_description_icon() {
-        echo '<div class="'.$this->css_prefix.'-moreicon" title="click for more info"><br/></div>';        
-    }    
-    
-    /**------------------------------------
-     **/
-    function display_description_text() {
-        echo 
-            '<div class="'.$this->css_prefix.'-moretext" id="'.$this->name.'-moretext">' .
-                $this->description .
-            '</div>'
-            ;
     }
 }

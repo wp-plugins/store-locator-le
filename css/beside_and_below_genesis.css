@@ -1,0 +1,246 @@
+/**
+ ** file: beside_and_below_genesis.css
+ ** label: Beside And Below Genesis
+ ** description: Search On Left Side, Map and Results on Right, Genesis Compatible
+ ** add-ons: slp-pro
+ ** csl-slplus-layout: <div id="sl_div"><div id="sl_leftcol"><div class="searchbox">[slp_search]</div><div class="legendbox"><h1>Services</h1>[tagalong legend]</div></div><div id="sl_rightcol">[slp_map][slp_results]</div></div>
+ ** csl-slplus_slpes[searchlayout]: <div class="searchbox"><div class="searchheader">Search</div><div class="searchcontent">[slp_search_element dropdown_with_label="city"][slp_search_element dropdown_with_label="state"][slp_search_element dropdown_with_label="country"][slp_search_element input_with_label="name"][slp_search_element input_with_label="address"][slp_search_element dropdown_with_label="radius"][slp_search_element dropdown_with_label="category"][slp_search_element button="submit"]</div></div>
+ ** csl-slplus_slper[resultslayout]: <div id="slp_results_[slp_location id]" class="results_entry"><div class="results_row_left_column"   id="slp_left_cell_[slp_location id]"   >[slp_location name wrap="fullspan"]<span class="results_line"><span class="location_distance_label">Distance:</span>[slp_location distance_1] [slp_location distance_unit]</span>[slp_location iconarray wrap="fullspan"]</div><div class="results_row_right_column"  id="slp_right_cell_[slp_location id]"  >[slp_location web_link wrap="fullspan"]<span class="results_line slp_result_directions"><a href="http://[slp_location map_domain]/maps?saddr=[slp_location search_address]&daddr=[slp_location location_address]" target="_blank" class="storelocatorlink">[slp_location directions_text]</a></span></div></div>
+ ** csl-slplus_show_search_by_name: on
+ ** csl-slplus-TAGALONG-show_cats_on_search-checkbox: on
+ ** csl-slplus-TAGALONG-show_icon_array-checkbox: on
+ ** csl-slplus-TAGALONG-show_option_all: Select a service
+ ** csl-slplus-TAGALONG-label_category: Services
+ **/
+
+/*---------------------
+ * Entire SLPlus UI
+ *---------------------*/
+
+/*---------------------
+ * Left Column
+ *---------------------*/
+div#sl_leftcol {
+    display: inline-block;
+    padding-right: 12px;
+    vertical-align: top;
+    width: 32%
+}
+div.searchbox {
+    padding-bottom: 12px;
+}
+
+/*---------------------
+ * Right Column
+ *---------------------*/
+div#sl_rightcol {
+    display: inline-block;
+    vertical-align: top;
+    width: 66%;
+}
+
+/*---------------------
+ * Map
+ *
+ * Since we only use these div IDs when a static image is present
+ * we start with the image shown and map hidden.  JQuery will flip
+ * this for us.
+ *
+ *---------------------*/
+
+/* Don't let WordPress Mangle Map Images */
+div#map img {
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+    max-width: none;
+    opacity: 1.0;
+    visibility: visible;
+}
+/* Hide the default Google bubble shadow */
+div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
+    display:none;
+}
+
+
+/*---------------------
+ * Search Form
+ * Base + Widget Pack
+ *---------------------*/
+
+/* Search Box */
+#searchForm .searchbox {
+    border: solid 1px #DDD;
+}
+
+#searchForm .searchheader {
+    background-color: #333333;
+    border-bottom: 1px solid #DDDDDD;
+    border-left: 1px solid #333333;
+    border-top: 1px solid #333333;
+    color: white;
+    font-weight: 600;
+    padding: 6px 24px;
+}
+#searchForm .searchcontent {
+    padding: 12px;
+}
+
+/* Search Elements */
+#searchForm .search_item {
+    padding-top: 6px;
+}
+#searchForm LABEL {
+    font-weight: 700;
+}
+#searchForm INPUT,
+#searchForm SELECT
+{
+    padding: 6px;
+    line-height: 1em;
+}
+#searchForm INPUT [type="text"] {
+    box-sizing: border-box;
+    width: -moz-available;   
+}
+
+/* Radius Line */
+#searchForm div#addy_in_radius {
+    margin-top: 6px;
+    text-align: right;
+}
+#searchForm #addy_in_radius LABEL {
+    font-weight: normal;
+    padding-right: 3px;
+}
+#searchForm SELECT#radiusSelect {
+    width: 40%;
+}
+
+/* Find Locations Button */
+#searchForm DIV#radius_in_submit {
+    margin-top: 6px;
+    text-align: right;
+}
+#searchForm #radius_in_submit INPUT#addressSubmit {
+
+    /* Background */
+    background-color: #DDD;
+    background: -moz-linear-gradient(top, #F4F4F4 0%, #EEE 40%, #F4F4F4 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#F4F4F4), color-stop(40%,#EEE), color-stop(100%,#F4F4F4)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #F4F4F4 0%,#EEE 40%,#F4F4F4 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #F4F4F4 0%,#EEE 40%,#F4F4F4 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #F4F4F4 0%,#EEE 40%,#F4F4F4 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #F4F4F4 0%,#EEE 40%,#F4F4F4 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#F4F4F4', endColorstr='#EEE',GradientType=0 ); /* IE6-9 */
+
+    border: solid 2px #DDD;
+    color: #444;
+    font-weight: 700;
+    padding: 6px 9px;
+}
+
+/*---------------------
+ * Legend Box
+ *---------------------*/
+div.legendbox {
+    border: solid 1px #DDD;
+    padding: 6px;
+    text-align:right;
+}
+div.legendbox A {
+    border: none;
+}
+div.legendbox H1 {
+    font-size: 1.5em;
+    text-align: left;
+    padding: 6px 24px;
+}
+div.legendbox div.tagalong_legend {
+    padding-right: 6px;
+}
+div.legendbox span.tagalong_legend_icon {
+    display: inline-block;
+    min-height: 30px;
+    line-height: 2em;
+    padding-bottom: 12px;
+    text-align: center;
+    vertical-align: middle;
+    width: 45%;
+}
+
+/*---------------------
+ * Results
+ *---------------------*/
+.results_wrapper {
+    padding-bottom: 18px;
+}
+.results_entry {
+    cursor: pointer;
+    display: inline-block;
+    width: 100%;
+}
+.results_entry:hover {
+    background-color: #F2F2F2;
+}
+.results_row_left_column {
+    display: inline-block;
+    text-align: left;
+    vertical-align: top;
+    width: 60%;
+}
+.results_row_right_column {
+    display: inline-block;
+    text-align: right;
+    vertical-align: top;
+    width: 35%;
+}
+
+/* Result Lines */
+.results_line {
+    display: block;
+    width: 100%;
+}
+.results_line.location_name {
+    font-size: 1.15em;
+    font-weight: bold;
+    text-decoration: underline;
+}
+.results_line.location_iconarray A {
+    border-bottom: none;
+}
+
+/* Tagalong result icons */
+.results_line.location_iconarray > a {
+    display: inline-block;
+    height: auto;
+    width: auto;
+}
+#tagalong_category_selector {
+    display: block;
+    height: 2em;
+    width: 100%;
+}
+#tagalong_category_selector .category_selector.parent {
+    display: block;
+    float: left;
+}
+#tagalong_category_selector .category_selector.child {
+    display: none;
+    float: left;
+}
+#tagalong_legend {
+    border: 3px double #444444;
+    padding: 12px;
+}
+#tagalong_legend .legend_text {
+    display: inline-block;
+    margin-left: 6px;
+    margin-right: 20px;
+    vertical-align: middle;
+}
+#tagalong_legend .tagalong_legend_icon {
+    display: inline-block;
+    margin-bottom: 12px;
+    min-width: 190px;
+}

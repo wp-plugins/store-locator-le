@@ -1,8 +1,7 @@
 /**
  ** file: csl-slplus-noresultstable.css
  ** label: Hidden Results Table
- **
- ** Hide the results table
+ ** description: Hide the results table
  **
  **/
 
@@ -209,6 +208,15 @@ div#map {
     width: auto !important;
 }
 
+/* Don't let WordPress Mangle Map Images */
+div#map img {
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+    max-width: none;
+    opacity: 1.0;
+    visibility: visible;
+}
 /* Hide the default Google bubble shadow */
 div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
     display:none;
@@ -224,6 +232,8 @@ div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
 div#slp_tagline {
     text-align: right;
     padding-right: 3px;
+    width: 100%;
+
 }
 div.entry-content div#sl_div #map_table IMG {
 	max-width:none;
@@ -262,36 +272,32 @@ div.entry-content div#sl_div #map_table IMG {
 	border: solid 2px black;
 }
 
-#sl_div #map img {
-    visibility: visible;    
-}
+
 
 table#map_table td {
     border: none;
 }
-/* Hide the default Google bubble shadow */
-div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
-    display:none;
-}
-/***** Popup Info Window for Specific Location *****/
-#sl_info_bubble { 
-	padding:10px; 
-	max-width:300px; 
-	font-size:11px; 
-	font-family:Arial;
-	text-align:justify;
-	line-height:normal;
+
+/**
+ * Map Info Bubble
+ **/
+#sl_info_bubble {
+    font-size: xx-small;
+    font-weight: normal;
 }
 #sl_info_bubble img{
-	width:250px; 
+	width:250px;
 	max-height:200px;
 	border:0px;
 }
 #sl_info_bubble .your_location_label{
-	font-weight:bold;
+	font-weight: normal;
 }
 #sl_info_bubble .location_detail_label{
-	font-weight:bold;
+	font-weight: normal;
+}
+#sl_info_bubble .location_detail_hours{
+	white-space: pre-wrap;
 }
 
 
@@ -363,4 +369,41 @@ span.slp_checkbox_entry {
 
 span.slp_checkbox_entry input[type="checkbox"] {
     vertical-align: text-bottom;
+}
+
+
+
+/* Tagalong result icons */
+.results_line.location_iconarray > a {
+    display: inline-block;
+    height: auto;
+    width: auto;
+}
+#tagalong_category_selector {
+    display: block;
+    height: 2em;
+    width: 100%;
+}
+#tagalong_category_selector .category_selector.parent {
+    display: block;
+    float: left;
+}
+#tagalong_category_selector .category_selector.child {
+    display: none;
+    float: left;
+}
+#tagalong_legend {
+    border: none;
+    padding: 12px;
+}
+#tagalong_legend .legend_text {
+    display: inline-block;
+    margin-left: 6px;
+    margin-right: 20px;
+    vertical-align: middle;
+}
+#tagalong_legend .tagalong_legend_icon {
+    display: inline-block;
+    margin-bottom: 12px;
+    min-width: 190px;
 }
