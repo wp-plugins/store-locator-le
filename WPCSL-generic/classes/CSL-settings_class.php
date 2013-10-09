@@ -45,7 +45,7 @@ class wpCSL_settings__slplus {
         //
         $this->render_csl_blocks = true;        // Display the CSL info blocks
         $this->form_action = 'options.php';     // The form action for this page
-        $this->save_text =__('Save Changes',WPCSL__slplus__VERSION);
+        $this->save_text =__('Save Changes','wpcsl');
         $this->css_prefix = '';
         
         // Passed Params
@@ -328,7 +328,7 @@ class wpCSL_settings__slplus {
                 $this->notifications->add_notice(
                     3,
                     sprintf(
-                       __('Program Error: section <em>%s</em> not defined.',WPCSL__slplus__VERSION),
+                       __('Program Error: section <em>%s</em> not defined.','wpcsl'),
                        $section
                        )
                 );

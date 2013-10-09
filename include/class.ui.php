@@ -375,10 +375,12 @@ class SLPlus_UI {
      *
      */
     function create_MapTagline() {
-        return sprintf('<div id="slp_tagline">%s</div>',
-                __('search provided by', 'csa-slplus') . ' ' .
-                "<a href='{$this->plugin->url}' target='_blank'>{$this->plugin->name}</a>"
-            );
+        return '<div id="slp_tagline">' . 
+                sprintf(
+                        __('search provided by %s', 'csa-slplus'),
+                        "<a href='{$this->plugin->url}' target='_blank'>{$this->plugin->name}</a>"
+                        ) .
+                '</div>';
     }
     /**
      * Create the HTML for the search results.

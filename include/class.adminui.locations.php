@@ -543,10 +543,10 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                 // Bad address provided or nothing found on Google end.
                 //
                 case 'ZERO_RESULTS':
-                    $errorMessage .= sprintf(__("Address #%d : %s <font color=red>failed to geocode</font>.<br/>\n", 'csa-slplus'),
+                    $errorMessage .= sprintf(__("Address #%d : %s <font color=red>failed to geocode</font>.", 'csa-slplus'),
                                         $this->plugin->currentLocation->id,
                                         $address
-                                        );
+                                        ) . "<br />\n";
                     $errorMessage .= sprintf(__("Unknown Address! Received status %s.", 'csa-slplus'),$json->{'status'})."\n<br>";
                     $this->delay = SLPlus_AdminUI_Locations::StartingDelay;
                     break;
@@ -893,6 +893,12 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
             print "<div class='updated fade'>".
                     $_POST['store-'] ." " .
                     __("Added Successfully",'csa-slplus') . '.</div>';
+        } else {
+            $this->plugin->debugMP('slp.managelocs','pr','location_Add no POST[store-]',$locationData,NULL,NULL,true);
+            print "<div class='updated fade'>".
+                    __('Location not added.','csa-slplus') . ' ' .
+                    __('The add location form on your server is not rendering properly.','csa-slplus') . 
+                    '</div>';
         }
     }
 

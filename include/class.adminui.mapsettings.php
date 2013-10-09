@@ -480,7 +480,7 @@ class SLPlus_AdminUI_MapSettings {
                     __('Hong Kong'     ,'csa-slplus')=>'maps.google.com.hk',
                     __('Hungary'       ,'csa-slplus')=>'maps.google.hu',
                     __('India'         ,'csa-slplus')=>'maps.google.co.in',
-                    __('Phillipines'   ,'csa-slplus')=>'maps.google.com.ph',
+                    __('Philippines'   ,'csa-slplus')=>'maps.google.com.ph',
                     __('Republic of Ireland','csa-slplus')=>'maps.google.ie',
                     __('Israel'        ,'csa-slplus')=>'maps.google.co.il',
                     __('Italy'         ,'csa-slplus')=>'maps.google.it',
@@ -535,7 +535,7 @@ class SLPlus_AdminUI_MapSettings {
                         __('Filipino'                 ,'csa-slplus') => 'fil',
                         __('French'                   ,'csa-slplus') => 'fr',
                         __('Galician'                 ,'csa-slplus') => 'gl',
-                        __('Gujaratia'                ,'csa-slplus') => 'gu',
+                        __('Gujarati'                 ,'csa-slplus') => 'gu',
                         __('Hindi'                    ,'csa-slplus') => 'hi',
                         __('Croatian'                 ,'csa-slplus') => 'hr',
                         __('Hungarian'                ,'csa-slplus') => 'hu',
@@ -548,7 +548,7 @@ class SLPlus_AdminUI_MapSettings {
                         __('Lithuanian'               ,'csa-slplus') => 'lt',
                         __('Latvian'                  ,'csa-slplus') => 'lv',
                         __('Malayalam'                ,'csa-slplus') => 'ml',
-                        __('Marthi'                   ,'csa-slplus') => 'mr',
+                        __('Marathi'                  ,'csa-slplus') => 'mr',
                         __('Dutch'                    ,'csa-slplus') => 'nl',
                         __('Norwegian'                ,'csa-slplus') => 'no',
                         __('Polish'                   ,'csa-slplus') => 'pl',
@@ -561,7 +561,7 @@ class SLPlus_AdminUI_MapSettings {
                         __('Slovenian'                ,'csa-slplus') => 'sl',
                         __('Serbian'                  ,'csa-slplus') => 'sr',
                         __('Swedish'                  ,'csa-slplus') => 'sv',
-                        __('Taglog'                   ,'csa-slplus') => 'tl',
+                        __('Tagalog'                  ,'csa-slplus') => 'tl',
                         __('Tamil'                    ,'csa-slplus') => 'ta',
                         __('Telugu'                   ,'csa-slplus') => 'te',
                         __('Thai'                     ,'csa-slplus') => 'th',
@@ -766,35 +766,35 @@ class SLPlus_AdminUI_MapSettings {
                    __('Website URL', 'csa-slplus'),
                    __('Search results text for the website link.','csa-slplus'),
                    '',
-                   'website'
+                   __('Website','csa-slplus')
                    ) .
                $this->CreateInputDiv(
                    '_label_hours',
                    __('Hours', 'csa-slplus'),
                    __('Hours label.','csa-slplus'),
                    SLPLUS_PREFIX,
-                   'Hours: '
+                   __('Hours','csa-slplus').': '
                    ) .
                $this->CreateInputDiv(
                    '_label_phone',
                    __('Phone', 'csa-slplus'),
                    __('Phone label.','csa-slplus'),
                    SLPLUS_PREFIX,
-                   'Phone: '
+                   __('Phone','csa-slplus').': '
                    ) .
                $this->CreateInputDiv(
                    '_label_fax',
                    __('Fax', 'csa-slplus'),
                    __('Fax label.','csa-slplus'),
                    SLPLUS_PREFIX,
-                   'Fax: '
+                   __('Fax','csa-slplus').': '
                    ) .
                $this->CreateInputDiv(
                    '_label_directions',
                    __('Directions', 'csa-slplus'),
                    __('Directions label.','csa-slplus'),
                    SLPLUS_PREFIX,
-                   'Directions'
+                   __('Directions','csa-slplus')
                    ) .
                $this->CreateInputDiv(
                    'sl_instruction_message',
@@ -892,14 +892,14 @@ class SLPlus_AdminUI_MapSettings {
                 __('Address', 'csa-slplus'),
                 __('Search form address label.','csa-slplus'),
                 '',
-                'Address / Zip'
+                __('Address / Zip','csa-slplus')
                 ) .
             $this->CreateInputDiv(
                 'sl_radius_label',
                 __('Radius', 'csa-slplus'),
                 __('Search form radius label.','csa-slplus'),
                 '',
-                'Within'
+                __('Within','csa-slplus')
                 )
             ;
 

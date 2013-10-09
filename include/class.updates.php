@@ -55,7 +55,7 @@ class SLPlus_Updates {
         $this->plugin_slug = $plugin_slug;
         list ($t1, $t2) = explode('/', $plugin_slug);
         $this->slug = str_replace('.php', '', $t2);
-        $this->update_path = $update_path . '?slug='.$this->slug;
+        $this->update_path = $update_path . '?slug='.$this->slug . '&current_version=' . $this->current_version;
 
         // define the alternative API for updating checking
         add_filter('pre_set_site_transient_update_plugins', array($this, 'check_update'));

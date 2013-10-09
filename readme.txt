@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product-category/slp4-products/
 Tags: store locator,location management,location map,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
 Tested up to: 3.5.1
-Stable tag: 4.0
+Stable tag: 4.0.020
 License: GLPv2 or later
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
@@ -23,8 +23,10 @@ You can learn more about the new release at the [Charleston Software Associates]
 
 = Important Note About Version 3 Premium Add Ons =
 
+*Make sure all of your premium add-on packs are version 4.X or higher.*
+
 If you are using premium add-on packs for Store Locator Plus version 3 you must first upgrade to the Store Locator Plus 4 compatible add-on packs.
-*Do not upgrade the base plugin if you are using SLP3 add-on packs*.   You must follow these instructions:
+Do not upgrade the base plugin if you are using SLP3 add-on packs.   You must follow these instructions:
 
     * Login to your [Charleston Software Associates](http://www.charlestonsw.com) account.
     * Purchase [the SLP4 compatible version of your add-on packs](http://www.charlestonsw.com/product-category/slp4-products/).
@@ -54,6 +56,10 @@ Add details like a store description, hours, a website address, an email address
 Re-label entry fields and results fields.
 
 [youtube http://www.youtube.com/watch?v=v1IIIMre-CQ]
+
+The Store Locator Plus plugin is used by some of the biggest international brands as well as a number of smaller chains.
+It has been used to created interactive store finder maps, service directories, and as a product finder.
+Visit the [SLP Customers page](http://www.charlestonsw.com/support/documentation/store-locator-plus/slp-customers/) to see a sample of some of the people that are using the plugin today.
 
 = Features =
 
@@ -184,23 +190,13 @@ Give me a chance to address your concerns if this plugin doesn't earn 5 stars by
 
 = Help Me "Speak" Your Language =
 
-Help me with translating the English words and phrases in the plugin and I will give you a premium add-on or plugin.
-I will send you the translation files that WordPress creates, you send back the translation, I add any requested premium add-on to your account.
-[Contact me](http://www.charlestonsw.com/mindset/contact-us/) to request the files and let me know which language you want to translate.
-Offer available to first complete translation of this plugin or for notable updates to existing translation files.
+Help me with translating the English words and phrases in the plugin and I will give you a premium add-on.
+The base plugin and the premium add-on packs have been updated to work with most language translation tools including the [Codestyling Localization]() plugin.
+[Contact me](http://www.charlestonsw.com/mindset/contact-us/) if you have a newly translated .po and .mo file to submit.
+If I do not have the language files already, or if they were notably out-of-date, I will add the premium add-on pack of your choice to your account.
 Upon request I will also put a link to your site in the "special thanks" section.
 
-Any EASIER way to help with translations?  Load the [Codestyling Localization plugin](http://wordpress.org/extend/plugins/codestyling-localization/) and then find it under "Tools/Localization" in your admin panel.
-
-Here is the process, in case you are wondering:
-1. I run php makepot.php for the plugin.
-2. I send you a csa-slplus.pot file similar to [this one](http://wp.me/a36f2N-2aA).
-3. You send me back a po file named after the specific locale such as csa-slplus-es_MX.po
-4. I generate the .mo file for that locale with the msgfmt -o filename.mo filename.po command.
-5. I ship the pot, po, and mo files in the next release.
-6. Users see your translation text when their WordPress install is setup for the matching locale.
-7. You tell me which premium plugin or add-on pack that I created that you would like to have.
-8. The world is a happier place, especially for my friends that have as much trouble reading English as I do just about any other language!
+Any EASIER way to perform translations?  Load the [Codestyling Localization plugin](http://wordpress.org/extend/plugins/codestyling-localization/) and then find it under "Tools/Localization" in your admin panel.
 
 == Installation ==
 
@@ -225,11 +221,11 @@ To prevent custom icons from being over-written they will be copies to the '/wp-
 = Custom Styling =
 
 Users that want to customize the look and feel of the search form, map, and search results can do so
-with ease using the new Theme System that is part of the Pro Pack.   Copy an existing CSS file,
+with ease using the built-in Theme System.   Copy an existing CSS file,
 change the file name and update the CSS header, upload to the server and you can now activate your
 new theme or any of the built-in defaults by selecting it from the auto-generated pulldown menu.
 
-Users that opt not to purchase the Pro Pack can still customize the look by editing the basic CSS file that ships with the free plugin.
+[Pro Pack](http://www.charlestonsw.com/product/slp4-pro/) users can also add CSS rules via the Pro Pack CSS Rules entry on the admin panel.
 
 = Special Thanks =
 
@@ -237,6 +233,7 @@ Users that opt not to purchase the Pro Pack can still customize the look by edit
 
 * Dutch (nl_NL) by [Jan de Baat](http://www.de-baat.nl/)
 * French (fr_FR) by François Serrault
+* Japanese (ja) by [Karen Ellrick](http://l4jp.com)
 
 *Graphics*
 
@@ -332,6 +329,13 @@ I update about once per month or more frequently as needed.
 Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
 
 I was listing the entire change log here but with weekly/bi-weekly updates it as getting much too long.
+
+= 4.0.020 =
+
+* Enhancement: Refine Japanese translations.
+* Enhancement: Publish en_US.po files to assist in translations.
+* Enhancement: Add some debugging around add locations for use with Debug Bar and Debug My Plugin.
+* Enhancement: More gettext clean up.
 
 = 4.0 =
 

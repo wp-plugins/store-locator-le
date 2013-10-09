@@ -28,11 +28,7 @@
 
 // The wpCSL version
 //
-if (!defined('WPCSL__slplus__VERSION')) { define('WPCSL__slplus__VERSION', '2.5'); }
-
-// WP App Store Affiliate ID
-//
-if (!defined('WPAS_AFFILIATE_ID')) { define('WPAS_AFFILIATE_ID','3368'); }
+if (!defined('WPCSL__slplus__VERSION')) { define('WPCSL__slplus__VERSION', '2.5.1'); }
 
 /**
  * The base WPCSL class, to which all the other WPCSL objects get attached.
@@ -40,7 +36,7 @@ if (!defined('WPAS_AFFILIATE_ID')) { define('WPAS_AFFILIATE_ID','3368'); }
  * @author Lance Cleveland <lance@charlestonsw.com>
  * @copyright 2013 Charleston Sofware Associates, LLC
  * @package wpCSL
- * @version 2.4
+ * @version 2.5.1
  *
  */
 class wpCSL_plugin__slplus {
@@ -504,15 +500,15 @@ class wpCSL_plugin__slplus {
 
         if ($file == $this->basefile) {
             if (isset($this->support_url)) {
-                $links[] = '<a href="'.$this->support_url.'" title="'.__('Support',WPCSL__slplus__VERSION) . '">'.
-                            __('Support',WPCSL__slplus__VERSION) . '</a>';
+                $links[] = '<a href="'.$this->support_url.'" title="'.__('Support','wpcsl') . '">'.
+                            __('Support','wpcsl') . '</a>';
             }
             if (isset($this->purchase_url)) {
-                $links[] = '<a href="'.$this->purchase_url.'" title="'.__('Purchase',WPCSL__slplus__VERSION) . '">'.
-                            __('Buy Now',WPCSL__slplus__VERSION) . '</a>';
+                $links[] = '<a href="'.$this->purchase_url.'" title="'.__('Purchase','wpcsl') . '">'.
+                            __('Buy Now','wpcsl') . '</a>';
             }
             $links[] = '<a href="options-general.php?page='.$this->prefix.'-options" title="'.
-                            __('Settings',WPCSL__slplus__VERSION) . '">'.__('Settings',WPCSL__slplus__VERSION) . '</a>';
+                            __('Settings','wpcsl') . '">'.__('Settings','wpcsl') . '</a>';
         }
         return $links;
     }
