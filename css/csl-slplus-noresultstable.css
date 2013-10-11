@@ -205,7 +205,7 @@ div#map {
     border-top: solid 1px #CCCCCC;
     border-left: solid 1px #CCCCCC;
     border-right: solid 1px #CCCCCC;
-    width: auto !important;
+    width: auto;
 }
 
 /* Don't let WordPress Mangle Map Images */
