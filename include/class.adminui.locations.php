@@ -1413,9 +1413,12 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         $currentSearch = ((isset($_REQUEST['searchfor'])&&!empty($_REQUEST['searchfor']))?$_REQUEST['searchfor']:'');
         return
             '<div class="alignleft actions">'                                                                               .
-                "<input id='searchfor' value='{$currentSearch}' type='text' name='searchfor'>"                                          .
-                "<input id='doaction_search' class='button action' type='submit' value='".__('Search','csa-slplus')."' "    .
-                    'onClick="wpcslAdminInterface.doAction(\'search\',\'\');" '                                                                 .
+                "<input id='searchfor' value='{$currentSearch}' type='text' name='searchfor' "                              .
+                    ' onkeypress=\'if (event.keyCode == 13) { wpcslAdminInterface.doAction("search",""); } \' '              .
+                    ' />'                                                                                                   .
+                "<input id='doaction_search' class='button action' type='submit' "                                          .
+                    "value='".__('Search','csa-slplus')."' "                                                                .
+                    'onClick="wpcslAdminInterface.doAction(\'search\',\'\');" '                                             .
                     ' />'                                                                                                   .
             '</div>'
             ;

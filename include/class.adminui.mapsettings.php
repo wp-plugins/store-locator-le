@@ -191,15 +191,19 @@ class SLPlus_AdminUI_MapSettings {
         update_option('sl_google_map_domain', $sl_google_map_arr[1]);
 
         // Height, strip non-digits, if % set range 0..100
-        $_POST['sl_map_height']=preg_replace('/[^0-9]/', '', $_POST['sl_map_height']);
-        if ($_POST['sl_map_height_units'] == '%') {
-            $_POST['sl_map_height'] = max(0,min($_POST['sl_map_height'],100));
+        if (in_array($_POST['sl_map_height_units'],array('%','px','pt','em'))) {
+            $_POST['sl_map_height']=preg_replace('/[^0-9]/', '', $_POST['sl_map_height']);
+            if ($_POST['sl_map_height_units'] == '%') {
+                $_POST['sl_map_height'] = max(0,min($_POST['sl_map_height'],100));
+            }
         }
 
         // Width, strip non-digtis, if % set range 0..100
-        $_POST['sl_map_width'] =preg_replace('/[^0-9]/', '', $_POST['sl_map_width']);
-        if ($_POST['sl_map_width_units'] == '%') {
-            $_POST['sl_map_width'] = max(0,min($_POST['sl_map_width'],100));
+        if (in_array($_POST['sl_map_width_units'],array('%','px','pt','em'))) {
+            $_POST['sl_map_width'] =preg_replace('/[^0-9]/', '', $_POST['sl_map_width']);
+            if ($_POST['sl_map_width_units'] == '%') {
+                $_POST['sl_map_width'] = max(0,min($_POST['sl_map_width'],100));
+            }
         }
 
         // Standard Input Saves
@@ -284,16 +288,20 @@ class SLPlus_AdminUI_MapSettings {
                 $this->CreateInputDiv(
                     'sl_map_height',
                     __('Map Height','csa-slplus'),
-                    __('The initial map height in pixels or percent of initial page height.','csa-slplus'),
+                    __('The initial map height in pixels or percent of initial page height. ','csa-slplus') .
+                    __('Can also use rules like auto and inherit if Height Units is set to blank ','csa-slplus')
+                        ,
                     '',
                     '480'
                     ) .
 
                 $this->CreatePulldownDiv(
                     'sl_map_height_units',
-                    array('%','px','em','pt'),
+                    array('%','px','em','pt',''),
                     __('Height Units','csa-slplus'),
-                    __('Is the width a percentage of page width or absolute pixel size?','csa-slplus'),
+                    __('Is the width a percentage of page width or absolute pixel size? ','csa-slplus') .
+                    __('Select blank to use CSS rules like auto or inherit in the Map Height setting.','csa-slplus')
+                        ,
                     '',
                     'px'
                     ) .
@@ -301,15 +309,19 @@ class SLPlus_AdminUI_MapSettings {
                 $this->CreateInputDiv(
                     'sl_map_width',
                     __('Map Width','csa-slplus'),
-                    __('The initial map width in pixels or percent of page width. Also sets results width.','csa-slplus'),
+                    __('The initial map width in pixels or percent of page width. Also sets results width.','csa-slplus') .
+                    __('Can also use rules like auto and inherit if Width Units is set to blank ','csa-slplus')
+                        ,
                     '',
                     '640'
                     ) .
                 $this->CreatePulldownDiv(
                     'sl_map_width_units',
-                    array('%','px','em','pt'),
+                    array('%','px','em','pt',''),
                     __('Width Units','csa-slplus'),
-                    __('Is the width a percentage of page width or absolute pixel size?','csa-slplus'),
+                    __('Is the width a percentage of page width or absolute pixel size?','csa-slplus') .
+                    __('Select blank to use CSS rules like auto or inherit in the Map Width setting.','csa-slplus')
+                        ,
                     '',
                     '%'
                     ) .
