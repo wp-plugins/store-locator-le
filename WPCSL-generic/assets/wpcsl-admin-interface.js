@@ -5,6 +5,27 @@
 (function ($) {
 
   wpcslAdminInterface = {
+
+      /**
+       * Confirm a message then redirect the user.
+       */
+        confirmClick: function(message,href) {
+            if (confirm(message)) {	location.href=href; }
+            else  { return false; }
+        },
+
+        /**
+         * Perform an action on the specified form.
+         */
+        doAction: function(theAction,thePrompt,formID) {
+            formID = typeof formID !== 'undefined' ? formID : 'locationForm';
+            if((thePrompt === '') || confirm(thePrompt)){
+                jQuery('#'+formID+' [name="act"]').attr('value',theAction);
+                jQuery('#'+formID).submit();
+            }else{
+                return false;
+            }
+        },
   
 /**
  * toggle_nav_tabs()

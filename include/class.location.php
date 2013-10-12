@@ -421,10 +421,21 @@ class SLPlus_Location {
         $dataWritten = true;
         $dataToWrite = array_reduce($this->dbFields,array($this,'mapPropertyToField'));
 
+        // sl_id int field blank, unset it we will insert a new auto-int record
+        //
+        if (empty($dataToWrite['sl_id'])) {
+            unset($dataToWrite['sl_id']);
+        }
+
+        // sl_id int field blank, unset it we will insert a new auto-int record
+        //
+        if (empty($dataToWrite['sl_linked_postid'])) {
+            $dataToWrite['sl_linked_postid'] = 0;
+        }
+
         // Location is set, update it.
         //
         if ($this->id > 0) {
-            unset($dataToWrite['sl_id']);
             if(!$this->plugin->db->update($this->plugin->database->info['table'],$dataToWrite,array('sl_id' => $this->id))) {
                 $this->plugin->notifications->add_notice(
                         'warning',

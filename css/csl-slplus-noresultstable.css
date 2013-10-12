@@ -119,11 +119,33 @@
 	padding:4px;
 }
 
+
+
+/**
+ * Search Form
+ **/
 table#search_table td {
     border: none;
 }
-
-/***** Search Form Inputs  *****/
+#searchForm .search_item {
+	clear: both;
+    display: block;
+	float: none;
+    padding-bottom: 6px;
+    vertical-align: middle;
+}
+#address_search .search_item INPUT {
+	border:solid 1px silver;
+	padding-left:3px;
+	background:white url(../images/search-input.gif) repeat-x;
+	color: black;
+	margin:0px 6px 0px 0px;
+	width: 256px;
+	padding-top:0px;
+}
+#address_search .search_item SELECT {
+	margin:0px 6px 0px 0px;
+}
 #address_search {
     width: 600px;
 }
@@ -135,34 +157,10 @@ table#search_table td {
     float: left;
     padding-right: 8px;
 }
-
 #address_search SELECT {
 	margin:0px 6px 0px 0px;
 }
-
 #address_search INPUT {
-	margin:0px 6px 0px 0px;
-}
-
-
-
-#address_search .search_item {
-	display: block;
-	float: none;
-	clear: both;
-}
-
-#address_search .search_item INPUT {
-	border:solid 1px silver;
-	padding-left:3px; 
-	background:white url(../images/search-input.gif) repeat-x;
-	color: black;
-	margin:0px 6px 0px 0px;
-	width: 256px;
-	padding-top:0px;
-}
-
-#address_search .search_item SELECT {
 	margin:0px 6px 0px 0px;
 }
 
@@ -174,25 +172,48 @@ table#search_table td {
 #addy_in_country {
     float: left;
 }
-div#addy_in_address.search_item {
-    clear:both;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    width: 377px;
-    float: left;
-}
+
+/* Radius */
 #addy_in_radius {
-    clear: both;
-    float: left;
-    padding-top: 3px;
-    padding-right: 0px;
+    display: inline-block;
 }
 
+/* Submit Button */
 #radius_in_submit {
-    float: left;
-    width: 300px;
-    padding-top: 3px;
+    display: inline-block;
+    margin-left: 100px;
 }
+#address_search #addressSubmit.slp_ui_button {
+    /* like-a-button */
+    background: #FFF; /* for non-css3 browsers */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD'); /* for IE */
+    background: -webkit-gradient(linear, left top, left bottom, from(#FFF), to(#DDD)); /* for webkit browsers */
+    background: -moz-linear-gradient(top,  #FFF,  #DDD); /* for firefox 3.6+ */
+    text-decoration: none;
+
+    border: 1px solid #BBBBBB;
+    padding: 0px 4px;
+    text-align: center;
+    cursor: pointer;
+    color: #5F5E5E;
+
+    /* Corners */
+    border-radius: 3px 3px 3px 3px;
+    -webkit-border-radius:3px;
+    -moz-border-radius:3px;
+    border-radius:3px;
+    -khtml-border-radius: 3px;
+
+    /* Shadow */
+    box-shadow: none;
+}
+#addressSubmit.slp_ui_button:hover {
+    background: #EEE; /* for non-css3 browsers */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#EEE', endColorstr='#CCC'); /* for IE */
+    background: -webkit-gradient(linear, left top, left bottom, from(#EEE), to(#CCC)); /* for webkit browsers */
+    background: -moz-linear-gradient(top,  #EEE,  #CCC); /* for firefox 3.6+ */
+}
+
 
 /**** Map Box
  **
@@ -205,7 +226,7 @@ div#map {
     border-top: solid 1px #CCCCCC;
     border-left: solid 1px #CCCCCC;
     border-right: solid 1px #CCCCCC;
-    width: auto !important;
+    width: auto;
 }
 
 /* Don't let WordPress Mangle Map Images */

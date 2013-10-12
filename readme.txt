@@ -4,8 +4,8 @@ Contributors: charlestonsw
 Donate link: http://www.charlestonsw.com/product-category/slp4-products/
 Tags: store locator,location management,location map,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
-Tested up to: 3.5.1
-Stable tag: 4.0.020
+Tested up to: 3.6.1
+Stable tag: 4.0.023
 License: GLPv2 or later
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
@@ -324,11 +324,31 @@ Discounts will be made available to users that purchased a premium add-on pack w
 
 == Changelog ==
 
+Please read the *description page* for this plugin for an important note about premium add-on packs if you are upgrading from version 3.x or earlier.
+
+*Version 4.x is a major upgrade that is not compatible with the version 3.x or earlier add-on packs.*
+
 I update about once per month or more frequently as needed.
 
 Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
 
-I was listing the entire change log here but with weekly/bi-weekly updates it as getting much too long.
+= 4.0.023 =
+
+* Fix: Edit locations not saving changes.
+* Fix: Add locations on servers with STRICT MySQL mode enabled.   sl_id and sl_linked_postid "incorrect integer value" patch.
+* Fix: Clean up hidden results table layout.
+* Enhancement: Make the on/off slider in the admin panel translatable.
+
+= 4.0.022 =
+
+* Fix: Remove !important from map width on SLP CSS Themes.
+* Fix: Map width setting via more specific CSS rules.
+* Enhancement: Manage locations search box submits search when pressing enter.
+* Enhancement: Allow height/width on map setting to be set to CSS rules like auto.
+
+= 4.0.021 =
+
+* Fix: Add locations for Chrome browser.
 
 = 4.0.020 =
 
