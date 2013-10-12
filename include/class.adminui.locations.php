@@ -698,15 +698,26 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                 __('Add Location','csa-slplus'):
                 sprintf("%s #%d",__('Update Location', 'csa-slplus'),$this->plugin->currentLocation->id)
             );
-        $clickAction = ($this->addingLocation?'add':'save');
+
+        $value   =
+                ($this->addingLocation)    ?
+                __('Add'   ,'csa-slplus')  :
+                __('Update','csa-slplus')  ;
+
+        $onClick =
+                ($this->addingLocation)                                       ?
+                "wpcslAdminInterface.doAction('add' ,'','manualAddForm');"    :
+                "wpcslAdminInterface.doAction('save','','locationForm' );"    ;
+
         return
             $HTML .
             ($this->addingLocation? '' : "<span class='slp-edit-location-id'>Location # $this->idString</span>") .
             "<div id='slp_form_buttons'>"                                                           .
-            "<input type='submit' "                                                                 .
-                "value='".($this->addingLocation?__('Add','csa-slplus'):__('Update', 'csa-slplus')) .
+            "<input "                                                                               .
+                "type='submit'        "                                                             .
+                'value="'  .$value  .'" '                                                           .
+                'onClick="'.$onClick.'" '                                                           .
                 "' alt='$alTitle' title='$alTitle' class='button-primary'"                          .
-                'onclick="wpcslAdminInterface.doAction(\''.$clickAction.'\',\'\',\'manualAddForm\');" '                                   .
                 ">"                                                                                 .
             "<input type='button' class='button' "                                                  .
                 "value='".__('Cancel', 'csa-slplus')."' "                                           .

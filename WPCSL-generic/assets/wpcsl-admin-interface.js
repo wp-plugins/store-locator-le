@@ -20,9 +20,8 @@
         doAction: function(theAction,thePrompt,formID) {
             formID = typeof formID !== 'undefined' ? formID : 'locationForm';
             if((thePrompt === '') || confirm(thePrompt)){
-                LF=document.forms[formID];
-                LF.act.value=theAction;
-                LF.submit();
+                jQuery('#'+formID+' [name="act"]').attr('value',theAction);
+                jQuery('#'+formID).submit();
             }else{
                 return false;
             }
