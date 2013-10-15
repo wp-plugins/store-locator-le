@@ -153,10 +153,11 @@ class wpCSL_themes__slplus {
                     'custom'        => $themeArray                                  ,
                     'value'         => 'default'                                    ,
                     'description'   =>
-                        __('How should the plugin UI elements look?  Check the <a href="'.
-                            $this->support_url.
-                            '" target="CSA">documentation</a> for more info.',
-                            'wpcsl'),
+                        __('How should the plugin UI elements look?  ','wpcsl') .
+                        sprintf(
+                            __('Learn more in the <a href="%s" target="csa">online documentation</a>.','wpcsl'),
+                            $this->support_url . 'user-experience/view/themes-custom-css/'
+                            ),
                     'onChange'      =>
                         "jQuery('.theme_details').hide();" .
                         "jQuery('#'+jQuery('option:selected',this).val()+'_details').show();"

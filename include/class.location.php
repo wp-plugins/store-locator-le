@@ -426,8 +426,14 @@ class SLPlus_Location {
         if (empty($dataToWrite['sl_id'])) {
             unset($dataToWrite['sl_id']);
         }
+        
+        // sl_last_upated is blank, unset to get auto-date value
+        //
+        if (empty($dataToWrite['sl_lastupdated'])) {
+            unset($dataToWrite['sl_lastupdated']);
+        }
 
-        // sl_id int field blank, unset it we will insert a new auto-int record
+        // sl_linked_postid is blank, set it to 0
         //
         if (empty($dataToWrite['sl_linked_postid'])) {
             $dataToWrite['sl_linked_postid'] = 0;

@@ -270,6 +270,10 @@ div#map {
 /**
  * Map Info Bubble
  **/
+div#sl_div .gm-style-iw {
+    max-width: 90%;
+    width: auto !important;
+}
 #sl_info_bubble {
     font-size: xx-small;
     font-weight: normal;
@@ -297,27 +301,14 @@ div#slp_tagline {
     background-color: #AABBDD;
     font-size: 11px;
     font-family: Arial, sans-serif;
+    opacity: 0.45;
+    filter:alpha(opacity=45);
     margin-bottom: 3px;
     padding-right: 3px;
     text-align: right;
     width: 100%;
 
 }
-table.sl_footer {
-    margin-bottom: 12px;
-    border-bottom: solid 1px #CCCCCC;
-    border-left: solid 1px #CCCCCC;
-    border-right: solid 1px #CCCCCC;
-}
-tr.slp_map_tagline td {
-    color: #444444;
-    background-color: #F4F4F4;
-    font-size: 0.9em;
-    font-style: italic;
-    padding: 3px;
-    text-align: right;
-}
-
 
 /**
  * Results
