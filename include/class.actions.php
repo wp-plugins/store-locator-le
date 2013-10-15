@@ -399,13 +399,13 @@ class SLPlus_Actions {
         echo '<!-- SLP Custom CSS -->'."\n".'<style type="text/css">'."\n" .
 
                     // Map
-                    "div#map {\n".
+                    "div#sl_div div#map {\n".
                         "width:{$this->plugin->data['sl_map_width']}{$this->plugin->data['sl_map_width_units']};\n" .
                         "height:{$this->plugin->data['sl_map_height']}{$this->plugin->data['sl_map_height_units']};\n" .
                     "}\n" .
 
                     // Tagline
-                    "div#slp_tagline {\n".
+                    "div#sl_div div#slp_tagline {\n".
                         "width:{$this->plugin->data['sl_map_width']}{$this->plugin->data['sl_map_width_units']};\n" .
                     "}\n" .
 
