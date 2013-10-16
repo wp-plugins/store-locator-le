@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product-category/slp4-products/
 Tags: store locator,location management,location map,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
 Tested up to: 3.6.1
-Stable tag: 4.0.024
+Stable tag: 4.0.025
 License: GLPv2 or later
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
@@ -331,6 +331,11 @@ Please read the *description page* for this plugin for an important note about p
 I update about once per month or more frequently as needed.
 
 Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 4.0.025 =
+
+* Enhancement: Make [SLP4 upgrades](http://www.charlestonsw.com/product-category/slp4-products/) deprecate more gracefully for SLP3 add-on pack users.  Show warning versus empty screens.
+* Fix:  No Results [SLP theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/) updated to match CSS rules to new responsive-friendly HTML layout.
 
 = 4.0.024 =
 

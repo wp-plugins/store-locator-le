@@ -31,6 +31,16 @@ class SLPlus extends wpCSL_plugin__slplus {
      */
     const linkToProPack = '<a href="http://www.charlestonsw.com/product/slp4-pro/" target="csa">Pro Pack</a>';
 
+    /**
+     * Major Version Definition, SLP3
+     */
+    const SLP3 = '3';
+
+    /**
+     * Major Version Definition, SLP4
+     */
+    const SLP4 = '4';
+
     //-------------------------------------
     // Properties
     //-------------------------------------

@@ -5,6 +5,7 @@
  **
  **/
 
+
 /**
  * General - All areas
  **/
@@ -223,6 +224,22 @@ span.slp_checkbox_entry input[type="checkbox"] {
     vertical-align: text-bottom;
 }
 
+/* Tagalong Search Inputs */
+#tagalong_category_selector {
+    display: block;
+    height: 2em;
+    width: 100%;
+}
+#tagalong_category_selector .category_selector.parent {
+    display: block;
+    float: left;
+}
+#tagalong_category_selector .category_selector.child {
+    display: none;
+    float: left;
+}
+
+
 /*---------------------
  * Map
  *
@@ -379,19 +396,6 @@ div#map_sidebar {
     display: inline-block;
     height: auto;
     width: auto;
-}
-#tagalong_category_selector {
-    display: block;
-    height: 2em;
-    width: 100%;
-}
-#tagalong_category_selector .category_selector.parent {
-    display: block;
-    float: left;
-}
-#tagalong_category_selector .category_selector.child {
-    display: none;
-    float: left;
 }
 #tagalong_legend {
     border: 3px double #444444;

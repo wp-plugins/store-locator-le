@@ -13,6 +13,14 @@ class SLPlus_AdminUI {
     //-------------------------------------
 
     /**
+     * Has the create_InputElement deprecation notice been shown already?
+     *
+     * @var boolean $depnotice_create_InputElement
+     */
+    private  $depnotice_create_InputElement = false;
+
+
+    /**
      *
      * @var \SLPlus_AdminUI_Locations $ManageLocations
      */
@@ -30,6 +38,13 @@ class SLPlus_AdminUI {
      * @var \SLPlus
      */
     public $parent = null;
+
+    /**
+     * The SLPlus Plugin
+     *
+     * @var \SLPlus
+     */
+    public $plugin = null;
 
     /**
      *
@@ -358,6 +373,32 @@ class SLPlus_AdminUI {
 
 
         return $htmlStr;
+     }
+
+     //------------------------------------------------------------------------
+     // DEPRECATED
+     //------------------------------------------------------------------------
+
+     /**
+      * Do not use, deprecated.
+      * 
+      * @deprecated 4.0
+      * 
+      * @var null $addingLocation
+      */
+     public $addingLocation = null;
+     
+     /**
+      * Do not use, deprecated.
+      *
+      * @deprecated 4.0
+      */
+     function create_InputElement() {
+         if (!$this->depnotice_create_InputElement) {
+            $this->parent->notifications->add_notice(9,$this->plugin->createstring_Deprecated(__FUNCTION__));
+            $this->parent->notifications->display();
+            $this->depnotice_create_InputElement = true;
+         }
      }
 
 }

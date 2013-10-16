@@ -13,6 +13,14 @@ class SLPlus_AdminUI_MapSettings {
     //-----------------------------
 
     /**
+     * Has the createSettingsGroup deprecation notice been shown already?
+     *
+     * @var boolean $depnotice_createSettingsGroup
+     */
+    private  $depnotice_createSettingsGroup = false;
+
+
+    /**
      * The SLPlus plugin object.
      *
      * @var \SLPlus $plugin
@@ -933,6 +941,24 @@ class SLPlus_AdminUI_MapSettings {
                     'innerdiv'      => true
                 )
          );
+     }
+
+
+     //------------------------------------------------------------------------
+     // DEPRECATED
+     //------------------------------------------------------------------------
+
+     /**
+      * Do not use, deprecated.
+      *
+      * @deprecated 4.0
+      */
+     function createSettingsGroup() {
+        if (!$this->depnotice_createSettingsGroup) {
+            $this->plugin->notifications->add_notice(9,$this->plugin->createstring_Deprecated(__FUNCTION__));
+            $this->plugin->notifications->display();
+            $this->depnotice_createSettingsGroup = true;
+        }
      }
 }
 

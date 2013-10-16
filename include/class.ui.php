@@ -13,6 +13,13 @@ class SLPlus_UI {
     // Properties
     //-------------------------------------
 
+    /**
+     * Has the setResultsString deprecation notice been shown already?
+     *
+     * @var boolean $depnotice_setResultsString
+     */
+    private  $depnotice_setResultsString = false;
+
     //----------------------------------
     // Methods
     //----------------------------------
@@ -853,4 +860,32 @@ class SLPlus_UI {
             print ">$clean_selection</option>";
         }print "</select>";
     }
+
+
+     //------------------------------------------------------------------------
+     // DEPRECATED
+     //------------------------------------------------------------------------
+
+     /**
+      * Do not use, deprecated.
+      *
+      * @deprecated 4.0
+      *
+      * @var null $addingLocation
+      */
+     public $resultsString = null;
+
+     /**
+      * Do not use, deprecated.
+      *
+      * @deprecated 4.0
+      */
+     function setResultsString() {
+        if (!$this->setPlugin()) { return false; }
+        if (!$this->depnotice_setResultsString) {
+            $this->plugin->notifications->add_notice(9,$this->plugin->createstring_Deprecated(__FUNCTION__));
+            $this->plugin->notifications->display();
+            $this->depnotice_setResultsString = true;
+         }
+     }
 }

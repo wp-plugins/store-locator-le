@@ -17,6 +17,13 @@ class SLPlus_Actions {
     //----------------------------------
 
     /**
+     * Has the getCompoundOption deprecation notice been shown already?
+     *
+     * @var boolean $depnotice_getCompoundOption
+     */
+    private  $depnotice_getCompoundOption = false;
+
+    /**
      * The SLPlus plugin object.
      *
      * @var SLPlus $plugin
@@ -441,4 +448,23 @@ class SLPlus_Actions {
             define('SLPLUS_SCRIPTS_MANAGED',true);
         }
     }
+
+
+     //------------------------------------------------------------------------
+     // DEPRECATED
+     //------------------------------------------------------------------------
+
+     /**
+      * Do not use, deprecated.
+      *
+      * @deprecated 4.0
+      */
+     function getCompoundOption() {
+        if (!$this->depnotice_getCompoundOption) {
+            $this->plugin->notifications->add_notice(9,$this->plugin->createstring_Deprecated(__FUNCTION__));
+            $this->plugin->notifications->display();
+            $this->depnotice_getCompoundOption = true;
+        }
+     }
+
 }
