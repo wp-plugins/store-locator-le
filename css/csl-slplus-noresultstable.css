@@ -1,8 +1,13 @@
 /**
  ** file: csl-slplus-noresultstable.css
- ** label: Hidden Results Table
- ** description: Hide the results table
+ ** label: Hidden Results
+ ** description: Hide the results under the map.  You can get more control with the Enhanced Results add-on pack.
  **
+ **/
+
+
+/**
+ * General - All areas
  **/
 
 /* Slider from proto.io/freebies/onoff/
@@ -66,190 +71,49 @@
     }
 
 
-/***** Area Above Map DIV. Contains Search Form Inputs *****/
-.sl_header img, .sl_header td {
-    border: none;
-    cursor: pointer;   
-}
-
-.sl_header #addressSubmit.slp_ui_button {
-    /* like-a-button */
-    background: #FFF; /* for non-css3 browsers */
+/*----------------------------------
+ *
+ * A div that looks like a button.
+ */
+.like-a-button {
+	background: #FFF; /* for non-css3 browsers */
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD'); /* for IE */
     background: -webkit-gradient(linear, left top, left bottom, from(#FFF), to(#DDD)); /* for webkit browsers */
     background: -moz-linear-gradient(top,  #FFF,  #DDD); /* for firefox 3.6+ */
     text-decoration: none;
-    
-    font-size: 14px;
-    border: 1px solid #BBBBBB;
-    border-radius: 3px 3px 3px 3px;
-    height: 26px;
-    margin: 0px 2px 2px 0px;
-    padding: 0px 4px;
-    text-align: center;
-    cursor: pointer;
-    color: #5F5E5E;
-    display: block;
-    
-    /* Corners */
-    -webkit-border-radius:6px;
-    -moz-border-radius:6px;
-    border-radius:6px;
-    -khtml-border-radius: 6px;
-    
-    /* Shadow */
-    -moz-box-shadow: 0px 1px 3px #AAA;
-    -webkit-box-shadow: 0px 1px 3px #AAA;
-    box-shadow: 0px 1px 3px #AAA;           
-}    
 
-.sl_header #addressSubmit.slp_ui_button:hover {
-    margin: 2px 0px 0px 2px;
-    -moz-box-shadow: 0px 0px 0px #AAA;
-    -webkit-box-shadow: 0px 0px 0px #AAA;
-    box-shadow: 0px 0px 0px #AAA;           
-}    
+  border: 1px solid #BBBBBB;
+  margin: 0;
+  padding: 3px 12px;
+  text-align: center;
+  width: auto;
+  cursor: pointer;
+  color: #333;
+  display: inline-block;
+  line-height: 1em;
 
-
-.sl_header td {
-	vertical-align:top;
-	text-align:left;
+  /* Corners */
+  -webkit-border-radius:3px;
+  -moz-border-radius:3px;
+  border-radius:3px;
+   -khtml-border-radius: 3px;
 }
-.sl_header td, .sl_header th, .sl_header tr {
-	padding:4px;
+.like-a-button:hover {
+	background: #DDD; /* for non-css3 browsers */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF'); /* for IE */
+    background: -webkit-gradient(linear, left top, left bottom, from(#DDD), to(#FFF)); /* for webkit browsers */
+    background: -moz-linear-gradient(top,  #DDD,  #FFF); /* for firefox 3.6+ */
 }
-
-table#search_table td {
-    border: none;
-}
-
-/***** Search Form Inputs  *****/
-#address_search {
-    width: 600px;
-}
-#address_search LABEL {
-    text-align: right;
-    min-width: 100px;
-    font-size: 14px;
-    display:block;
-    float: left;
-    padding-right: 8px;
-}
-
-#address_search SELECT {
-	margin:0px 6px 0px 0px;
-}
-
-#address_search INPUT {
-	margin:0px 6px 0px 0px;
+.like-a-button A {
+    text-decoration:none;
 }
 
 
-
-#address_search .search_item {
-	display: block;
-	float: none;
-	clear: both;
-}
-
-#address_search .search_item INPUT {
-	border:solid 1px silver;
-	padding-left:3px; 
-	background:white url(../images/search-input.gif) repeat-x;
-	color: black;
-	margin:0px 6px 0px 0px;
-	width: 256px;
-	padding-top:0px;
-}
-
-#address_search .search_item SELECT {
-	margin:0px 6px 0px 0px;
-}
-
-#addy_in_city {
-    clear: both;
-    float: left;
-	margin-right: 6px;
-}
-#addy_in_country {
-    float: left;
-}
-div#addy_in_address.search_item {
-    clear:both;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    width: 377px;
-    float: left;
-}
-#addy_in_radius {
-    clear: both;
-    float: left;
-    padding-top: 3px;
-    padding-right: 0px;
-}
-
-#radius_in_submit {
-    float: left;
-    width: 300px;
-    padding-top: 3px;
-}
-
-/**** Map Box
- **
- ** Since we only use these div IDs when a static image is present
- ** we start with the image shown and map hidden.  JQuery will flip
- ** this for us.
- **
+/**
+ * General SLP Div Only
  **/
-div#map {
-    border-top: solid 1px #CCCCCC;
-    border-left: solid 1px #CCCCCC;
-    border-right: solid 1px #CCCCCC;
-    width: auto !important;
-}
-
-/* Don't let WordPress Mangle Map Images */
-div#map img {
-    background-color: transparent;
-    box-shadow: none;
-    border: none;
-    max-width: none;
-    opacity: 1.0;
-    visibility: visible;
-}
-/* Hide the default Google bubble shadow */
-div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
-    display:none;
-}
-
-#map_box_image {
-    display: block; 
-}
-
-#map_box_map {
-    display: none;
-}
-div#slp_tagline {
-    text-align: right;
-    padding-right: 3px;
-    width: 100%;
-
-}
-div.entry-content div#sl_div #map_table IMG {
-	max-width:none;
-    box-shadow: none;
-    border-radius: 0px;
-    border: none;
-    padding: 0px;
-    margin: 0px;
-}
-
-/***** Store Locator Map DIV *****/
 #sl_div {
-	padding: 0px;
-	font-weight:bold;
-}
-#sl_div a {
+	padding:1px;
 }
 #sl_div a.storelocatorlink {
 	color:#0000FF;
@@ -260,27 +124,172 @@ div.entry-content div#sl_div #map_table IMG {
 #sl_div img {
 	background-color:transparent;
 	background-image:none;
-	max-width:none; 
+	max-width:none;
 }
+
 #sl_div table, #sl_div tr, #sl_div td {
 	border:none;
-	margin: 0px;
-}
-#sl_div #map { 
-	color:black; 
-	font-weight:normal;
-	border: solid 2px black;
 }
 
+/**
+ * Search Form
+ **/
+#searchForm .search_item {
+	clear: both;
+    display: block;
+	float: none;
+    padding-bottom: 6px;
+    vertical-align: middle;
+}
+#searchForm LABEL {
+    text-align: right;
+    min-width: 100px;
+    font-size: 14px;
+    display:block;
+    float: left;
+    padding-right: 8px;
+}
+#searchForm SELECT {
+	margin:0px 6px 0px 0px;
+}
+#searchForm INPUT {
+	border:solid 1px silver;
+	color: black;
+	margin:0px 6px 0px 0px;
+	padding-left:3px;
+	padding-top:0px;
+}
+
+/* Radius */
+#addy_in_radius {
+    display: inline-block;
+}
+
+/* Submit Button */
+#radius_in_submit {
+    display: inline-block;
+}
+#addressSubmit.slp_ui_button {
+    /* like-a-button */
+    background: #FFF; /* for non-css3 browsers */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD'); /* for IE */
+    background: -webkit-gradient(linear, left top, left bottom, from(#FFF), to(#DDD)); /* for webkit browsers */
+    background: -moz-linear-gradient(top,  #FFF,  #DDD); /* for firefox 3.6+ */
+    text-decoration: none;
+
+    border: 1px solid #BBBBBB;
+    padding: 0px 4px;
+    text-align: center;
+    cursor: pointer;
+    color: #5F5E5E;
+
+    /* Corners */
+    border-radius: 3px 3px 3px 3px;
+    -webkit-border-radius:3px;
+    -moz-border-radius:3px;
+    border-radius:3px;
+    -khtml-border-radius: 3px;
+
+    /* Shadow */
+    box-shadow: none;
+}
+
+#addressSubmit.slp_ui_button:hover {
+    background: #EEE; /* for non-css3 browsers */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#EEE', endColorstr='#CCC'); /* for IE */
+    background: -webkit-gradient(linear, left top, left bottom, from(#EEE), to(#CCC)); /* for webkit browsers */
+    background: -moz-linear-gradient(top,  #EEE,  #CCC); /* for firefox 3.6+ */
+}
 
 
-table#map_table td {
+#addy_in_city {
+    clear: both;
+    float: left;
+	margin-right: 6px;
+}
+#addy_in_country {
+    float: left;
+}
+#addy_in_address {
+    clear:both;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+span.slp_checkbox_entry {
+    padding-right: 12px;
+}
+
+span.slp_checkbox_entry input[type="checkbox"] {
+    vertical-align: text-bottom;
+}
+
+/* Tagalong Search Inputs */
+#tagalong_category_selector {
+    display: block;
+    height: 2em;
+    width: 100%;
+}
+#tagalong_category_selector .category_selector.parent {
+    display: block;
+    float: left;
+}
+#tagalong_category_selector .category_selector.child {
+    display: none;
+    float: left;
+}
+
+/*---------------------
+ * Map
+ *
+ * Since we only use these div IDs when a static image is present
+ * we start with the image shown and map hidden.  JQuery will flip
+ * this for us.
+ *
+ *---------------------*/
+
+/* Hide the default Google bubble shadow */
+div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
+    display:none;
+}
+/* Don't let WordPress Mangle Map Images */
+div#map img {
+    background-color: transparent;
+    box-shadow: none;
     border: none;
+    max-width: none;
+    opacity: 1.0;
+    visibility: visible;
+}
+
+div.entry-content div#sl_div #map IMG {
+    border-radius: 0px;
+    padding: 0px;
+    margin: 0px;
+}
+
+div#map {
+    border-top: solid 1px #CCCCCC;
+    border-left: solid 1px #CCCCCC;
+    border-right: solid 1px #CCCCCC;
+    width: auto;
+}
+
+#map_box_image {
+    display: block;
+}
+
+#map_box_map {
+    display: none;
 }
 
 /**
  * Map Info Bubble
  **/
+div#sl_div .gm-style-iw {
+    max-width: 90%;
+    width: auto !important;
+}
 #sl_info_bubble {
     font-size: xx-small;
     font-weight: normal;
@@ -301,97 +310,32 @@ table#map_table td {
 }
 
 
-/***** Area Below Map DIV, before Search Results Area *****/
-.sl_footer td, .sl_footer td a, .sl_footer td a:link, .sl_footer td a:hover, .sl_footer td a:active, .sl_footer td a:visited {
-	font-weight:normal;
-	font-size:10px;
-}
-.sl_footer {
-	background-color:black;
-	padding:0px;
-	border:0px black solid;
-	color: #222;
-}
-.sl_footer a {
-	color:#666;
-	font-weight:bold;
-	border:0px black solid;
-	padding-left:5px;
-}
-.sl_footer_right_column {
-	padding-right:5px;
-	text-align:right;
-}
-.sl_footer_left_column {
-	text-align:left;
-}
-
-
-
-
-/*****Search Results Area *****/
-.text_below_map {
-	/*shown before search performed */
-	font-family:Arial;
-	padding:20px;
-	font-size:18px;
-	text-align:justify;
-}
-.no_results_found {
-	/*shown if no results found */
-	padding:10px;
-}
-#map_sidebar { 
-	/*shown for results found for specific query */
-	background-color:transparent;
-	font-weight:normal;
-	text-align:justify;
-	overflow: auto;
-	height:150px;
-	font-size: 11px;
-}
-
- /***********************
- * Results Table
- ***********************/
-#results_table td {
-    border: none;
-}
-
-tr#cm_mapTR {
-    display:none;
-    visibility: hidden;
-} 
-
-span.slp_checkbox_entry {
-    padding-right: 12px;
-}
-
-span.slp_checkbox_entry input[type="checkbox"] {
-    vertical-align: text-bottom;
-}
-
-
-
-/* Tagalong result icons */
-.results_line.location_iconarray > a {
-    display: inline-block;
-    height: auto;
-    width: auto;
-}
-#tagalong_category_selector {
-    display: block;
-    height: 2em;
+/**
+ * Tagline
+ **/
+div#slp_tagline {
+    background-color: #AABBDD;
+    font-size: 11px;
+    font-family: Arial, sans-serif;
+    opacity: 0.45;
+    filter:alpha(opacity=45);
+    margin-bottom: 3px;
+    padding-right: 3px;
+    text-align: right;
     width: 100%;
+
 }
-#tagalong_category_selector .category_selector.parent {
-    display: block;
-    float: left;
-}
-#tagalong_category_selector .category_selector.child {
+
+/**
+ * Results
+ **/
+div.results_entry {
     display: none;
-    float: left;
+    width: 0px;
+    height: 0px;
 }
+
+/* Tagalong Results Legends */
 #tagalong_legend {
     border: none;
     padding: 12px;

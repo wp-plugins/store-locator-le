@@ -36,6 +36,13 @@ class wpCSL_settings__slplus {
     private $sections;
 
     /**
+     * True if the CSS tweak was rendered for a slider already.
+     *
+     * @var boolean $slider_rendered
+     */
+    public $slider_rendered;
+
+    /**
      * Instantiate a settings object.
      *
      * @param mixed[] $params
@@ -976,6 +983,12 @@ class wpCSL_settings_item__slplus {
     private $name;
 
     /**
+     *
+     * @var \wpCSL_settings_section_
+     */
+    private $parent;
+
+    /**
      * The onChange JavaScript for an input item.
      * 
      * @var string $onChange
@@ -1093,6 +1106,17 @@ class wpCSL_settings_item__slplus {
                     '</div>' .
                     '</div>'
                     ;
+
+                    if (!$this->parent->slider_rendered) {
+                        $this->parent->slider_rendered=true;
+                        echo
+                            "<style type='text/css'>" .
+                                "    .onoffswitch-inner:before { content: '".__('ON','wpcsl') ."'; } " .
+                                "    .onoffswitch-inner:after  { content: '".__('OFF','wpcsl')."'; } " .
+                            "</style>"
+                            ;
+                    }
+
                 break;
 
             // TYPE: subheader

@@ -19,8 +19,16 @@
 class wpCSL_helper__slplus {
 
     /**
+     * Has the create_SimpleMessage deprecation notice been shown already?
+     * 
+     * @var boolean $depnotice_create_SimpleMessage
+     */
+    private  $depnotice_create_SimpleMessage = false;
+
+
+    /**
      *
-     * @param type $params
+     * @param mixed[] $params
      */
     function __construct($params=null) {
 
@@ -360,4 +368,22 @@ class wpCSL_helper__slplus {
             }
         }
     }
+
+     //------------------------------------------------------------------------
+     // DEPRECATED
+     //------------------------------------------------------------------------
+
+     /**
+      * Do not use, deprecated.
+      *
+      * @deprecated 4.0
+      */
+     function create_SimpleMessage() {
+        if (!$this->depnotice_create_SimpleMessage) {
+            $this->parent->notifications->add_notice(9,$this->parent->createstring_Deprecated(__FUNCTION__));
+            $this->parent->notifications->display();
+            $this->depnotice_create_SimpleMessage = true;
+        }
+     }
+
 }

@@ -44,12 +44,10 @@
     -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
     }
     .onoffswitch-inner:before {
-    content: "ON";
     padding-left: 8px;
     background-color: #2FCCFF; color: #FFFFFF;
     }
     .onoffswitch-inner:after {
-    content: "OFF";
     padding-right: 8px;
     background-color: #EEEEEE; color: #999999;
     text-align: right;
