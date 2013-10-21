@@ -31,6 +31,21 @@ class SLPlus extends wpCSL_plugin__slplus {
      */
     const linkToProPack = '<a href="http://www.charlestonsw.com/product/slp4-pro/" target="csa">Pro Pack</a>';
 
+    /**
+     * The Extendo web link.
+     */
+    const linkToExtendo = '<a href="http://www.charlestonsw.com/product/slp4-extendo/" target="csa">Super Extendo</a>';
+
+    /**
+     * Major Version Definition, SLP3
+     */
+    const SLP3 = '3';
+
+    /**
+     * Major Version Definition, SLP4
+     */
+    const SLP4 = '4';
+
     //-------------------------------------
     // Properties
     //-------------------------------------
@@ -409,6 +424,13 @@ class SLPlus extends wpCSL_plugin__slplus {
                       ),
                 )
            );
+    }
+
+    /**
+     * Return true if the Extendo plugin is active.
+     */
+    public function is_Extended() {
+        return in_array('slp-extendo',$this->addons);
     }
 
     /**

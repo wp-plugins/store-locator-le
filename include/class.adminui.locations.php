@@ -443,7 +443,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
     }
 
     /**
-     * GeoCode a given location, updating the slplus_plugin currentLocation object alat/long.
+     * GeoCode a given location, updating the slplus_plugin currentLocation object lat/long.
      *
      * Writing to disk is to be handled by the calling function.
      *
@@ -698,15 +698,26 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                 __('Add Location','csa-slplus'):
                 sprintf("%s #%d",__('Update Location', 'csa-slplus'),$this->plugin->currentLocation->id)
             );
-        $clickAction = ($this->addingLocation?'add':'save');
+
+        $value   =
+                ($this->addingLocation)    ?
+                __('Add'   ,'csa-slplus')  :
+                __('Update','csa-slplus')  ;
+
+        $onClick =
+                ($this->addingLocation)                                       ?
+                "wpcslAdminInterface.doAction('add' ,'','manualAddForm');"    :
+                "wpcslAdminInterface.doAction('save','','locationForm' );"    ;
+
         return
             $HTML .
             ($this->addingLocation? '' : "<span class='slp-edit-location-id'>Location # $this->idString</span>") .
             "<div id='slp_form_buttons'>"                                                           .
-            "<input type='submit' "                                                                 .
-                "value='".($this->addingLocation?__('Add','csa-slplus'):__('Update', 'csa-slplus')) .
+            "<input "                                                                               .
+                "type='submit'        "                                                             .
+                'value="'  .$value  .'" '                                                           .
+                'onClick="'.$onClick.'" '                                                           .
                 "' alt='$alTitle' title='$alTitle' class='button-primary'"                          .
-                'onclick="doAction(\''.$clickAction.'\',\'\');" '                                   .                
                 ">"                                                                                 .
             "<input type='button' class='button' "                                                  .
                 "value='".__('Cancel', 'csa-slplus')."' "                                           .
@@ -891,7 +902,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                     $skipGeocode
                     );
             print "<div class='updated fade'>".
-                    $_POST['store-'] ." " .
+                    stripslashes_deep($_POST['store-']) ." " .
                     __("Added Successfully",'csa-slplus') . '.</div>';
         } else {
             $this->plugin->debugMP('slp.managelocs','pr','location_Add no POST[store-]',$locationData,NULL,NULL,true);
@@ -1151,7 +1162,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                             'jQuery(\'.bulk_extras\').hide();jQuery(\'#extra_\'+jQuery(\'#actionType\').val()).show();',
                         'buttonlabel'   => __('Apply','csa-slplus') ,
                         'onclick'       => 
-                            'doAction(jQuery(\'#actionType\').val(),\''.
+                            'wpcslAdminInterface.doAction(jQuery(\'#actionType\').val(),\''.
                                 $confirmPretext .
                                 '\'+jQuery(\'#actionType option:selected\').text()+\'?\');'
                     )
@@ -1187,7 +1198,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                         'name'          => 'filter'                 ,
                         'items'         => $dropdownItems           ,
                         'buttonlabel'   => __('Filter','csa-slplus') ,
-                        'onclick'       => 'doAction(jQuery(\'#filterType\').val(),\'\');'
+                        'onclick'       => 'wpcslAdminInterface.doAction(jQuery(\'#filterType\').val(),\'\');'
                     )
                 )
             ;
@@ -1297,7 +1308,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                         'buttonlabel'   => __('Display','csa-slplus')   ,
                         'onclick'       => 
                             'jQuery(\'#displaylimit\').val(jQuery(\'#displayType option:selected\').text());' .
-                            'doAction(jQuery(\'#displayType\').val(),\'\');'
+                            'wpcslAdminInterface.doAction(jQuery(\'#displayType\').val(),\'\');'
                     )
                 )
             ;
@@ -1413,9 +1424,12 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         $currentSearch = ((isset($_REQUEST['searchfor'])&&!empty($_REQUEST['searchfor']))?$_REQUEST['searchfor']:'');
         return
             '<div class="alignleft actions">'                                                                               .
-                "<input id='searchfor' value='{$currentSearch}' type='text' name='searchfor'>"                                          .
-                "<input id='doaction_search' class='button action' type='submit' value='".__('Search','csa-slplus')."' "    .
-                    'onClick="doAction(\'search\',\'\');" '                                                                 .
+                "<input id='searchfor' value='{$currentSearch}' type='text' name='searchfor' "                              .
+                    ' onkeypress=\'if (event.keyCode == 13) { wpcslAdminInterface.doAction("search",""); } \' '              .
+                    ' />'                                                                                                   .
+                "<input id='doaction_search' class='button action' type='submit' "                                          .
+                    "value='".__('Search','csa-slplus')."' "                                                                .
+                    'onClick="wpcslAdminInterface.doAction(\'search\',\'\');" '                                             .
                     ' />'                                                                                                   .
             '</div>'
             ;
@@ -1479,7 +1493,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                     break;
             }
         }
-        $tableHeaderString .= '<th>Lat, Lon</th></tr></thead>';
+        $tableHeaderString .= '<th>' . __('Lat, Lon','csa-slplus'). '</th></tr></thead>';
         return $tableHeaderString;
     }
 
@@ -1586,31 +1600,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         }
         do_action('slp_manage_locations_action');
     }
-
-    /**
-     * Render the JavaScript for the manage locations page.
-     */
-    function render_JavaScript() {
-        ?>
-        <script language="JavaScript">
-            function confirmClick(message,href) {
-                if (confirm(message)) {	location.href=href; }
-                else  { return false; }
-            }
-            function doAction(theAction,thePrompt) {
-                if((thePrompt === '') || confirm(thePrompt)){
-                    LF=document.forms['locationForm'];
-                    LF.act.value=theAction;
-                    LF.submit();
-                }else{
-                    return false;
-                }
-            }
-        </script>
-        <?php
-
-    }
-
+    
     /**
      * Render the manage locations admin page.
      *
@@ -1618,11 +1608,6 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
     function render_adminpage() {
         $this->plugin->debugMP('slp.managelocs','msg',__FUNCTION__);
         $this->plugin->helper->loadPluginData();
-
-        //--------------------------------
-        // Render: JavaScript
-        //--------------------------------
-        $this->render_JavaScript();
 
         //--------------------------------
         // Render: Header Div
@@ -1841,7 +1826,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                         "&nbsp;" .
                         "<a class='action_icon delete_icon' alt='".__('delete','csa-slplus')."' title='".__('delete','csa-slplus')."'
                             href='".$this->hangoverURL."&act=delete&sl_id=$locID' " .
-                            "onclick=\"confirmClick('".sprintf(__('Delete %s?','csa-slplus'),$sl_value['sl_store'])."', this.href); return false;\"></a>"
+                            "onclick=\"wpcslAdminInterface.confirmClick('".sprintf(__('Delete %s?','csa-slplus'),$sl_value['sl_store'])."', this.href); return false;\"></a>"
                             ;
 
                     $actionButtonsHTML = apply_filters('slp_manage_locations_actionbuttons',$actionButtonsHTML, $sl_value);
