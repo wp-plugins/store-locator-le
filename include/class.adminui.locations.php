@@ -443,7 +443,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
     }
 
     /**
-     * GeoCode a given location, updating the slplus_plugin currentLocation object alat/long.
+     * GeoCode a given location, updating the slplus_plugin currentLocation object lat/long.
      *
      * Writing to disk is to be handled by the calling function.
      *
@@ -902,7 +902,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                     $skipGeocode
                     );
             print "<div class='updated fade'>".
-                    $_POST['store-'] ." " .
+                    stripslashes_deep($_POST['store-']) ." " .
                     __("Added Successfully",'csa-slplus') . '.</div>';
         } else {
             $this->plugin->debugMP('slp.managelocs','pr','location_Add no POST[store-]',$locationData,NULL,NULL,true);
@@ -1493,7 +1493,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                     break;
             }
         }
-        $tableHeaderString .= '<th>Lat, Lon</th></tr></thead>';
+        $tableHeaderString .= '<th>' . __('Lat, Lon','csa-slplus'). '</th></tr></thead>';
         return $tableHeaderString;
     }
 

@@ -172,7 +172,7 @@ class SLPlus_Location {
     //
     private $dbFieldPrefix      = 'sl_';
     private $pageType           = 'store_page';
-    private $pageDefaultStatus  = 'draft';
+    private $pageDefaultStatus;
     private $plugin;
 
     //-------------------------------------------------
@@ -190,6 +190,10 @@ class SLPlus_Location {
         }
         global $wpdb;
         $this->db = $wpdb;
+
+        // Set gettext default properties.
+        //
+        $this->pageDefaultStatus = __('draft','csa-slplus');
     }
 
     /**
