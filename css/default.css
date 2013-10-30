@@ -339,6 +339,13 @@ div.results_entry {
 div.results_entry:hover {
     background-color: #F2F2F2;
 }
+div.results_entry.featured {
+    background-color: #EFF0DE;
+}
+div.results_entry.featured:hover {
+    background-color: #E7F8D6;
+}
+
 div.results_row_left_column {
     display: inline-block;
     position: relative;

@@ -131,13 +131,23 @@ class wpCSL_settings__slplus {
         $this->csl_php_modules = get_loaded_extensions();
         natcasesort($this->csl_php_modules);
         $this->parent->metadata = get_plugin_data($this->parent->fqfile, false, false);
+
+        // Add ON Packs
+        //
+        $addonStr = '';
+        if (isset($this->parent->addons)) {
+            foreach ($this->parent->addons as $addon => $object) {
+                $version  = ($object!=null)?$object->metadata['Version']:'active';
+                $addonStr .= $this->create_EnvDiv($addon,$version);
+            }
+        }
+
         $this->add_section(
             array(
                 'name' => 'Plugin Environment',
                 'description' =>
                     $this->create_EnvDiv($this->parent->metadata['Name'] . ' Version' ,$this->parent->metadata['Version'] ).
-                    $this->create_EnvDiv('CSA IP Addresses'                         ,
-                            gethostbyname('charlestonsw.com') .' and ' .gethostbyname('license.charlestonsw.com')       ).
+                    $addonStr . 
                     '<br/><br/>' .
                     $this->create_EnvDiv('WPCSL Version'                            ,WPCSL__slplus__VERSION             ).
                     $this->create_EnvDiv('Active WPCSL'                             ,plugin_dir_path(__FILE__)          ).
@@ -1046,8 +1056,9 @@ class wpCSL_settings_item__slplus {
      *
      */
     function display() {
-
-        $showThis = htmlspecialchars((isset($this->value)?$this->value:get_option($this->name)));
+        $optVal = get_option($this->name);
+        $optVal = is_array($optVal)?print_r($optVal,true):$optVal;
+        $showThis = htmlspecialchars((isset($this->value)?$this->value:$optVal));
 
         echo '<div class="wpcsl-setting">';
 
