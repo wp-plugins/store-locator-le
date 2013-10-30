@@ -4,8 +4,8 @@ Contributors: charlestonsw
 Donate link: http://www.charlestonsw.com/product-category/slp4-products/
 Tags: store locator,location management,location map,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
-Tested up to: 3.6.1
-Stable tag: 4.0.026
+Tested up to: 3.7
+Stable tag: 4.0.027
 License: GLPv2 or later
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
@@ -18,8 +18,8 @@ The website offers [more screen shots](http://www.charlestonsw.com/product-categ
 = Version 4 Major Upgrade =
 
 Version 4 is the first major upgrade in a couple of years.
-This upgrade provides new features that make it far easier to create a truly custom user exprience without having to leave the WordPress admin panel.
-You can learn more about the new release at the [Charleston Software Associates](http://www.charlestonsw.com) website.
+This upgrade provides new features that make it far easier to create a truly custom user experience without having to leave the WordPress admin panel.
+You can learn more about the new release at the [Charleston Software Associates](http://www.charlestonsw.com) web site.
 
 = Important Note About Version 3 Premium Add Ons =
 
@@ -117,6 +117,11 @@ Visit the [SLP Customers page](http://www.charlestonsw.com/support/documentation
 * Create pages for each location with the click of a button.
 * Each page can be edited as an individual post.
 * Pages support their own comments, featured image, page style, and other standard WordPress page template features.
+
+**[Super Extendo](http://www.charlestonsw.com/product/slp4-super-extendo/) Extend The Location Data**
+
+* Works with [Enhanced Results](http://www.charlestonsw.com/product/store-locator-plus-enhanced-results) to add featured and ranked locations.
+* Future plans include a user-controlled field editor where you can add/edit/remove custom data fields for Store Locator Plus locations.
 
 **[Tagalong](http://www.charlestonsw.com/product/store-locator-plus-tagalong/) Categorize Your Locations**
 
@@ -331,6 +336,17 @@ Please read the *description page* for this plugin for an important note about p
 I update about once per month or more frequently as needed.
 
 Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 4.0.027 =
+
+* Enhancement: Better communication between add-on packs.
+* Enhancement: Plugin Environment on info tab shows installed-and-active add-on packs and the version info for each.
+* Enhancement: Wiring configured for new "featured locations" setting.  Featured locations requires [Enhanced Results](http://www.charlestonsw.com/product/store-locator-plus-enhanced-results) and [Super Extendo](http://www.charlestonsw.com/product/slp4-super-extendo/) premium add-ons.
+* Enhancement: Elogix Compatible [SLP theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/) is the first "featured locations" compatible theme.
+* Enhancement: Update default [SLP theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/) to support ER + Extendo featured locations.
+* Enhancement: [New filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_extend_get_SQL_selectall to extend data queries in base plugin
+* Enhancement: [Change filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_invalid_highlight is now slp_locations_manage_cssclass making it more flexible
+* Enhancement: Extend order by processor allowing more add-on packs to manipulate search result ordering.
 
 = 4.0.026 =
 

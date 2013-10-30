@@ -633,7 +633,6 @@ class SLPlus_UI {
             'map_typectrl'      => (get_option(SLPLUS_PREFIX.'_disable_maptypecontrol')==0),
             'msg_noresults'     => $this->plugin->settings->get_item('message_noresultsfound','No results found.','_'),
             'results_string'    => $resultString,
-            'show_tags'         => (get_option(SLPLUS_PREFIX.'_show_tags')==1),
             'overview_ctrl'     => get_option('sl_map_overview_control',0),
             'use_email_form'    => (get_option(SLPLUS_PREFIX.'_use_email_form',0)==1),
             'zoom_level'        => get_option('sl_zoom_level',12),

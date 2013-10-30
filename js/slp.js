@@ -433,7 +433,6 @@ var csl = {
                 this.mapEndIconHeight = slplus.map_end_sizeh;
                 this.mapScaleControl = !!slplus.map_scalectrl;
                 this.mapTypeControl = !!slplus.map_typectrl;
-                this.showTags = slplus.show_tags;
                 this.overviewControl = !!(parseInt(slplus.overview_ctrl));
                 this.useEmailForm = !!slplus.use_email_form;
                 this.disableDefaultUI = false;
@@ -1210,12 +1209,10 @@ var csl = {
 			//if we are showing tags in the table
 			//
 			var tagInfo = '';
-			if (slplus.show_tags) {
-				if (jQuery.trim(aMarker.tags) !== '') {
-					var tagclass = aMarker.tags.replace(/\W/g,'_');
-					tagInfo = '<br/><div class="'+tagclass+' slp_result_table_tags"><span class="tagtext">'+aMarker.tags+'</span></div>';
-				}
-			}
+            if (jQuery.trim(aMarker.tags) !== '') {
+                var tagclass = aMarker.tags.replace(/\W/g,'_');
+                tagInfo = '<br/><div class="'+tagclass+' slp_result_table_tags"><span class="tagtext">'+aMarker.tags+'</span></div>';
+            }
 
 			//keep empty data lines out of the final result
 			//

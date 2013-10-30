@@ -83,6 +83,13 @@ class SLPlus_Location {
     private $pages_on;
     private $option_value;
     private $lastupdated;
+    
+    /**
+     * Extended data values.
+     * 
+     * @var mixed[] $exdata
+     */
+    private $exdata;
 
     /**
      * The WordPress database connection.
@@ -275,6 +282,9 @@ class SLPlus_Location {
         if (property_exists($this, $property)) {
             return $this->$property;
         }
+        if ($this->plugin->is_Extended() && isset($this->exdata[$property])) {
+            return $this->exdata[$property];
+        }
         return null;
     }
 
@@ -317,7 +327,7 @@ class SLPlus_Location {
 
         // Attached Post ID?  Delete it permanently (bypass trash).
         //
-        if (ctype_digit($this->linked_postid) && ($this->linked_postid>=0)) {
+        if (ctype_digit($this->linked_postid) && ($this->linked_postid>0)) {
             $post = get_post($this->linked_postid);
             if ($post->post_type === SLPLUS::locationPostType) {
                 wp_delete_post($this->linked_postid,true);
@@ -515,6 +525,13 @@ class SLPlus_Location {
         if (property_exists($this, $property)) {
             $this->$property = $value;
         }
+        
+        // Extended Data, allow property as long as it does not conflict
+        // with a built-in property.
+        //
+        if ($this->plugin->is_Extended() && !property_exists($this,$property)) {
+            $this->exdata[$property] = $value;
+        }
         return $this;
     }
 
@@ -544,6 +561,7 @@ class SLPlus_Location {
             //
             $this->reset();
             foreach ($locationData as $field => $value) {
+                if ($field==='id') { continue; }
 
                 // Get rid of the leading field prefix (usually sl_)
                 //
