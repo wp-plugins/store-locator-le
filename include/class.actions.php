@@ -17,6 +17,13 @@ class SLPlus_Actions {
     //----------------------------------
 
     /**
+     * Has the getCompoundOption deprecation notice been shown already?
+     *
+     * @var boolean $depnotice_getCompoundOption
+     */
+    private  $depnotice_getCompoundOption = false;
+
+    /**
      * The SLPlus plugin object.
      *
      * @var SLPlus $plugin
@@ -399,13 +406,13 @@ class SLPlus_Actions {
         echo '<!-- SLP Custom CSS -->'."\n".'<style type="text/css">'."\n" .
 
                     // Map
-                    "div#map {\n".
+                    "div#sl_div div#map {\n".
                         "width:{$this->plugin->data['sl_map_width']}{$this->plugin->data['sl_map_width_units']};\n" .
                         "height:{$this->plugin->data['sl_map_height']}{$this->plugin->data['sl_map_height_units']};\n" .
                     "}\n" .
 
                     // Tagline
-                    "div#slp_tagline {\n".
+                    "div#sl_div div#slp_tagline {\n".
                         "width:{$this->plugin->data['sl_map_width']}{$this->plugin->data['sl_map_width_units']};\n" .
                     "}\n" .
 
@@ -441,4 +448,23 @@ class SLPlus_Actions {
             define('SLPLUS_SCRIPTS_MANAGED',true);
         }
     }
+
+
+     //------------------------------------------------------------------------
+     // DEPRECATED
+     //------------------------------------------------------------------------
+
+     /**
+      * Do not use, deprecated.
+      *
+      * @deprecated 4.0
+      */
+     function getCompoundOption() {
+        if (!$this->depnotice_getCompoundOption) {
+            $this->plugin->notifications->add_notice(9,$this->plugin->createstring_Deprecated(__FUNCTION__));
+            $this->plugin->notifications->display();
+            $this->depnotice_getCompoundOption = true;
+        }
+     }
+
 }

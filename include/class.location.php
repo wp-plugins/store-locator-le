@@ -83,6 +83,13 @@ class SLPlus_Location {
     private $pages_on;
     private $option_value;
     private $lastupdated;
+    
+    /**
+     * Extended data values.
+     * 
+     * @var mixed[] $exdata
+     */
+    private $exdata;
 
     /**
      * The WordPress database connection.
@@ -172,7 +179,7 @@ class SLPlus_Location {
     //
     private $dbFieldPrefix      = 'sl_';
     private $pageType           = 'store_page';
-    private $pageDefaultStatus  = 'draft';
+    private $pageDefaultStatus;
     private $plugin;
 
     //-------------------------------------------------
@@ -190,6 +197,10 @@ class SLPlus_Location {
         }
         global $wpdb;
         $this->db = $wpdb;
+
+        // Set gettext default properties.
+        //
+        $this->pageDefaultStatus = __('draft','csa-slplus');
     }
 
     /**
@@ -271,6 +282,9 @@ class SLPlus_Location {
         if (property_exists($this, $property)) {
             return $this->$property;
         }
+        if ($this->plugin->is_Extended() && isset($this->exdata[$property])) {
+            return $this->exdata[$property];
+        }
         return null;
     }
 
@@ -313,7 +327,7 @@ class SLPlus_Location {
 
         // Attached Post ID?  Delete it permanently (bypass trash).
         //
-        if (ctype_digit($this->linked_postid) && ($this->linked_postid>=0)) {
+        if (ctype_digit($this->linked_postid) && ($this->linked_postid>0)) {
             $post = get_post($this->linked_postid);
             if ($post->post_type === SLPLUS::locationPostType) {
                 wp_delete_post($this->linked_postid,true);
@@ -421,10 +435,27 @@ class SLPlus_Location {
         $dataWritten = true;
         $dataToWrite = array_reduce($this->dbFields,array($this,'mapPropertyToField'));
 
+        // sl_id int field blank, unset it we will insert a new auto-int record
+        //
+        if (empty($dataToWrite['sl_id'])) {
+            unset($dataToWrite['sl_id']);
+        }
+        
+        // sl_last_upated is blank, unset to get auto-date value
+        //
+        if (empty($dataToWrite['sl_lastupdated'])) {
+            unset($dataToWrite['sl_lastupdated']);
+        }
+
+        // sl_linked_postid is blank, set it to 0
+        //
+        if (empty($dataToWrite['sl_linked_postid'])) {
+            $dataToWrite['sl_linked_postid'] = 0;
+        }
+
         // Location is set, update it.
         //
         if ($this->id > 0) {
-            unset($dataToWrite['sl_id']);
             if(!$this->plugin->db->update($this->plugin->database->info['table'],$dataToWrite,array('sl_id' => $this->id))) {
                 $this->plugin->notifications->add_notice(
                         'warning',
@@ -494,6 +525,13 @@ class SLPlus_Location {
         if (property_exists($this, $property)) {
             $this->$property = $value;
         }
+        
+        // Extended Data, allow property as long as it does not conflict
+        // with a built-in property.
+        //
+        if ($this->plugin->is_Extended() && !property_exists($this,$property)) {
+            $this->exdata[$property] = $value;
+        }
         return $this;
     }
 
@@ -523,6 +561,7 @@ class SLPlus_Location {
             //
             $this->reset();
             foreach ($locationData as $field => $value) {
+                if ($field==='id') { continue; }
 
                 // Get rid of the leading field prefix (usually sl_)
                 //

@@ -88,15 +88,19 @@ class SLPlus_AjaxHandler {
               'fax'         => esc_attr($row['sl_fax']),
               'image'       => esc_attr($row['sl_image']),
               'distance'    => $row['sl_distance'],
-              'tags'        => ((get_option(SLPLUS_PREFIX.'_show_tags',0) ==1)? esc_attr($row['sl_tags']) : ''),
+              'tags'        => esc_attr($row['sl_tags']),
               'option_value'=> esc_js($row['sl_option_value']),
               'attributes'  => maybe_unserialize($row['sl_option_value']),
               'id'          => $row['sl_id'],
           );
 
-        // FILTER: slp_results_marker_data
         $this->plugin->currentLocation->set_PropertiesViaArray($row);
+
+        // FILTER: slp_results_marker_data
+        // Modify the map marker object that is sent back to the UI in the JSONP response.
+        //
         $marker = apply_filters('slp_results_marker_data',$marker);
+
         return $marker;
     }
 
@@ -225,21 +229,16 @@ class SLPlus_AjaxHandler {
             $filterClause .= $filter;
         }
 
-        // FILTER: slp_ajaxsql_orderby
-        //
-        $orderby = apply_filters('slp_ajaxsql_orderby','sl_distance ASC');
-
         // Set the query
-        // FILTER: slp_mysql_search_query
+        // FILTER: slp_ajaxsql_fullquery
         //
+        add_filter('slp_ajaxsql_orderby',array($this,'filter_SetDefaultOrderByDistance'),100);
         $this->dbQuery =  apply_filters('slp_ajaxsql_fullquery',
-            "SELECT *,".
-            "( $multiplier * acos( cos( radians('%s') ) * cos( radians( sl_latitude ) ) * cos( radians( sl_longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( sl_latitude ) ) ) ) AS sl_distance ".
-            "FROM {$this->plugin->database->info['table']} "                  .
-            "WHERE {$this->plugin->database->info['query']['valid_latlong']} ".
-            "{$filterClause} "                                          .
-            "HAVING (sl_distance < %d) "                                .
-            "ORDER BY {$orderby} "                                      .
+            $this->plugin->database->get_SQL('selectall_with_distance')             .
+            "WHERE {$this->plugin->database->info['query']['valid_latlong']}    "   .
+            "{$filterClause} "                                                      .
+            "HAVING (sl_distance < %d) "                                            .
+            $this->plugin->database->get_SQL('orderby_default')                     .
             'LIMIT %d'
             );
 
@@ -252,6 +251,7 @@ class SLPlus_AjaxHandler {
         $this->dbQuery =
             $wpdb->prepare(
                 $this->dbQuery,
+                $multiplier,
                 $_POST['lat'],
                 $_POST['lng'],
                 $_POST['lat'],
@@ -274,6 +274,16 @@ class SLPlus_AjaxHandler {
         // Return the results
         //
         return $result;
+    }
+
+    /**
+     * Add sort by distance ASC as default order.
+     *
+     * @param string $orderby
+     * @return string
+     */
+    function filter_SetDefaultOrderByDistance($orderby) {
+        return $this->plugin->database->extend_OrderBy($orderby,' sl_distance ASC ');
     }
 
     /**

@@ -530,6 +530,32 @@ class wpCSL_plugin__slplus {
         }
     }
 
+
+    /**
+     * Return a deprecated notification.
+     *
+     * @param string $function_name name of function that is deprecated.
+     */
+    public function createstring_Deprecated($function_name) {
+        return
+            sprintf(
+                    __('The %s method is no longer available. ','csa-slplus'),
+                    $function_name
+                    ).
+            '<br/>' .
+            __('It is likely that one of your add-on pack is out of date. ','csa-slplus').
+            '<br/>' .
+            sprintf(
+                    __('You need to <a href="%s" target="csa">upgrade</a> to the latest %s compatible version '.
+                       'or <a href="%s" target="csa">downgrade</a> the %s plugin.','csa-slplus'),
+                    $this->purchase_url,
+                    $this->name,
+                    $this->wp_downloads_url,
+                    $this->name
+                    )
+            ;
+    }
+
     /**
      * Add DebugMyPlugin messages.
      *

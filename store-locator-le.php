@@ -3,7 +3,8 @@
 Plugin Name: Store Locator Plus
 Plugin URI: http://www.charlestonsw.com/product-category/slplus/
 Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Google Maps.  This is a highly customizable, easily expandable, enterprise-class location management system.
-Version: 4.0.020
+Version: 4.0.027
+Tested up to: 3.7
 Author: Charleston Software Associates
 Author URI: http://www.charlestonsw.com
 License: GPL3
@@ -182,8 +183,9 @@ if (defined('SLPLUS_PLUGINDIR')) {
             'admin_main_slug'       => 'slp_info'               ,
 
             'url'                   => 'http://www.charlestonsw.com/',
+            'wp_downloads_url'      => 'http://wordpress.org/plugins/store-locator-le/developers/',
             'support_url'           => 'http://www.charlestonsw.com/support/documentation/store-locator-plus/',
-            'purchase_url'          => 'http://www.charlestonsw.com/product-category/slplus/',
+            'purchase_url'          => 'http://www.charlestonsw.com/product-category/slp4-products/',
             'rate_url'              => 'http://wordpress.org/extend/plugins/store-locator-le/',
             'forum_url'             => 'http://www.charlestonsw.com/forums/',
             'updater_url'           => 'http://www.charlestonsw.com/paypal/updater.php',

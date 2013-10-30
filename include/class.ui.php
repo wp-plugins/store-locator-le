@@ -13,6 +13,13 @@ class SLPlus_UI {
     // Properties
     //-------------------------------------
 
+    /**
+     * Has the setResultsString deprecation notice been shown already?
+     *
+     * @var boolean $depnotice_setResultsString
+     */
+    private  $depnotice_setResultsString = false;
+
     //----------------------------------
     // Methods
     //----------------------------------
@@ -626,7 +633,6 @@ class SLPlus_UI {
             'map_typectrl'      => (get_option(SLPLUS_PREFIX.'_disable_maptypecontrol')==0),
             'msg_noresults'     => $this->plugin->settings->get_item('message_noresultsfound','No results found.','_'),
             'results_string'    => $resultString,
-            'show_tags'         => (get_option(SLPLUS_PREFIX.'_show_tags')==1),
             'overview_ctrl'     => get_option('sl_map_overview_control',0),
             'use_email_form'    => (get_option(SLPLUS_PREFIX.'_use_email_form',0)==1),
             'zoom_level'        => get_option('sl_zoom_level',12),
@@ -853,4 +859,32 @@ class SLPlus_UI {
             print ">$clean_selection</option>";
         }print "</select>";
     }
+
+
+     //------------------------------------------------------------------------
+     // DEPRECATED
+     //------------------------------------------------------------------------
+
+     /**
+      * Do not use, deprecated.
+      *
+      * @deprecated 4.0
+      *
+      * @var null $addingLocation
+      */
+     public $resultsString = null;
+
+     /**
+      * Do not use, deprecated.
+      *
+      * @deprecated 4.0
+      */
+     function setResultsString() {
+        if (!$this->setPlugin()) { return false; }
+        if (!$this->depnotice_setResultsString) {
+            $this->plugin->notifications->add_notice(9,$this->plugin->createstring_Deprecated(__FUNCTION__));
+            $this->plugin->notifications->display();
+            $this->depnotice_setResultsString = true;
+         }
+     }
 }

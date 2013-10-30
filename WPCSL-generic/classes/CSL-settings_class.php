@@ -36,6 +36,13 @@ class wpCSL_settings__slplus {
     private $sections;
 
     /**
+     * True if the CSS tweak was rendered for a slider already.
+     *
+     * @var boolean $slider_rendered
+     */
+    public $slider_rendered;
+
+    /**
      * Instantiate a settings object.
      *
      * @param mixed[] $params
@@ -124,13 +131,23 @@ class wpCSL_settings__slplus {
         $this->csl_php_modules = get_loaded_extensions();
         natcasesort($this->csl_php_modules);
         $this->parent->metadata = get_plugin_data($this->parent->fqfile, false, false);
+
+        // Add ON Packs
+        //
+        $addonStr = '';
+        if (isset($this->parent->addons)) {
+            foreach ($this->parent->addons as $addon => $object) {
+                $version  = ($object!=null)?$object->metadata['Version']:'active';
+                $addonStr .= $this->create_EnvDiv($addon,$version);
+            }
+        }
+
         $this->add_section(
             array(
                 'name' => 'Plugin Environment',
                 'description' =>
                     $this->create_EnvDiv($this->parent->metadata['Name'] . ' Version' ,$this->parent->metadata['Version'] ).
-                    $this->create_EnvDiv('CSA IP Addresses'                         ,
-                            gethostbyname('charlestonsw.com') .' and ' .gethostbyname('license.charlestonsw.com')       ).
+                    $addonStr . 
                     '<br/><br/>' .
                     $this->create_EnvDiv('WPCSL Version'                            ,WPCSL__slplus__VERSION             ).
                     $this->create_EnvDiv('Active WPCSL'                             ,plugin_dir_path(__FILE__)          ).
@@ -976,6 +993,12 @@ class wpCSL_settings_item__slplus {
     private $name;
 
     /**
+     *
+     * @var \wpCSL_settings_section_
+     */
+    private $parent;
+
+    /**
      * The onChange JavaScript for an input item.
      * 
      * @var string $onChange
@@ -1033,8 +1056,9 @@ class wpCSL_settings_item__slplus {
      *
      */
     function display() {
-
-        $showThis = htmlspecialchars((isset($this->value)?$this->value:get_option($this->name)));
+        $optVal = get_option($this->name);
+        $optVal = is_array($optVal)?print_r($optVal,true):$optVal;
+        $showThis = htmlspecialchars((isset($this->value)?$this->value:$optVal));
 
         echo '<div class="wpcsl-setting">';
 
@@ -1093,6 +1117,17 @@ class wpCSL_settings_item__slplus {
                     '</div>' .
                     '</div>'
                     ;
+
+                    if (!$this->parent->slider_rendered) {
+                        $this->parent->slider_rendered=true;
+                        echo
+                            "<style type='text/css'>" .
+                                "    .onoffswitch-inner:before { content: '".__('ON','wpcsl') ."'; } " .
+                                "    .onoffswitch-inner:after  { content: '".__('OFF','wpcsl')."'; } " .
+                            "</style>"
+                            ;
+                    }
+
                 break;
 
             // TYPE: subheader
