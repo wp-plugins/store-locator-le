@@ -12,28 +12,6 @@ var csl = {
   	*/
   	Animation: { Bounce: 1, Drop: 2, None: 0 },
 
-
-    /***************************************************************************
-     *
-     * MOUSE ANIMATION SUBCLASS
-     *
-     */
-	MouseAnimation: function()
-	{
-		this.anim2 = function(imgObj, url) {
-			imgObj.src=url;
-		};
-
-		this.anim = function(name, type) {
-			if (type===0)
-				document.images[name].src="/images/"+name+".gif";
-			if (type===1)
-				document.images[name].src="/images/"+name+"_over.gif";
-			if (type===2)
-				document.images[name].src="/images/"+name+"_down.gif";
-		};
-	},
-
     /***************************************************************************
      *
      * LOCATION SERVICES SUBCLASS
@@ -97,39 +75,32 @@ var csl = {
      *
      * AJAX SUBCLASS
      *
-	 ***************************
-  	 * Class: Ajax
-  	 * usage:
-	 * 		Sends an ajax request (use Ajax.Send())
-  	 * parameters:
-  	 * 		action: A usable action { action: 'csl_ajax_search', lat: 'start lat', long: 'start long', dist:'distance to search' }
-  	 *		callback: will be of the form: { success: true, response: {marker list}}
-  	 * returns: none
   	 */
 	Ajax: function() {
-		/***************************
-		 * function: Ajax.send
-		 * usage:
-		 * 		Sends an ajax request
-		 * parameters:
-		 * 		action: A usable action { action: 'csl_ajax_search', lat: 'start lat', long: 'start long', dist:'distance to search' }
-		 *		callback: will be of the form: { success: true, response: {marker list}}
-		 * returns: none
-		 */
+        /**
+         * Send a request to the ajax listener.
+         *
+         * action.action property is a usable action 'csl_ajax_search', lat: 'start lat', long: 'start long', dist:'distance to search'
+         *
+         * @argument {object} action
+         * @argument {function} callback function with params "success: true, response: {marker list}"
+         */
 	    this.send = function (action, callback) {
 	        if (window.location.protocol !== slplus.ajaxurl.substring(0, slplus.ajaxurl.indexOf(':') + 1)) {
 	            slplus.ajaxurl = slplus.ajaxurl.replace(slplus.ajaxurl.substring(0, slplus.ajaxurl.indexOf(':') + 1), window.location.protocol);
 	        }
-
-			jQuery.post(slplus.ajaxurl, action,
-			function (response) {
-			    try {
-			        response = JSON.parse(response);
-			    }
-			    catch (ex) {
-			    }
-				callback(response);
-			});
+			jQuery.post(
+                slplus.ajaxurl,
+                action,
+                function (response) {
+                    try {
+                        response = JSON.parse(response);
+                    }
+                    catch (ex) {
+                    }
+                    callback(response);
+                }
+             );
 		};
 	},
 
@@ -433,7 +404,6 @@ var csl = {
                 this.mapEndIconHeight = slplus.map_end_sizeh;
                 this.mapScaleControl = !!slplus.map_scalectrl;
                 this.mapTypeControl = !!slplus.map_typectrl;
-                this.showTags = slplus.show_tags;
                 this.overviewControl = !!(parseInt(slplus.overview_ctrl));
                 this.useEmailForm = !!slplus.use_email_form;
                 this.disableDefaultUI = false;
@@ -1210,12 +1180,10 @@ var csl = {
 			//if we are showing tags in the table
 			//
 			var tagInfo = '';
-			if (slplus.show_tags) {
-				if (jQuery.trim(aMarker.tags) !== '') {
-					var tagclass = aMarker.tags.replace(/\W/g,'_');
-					tagInfo = '<br/><div class="'+tagclass+' slp_result_table_tags"><span class="tagtext">'+aMarker.tags+'</span></div>';
-				}
-			}
+            if (jQuery.trim(aMarker.tags) !== '') {
+                var tagclass = aMarker.tags.replace(/\W/g,'_');
+                tagInfo = '<br/><div class="'+tagclass+' slp_result_table_tags"><span class="tagtext">'+aMarker.tags+'</span></div>';
+            }
 
 			//keep empty data lines out of the final result
 			//

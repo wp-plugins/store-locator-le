@@ -142,7 +142,6 @@ if (! class_exists('csl_mobile_listener')) {
 	            //
 	            $tag_filter = ''; 
 	            if (
-		            (get_option(SLPLUS_PREFIX.'_show_tag_search') ==1) &&
 		            isset($this->tags) && ($this->tags != '')
 	            ){
 		            $posted_tag = preg_replace('/^\s+(.*?)/','$1',$this->tags);
@@ -195,10 +194,6 @@ if (! class_exists('csl_mobile_listener')) {
 			            $this->Respond( false, 'Invalid query: ' . mysql_error() . '- '.$query);
 		            }
 
-		            // Show Tags
-		            //
-		            $slplus_show_tags = (get_option(SLPLUS_PREFIX.'_show_tags') ==1);
-
 		            // Reporting
 		            // Insert the query into the query DB
 		            // 
@@ -244,7 +239,7 @@ if (! class_exists('csl_mobile_listener')) {
                             'units' => get_option('sl_distance_unit',__('miles', 'csa-slplus')),
 				            'image' => esc_attr($row['sl_image']),
 				            'distance' => $row['sl_distance'],
-				            'tags' => ($slplus_show_tags) ? esc_attr($row['sl_tags']) : ''
+				            'tags' => esc_attr($row['sl_tags'])
 			            );
 			            $response[] = $marker;
 			

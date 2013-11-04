@@ -263,6 +263,9 @@ div.section_column h2, #rb_details h2 {
 .wpcsl-input.disabled {
     color: #F1F1F1;
 }
+#wpcsl_settings_group-inspect .wpcsl-input.disabled {
+    color: #464646;
+}
 .wpcsl-setting label {
     clear: left;
     display: block;
