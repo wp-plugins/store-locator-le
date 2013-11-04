@@ -61,9 +61,25 @@ class SLPlus extends wpCSL_plugin__slplus {
     //-------------------------------------
 
     /**
-     * An array of the add-on slugs that are active.
+     * An array of the add-on or modules slugs that are active.
      *
      * The keys will always list the add on slugs.
+     * Keys starting with slp. are built-in SLP modules.
+     *
+     * Modules:
+     * o 'slp.AjaxHandler' AjaxHandler
+     * o 'slp.UI' User Interface
+     *
+     * Add Ons:
+     * o 'slp-enhanced-map' Enhanced Map
+     * o 'slp-enhanced-results' Enhanced Results
+     * o 'slp-enhanced-search' Enhanced Search
+     * o 'slp-extendo' Super Extendo
+     * o 'slp-janitor' Janitor
+     * o 'slp-pages' Store Pages
+     * o 'slp-pro' Pro Pack
+     * o 'slp-tagalong' Tagalong
+     * o 'slp-widget' Widget
      *
      * The values will be null if there is no pointer to the object,
      * or the object pointer to an instantiated version of the add-on.
@@ -73,9 +89,18 @@ class SLPlus extends wpCSL_plugin__slplus {
     public $addons = array();
 
     /**
-     * @var \SLPlus_AdminUI $AdminUI
+     * The Admin UI object.
+     * 
+     * @var SLPlus_AdminUI $AdminUI
      */
     public $AdminUI;
+
+    /**
+     * The User Interface object.
+     *
+     * @var SLPlus_UI $UI
+     */
+    public $UI;
 
     /**
      * The current location.
@@ -150,6 +175,7 @@ class SLPlus extends wpCSL_plugin__slplus {
 <span class="location_detail_hours">[slp_location hours         suffix    br]</span></span>
 <span id="slp_bubble_img">[html br ifset img]
 [slp_location image         wrap    img]</span>
+<span id="slp_tags">[slp_location tags]</span>
 </div>'
                                                                             ,
 
@@ -172,7 +198,10 @@ class SLPlus extends wpCSL_plugin__slplus {
 
         'searchlayout'  => 
 '<div id="address_search">
+    [slp_search_element input_with_label="name"]
     [slp_search_element input_with_label="address"]
+    [slp_search_element dropdown_with_label="state"]
+    [slp_search_element selector_with_label="tag"]
     <div class="search_item">
         [slp_search_element dropdown_with_label="radius"]
         [slp_search_element button="submit"]
@@ -238,19 +267,19 @@ class SLPlus extends wpCSL_plugin__slplus {
     public $data;
 
     /**
+     * The data interface helper.
+     *
+     * @var \SLPlus_Data $database
+     */
+    public $database;
+
+    /**
      * Full path to this plugin directory.
      *
      * @var string $dir
      */
     private $dir;
 
-
-    /**
-     * The data interface helper.
-     *
-     * @var \SLPlus_Data $database
-     */
-    public $database;
 
     /**
      * Sets the values of the $data array.
@@ -514,6 +543,18 @@ class SLPlus extends wpCSL_plugin__slplus {
         ){
             $this->addons[$cleanslug] = $object;
         }
+    }
+
+    /**
+     * Register a base plugin module.
+     *
+     * @param string $name name of the module.
+     * @param object $object pointer to the module.
+     */
+    public function register_module($name,$object=null) {
+        $name = 'slp.'.$name;
+        if (!isset($this->$name)) { $this->$name = $object; }
+        $this->register_addon($name,$object);
     }
 
     /**

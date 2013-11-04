@@ -2,10 +2,10 @@
 Plugin Name:  Store Locator Plus
 Contributors: charlestonsw
 Donate link: http://www.charlestonsw.com/product-category/slp4-products/
-Tags: store locator,location management,location map,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
+Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
-Tested up to: 3.7
-Stable tag: 4.0.027
+Tested up to: 3.7.1
+Stable tag: 4.0.028
 License: GLPv2 or later
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
@@ -14,28 +14,6 @@ A full featured location management system. Add a location finder or directory t
 
 Learn more about [Store Locator Plus on the Charleston Software Associates website](http://www.charlestonsw.com/product-category/slp4-products/).
 The website offers [more screen shots](http://www.charlestonsw.com/product-category/slp4-products/), [technical documentation](http://www.charlestonsw.com/support/documentation/technical-documentation/), and [full release notes](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/).
-
-= Version 4 Major Upgrade =
-
-Version 4 is the first major upgrade in a couple of years.
-This upgrade provides new features that make it far easier to create a truly custom user experience without having to leave the WordPress admin panel.
-You can learn more about the new release at the [Charleston Software Associates](http://www.charlestonsw.com) web site.
-
-= Important Note About Version 3 Premium Add Ons =
-
-*Make sure all of your premium add-on packs are version 4.X or higher.*
-
-If you are using premium add-on packs for Store Locator Plus version 3 you must first upgrade to the Store Locator Plus 4 compatible add-on packs.
-Do not upgrade the base plugin if you are using SLP3 add-on packs.   You must follow these instructions:
-
-    * Login to your [Charleston Software Associates](http://www.charlestonsw.com) account.
-    * Purchase [the SLP4 compatible version of your add-on packs](http://www.charlestonsw.com/product-category/slp4-products/).
-    * Download the SLP4 add-on pack zip files.
-    * Login to your website's WordPress admin panel.
-    * Deactivate and delete all of your SLP premium add-on packs.
-    * Upgrade Store Locator Plus to SLP version 4.x.
-    * Install your newly downloaded SLP4 add-on pack zip files.
-    * Active the newly installed add-on packs.
 
 = Details =
 
@@ -137,6 +115,8 @@ Visit the [SLP Customers page](http://www.charlestonsw.com/support/documentation
 * Put location search in your widget-enabled areas.
 * Direct users to the default map page, or show results right in the widget area.
 
+** Create Your Own Add-On **
+
 If you are a plugin developer you will be interested in the new "Roll Your Own" program where you can create SLP based add-ons of your own.
 Create something great and list it on the CSA site!   Revenue sharing offered for premium add-on packs.
 If they are 100% ready-to-go the revenue split is 75% to the plugin author, 25% is retained for payment processing fees and marketing expenses.
@@ -202,6 +182,28 @@ If I do not have the language files already, or if they were notably out-of-date
 Upon request I will also put a link to your site in the "special thanks" section.
 
 Any EASIER way to perform translations?  Load the [Codestyling Localization plugin](http://wordpress.org/extend/plugins/codestyling-localization/) and then find it under "Tools/Localization" in your admin panel.
+
+= Version 4 Major Upgrade =
+
+Version 4 is the first major upgrade in a couple of years.
+This upgrade provides new features that make it far easier to create a truly custom user experience without having to leave the WordPress admin panel.
+You can learn more about the new release at the [Charleston Software Associates](http://www.charlestonsw.com) web site.
+
+= Important Note About Version 3 Premium Add Ons =
+
+*Make sure all of your premium add-on packs are version 4.X or higher.*
+
+If you are using premium add-on packs for Store Locator Plus version 3 you must first upgrade to the Store Locator Plus 4 compatible add-on packs.
+Do not upgrade the base plugin if you are using SLP3 add-on packs.   You must follow these instructions:
+
+    * Login to your [Charleston Software Associates](http://www.charlestonsw.com) account.
+    * Purchase [the SLP4 compatible version of your add-on packs](http://www.charlestonsw.com/product-category/slp4-products/).
+    * Download the SLP4 add-on pack zip files.
+    * Login to your website's WordPress admin panel.
+    * Deactivate and delete all of your SLP premium add-on packs.
+    * Upgrade Store Locator Plus to SLP version 4.x.
+    * Install your newly downloaded SLP4 add-on pack zip files.
+    * Active the newly installed add-on packs.
 
 == Installation ==
 
@@ -336,6 +338,16 @@ Please read the *description page* for this plugin for an important note about p
 I update about once per month or more frequently as needed.
 
 Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 4.0.028 =
+
+* Enhancement: Add placeholder for Pro Pack tags in map info bubble layout.
+* Enhancement: Set default [search_element selector_with_label="tag"] search form position.
+* Enhancement: [New filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_ajaxsql_where to extend data filters via AJAX
+* Enhancement: [New filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_ajaxsql_queryparams to manage the AJAX querey parameter list
+* Enhancement: Remove defunct options in activation class.
+* Fix: Default [SLP theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/) issue with on/off slider fixed.
+* Change: [Defunct filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_search_form_divs use filter_ModifySearchLayout and fitler_ProcessSearchElement.
 
 = 4.0.027 =
 

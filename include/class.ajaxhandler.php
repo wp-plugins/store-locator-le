@@ -15,11 +15,36 @@ class SLPlus_AjaxHandler {
     //-------------------------------------
     // Properties
     //-------------------------------------
+
+    /**
+     * The formdata variables.
+     *
+     * @var string[] $formdata
+     */
+    public $formdata;
+
+    /**
+     * Default formdata values.
+     *
+     * @var mixed[] $formdata_defaults
+     */
+    private $formdata_defaults = array(
+        'addressInput'      => '',
+        'addressInputState' => '',
+        'nameSearch'        => '',
+    );
+
+    /**
+     * Name of this module.
+     *
+     * @var string $name
+     */
+    private $name;
     
     /**
      * The plugin object.
      * 
-     * @var SLPlus $plugin 
+     * @var \SLPlus $plugin
      */
     public $plugin;
 
@@ -39,6 +64,10 @@ class SLPlus_AjaxHandler {
      * The Constructor
      */
     function __construct($params=null) {
+        $this->name = 'AjaxHandler';
+        if (isset($_REQUEST['formdata'])) {
+            $this->formdata = wp_parse_args($_REQUEST['formdata'],$this->formdata_defaults);
+        }
     }
 
     /**
@@ -53,6 +82,7 @@ class SLPlus_AjaxHandler {
         if (!isset($this->plugin) || ($this->plugin == null)) {
             global $slplus_plugin;
             $this->plugin = $slplus_plugin;
+            $this->plugin->register_module($this->name,$this);
         }
         return (isset($this->plugin) && ($this->plugin != null));
     }
@@ -224,22 +254,44 @@ class SLPlus_AjaxHandler {
         // FILTER: slp_location_filters_for_AJAX
         //
         $filterClause = '';
-        $locationFilters = array();
-        foreach (apply_filters('slp_location_filters_for_AJAX',$locationFilters) as $filter) {
+        foreach (apply_filters('slp_location_filters_for_AJAX',array()) as $filter) {
             $filterClause .= $filter;
         }
 
-        // Set the query
-        // FILTER: slp_ajaxsql_fullquery
+        // ORDER BY
         //
         add_filter('slp_ajaxsql_orderby',array($this,'filter_SetDefaultOrderByDistance'),100);
-        $this->dbQuery =  apply_filters('slp_ajaxsql_fullquery',
-            $this->plugin->database->get_SQL('selectall_with_distance')             .
-            "WHERE {$this->plugin->database->info['query']['valid_latlong']}    "   .
-            "{$filterClause} "                                                      .
-            "HAVING (sl_distance < %d) "                                            .
-            $this->plugin->database->get_SQL('orderby_default')                     .
-            'LIMIT %d'
+
+        // FILTER: slp_ajaxsql_fullquery
+        //
+        $this->dbQuery =  
+            apply_filters(
+                'slp_ajaxsql_fullquery',
+                $this->plugin->database->get_SQL(
+                    array(
+                        'selectall_with_distance',
+                        'where_default_validlatlong',
+                    )
+                 )                                                      .
+                "{$filterClause} "                                      .
+                "HAVING (sl_distance < %d) "                            .
+                $this->plugin->database->get_SQL('orderby_default')     .
+                'LIMIT %d'
+            );
+
+        // Set the query parameters
+        // FILTER: slp_ajaxsql_queryparams
+        $queryParams =
+            apply_filters(
+                'slp_ajaxsql_queryparams',
+                array(
+                    $multiplier,
+                    $_POST['lat'],
+                    $_POST['lng'],
+                    $_POST['lat'],
+                    $_POST['radius'],
+                    $maxReturned
+                )
             );
 
         // Run the query
@@ -251,12 +303,7 @@ class SLPlus_AjaxHandler {
         $this->dbQuery =
             $wpdb->prepare(
                 $this->dbQuery,
-                $multiplier,
-                $_POST['lat'],
-                $_POST['lng'],
-                $_POST['lat'],
-                $_POST['radius'],
-                $maxReturned
+                $queryParams
                 );
         $wpdb->hide_errors();
         $result = $wpdb->get_results($this->dbQuery, ARRAY_A);
