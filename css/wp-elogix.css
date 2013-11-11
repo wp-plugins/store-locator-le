@@ -1,7 +1,30 @@
 /**
- ** file: default.css
- ** label: Default Theme
- ** description: The default SLPLUS Theme.
+ ** file: wp-elogix.css
+ ** label: Elogix Compatible
+ ** description: Default theme with Enhanced Results featured listing styling and some tweaks to work better with eLogix.  To see featured highlights change Results Layout so the very first div class looks like this: class="results_entry [slp_location featured]".  Open this file in a text editor for more hints.  Makes web links for non-featured locations disappear.
+ **
+ ** Put phone and | Email under name, drop fax, drop directions, drop tagalong icons.  Add featured class marker on outer div.
+ ** csl-slplus_slper[resultslayout]:
+<div id="slp_results_[slp_location id]" class="results_entry [slp_location featured]">
+<div class="results_row_left_column"   id="slp_left_cell_[slp_location id]"   >
+<span class="location_name">[slp_location name]</span>
+<span class="location_distance">[slp_location distance_1] [slp_location distance_unit]</span>
+<span class="slp_result_address slp_result_phone">[slp_location phone]</span> |
+<span class="slp_result_contact slp_result_email"><a href="mailto:[slp_location email]" target="csa">Email</a></span>
+</div>
+<div class="results_row_center_column" id="slp_center_cell_[slp_location id]" >
+<span class="slp_result_address slp_result_street">[slp_location address]</span>
+<span class="slp_result_address slp_result_street2">[slp_location address2]</span>
+<span class="slp_result_address slp_result_citystatezip">[slp_location city_state_zip]</span>
+<span class="slp_result_address slp_result_country">[slp_location country]</span>
+</div>
+<div class="results_row_right_column"  id="slp_right_cell_[slp_location id]"  >
+<span class="slp_result_contact slp_result_website">[slp_location web_link]</span>
+<span class="slp_result_contact slp_result_tags">[slp_location tags]</span>
+</div>
+</div>
+ **
+ ** sl_website_label: Details
  **
  **/
 
@@ -18,7 +41,7 @@
     margin-right: 8px;
 }
 .onoffswitch-pretext {
-    display: inline-block;
+    display: linline-block;
     padding-right: 12px;
     vertical-align: super;
 }
@@ -330,11 +353,20 @@ div#slp_tagline {
 /**
  * Results
  **/
-div.results_entry {
-    cursor: pointer;
-    display: inline-block;
-    padding-bottom: 18px;
+div#map_sidebar {
+    font-family: Arial, Helvetica, sans-serif;
+}
+div.results_wrapper {
     width: 100%;
+    margin: 0px auto;
+}
+div.results_entry {
+  border: 1px solid #CCCCCC;
+  cursor: pointer;
+  display: inline-block;
+  margin: 6px 0 6px 3px;
+  padding: 6px;
+  width: 97%;
 }
 div.results_entry:hover {
     background-color: #F2F2F2;
@@ -369,7 +401,6 @@ div.results_row_right_column {
     width: 18%;
 }
 div.results_entry span.location_name {
-    color: #CC0000;
     display:block;
     font-weight: bold;
 }
@@ -383,16 +414,43 @@ div.results_entry a:hover {
     color: #4444FF;
     background-color: #F2F2F2;
 }
+span.location_distance {
+  display: block;
+}
 span.slp_result_address {
     width: 100%;
     display: inline-block;
 }
 span.slp_result_phone {
-    padding-top: 6px;
+  padding-top: 6px;
+  width: auto;
+}
+.slp_result_contact.slp_result_website {
+    background-color: #7D0140;
+    color: white;
+    display: none;
+    font-size: 1.1em;
+    font-weight: bold;
+    height: 20px;
+    margin: 0px 0px 9px 0px;
+    padding: 6px;
+    text-align: center;
+    width: 90px;
+}
+div.results_entry.featured .slp_result_contact.slp_result_website {
+    display: block;
+}
+#sl_div .slp_result_contact.slp_result_website A.storelocatorlink {
+    color: white;
+    vertical-align: text-top;
+}
+#sl_div .slp_result_contact.slp_result_website A.storelocatorlink:hover {
+    background-color: inherit;
+    color: #F8F888;
 }
 span.slp_result_contact {
-    width: 100%;
-    white-space: nowrap;
+  width: auto;
+  display: inline-block;
 }
 div#map_sidebar {
     overflow: auto;

@@ -171,7 +171,7 @@ class SLPlus_AdminUI_GeneralSettings {
                             __('How many times should we try to set the latitude/longitude for a new address? '         ,'csa-slplus').
                             __('Higher numbers mean slower bulk uploads. '                                              ,'csa-slplus').
                             __('Lower numbers make it more likely the location will not be set during bulk uploads. '   ,'csa-slplus').
-                            sprintf(__('Bulk import or re-geocoding is a %s feature.','csa-slplus'),SLPLUS::linkToProPack)
+                            sprintf(__('Bulk import or re-geocoding is a %s feature.','csa-slplus'),SLPLUS::linkToPRO)
                 )
             );
 
@@ -187,7 +187,7 @@ class SLPlus_AdminUI_GeneralSettings {
                     __('Maximum time to wait between retries, in seconds. ','csa-slplus')   .
                     __('Use multiples of 1. ','csa-slplus')                                .
                     __('Recommended value is 5. ','csa-slplus')                            .
-                    sprintf(__('Bulk import or re-geocoding is a %s feature.','csa-slplus'),SLPLUS::linkToProPack)
+                    sprintf(__('Bulk import or re-geocoding is a %s feature.','csa-slplus'),SLPLUS::linkToPRO)
             )
         );
 

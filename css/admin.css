@@ -246,13 +246,17 @@ p.message{
 /***************************
  * Action Bar Dropdowns
  */
-#wpcsl-option-manage .tablenav {
+div.tablenav {
     margin: 0px;
 }
-#wpcsl-option-manage .tablenav INPUT[type="text"]{
+div.tablenav INPUT[type="text"]{
     padding: 2px;
     height: 2em;
     margin-right: 6px;
+}
+
+div.tablenav .button.action {
+  width: auto;
 }
 
 /*-- Bulk Actions */
@@ -382,6 +386,10 @@ table.manual_add_table LABEL,
     background-color: #228b22;
 }
 
+.add_location_form INPUT[type='checkbox'] {
+    display: block;
+}
+
 /* Add / Edit Locations */
 div.add_location_form input.iconfield {
     width: 31em;
@@ -468,14 +476,15 @@ td.slp_manage_locations_cell {
     word-wrap: break-word;
     word-break: keep-all;
 }
-tr.slp_managelocations_row.even {
-    background-color: #FFFFFF;
-}
+
+/* Manage Locations Row : Hover */
 tr.slp_managelocations_row:hover {
     background-color: #FFFF99;
 }
-tr.slp_managelocations_row.odd {
-    background-color: #DDDDDD;
+
+/* Manage Locations Row : Invalid */
+tr.slp_managelocations_row.alternate.invalid {
+    background-color: #FFEEEE;
 }
 tr.slp_managelocations_row.invalid {
     background-color: #FFDDDD;
@@ -483,6 +492,26 @@ tr.slp_managelocations_row.invalid {
 tr.slp_managelocations_row.invalid:hover {
     background-color: #FFCCCC;
 }
+
+/* Manage Locations Row : ER Featured */
+tr.slp_managelocations_row.alternate.featured {
+    background-color: #EEFFEE;
+}
+tr.slp_managelocations_row.featured {
+    background-color: #DDFFDD;
+}
+tr.slp_managelocations_row.featured:hover {
+    background-color: #CCFFCC;
+}
+tr.slp_managelocations_row.featured td.slp_manage_locations_cell.featured {
+    background-image: url("../images/star-open-2x.png");
+    background-position: 12% 70%;
+    background-repeat: no-repeat;
+    background-size: 16px auto
+}
+
+
+
 #manage_locations_table th {
     vertical-align: top;
 }

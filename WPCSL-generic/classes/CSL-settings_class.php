@@ -13,6 +13,13 @@ class wpCSL_settings__slplus {
     //-----------------------------
     // Properties
     //-----------------------------
+
+    /**
+     * The form name and ID.
+     *
+     * @var string
+     */
+    private $form_name = '';
     
     /**
      * Skip the save button.
@@ -131,13 +138,23 @@ class wpCSL_settings__slplus {
         $this->csl_php_modules = get_loaded_extensions();
         natcasesort($this->csl_php_modules);
         $this->parent->metadata = get_plugin_data($this->parent->fqfile, false, false);
+
+        // Add ON Packs
+        //
+        $addonStr = '';
+        if (isset($this->parent->addons)) {
+            foreach ($this->parent->addons as $addon => $object) {
+                $version  = ($object!=null)?$object->metadata['Version']:'active';
+                $addonStr .= $this->create_EnvDiv($addon,$version);
+            }
+        }
+
         $this->add_section(
             array(
                 'name' => 'Plugin Environment',
                 'description' =>
                     $this->create_EnvDiv($this->parent->metadata['Name'] . ' Version' ,$this->parent->metadata['Version'] ).
-                    $this->create_EnvDiv('CSA IP Addresses'                         ,
-                            gethostbyname('charlestonsw.com') .' and ' .gethostbyname('license.charlestonsw.com')       ).
+                    $addonStr . 
                     '<br/><br/>' .
                     $this->create_EnvDiv('WPCSL Version'                            ,WPCSL__slplus__VERSION             ).
                     $this->create_EnvDiv('Active WPCSL'                             ,plugin_dir_path(__FILE__)          ).
@@ -316,12 +333,13 @@ class wpCSL_settings__slplus {
      * @param string $separator separator for prefix
      * @param boolean $show_label if true prepend output with label
      * @param boolean $use_prefix if true prepend name with prefix and separator
+     * @param string $selectedVal the drop down value to be marked as selected
      * @return null
      */
     function add_item($section, $display_name, $name, $type = 'text',
             $required = false, $description = null, $custom = null,
             $value = null, $disabled = false, $onChange = '', $group = null,
-            $separator = '-',$show_label=true,$use_prefix = true
+            $separator = '-',$show_label=true,$use_prefix = true,$selectedVal=''
             ) {
 
         // Prefix not provided, prepend name with this->prefix and separator
@@ -358,7 +376,8 @@ class wpCSL_settings__slplus {
                 'disabled'      => $disabled,
                 'onChange'      => $onChange,
                 'group'         => $group,
-                'show_label'    => $show_label
+                'show_label'    => $show_label,
+                'selectedVal'   => $selectedVal
             )
         );
 
@@ -399,7 +418,8 @@ class wpCSL_settings__slplus {
                 isset($params['group']      )?$params['group']              : null,
                 isset($params['separator']  )?$params['separator']          : '-',
                 isset($params['show_label'] )?$params['show_label']         : true,
-                isset($params['use_prefix'] )?$params['use_prefix']         : true
+                isset($params['use_prefix'] )?$params['use_prefix']         : true,
+                isset($params['selectedVal'])?$params['selectedVal']        : ''
                 );
     }
 
@@ -604,11 +624,21 @@ class wpCSL_settings__slplus {
      */
     function header() {
         $selectedNav = isset($_REQUEST['selected_nav_element'])?$_REQUEST['selected_nav_element']:'';
-        echo '<div id="wpcsl_container" class="wrap">';
+        print '<div id="wpcsl_container" class="wrap">';
         screen_icon(preg_replace('/\W/','_',$this->name));
-        echo "<h2>{$this->name}</h2><form method='post' action='{$this->form_action}'>";
-        echo "<input type='hidden' id='selected_nav_element' name='selected_nav_element' value='{$selectedNav}'/>";
-        echo settings_fields($this->prefix.'-settings');
+        print
+            "<h2>{$this->name}</h2>"                                            .
+            "<form method='post' "                                              .
+                "action='{$this->form_action}' "                                .
+                (($this->form_name !== '') ? "id='{$this->form_name}' "  :'')   .
+                (($this->form_name !== '') ? "name='{$this->form_name}' ":'')   .
+                ">"                                                             .
+            "<input type='hidden' "                                             .
+                "id='selected_nav_element' "                                    .
+                "name='selected_nav_element' "                                  .
+                "value='{$selectedNav}' "                                       .
+                "/>"                                                            ;
+        print settings_fields($this->prefix.'-settings');
     }
 
     /**------------------------------------
@@ -1010,6 +1040,13 @@ class wpCSL_settings_item__slplus {
     private $show_label = true;
 
     /**
+     * Value of item to be selected for a drop down object.
+     *
+     * @var string $selectedVal
+     */
+    private $selectedVal = '';
+
+    /**
      * What type of item is it?
      *
      * Values: checkbox, custom (default), dropdown/list, slider, subheader, submitbutton, text, textarea
@@ -1046,8 +1083,9 @@ class wpCSL_settings_item__slplus {
      *
      */
     function display() {
-
-        $showThis = htmlspecialchars((isset($this->value)?$this->value:get_option($this->name)));
+        $optVal = get_option($this->name);
+        $optVal = is_array($optVal)?print_r($optVal,true):$optVal;
+        $showThis = htmlspecialchars((isset($this->value)?$this->value:$optVal));
 
         echo '<div class="wpcsl-setting">';
 
@@ -1134,10 +1172,11 @@ class wpCSL_settings_item__slplus {
                 echo
                     $this->parent->helper->createstring_DropDownMenu(
                         array(
-                            'id'        => $this->name,
-                            'name'      => $this->name,
-                            'items'     => $this->custom,
-                            'onchange'  => $this->onChange,
+                            'id'            => $this->name,
+                            'name'          => $this->name,
+                            'items'         => $this->custom,
+                            'onchange'      => $this->onChange,
+                            'selectedVal'   => $this->selectedVal,
                         )
                      );
                 break;

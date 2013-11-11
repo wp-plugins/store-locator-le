@@ -106,7 +106,7 @@ class SLPlus_Updates {
         // No slug? Not plugin update.
         //
         if (empty($arg->slug)) { return $orig; }
-        if (!in_array($arg->slug,$this->plugin->addons)) { return $orig; }
+        if (!array_key_exists($arg->slug,$this->plugin->addons)) { return $orig; }
 
         if (isset($GLOBALS['DebugMyPlugin'])) {
             error_log('check info for action ' . $action . ' arg slug ' . $arg->slug);

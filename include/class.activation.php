@@ -255,19 +255,6 @@ class SLPlus_Activate {
     }
 
     /**
-     * Workaround the dbDelta() glitch, drop dupe indexes.
-     *
-     * Only looks for the first "infraction".
-     *
-     * @global object $wpdb
-     */
-    function drop_duplicate_indexes() {
-        $this->drop_index('sl_store_2');
-        $this->drop_index('sl_latitude_2');
-        $this->drop_index('sl_longitude_2');
-    }
-
-    /**
      * Drop an index only if it exists.
      *
      * @global object $wpdb
@@ -362,7 +349,7 @@ class SLPlus_Activate {
         //
         if ($updater->db_version_on_start == '') {
             add_option(SLPLUS_PREFIX."-db_version", $updater->plugin->version);
-            add_option(SLPLUS_PREFIX.'_'.'disable_find_image','1');   // Disable the image find locations on new installs
+            add_option(SLPLUS_PREFIX.'_disable_find_image','1');                // Disable the image find locations on new installs
 
         // Updating previous install
         //
@@ -412,27 +399,8 @@ class SLPlus_Activate {
         // Update Tables, Setup Roles
         //
         $updater->install_main_table();
-        //$updater->drop_duplicate_indexes();
         $updater->install_reporting_tables();
         $updater->add_splus_roles_and_caps();
-        /* $updater->get_addonpack_metadata(); */
-    }
-
-    /**
-     * Fetch the add-on pack meta data from the server.
-     * 
-     * @return null
-     */
-    function get_addonpack_metadata() {
-        require_once(SLPLUS_PLUGINDIR . '/include/class.updates.php');
-        $this->Updates = new SLPlus_Updates(
-                $this->plugin->version,
-                $this->plugin->updater_url,
-                SLPLUS_BASENAME
-                );
-        $result = $this->Updates->getRemote_list();
-        update_option('slp_addonpack_meta',$result['body']);
-        return;
     }
 
     /**

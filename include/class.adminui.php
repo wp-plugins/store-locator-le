@@ -19,7 +19,6 @@ class SLPlus_AdminUI {
      */
     private  $depnotice_create_InputElement = false;
 
-
     /**
      *
      * @var \SLPlus_AdminUI_Locations $ManageLocations
@@ -181,16 +180,6 @@ class SLPlus_AdminUI {
      */
     function enqueue_admin_stylesheet($hook) {
         if ($this->plugin->check_isOurAdminPage()) {wp_enqueue_style($this->styleHandle);}
-    }
-
-    /**
-     * Check if a URL starts with http://
-     *
-     * @param type $url
-     * @return type
-     */
-    function url_test($url) {
-        return (strtolower(substr($url,0,7))=="http://");
     }
 
     /**
@@ -374,6 +363,57 @@ class SLPlus_AdminUI {
 
         return $htmlStr;
      }
+
+     /**
+      * Merge existing options and POST options, then save to the wp_options table.
+      *
+      * Typically used to merge post options from admin interface changes with
+      * existing options in a class.
+      *
+      * @param string $optionName name of option to update
+      * @param mixed[] $currentOptions current options as a named array
+      * @param string[] $cbOptionArray array of options that are checkboxes
+      * @return mixed[] the updated options
+      */
+     function save_SerializedOption($optionName,$currentOptions,$cbOptionArray=null) {
+        if (!isset($_POST[$optionName])) { return $currentOptions; }
+        $optionValue = $_POST[$optionName];
+
+        // Checkbox Pre-processor
+        //
+        if ($cbOptionArray !== null){
+            foreach ($cbOptionArray as $cbname) {
+                if (!isset($optionValue[$cbname])) {
+                    $optionValue[$cbname] = '0';
+                }
+            }
+        }
+
+        // Merge new options from POST with existing options
+        //
+        $optionValue = stripslashes_deep(array_merge($currentOptions,$optionValue));
+        
+        // Make persistent, write back to the wp_options table
+        // Only write if something has changed.
+        //
+        if ($currentOptions != $optionValue) {
+            update_option($optionName,$optionValue);
+        }
+
+        // Send back the updated options
+        //
+        return $optionValue;
+     }
+
+    /**
+     * Check if a URL starts with http://
+     *
+     * @param type $url
+     * @return type
+     */
+    function url_test($url) {
+        return (strtolower(substr($url,0,7))=="http://");
+    }
 
      //------------------------------------------------------------------------
      // DEPRECATED
