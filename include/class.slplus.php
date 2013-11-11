@@ -29,22 +29,22 @@ class SLPlus extends wpCSL_plugin__slplus {
     /**
      * ER: Enhanced Results web link.
      */
-    const linkToER = '<a href="http://www.charlestonsw.com/product/slp4-enhanced-results/" target="csa">Enhanced Results</a>';
+    const linkToER = '<a href="http://www.storelocatorplus.com/product/slp4-enhanced-results/" target="csa">Enhanced Results</a>';
 
     /**
      * PRO: Pro Pack web link.
      */
-    const linkToPRO = '<a href="http://www.charlestonsw.com/product/slp4-pro/" target="csa">Pro Pack</a>';
+    const linkToPRO = '<a href="http://www.storelocatorplus.com/product/slp4-pro/" target="csa">Pro Pack</a>';
 
     /**
      * SE: Super Extendo web link.
      */
-    const linkToSE = '<a href="http://www.charlestonsw.com/product/slp4-extendo/" target="csa">Super Extendo</a>';
+    const linkToSE = '<a href="http://www.storelocatorplus.com/product/slp4-super-extendo/" target="csa">Super Extendo</a>';
 
     /**
      * SLP: Store Locator Plus web link.
      */
-    const linkToSLP = '<a href="http://www.charlestonsw.com/product/store-locator-plus-4/" target="csa">Store Locator Plus</a>';
+    const linkToSLP = '<a href="http://www.storelocatorplus.com/product/store-locator-plus-4/" target="csa">Store Locator Plus</a>';
 
     /**
      * Major Version Definition, SLP3

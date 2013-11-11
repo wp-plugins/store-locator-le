@@ -12,7 +12,7 @@ class SLPlus_Data {
     /**
      * The global WordPress DB
      *
-     * @var object $db
+     * @var \wpdb $db
      */
     public $db;
 
@@ -34,7 +34,7 @@ class SLPlus_Data {
      * Initialize a new data object.
      *
      */
-    public function __construct() {
+    public function SLPlus_Data($params=null) {
         global $wpdb;
         $this->db = $wpdb;
 
@@ -197,7 +197,6 @@ class SLPlus_Data {
                     break;
             }
         }
-
         return $sqlStatement;
     }
 

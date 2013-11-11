@@ -246,13 +246,17 @@ p.message{
 /***************************
  * Action Bar Dropdowns
  */
-#wpcsl-option-manage .tablenav {
+div.tablenav {
     margin: 0px;
 }
-#wpcsl-option-manage .tablenav INPUT[type="text"]{
+div.tablenav INPUT[type="text"]{
     padding: 2px;
     height: 2em;
     margin-right: 6px;
+}
+
+div.tablenav .button.action {
+  width: auto;
 }
 
 /*-- Bulk Actions */

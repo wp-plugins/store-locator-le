@@ -25,6 +25,12 @@ class wpCSL_helper__slplus {
      */
     private  $depnotice_create_SimpleMessage = false;
 
+    /**
+     * The parent wpCSL object.
+     * 
+     * @var \wpCSL_plugin__slplus $parent
+     */
+    private $parent;
 
     /**
      *
