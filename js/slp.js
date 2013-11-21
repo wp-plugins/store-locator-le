@@ -579,7 +579,7 @@ var csl = {
 			}
 
 			//don't animate for a large set of results
-            var markerCount = markerList.length;
+            var markerCount = (markerList) ? markerList.length : 0;
 			if (markerCount > 25) animation = csl.Animation.None;
 
 			var bounds;
@@ -647,7 +647,7 @@ var csl = {
 			this.loadedOnce = true;
 
 			//check for results
-			if (markerList.length === 0) {
+			if (markerCount === 0) {
                 if ( (typeof this.homePoint !== 'undefined') &&
                      (this.homePoint !== null)
                    ) {

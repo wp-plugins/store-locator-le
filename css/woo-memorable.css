@@ -61,6 +61,9 @@ div.results_entry.featured {
 div.results_entry.featured:hover {
     background-color: #E7F8D6;
 }
+span.slp_result_contact.slp_result_hours {
+    white-space: pre-line;
+}
 
 #map_sidebar .results_wrapper {
     margin-bottom: 24px;

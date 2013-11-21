@@ -5,7 +5,7 @@ Donate link: http://www.storelocatorplus.com/product-category/slp4-products/
 Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
 Tested up to: 3.7.1
-Stable tag: 4.0.029
+Stable tag: 4.0.030
 License: GLPv2 or later
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
@@ -338,6 +338,17 @@ Please read the *description page* for this plugin for an important note about p
 I update about once per month or more frequently as needed.
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 4.0.030 =
+
+* Enhancement: Add hours field to default results output.  This can be turned off with [Enhanced Results](http://www.storelocatorplus.com/product/store-locator-plus-enhanced-results).
+* Enhancement: New base CSVImport class to assist other plugins with CSVImport including Pro Pack and Tagalong.
+* Enhancement: [New filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_ajaxsql_results to assist in managing AJAX search results.
+* Enhancement: [New filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_csv_processing_messages - Set the message array to be printed out for the above counters.
+* Enhancement: [New filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_csv_fieldnames - Modify the field names read in via the CSV header line.
+* Enhancement: [New filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_csv_default_fieldnames - Set default field names if the header line does not have field names.
+* Enhancement: [New Hook](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_csv_processing - Process the CSV data.
+* Fix: Chrome not rendering checkboxes on admin UI in the proper place.
 
 = 4.0.029 =
 

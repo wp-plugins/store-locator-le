@@ -387,7 +387,7 @@ table.manual_add_table LABEL,
 }
 
 .add_location_form INPUT[type='checkbox'] {
-    display: block;
+    display: inline-block;
 }
 
 /* Add / Edit Locations */

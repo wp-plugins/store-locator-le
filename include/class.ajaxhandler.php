@@ -143,9 +143,8 @@ class SLPlus_AjaxHandler {
 
         // Get Locations
         //
-        $response = array();
         $locations = $this->execute_LocationQuery('sl_num_initial_displayed');
-        foreach ($locations as $row){
+foreach ($locations as $row){
             $response[] = $this->slp_add_marker($row);
         }
 
@@ -319,8 +318,9 @@ class SLPlus_AjaxHandler {
         }
 
         // Return the results
+        // FILTER: slp_ajaxsql_results
         //
-        return $result;
+        return apply_filters('slp_ajaxsql_results',$result);
     }
 
     /**

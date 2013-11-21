@@ -394,6 +394,10 @@ span.slp_result_contact {
     width: 100%;
     white-space: nowrap;
 }
+span.slp_result_contact.slp_result_hours {
+    white-space: pre-line;
+}
+
 div#map_sidebar {
     overflow: auto;
 }

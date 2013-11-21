@@ -252,6 +252,7 @@ div.section_column h2, #rb_details h2 {
     min-height: 18px;
     min-width: 475px;
     padding: 0 3px;
+    position: relative;
 }
 
 /* Settings : wpcsl-input */
@@ -297,6 +298,9 @@ div.section_column h2, #rb_details h2 {
 .wpcsl-setting INPUT {
     width: 290px;
 }
+.wpcsl-setting INPUT[type="checkbox"] {
+    width: auto;
+}
 .wpcsl-setting SELECT {
     margin-bottom: 6px;
 }
@@ -311,9 +315,9 @@ div.section_column h2, #rb_details h2 {
 a.wpcsl-helpicon {
     background: url("../assets/General_icons16.png") no-repeat scroll -15px 0 transparent;
     cursor: pointer;
-    float: left;
     height: 20px;
     position: absolute;
+    right: 3px;
     vertical-align: top;
     width: 20px;
 }

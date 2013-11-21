@@ -190,9 +190,25 @@ class SLPlus extends wpCSL_plugin__slplus {
 
         'resultslayout'  => 
 '<div id="slp_results_[slp_location id]" class="results_entry  [slp_location featured]">
-    <div class="results_row_left_column"   id="slp_left_cell_[slp_location id]"   ><span class="location_name">[slp_location name]</span><span class="location_distance">[slp_location distance_1] [slp_location distance_unit]</span></div>
-    <div class="results_row_center_column" id="slp_center_cell_[slp_location id]" ><span class="slp_result_address slp_result_street">[slp_location address]</span><span class="slp_result_address slp_result_street2">[slp_location address2]</span><span class="slp_result_address slp_result_citystatezip">[slp_location city_state_zip]</span><span class="slp_result_address slp_result_country">[slp_location country]</span><span class="slp_result_address slp_result_phone">[slp_location phone]</span><span class="slp_result_address slp_result_fax">[slp_location fax]</span></div>
-    <div class="results_row_right_column"  id="slp_right_cell_[slp_location id]"  ><span class="slp_result_contact slp_result_website">[slp_location web_link]</span><span class="slp_result_contact slp_result_email">[slp_location email_link]</span><span class="slp_result_contact slp_result_directions"><a href="http://[slp_location map_domain]/maps?saddr=[slp_location search_address]&daddr=[slp_location location_address]" target="_blank" class="storelocatorlink">[slp_location directions_text]</a></span>[slp_location iconarray wrap="fullspan"]</div>
+    <div class="results_row_left_column"   id="slp_left_cell_[slp_location id]"   >
+        <span class="location_name">[slp_location name]</span>
+        <span class="location_distance">[slp_location distance_1] [slp_location distance_unit]</span>
+    </div>
+    <div class="results_row_center_column" id="slp_center_cell_[slp_location id]" >
+        <span class="slp_result_address slp_result_street">[slp_location address]</span>
+        <span class="slp_result_address slp_result_street2">[slp_location address2]</span>
+        <span class="slp_result_address slp_result_citystatezip">[slp_location city_state_zip]</span>
+        <span class="slp_result_address slp_result_country">[slp_location country]</span>
+        <span class="slp_result_address slp_result_phone">[slp_location phone]</span>
+        <span class="slp_result_address slp_result_fax">[slp_location fax]</span>
+    </div>
+    <div class="results_row_right_column"  id="slp_right_cell_[slp_location id]"  >
+        <span class="slp_result_contact slp_result_website">[slp_location web_link]</span>
+        <span class="slp_result_contact slp_result_email">[slp_location email_link]</span>
+        <span class="slp_result_contact slp_result_directions"><a href="http://[slp_location map_domain]/maps?saddr=[slp_location search_address]&daddr=[slp_location location_address]" target="_blank" class="storelocatorlink">[slp_location directions_text]</a></span>
+        <span class="slp_result_contact slp_result_hours">[slp_location hours]</span>
+        [slp_location iconarray wrap="fullspan"]
+        </div>
 </div>'
                                                                             ,
 

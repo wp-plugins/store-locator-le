@@ -233,13 +233,20 @@ class SLPlus_Location {
         } else {
             $touched_pageID = wp_insert_post($this->pageData, true);
             $crupdateOK = !is_wp_error($touched_pageID);
-            $this->debugMP('msg','','added page '.$touched_pageID);
+            if ($crupdateOK) {
+                $this->debugMP('msg','','added page '.$touched_pageID);
+            } else {
+                $this->debugMP('msg','',
+                        'Error Creating Page: '.$touched_pageID->get_error_message() . '<br/>' .
+                        'Page data: <pre>' . print_r($this->pageData,true) . '</pre>'
+                        );
+            }
         }
 
         // Ok - we are good...
         //
         if ($crupdateOK) {
-           $this->debugMP('msg','','failed');
+           $this->debugMP('msg','','create or update is OK, no error');
 
             // If we created a page or changed the page ID,
             // set it in our location property and make it

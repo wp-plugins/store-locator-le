@@ -15,6 +15,19 @@ class wpCSL_settings__slplus {
     //-----------------------------
 
     /**
+     * The form encryption type.
+     * 
+     * If set, the enctype attribute will be added to the form output.
+     * 
+     * Default: none.
+     * 
+     * Usually: multipart/form-data
+     * 
+     * @var string
+     */
+    protected $form_enctype = '';
+
+    /**
      * The form name and ID.
      *
      * @var string
@@ -627,17 +640,18 @@ class wpCSL_settings__slplus {
         print '<div id="wpcsl_container" class="wrap">';
         screen_icon(preg_replace('/\W/','_',$this->name));
         print
-            "<h2>{$this->name}</h2>"                                            .
-            "<form method='post' "                                              .
-                "action='{$this->form_action}' "                                .
-                (($this->form_name !== '') ? "id='{$this->form_name}' "  :'')   .
-                (($this->form_name !== '') ? "name='{$this->form_name}' ":'')   .
-                ">"                                                             .
-            "<input type='hidden' "                                             .
-                "id='selected_nav_element' "                                    .
-                "name='selected_nav_element' "                                  .
-                "value='{$selectedNav}' "                                       .
-                "/>"                                                            ;
+            "<h2>{$this->name}</h2>"                                                            .
+            "<form method='post' "                                                              .
+                "action='{$this->form_action}' "                                                .
+                ( ( $this->form_name    !== '' ) ? "id='{$this->form_name}' "           : '' )  .
+                ( ( $this->form_name    !== '' ) ? "name='{$this->form_name}' "         : '' )  .
+                ( ( $this->form_enctype !== '' ) ? "enctype='{$this->form_enctype}' "   : '' )  .
+                ">"                                                                             .
+            "<input type='hidden' "                                                             .
+                "id='selected_nav_element' "                                                    .
+                "name='selected_nav_element' "                                                  .
+                "value='{$selectedNav}' "                                                       .
+                "/>"                                                                            ;
         print settings_fields($this->prefix.'-settings');
     }
 
