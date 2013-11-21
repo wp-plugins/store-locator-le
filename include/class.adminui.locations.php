@@ -108,12 +108,46 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
      * @var \SLPlus $plugin
      */
     private $plugin;
-    
+
+    /**
+     * The wpCSL settings object that helps render location settings.
+     *
+     * @var \wpCSL_settings__slplus $settings
+     */
     public $settings;
 
+    /**
+     *
+     * @var string $baseAdminURL
+     */
     public $baseAdminURL = '';
 
+    /**
+     *
+     * @var string $cleanAdminURl
+     */
     public $cleanAdminURL = '';
+
+    /**
+     * The order by direction for the order by clause.
+     * 
+     * @var string
+     */
+    private $db_orderbydir = '';
+
+    /**
+     * Order by field for the order by clause.
+     * 
+     * @var string
+     */
+    private $db_orderbyfield = '';
+
+    /**
+     * Where clause for the location selections.
+     * 
+     * @var string
+     */
+    private $db_where = '';
 
     /**
      * The manage locations URL with params we like to keep such as page number and sort order.
@@ -121,6 +155,20 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
      * @var string $hangoverURL
      */
     public $hangoverURL = '';
+
+    /**
+     * Start listing locations from this record offset.
+     *
+     * @var int
+     */
+    private $start = 0;
+
+    /**
+     * Total locations on list.
+     * 
+     * @var int
+     */
+    private $totalLocations = 0;
 
     //------------------------------------------------------
     // METHODS
@@ -131,7 +179,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
      *
      * @param mixed[] $params
      */
-    function __construct() {
+    function SLPlus_AdminUI_Locations() {
 
         if (!$this->setPlugin()) {
             die('could not set plugin');
@@ -179,6 +227,24 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
             $this->plugin->debugMP('slp.managelocs','msg','','cleanAdminURL: '.$this->cleanAdminURL);
             $this->plugin->debugMP('slp.managelocs','msg','','baseAdminURL:  '.$this->baseAdminURL);
             $this->plugin->debugMP('slp.managelocs','msg','','hangoverURL:   '.$this->hangoverURL);
+
+            // Create a standard wpCSL settings interface.
+            // It has better UI management features than the custom versions prevelant in legacy code.
+            //
+            $this->settings = new wpCSL_settings__slplus(
+                array(
+                        'parent'            => $this->plugin,
+                        'prefix'            => $this->plugin->prefix,
+                        'css_prefix'        => $this->plugin->prefix,
+                        'url'               => $this->plugin->url,
+                        'name'              => $this->plugin->name . __(' - Locations','csa-slplus'),
+                        'plugin_url'        => $this->plugin->plugin_url,
+                        'render_csl_blocks' => false,
+                        'form_action'       => $this->baseAdminURL,
+                        'no_save_button'    => true,
+                        'form_name'         => 'locationForm'
+                    )
+             );
         }
     }
 
@@ -223,6 +289,73 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         $this->columns = apply_filters('slp_manage_location_columns', $this->columns);
     }
 
+    /**
+     * Set all the properties that manage the location query.
+     * 
+     * @global \wpdb $wpdb
+     */
+    function set_LocationQueryProperties() {
+        $searchFor = 
+            (isset($_REQUEST['searchfor']) && ($_REQUEST['searchfor']!==''))?
+            $_REQUEST['searchfor']                                          :
+            ''                                                              ;
+
+        // Where Clause
+        //
+        $this->db_where =
+            ($searchFor!=='')                                                                                                   ?
+            " CONCAT_WS(';',sl_store,sl_address,sl_address2,sl_city,sl_state,sl_zip,sl_country,sl_tags) LIKE '%{$searchFor}%'"  :
+            ''                                                                                                                  ;
+
+        // FILTER: slp_manage_location_where
+        //
+        $this->db_where = apply_filters('slp_manage_location_where',$this->db_where);
+
+        if (trim($this->db_where) != '') { $this->db_where = "WHERE {$this->db_where}"; }
+
+        // Sort Direction
+        //
+        $this->db_orderbyfield  =
+            (isset($_REQUEST['orderBy'   ]) && !empty($_REQUEST['orderBy'     ])) ?
+            $_REQUEST['orderBy'  ]                                                :
+            'sl_store'                                                            ;
+        $this->db_orderbydir    =
+            (isset($_REQUEST['sortorder' ]) && !empty($_REQUEST['sortorder'   ])) ?
+            $_REQUEST['sortorder']                                                :
+            'asc'                                                                 ;
+
+        // Get the sort order and direction out of our URL
+        //
+        $this->cleanURL = preg_replace('/&orderBy=\w*&sortorder=\w*/i','',$_SERVER['REQUEST_URI']);
+
+        $this->totalLocations=
+            $this->plugin->db->get_var(
+                "SELECT count(sl_id) FROM ".$this->plugin->db->prefix."store_locator {$this->db_where}"
+                );
+
+        // Starting Location (Page)
+        //
+        // Search Filter, no actions, start from beginning
+        //
+        if (isset($_POST['searchfor']) && !empty($_POST['searchfor']) && empty($_POST['act'])) {
+            $this->start = 0;
+
+        // Set start to selected page..
+        // Adjust start if past end of location count.
+        //
+        } else {
+            $this->start =
+                (isset($_REQUEST['start']) && ctype_digit($_REQUEST['start']) && ((int)$_REQUEST['start']>=0))  ?
+                (int)$_REQUEST['start']                                                                         :
+                0                                                                                               ;
+
+            if ($this->start > ($this->totalLocations-1)) {
+                $this->start = max($this->totalLocations - 1,0);
+                $this->hangoverURL = str_replace('&start=','&prevstart=',$this->hangoverURL);
+            }
+        }
+    }
+
 
     /**
      * Escape a string to match WordPress display conventions.
@@ -259,12 +392,10 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
      /**
       * Returns the string that is the Location Info Form guts.
       *
-      * @param mixed $sl_value - the data values for this location in array format
-      * @param int $locID - the ID number for this location
       * @param bool $addform - true if rendering add locations form
       */
-     function create_LocationAddEditForm($sl_value, $addform=false) {
-        $this->plugin->debugMP('slp.managelocs','msg','create_LocationAddEditForm '.($addform?'add':'edit').' mode.','',NULL,NULL,true);
+     function create_LocationAddEditForm($addform=false) {
+        $this->plugin->debugMP('slp.managelocs','msg',__FUNCTION__,($addform?'add':'edit').' mode.');
         $this->addingLocation = $addform;
 
         // Add form
@@ -277,9 +408,6 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         // Setup current location based in incoming request data
         //
         } else {
-            $this->plugin->debugMP('slp.managelocs','pr','create_LocationAddEditForm sl_value',$sl_value,NULL,NULL,true);
-            $this->plugin->currentLocation->set_PropertiesViaArray($sl_value);
-
             $this->idString =
                     $this->plugin->currentLocation->id .
                     (!empty($this->plugin->currentLocation->linked_postid)?
@@ -303,10 +431,6 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
 
         // Create the form.
         //
-        // FILTER: slp_add_location_form_footer
-        // FILTER: slp_edit_location_left_column
-        // FILTER: slp_edit_location_right_column
-        //
         $content  =
            "<form id='manualAddForm' name='manualAddForm' method='post'>" .
            ($addform?'<input type="hidden" name="act" value="add" />':'')                               .
@@ -323,12 +447,21 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
            // Left Cell
            "<td id='slp_manual_update_table_left_cell' valign='top'>"                                   .
                 "<div id='slp_edit_left_column' class='add_location_form'>"                             .
+
+                    // FILTER: slp_edit_location_left_column
                     apply_filters('slp_edit_location_left_column','')                                   .
+
+                    // FILTER: slp_edit_location_right_column
                     apply_filters('slp_edit_location_right_column','')                                  .
+
                 '</div>'                                                                                .
            '</td>'                                                                                      .
            '</tr></table>'                                                                              .
+
+            // FILTER: slp_add_location_form_footer
+            //
             ($this->addingLocation?apply_filters('slp_add_location_form_footer', ''):'')                .
+
             '</form>'
             ;
 
@@ -898,7 +1031,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                 ;
             $this->location_AddToDatabase(
                     $locationData,
-                    false,
+                    'none',
                     $skipGeocode
                     );
             print "<div class='updated fade'>".
@@ -913,25 +1046,58 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         }
     }
 
-
     /**
      * Add an address into the SLP locations database.
      *
-     * Returns 'added' or 'duplicate'
+     * duplicates_handling can be:
+     * o none = ignore duplicates
+     * o skip = skip duplicates
+     * o update = update duplicates
+     *
+     * Returns:
+     * o added = new location added
+     * o location_exists = store id provided and not in update mode
+     * o not_updated = existing location not updated
+     * o skipped = duplicate skipped
+     * o updated = existing location updated
      *
      * @param array[] $locationData
-     * @param boolean $skipdupes
+     * @param string $duplicates_handling
      * @param boolean $skipGeocode
-     * @return string 'duplicate' or 'added'
+     * @return string 
      *
      */
-    function location_AddToDatabase($locationData,$skipdupes=false,$skipGeocode=false) {
-        $this->debugMP('msg','SLPlus_AdminUI_Locations::'.__FUNCTION__,"skip duplicates {$skipdupes} skip geocode {$skipGeocode}");
-
-        // Dupe check?
+    function location_AddToDatabase($locationData,$duplicates_handling='none',$skipGeocode=false) {
+        $this->debugMP('msg','SLPlus_AdminUI_Locations::'.__FUNCTION__,
+                             "duplicates handling mode: {$duplicates_handling} " . ($skipGeocode?' skip geocode':'')
+                      );
+        
+        // Make sure locationData['sl_id'] is set to SOMETHING.
         //
-        if ($skipdupes) {
-            $this->plugin->db->query(
+        if (!isset($locationData['sl_id'])) { $locationData['sl_id'] = null; }
+
+        // If the incoming location ID is of a valid format...
+        // Go fetch that location record.
+        // This also ensures that ID actually exists in the database.
+        //
+        if ($this->plugin->currentLocation->isvalid_ID($locationData['sl_id'])) {
+            $this->debugMP('msg','',"location ID {$locationData['sl_id']} being loaded");
+            $this->plugin->currentLocation->set_PropertiesViaDB($locationData['sl_id']);
+            $locationData['sl_id'] = $this->plugin->currentLocation->id;
+
+        // Not a valid incoming ID, reset current location.
+        //
+        } else {
+            $this->plugin->currentLocation->reset();
+        }
+
+        // If the location ID is not valid either because it does not exist
+        // in the database or because it was not provided in a valid format,
+        // Go see if the location can be found by name + address
+        //
+        if (!$this->plugin->currentLocation->isvalid_ID()) {
+            $this->debugMP('msg','','location ID not provided or invalid.');
+            $locationData['sl_id'] = $this->plugin->db->get_var(
                 $this->plugin->db->prepare(
                     $this->plugin->database->get_SQL('selectslid') .
                         'WHERE ' .
@@ -941,8 +1107,8 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                             'sl_city    = %s AND '.
                             'sl_state   = %s AND '.
                             'sl_zip     = %s AND '.
-                            'sl_country = %s     '.
-                          'LIMIT 1',
+                            'sl_country = %s     '
+                          ,
                     $this->ValOrBlank($locationData,'sl_store')    ,
                     $this->ValOrBlank($locationData,'sl_address')  ,
                     $this->ValOrBlank($locationData,'sl_address2') ,
@@ -952,21 +1118,58 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                     $this->ValOrBlank($locationData,'sl_country')
                 )
             );
-            if ($this->plugin->db->num_rows == 1) {
-                return 'duplicate';
-            }
         }
 
-        // We received a location ID, prep the current location with that info.
+        // Location ID exists, we have a duplicate entry...
         //
-        if (isset($locationData['sl_id']) && ctype_digit($locationData['sl_id'])) {
-            $this->plugin->currentLocation->set_PropertiesViaDB($locationData['sl_id']);
-            return 'idset';
+        if ( $this->plugin->currentLocation->isvalid_ID( $locationData['sl_id'] ) ) {
+            $this->debugMP('msg','',"location ID {$locationData['sl_id']} found or provided is valid.");
+            if ($duplicates_handling === 'skip') { return 'skipped'; }
+
+            // array ID and currentLocation ID do not match,
+            // must have found ID via address lookup, go load up the currentLocation record
+            //
+            if ($locationData['sl_id'] != $this->plugin->currentLocation->id) {
+                $this->plugin->currentLocation->set_PropertiesViaDB($locationData['sl_id']);
+            }
+
+            // TODO: if mode = 'add' force currentLocation->id to blank and set return code to 'added'.
+            //
+            
+            $return_code = 'updated';
+
+        // Location ID does not exist, we are adding a new record.
+        //
+        } else {
+            $this->debugMP('msg','',"location {$locationData['sl_id']} not found via address lookup, original handling mode {$duplicates_handling}.");
+            $duplicates_handling = 'add';
+            $return_code = 'added';
+        }
+
+        // Update mode and we are NOT skipping the geocode process,
+        // check that the address has changed first.
+        //
+        if ( ! $skipGeocode && ( $duplicates_handling === 'update' ) ) {
+            $skipGeocode =
+                ($this->ValOrBlank($locationData,'sl_address')   == $this->plugin->currentLocation->address ) &&
+                ($this->ValOrBlank($locationData,'sl_address2')  == $this->plugin->currentLocation->address2) &&
+                ($this->ValOrBlank($locationData,'sl_city')      == $this->plugin->currentLocation->city    ) &&
+                ($this->ValOrBlank($locationData,'sl_state')     == $this->plugin->currentLocation->state   ) &&
+                ($this->ValOrBlank($locationData,'sl_zip')       == $this->plugin->currentLocation->zip     ) &&
+                ($this->ValOrBlank($locationData,'sl_country')   == $this->plugin->currentLocation->country )  ;
+            $this->debugMP('msg','','Address does '.($skipGeocode?'NOT ':'').'need to be recoded via location update mode.');
         }
 
         // Set the current location data
         //
-        $this->plugin->currentLocation->set_PropertiesViaArray($locationData);
+        // In update duplicates mode this will not obliterate existing settings
+        // it will augment them.  To set a value to blank for an existing record
+        // it must exist in the column data and be set to blank.
+        //
+        // Non-update mode, it starts from a blank slate.
+        //
+        $this->debugMP('msg','',"set location properties via array in {$duplicates_handling} duplicates handling mode");
+        $this->plugin->currentLocation->set_PropertiesViaArray( $locationData, $duplicates_handling );
 
         // HOOK: slp_location_add
         //
@@ -974,28 +1177,24 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
 
         // Geocode the location
         //
-        if (!$skipGeocode) {
-            $this->do_geocoding(
-                    $this->ValOrBlank($locationData,'sl_address')  .','.
-                    $this->ValOrBlank($locationData,'sl_address2') .','.
-                    $this->ValOrBlank($locationData,'sl_city')     .','.
-                    $this->ValOrBlank($locationData,'sl_state')    .','.
-                    $this->ValOrBlank($locationData,'sl_zip')      .','.
-                    $this->ValOrBlank($locationData,'sl_country')         
-                    );
-        }
+        if ( ! $skipGeocode ) { $this->do_geocoding(); }
 
         // Write to disk
         //
-        if ($this->plugin->currentLocation->dataChanged) {
+        if ( $this->plugin->currentLocation->dataChanged ) {
             $this->plugin->currentLocation->MakePersistent();
+
+        // Set not updated return code.
+        //
+        } else {
+            $return_code = 'not_upated';
         }
 
         // HOOK: slp_location_added
         //
         do_action('slp_location_added');
 
-        return 'added';
+        return $return_code;
     }
 
     /**
@@ -1417,6 +1616,302 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
     }
 
     /**
+     * Attach the HTML for the add location panel to the settings object as a new section.
+     *
+     * This will be rendered via the render_adminpage method via the standard wpCSL Settings object display method.
+     */
+    public function create_settings_section_Add() {
+        $this->settings->add_section(
+            array(
+                    'name'          => __('Add','csa-slplus'),
+                    'div_id'        => 'add_location',
+                    'description'   => $this->create_LocationAddEditForm(true),
+                    'auto'          => true,
+                    'innerdiv'      => true
+                )
+         );
+    }
+
+    /**
+     * Attach the HTML for the manage locations panel to the settings object as a new section.
+     *
+     * This will be rendered via the render_adminpage method via the standard wpCSL Settings object display method.
+     */
+    public function create_settings_section_Manage() {
+        $this->settings->add_section(
+            array(
+                    'name'          => __('Manage','csa-slplus'),
+                    'div_id'        => 'current_locations',
+                    'description'   => $this->createstring_PanelManageTable(),
+                    'auto'          => true,
+                    'innerdiv'      => true
+                )
+         );
+    }
+
+    /**
+     * Build the HTML string for the locations table.
+     */
+    private function createstring_PanelManageTable() {
+        $this->set_LocationQueryProperties();
+
+        return
+                '<input name="act" type="hidden">'  .
+                '<input id="displaylimit" '         .
+                    'name="displaylimit" '          .
+                    'type="hidden" '                .
+                    'value="'.get_option('sl_admin_locations_per_page','10').'" ' .
+                    '/>' .
+                $this->createstring_HiddenInputs()              .
+                $this->createstring_PanelManageTableTopActions().
+                $this->createstring_PanelManageTableLocations() .
+            '<div class="tablenav bottom">'                 .
+                $this->createstring_PanelManageTablePagination().
+            '</div>'
+            ;
+    }
+
+    /**
+     * Build the content of the manage locations table.
+     *
+     * TODO: convert this to a proper WP_List_Table query and items configuration.
+     *
+     * @return string
+     */
+    private function createstring_PanelManageTableLocations() {
+        $this->debugMP('msg',__FUNCTION__);
+
+        // Set the data query
+        //
+        $dataQuery =
+            $this->plugin->database->get_SQL('selectall') .
+            $this->db_where .
+            " ORDER BY {$this->db_orderbyfield} {$this->db_orderbydir} ".
+            " LIMIT {$this->start},".$this->plugin->data['sl_admin_locations_per_page'] . ' ';
+        $this->debugMP('msg','',"SQL Query: {$dataQuery}");
+
+        // Get the locations into the array
+        //
+        if ($slpLocations=$this->plugin->db->get_results($dataQuery,ARRAY_A)) {
+            $this->set_Columns();
+            $content['pagination_block'] =
+                $this->createstring_PaginationBlock(
+                    $this->totalLocations,
+                    $this->plugin->data['sl_admin_locations_per_page'],
+                    $this->start
+                    );
+
+            // Get the manage locations table header
+            //
+            $tableHeaderString = $this->createstring_TableHeader($this->columns,$this->db_orderbyfield,$this->db_orderbydir);
+
+            // Manage
+            //
+            $content['locationstable'] =
+                "<table id='manage_locations_table' ".
+                    "class='slplus wp-list-table widefat posts' cellspacing=0>" .
+                        $tableHeaderString;
+
+            $colorClass = '';
+
+            // FILTER: slp_locations_manage_cssclass
+            //
+            add_filter('slp_locations_manage_cssclass',array($this,'filter_InvalidHighlight'));
+
+            // Loop through the locations list and render table rows.
+            //
+            foreach ($slpLocations as $sl_value) {
+
+                // Set current location
+                //
+                $this->plugin->currentLocation->set_PropertiesViaArray($sl_value);
+
+                // Row color
+                //
+                $colorClass = (($colorClass==='alternate')?'':'alternate');
+
+                // FILTER: slp_locations_manage_cssclass
+                //
+                $extraCSSClasses = apply_filters('slp_locations_manage_cssclass','');
+
+                // Clean Up Data with trim()
+                //
+                $locID = $this->plugin->currentLocation->id;
+                $sl_value=array_map("trim",$sl_value);
+
+                // EDIT MODE
+                // Show the edit form in a new row for the location that was selected.
+                //
+                if (isset($_GET['edit']) && ($this->plugin->currentLocation->id==$_GET['edit'])) {
+                    $content['locationstable'] .=
+                        "<tr id='slp_location_edit_row'>"                .
+                        "<td class='slp_locationinfoform_cell' colspan='".(count($this->columns)+4)."'>".
+                        $this->create_LocationAddEditForm(false) .
+                        '</td></tr>';
+
+                // DISPLAY MODE
+                //
+                } else {
+
+                    // Custom Filters to set the links on special data like URLs and Email
+                    //
+                    $sl_value['sl_url']=(!$this->plugin->AdminUI->url_test($sl_value['sl_url']) && trim($sl_value['sl_url'])!="")?
+                        "http://".$sl_value['sl_url'] :
+                        $sl_value['sl_url'] ;
+                    $sl_value['sl_url']=($sl_value['sl_url']!="")?
+                        "<a href='{$sl_value['sl_url']}' target='blank' ".
+                                "alt='{$sl_value['sl_url']}' title='{$sl_value['sl_url']}'>".
+                                __("View", 'csa-slplus').
+                                '</a>' :
+                        '';
+                    $sl_value['sl_email']=($sl_value['sl_email']!="")?
+                        "<a href='mailto:{$sl_value['sl_email']}' target='blank' "          .
+                        "alt='{$sl_value['sl_email']}' title='{$sl_value['sl_email']}'>"    .
+                        __('Email', 'csa-slplus').'</a>' :
+                        '' ;
+                    $sl_value['sl_description']=($sl_value['sl_description']!="")?
+                        "<a onclick='alert(\"".$this->slp_escape($sl_value['sl_description'])."\")' href='#'>".
+                        __("View", 'csa-slplus')."</a>" :
+                        "" ;
+
+                    // create Action Buttons
+                    $actionButtonsHTML =
+                        "<a class='action_icon edit_icon' alt='".__('edit','csa-slplus')."' title='".__('edit','csa-slplus')."'
+                            href='".$this->hangoverURL."&act=edit&edit=$locID#a$locID'></a>".
+                        "&nbsp;" .
+                        "<a class='action_icon delete_icon' alt='".__('delete','csa-slplus')."' title='".__('delete','csa-slplus')."'
+                            href='".$this->hangoverURL."&act=delete&sl_id=$locID' " .
+                            "onclick=\"wpcslAdminInterface.confirmClick('".sprintf(__('Delete %s?','csa-slplus'),$sl_value['sl_store'])."', this.href); return false;\"></a>"
+                            ;
+
+                    $actionButtonsHTML = apply_filters('slp_manage_locations_actionbuttons',$actionButtonsHTML, $sl_value);
+
+                    $cleanName = urlencode($this->plugin->currentLocation->store);
+                    $content['locationstable'] .=
+                        "<tr "                                                                                  .
+                            "id='location-{$this->plugin->currentLocation->id}' "                               .
+                            "name='{$cleanName}' "                                                              .
+                            "class='slp_managelocations_row $colorClass $extraCSSClasses' "                        .
+                            ">"                                                                                 .
+                        "<th class='th_checkbox'>"                                                              .
+                            "<input type='checkbox' class='slp_checkbox' name='sl_id[]' value='$locID'>"        .
+                            "<span class='infoid'>{$this->plugin->currentLocation->id}</span>"                  .
+                        '</th>'                                                                                 .
+                        "<th class='thnowrap'><div class='action_buttons'>"                                     .
+                            $actionButtonsHTML                                                                  .
+                        "</div></th>"
+                        ;
+
+                    // Create Address Block
+                    //
+                    $sl_value['address'] = '';
+                    $newData = false;
+                    foreach (array('address','address2','city','state','zip','country') as $property) {
+                        // Added something and need formatting?
+                        //
+                        if ($newData) {
+                            switch ($property) {
+                                case 'address2':
+                                case 'city':
+                                case 'country':
+                                    $sl_value['address'] .= '<br/>';
+                                    break;
+                                case 'state':
+                                    $sl_value['address'] .= ' , ';
+                                    break;
+                                case 'zip':
+                                    $sl_value['address'] .= ' ';
+                                    break;
+                                default:
+                                    break;
+                            }
+                            $newData = false;
+                        }
+
+                        // Location property is not empty
+                        //
+                        $propVal = $this->plugin->currentLocation->$property;
+                        if (!empty($propVal)) {
+                            $sl_value['address'] .= $this->plugin->currentLocation->$property;
+                            $newData = true;
+                        }
+                    }
+
+                    // Data Columns
+                    // FILTER: slp_column_data
+                    //
+                    foreach ($this->columns as $slpField => $slpLabel) {
+                        $labelAsClass = sanitize_title($slpLabel);
+                        $content['locationstable'] .=
+                            "<td class='slp_manage_locations_cell {$labelAsClass}'>"                                           .
+                                apply_filters('slp_column_data',stripslashes($sl_value[$slpField]), $slpField, $slpLabel)     .
+                             '</td>';
+                    }
+
+                    // Lat/Long Columns
+                    //
+                    $commaOrSpace = ($sl_value['sl_latitude'] . $sl_value['sl_longitude']!=='')? ',':' ';
+                    $content['locationstable'] .=
+                            "<td>{$sl_value['sl_latitude']}$commaOrSpace{$sl_value['sl_longitude']}</td>" .
+                        '</tr>';
+                }
+            }
+
+            // Close Out Table
+            //
+            $content['locationstable'] .= $tableHeaderString .'</table>';
+
+        // No Locations Found
+        //
+        } else {
+            $content['pagination_block'] = '';
+            $content['locationstable'] =
+                "<div class='csa_info_msg' id='manage_locations_msg'>".
+                    (
+                     (empty($_REQUEST['searchfor']))                                  ?
+                            __("No locations have been created yet.", 'csa-slplus')   :
+                            __("Search Locations returned no matches.", 'csa-slplus')
+                    ) .
+                "</div>";
+        }
+        
+        return $content['locationstable'];
+    }
+    
+    /**
+     * Create the pagination string for the manage locations table.
+     * 
+     * @return string
+     */
+    private function createstring_PanelManageTablePagination() {
+        if ($this->totalLocations >0) {
+            return $this->createstring_PaginationBlock(
+                $this->totalLocations,
+                $this->plugin->data['sl_admin_locations_per_page'],
+                $this->start
+                );
+        } else {
+            return '';
+        }
+    }
+
+    /**
+     * Build the HTML for the top-of-table navigation interface.
+     *
+     * @return string
+     */
+    private function createstring_PanelManageTableTopActions() {
+        return
+            '<div class="tablenav top">'                     .
+            $this->createstring_BulkActionsBlock()           .
+            $this->createstring_FiltersBlock()               .
+            $this->createstring_DisplayBlock()               .
+            $this->createstring_SearchBlock()                .
+            $this->createstring_PanelManageTablePagination() .
+            '</div>'                                         ;
+    }
+
+    /**
      * Create the display drop down for the top-of-table navigation.
      *
      */
@@ -1608,15 +2103,6 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
     function render_adminpage() {
         $this->plugin->debugMP('slp.managelocs','msg',__FUNCTION__);
         $this->plugin->helper->loadPluginData();
-
-        //--------------------------------
-        // Render: Header Div
-        //--------------------------------
-        print "<div id='wpcsl_container' class='wrap'>".
-              "<div id='icon-edit-locations' class='icon32'><br/></div>".
-              "<h2>".__('Store Locator Plus - Locations', 'csa-slplus')."</h2>"
-              ;
-
         $this->plugin->AdminUI->initialize_variables();
 
         //------------------------------------------------------------------------
@@ -1647,67 +2133,6 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         $this->plugin->helper->getData('sl_admin_locations_per_page','get_option',null,'10',true,true);
 
         //------------------------------------------------------------------------
-        // QUERY BUILDING
-        //------------------------------------------------------------------------
-
-        // Search for a specific name/address
-        //
-        if (isset($_REQUEST['searchfor']) && !empty($_REQUEST['searchfor'])) {
-            $qry = $_REQUEST['searchfor'];
-        } else {
-            $qry = '';
-        }
-
-        // Where Clause
-        //
-        if (!empty($qry)) {
-            $where= " CONCAT_WS(';',sl_store,sl_address,sl_address2,sl_city,sl_state,sl_zip,sl_country,sl_tags) LIKE '%$qry%'";
-        } else {
-            $where = '';
-        }
-
-        // FILTER: slp_manage_location_where
-        //
-        $where = apply_filters('slp_manage_location_where',$where);
-
-        if (trim($where) != '') { $where = "WHERE $where"; }
-
-
-        // Sort Direction
-        //
-        $orderByField= (isset($_REQUEST['orderBy'   ]) && !empty($_REQUEST['orderBy'     ])) ? $_REQUEST['orderBy'  ] : 'sl_store';
-        $dir         = (isset($_REQUEST['sortorder' ]) && !empty($_REQUEST['sortorder'   ])) ? $_REQUEST['sortorder'] : 'asc';
-
-        // Get the sort order and direction out of our URL
-        //
-        $this->cleanURL = preg_replace('/&orderBy=\w*&sortorder=\w*/i','',$_SERVER['REQUEST_URI']);
-        
-        global $wpdb;
-        $totalLocations=$wpdb->get_var("SELECT count(sl_id) FROM ".$wpdb->prefix."store_locator $where");
-
-        // Starting Location (Page)
-        // 
-        // Search Filter, no actions, start from beginning
-        //
-        if (isset($_POST['searchfor']) && !empty($_POST['searchfor']) && empty($_POST['act'])) {
-            $start = 0;
-
-        // Set start to selected page..
-        // Adjust start if past end of location count.
-        //
-        } else {
-            $start =
-                (isset($_REQUEST['start']) && ctype_digit($_REQUEST['start']) && ((int)$_REQUEST['start']>=0))  ?
-                (int)$_REQUEST['start']                                                                         :
-                0                                                                                               ;
-            
-            if ($start > ($totalLocations-1)) {
-                $start = max($totalLocations - 1,0);
-                $this->hangoverURL = str_replace('&start=','&prevstart=',$this->hangoverURL);
-            }
-        }
-
-        //------------------------------------------------------------------------
         // UI
         //------------------------------------------------------------------------
 
@@ -1722,266 +2147,32 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                 );
 
 
-        //--------------------------------------
-        // Setup the Manage Panel
-        //--------------------------------------
-
-        // Main Form
+        //------------------------------------
+        // Create Location Panels
         //
-        $content['form_start'] =
-            '<form id="locationForm" name="locationForm" method="post" action="'.$this->baseAdminURL.'">'.
-            '<input name="act" type="hidden">' .
-            '<input id="displaylimit" name="displaylimit" type="hidden" value="'.get_option('sl_admin_locations_per_page','10').'"/>'
-            ;
+        add_action('slp_build_locations_panels',array($this,'create_settings_section_Manage'  ),10);
+        add_action('slp_build_locations_panels',array($this,'create_settings_section_Add'     ),20);
 
-        // Locations Table
+        //-------------------------
+        // Setup Navigation Bar
         //
-        $dataQuery =
-            $this->plugin->database->get_SQL('selectall') .
-                "$where ORDER BY $orderByField $dir ".
-                 "LIMIT $start,".$this->plugin->data['sl_admin_locations_per_page']
-            ;
-        $this->plugin->debugMP('slp.managelocs','msg','',"SQL Query: {$dataQuery}");
-        if ($slpLocations=$wpdb->get_results($dataQuery,ARRAY_A)) {
-            $this->set_Columns();
-            $content['pagination_block'] =
-                $this->createstring_PaginationBlock(
-                    $totalLocations,
-                    $this->plugin->data['sl_admin_locations_per_page'],
-                    $start
-                    );
+        $this->settings->add_section(
+            array(
+                'name'          => 'Navigation',
+                'div_id'        => 'navbar_wrapper',
+                'description'   => $this->plugin->AdminUI->create_Navbar(),
+                'innerdiv'      => false,
+                'is_topmenu'    => true,
+                'auto'          => false,
+                'headerbar'     => false
+            )
+        );
 
-            // Get the manage locations table header
-            //
-            $tableHeaderString = $this->createstring_TableHeader($this->columns,$orderByField,$dir);
-
-            // Manage
-            //
-            $content['locationstable'] =
-                "<table id='manage_locations_table' ".
-                    "class='slplus wp-list-table widefat posts' cellspacing=0>" .
-                        $tableHeaderString;
-
-            // Render The Data
-            //
-            $colorClass = '';
-            add_filter('slp_invalid_highlight',array($this,'filter_InvalidHighlight'));
-            foreach ($slpLocations as $sl_value) {
-                // Set our current location
-                //
-                $this->plugin->currentLocation->set_PropertiesViaArray($sl_value);
-
-                // Row color
-                //
-                $colorClass = (($colorClass==='alternate')?'':'alternate');
-
-                // FILTER: slp_invalid_highlight
-                //
-                $invalidClass = apply_filters('slp_invalid_highlight','');
-
-                // Clean Up Data with trim()
-                //
-                $locID = $sl_value['sl_id'];
-                $sl_value=array_map("trim",$sl_value);
-
-                // EDIT MODE
-                // Show the edit form in a new row for the location that was selected.
-                //
-                if (isset($_GET['edit']) && ($sl_value['sl_id']==$_GET['edit'])) {
-                    $content['locationstable'] .=
-                        "<tr id='slp_location_edit_row'>"                .
-                        "<td class='slp_locationinfoform_cell' colspan='".(count($this->columns)+4)."'>".
-                        $this->create_LocationAddEditForm($sl_value) .
-                        '</td></tr>';
-
-                // DISPLAY MODE
-                //
-                } else {
-
-                    // Custom Filters to set the links on special data like URLs and Email
-                    //
-                    $sl_value['sl_url']=(!$this->plugin->AdminUI->url_test($sl_value['sl_url']) && trim($sl_value['sl_url'])!="")?
-                        "http://".$sl_value['sl_url'] :
-                        $sl_value['sl_url'] ;
-                    $sl_value['sl_url']=($sl_value['sl_url']!="")?
-                        "<a href='{$sl_value['sl_url']}' target='blank' ".
-                                "alt='{$sl_value['sl_url']}' title='{$sl_value['sl_url']}'>".
-                                __("View", 'csa-slplus').
-                                '</a>' :
-                        '';
-                    $sl_value['sl_email']=($sl_value['sl_email']!="")?
-                        "<a href='mailto:{$sl_value['sl_email']}' target='blank' "          .
-                        "alt='{$sl_value['sl_email']}' title='{$sl_value['sl_email']}'>"    .
-                        __('Email', 'csa-slplus').'</a>' :
-                        '' ;
-                    $sl_value['sl_description']=($sl_value['sl_description']!="")?
-                        "<a onclick='alert(\"".$this->slp_escape($sl_value['sl_description'])."\")' href='#'>".
-                        __("View", 'csa-slplus')."</a>" :
-                        "" ;
-
-                    // create Action Buttons
-                    $actionButtonsHTML =
-                        "<a class='action_icon edit_icon' alt='".__('edit','csa-slplus')."' title='".__('edit','csa-slplus')."'
-                            href='".$this->hangoverURL."&act=edit&edit=$locID#a$locID'></a>".
-                        "&nbsp;" .
-                        "<a class='action_icon delete_icon' alt='".__('delete','csa-slplus')."' title='".__('delete','csa-slplus')."'
-                            href='".$this->hangoverURL."&act=delete&sl_id=$locID' " .
-                            "onclick=\"wpcslAdminInterface.confirmClick('".sprintf(__('Delete %s?','csa-slplus'),$sl_value['sl_store'])."', this.href); return false;\"></a>"
-                            ;
-
-                    $actionButtonsHTML = apply_filters('slp_manage_locations_actionbuttons',$actionButtonsHTML, $sl_value);
-
-                    $cleanName = urlencode($this->plugin->currentLocation->store);
-                    $content['locationstable'] .=
-                        "<tr "                                                                                  .
-                            "id='location-{$this->plugin->currentLocation->id}' "                               .
-                            "name='{$cleanName}' "                                                              .
-                            "class='slp_managelocations_row $colorClass $invalidClass' "                        .
-                            ">"                                                                                 .
-                        "<th class='th_checkbox'>"                                                              .
-                            "<input type='checkbox' class='slp_checkbox' name='sl_id[]' value='$locID'>"        .
-                            "<span class='infoid'>{$this->plugin->currentLocation->id}</span>"                  .
-                        '</th>'                                                                                 .
-                        "<th class='thnowrap'><div class='action_buttons'>"                                     .
-                            $actionButtonsHTML                                                                  .
-                        "</div></th>"
-                        ;
-
-                    // Create Address Block
-                    //
-                    $sl_value['address'] = '';
-                    $newData = false;
-                    foreach (array('address','address2','city','state','zip','country') as $property) {
-                        // Added something and need formatting?
-                        //
-                        if ($newData) {
-                            switch ($property) {
-                                case 'address2':
-                                case 'city':
-                                case 'country':
-                                    $sl_value['address'] .= '<br/>';
-                                    break;
-                                case 'state':
-                                    $sl_value['address'] .= ' , ';
-                                    break;
-                                case 'zip':
-                                    $sl_value['address'] .= ' ';
-                                    break;
-                                default:
-                                    break;
-                            }
-                            $newData = false;
-                        }
-
-                        // Location property is not empty
-                        //
-                        $propVal = $this->plugin->currentLocation->$property;
-                        if (!empty($propVal)) {
-                            $sl_value['address'] .= $this->plugin->currentLocation->$property;
-                            $newData = true;
-                        }
-                    }
-
-                    // Data Columns
-                    // FILTER: slp_column_data
-                    //
-                    foreach ($this->columns as $slpField => $slpLabel) {
-                        $content['locationstable'] .= 
-                            '<td class="slp_manage_locations_cell">'                                            .
-                                apply_filters('slp_column_data',stripslashes($sl_value[$slpField]), $slpField, $slpLabel)     .
-                             '</td>';
-                    }
-
-                    // Lat/Long Columns
-                    //
-                    $commaOrSpace = ($sl_value['sl_latitude'] . $sl_value['sl_longitude']!=='')? ',':' ';
-                    $content['locationstable'] .=
-                            "<td>{$sl_value['sl_latitude']}$commaOrSpace{$sl_value['sl_longitude']}</td>" .
-                        '</tr>';
-                }
-            }
-
-            // Close Out Table
-            //
-            $content['locationstable'] .= $tableHeaderString .'</table>';
-
-        // No Locations Found
+        //------------------------------------
+        // Render It
         //
-        } else {
-            $content['pagination_block'] = '';
-            $content['locationstable'] =
-                "<div class='csa_info_msg' id='manage_locations_msg'>".
-                    (
-                     ($qry!='')?
-                            __("Search Locations returned no matches.", 'csa-slplus') :
-                            __("No locations have been created yet.", 'csa-slplus')
-                    ) .
-                "</div>";
-        }        
-        $content['form_end'] = '</form>';
-
-        // Pagination
-        //
-        $content['top_pagination']    =
-            '<div class="tablenav top">'            .
-            $this->createstring_BulkActionsBlock()  .
-            $this->createstring_FiltersBlock()      .
-            $this->createstring_DisplayBlock()      .
-            $this->createstring_SearchBlock()       .
-            $content['pagination_block' ]           .
-            '</div>'                                ;
-        $content['bottom_pagination'] = '<div class="tablenav bottom">'   .$content['pagination_block'].'</div>';
-
-        //--------------------------------------
-        // Setup the content for Locations panels
-        //--------------------------------------
-        //
-        // FILTER: slp_locations_subpanels
-        //
-        $contentPanels = apply_filters('slp_locations_subpanels',
-                    array(
-                        __('Manage','csa-slplus') =>
-                            $content['form_start']              .
-                            $this->createstring_HiddenInputs()  .
-                            $content['top_pagination']          .
-                            $content['locationstable']          .
-                            $content['form_end']                .
-                            $content['bottom_pagination']       ,
-
-                        __('Add','csa-slplus')   =>
-                            $this->create_LocationAddEditForm(array(), true)
-                    )
-                );
-
-        //--------------------------------------
-        // Render The Page Structure
-        //--------------------------------------
-        print $this->plugin->AdminUI->create_Navbar(true) .
-           '<div id="main">';
-
-        // Subnav
-        //
-        $firstClass='first current open';
-        print '<div id="wpcsl-nav" style="display: block;"><ul>';
-        foreach ($subtabs as $subtab) {
-            print $this->create_SubTab($subtab,$firstClass);
-            if (!empty($firstClass)) { $firstClass = ''; }
-        }
-        print '</ul></div>';
-
-        // Main Content Area
-        //
-        print  "<div id='content'>";
-
-        // Render the content Panels
-        //
-        $display = 'block';
-        foreach ($contentPanels as $label=>$content) {
-            print $this->createstring_SubContentPanel($label,$content,$display);
-            if ($display==='block') { $display = 'none'; }
-        }
-        print '</div>'; // div#content
-        print '</div>'; // div#main
+        do_action('slp_build_locations_panels');
+        $this->settings->render_settings_page();
     }
 
     /**

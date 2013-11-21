@@ -46,6 +46,25 @@ div#slp_tagline {
 /*---------------------
  * Results
  *---------------------*/
+div.results_entry {
+    cursor: pointer;
+    display: inline-block;
+    padding: 0px 12px 18px 12px;
+    width: 98%;
+}
+div.results_entry:hover {
+    background-color: #F2F2F2;
+}
+div.results_entry.featured {
+    background-color: #EFF0DE;
+}
+div.results_entry.featured:hover {
+    background-color: #E7F8D6;
+}
+span.slp_result_contact.slp_result_hours {
+    white-space: pre-line;
+}
+
 #map_sidebar .results_wrapper {
     margin-bottom: 24px;
     position: relative;

@@ -1,12 +1,12 @@
 <?php
 /*
 Plugin Name: Store Locator Plus
-Plugin URI: http://www.charlestonsw.com/product-category/slplus/
+Plugin URI: http://www.storelocatorplus.com/product-category/slplus/
 Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Google Maps.  This is a highly customizable, easily expandable, enterprise-class location management system.
-Version: 4.0.026
-Tested up to: 3.6.1
+Version: 4.0.030
+Tested up to: 3.7.1
 Author: Charleston Software Associates
-Author URI: http://www.charlestonsw.com
+Author URI: http://www.storelocatorplus.com
 License: GPL3
 
 Text Domain: csa-slplus
@@ -33,7 +33,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 if (!defined( 'ABSPATH'     )) { exit;   } // Exit if accessed directly, dang hackers
 
 if (defined('SLPLUS_VERSION') === false) {
-    define('SLPLUS_VERSION', '4.0');
+    define('SLPLUS_VERSION', '4.0.030');
 }
 
 // Drive Path Defines
@@ -182,14 +182,14 @@ if (defined('SLPLUS_PLUGINDIR')) {
                 ),
             'admin_main_slug'       => 'slp_info'               ,
 
-            'url'                   => 'http://www.charlestonsw.com/',
+            'url'                   => 'http://www.storelocatorplus.com/',
             'wp_downloads_url'      => 'http://wordpress.org/plugins/store-locator-le/developers/',
-            'support_url'           => 'http://www.charlestonsw.com/support/documentation/store-locator-plus/',
-            'purchase_url'          => 'http://www.charlestonsw.com/product-category/slp4-products/',
+            'support_url'           => 'http://www.storelocatorplus.com/support/documentation/store-locator-plus/',
+            'purchase_url'          => 'http://www.storelocatorplus.com/product-category/slp4-products/',
             'rate_url'              => 'http://wordpress.org/extend/plugins/store-locator-le/',
-            'forum_url'             => 'http://www.charlestonsw.com/forums/',
-            'updater_url'           => 'http://www.charlestonsw.com/paypal/updater.php',
-            'broadcast_url'         => 'http://www.charlestonsw.com/signage/index.php?sku=SLP4&version='.SLPLUS_VERSION,
+            'forum_url'             => 'http://www.storelocatorplus.com/forums/',
+            'updater_url'           => 'http://www.storelocatorplus.com/paypal/updater.php',
+            'broadcast_url'         => 'http://www.storelocatorplus.com/signage/index.php?sku=SLP4&version='.SLPLUS_VERSION,
 
             'fqfile'                => __FILE__,
             'basefile'              => SLPLUS_BASENAME,

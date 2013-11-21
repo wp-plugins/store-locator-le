@@ -251,17 +251,35 @@ div.section_column h2, #rb_details h2 {
     display: block;
     min-height: 18px;
     min-width: 475px;
-    padding: 0;
+    padding: 0 3px;
+    position: relative;
 }
+
+/* Settings : wpcsl-input */
 .wpcsl-input {
     display: inline-block;
-    width: 95%;
+    min-width: 30px;
+    max-width: 95%;
 }
 .wpcsl-input > INPUT {
     width: 270px;
 }
 .wpcsl-input.disabled {
     color: #F1F1F1;
+}
+.wpcsl-input.wpcsl-subheader > h3 {
+    font-size: 1.07em;
+}
+
+.wpcsl-setting .onoffswitch-block {
+    float: none;
+}
+.wpcsl-setting .onoffswitch-pretext {
+    padding-right: 0px;
+}
+
+#wpcsl_settings_group-inspect .wpcsl-input.disabled {
+    color: #464646;
 }
 .wpcsl-setting label {
     clear: left;
@@ -278,7 +296,10 @@ div.section_column h2, #rb_details h2 {
     width: auto;
 }
 .wpcsl-setting INPUT {
-    width: 296px;
+    width: 290px;
+}
+.wpcsl-setting INPUT[type="checkbox"] {
+    width: auto;
 }
 .wpcsl-setting SELECT {
     margin-bottom: 6px;
@@ -289,28 +310,23 @@ div.section_column h2, #rb_details h2 {
     padding: 2px;
     width: 483px;
 }
+
+/* Help Icon and Text */
+a.wpcsl-helpicon {
+    background: url("../assets/General_icons16.png") no-repeat scroll -15px 0 transparent;
+    cursor: pointer;
+    height: 20px;
+    position: absolute;
+    right: 3px;
+    vertical-align: top;
+    width: 20px;
+}
+
 .wpcsl-textarea + a.wpcsl-helpicon {
     margin-left: 0px;
     margin-top: 16px;
 }
-.wpcsl-input.wpcsl-checkbox {
-    width: 270px;
-}
-.wpcsl-input.wpcsl-checkbox INPUT {
-    margin-left: 18px;
-}
-.wpcsl-input.wpcsl-slider {
-    width: 270px;
-}
-a.wpcsl-helpicon {
-    background: url("../assets/General_icons16.png") no-repeat scroll -15px 0 transparent;
-    cursor: pointer;
-    float: left;
-    height: 20px;
-    position: absolute;
-    vertical-align: top;
-    width: 20px;
-}
+
 .wpcsl_helptext {
     font-size: 1em;
     font-weight: normal;
@@ -319,9 +335,7 @@ a.wpcsl-helpicon {
 .wpcsl-subheader {
     padding: 0px 6px;
 }
-.wpcsl-input.wpcsl-subheader > h3 {
-    font-size: 1.07em;
-}
+
 
 /* Env Info */
 p.envinfo {

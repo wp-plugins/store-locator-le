@@ -25,6 +25,12 @@ class wpCSL_helper__slplus {
      */
     private  $depnotice_create_SimpleMessage = false;
 
+    /**
+     * The parent wpCSL object.
+     * 
+     * @var \wpCSL_plugin__slplus $parent
+     */
+    private $parent;
 
     /**
      *
@@ -73,6 +79,8 @@ class wpCSL_helper__slplus {
      *
      * string  $params['onchange'] JavaScript to run on select change.
      *
+     * string  $params['selectedVal'] if the item value matches this param, mark it as selected
+     *
      * mixed[] $params['items'] the named array of drop down elements
      *
      *     $params['items'] is an array of named arrays:
@@ -93,6 +101,7 @@ class wpCSL_helper__slplus {
         if (!isset($params['id'         ])) { $params['id'          ] = 'actionType'                ; }
         if (!isset($params['name'       ])) { $params['name'        ] = 'action'                    ; }
         if (!isset($params['onchange'   ])) { $params['onchange'    ] = ''                          ; }
+        if (!isset($params['selectedVal'])) { $params['selectedVal' ] = ''                          ; }
 
         // Drop down menu
         //
@@ -100,6 +109,7 @@ class wpCSL_helper__slplus {
         foreach ($params['items'] as $item) {
             if (!isset($item['label'])|| empty($item['label'])) { continue; }
             if (!isset($item['value'])) { $item['value'] = $item['label']; }
+            if ($item['value'] === $params['selectedVal']) { $item['selected'] = true; }
             $selected = (isset($item['selected']) && $item['selected']) ? 'selected="selected" ' : '';
             $dropdownHTML .= "<option $selected value='{$item['value']}'>{$item['label']}</option>";
         }
@@ -210,11 +220,13 @@ class wpCSL_helper__slplus {
          * @param string $prefix - defaults to SLPLUS_PREFIX, can be ''
          * @param boolean $disabled - defaults to false
          * @param mixed $default
+         * @param mixed $checkOption - if present, test this variable == 1 to mark as checked otherwise get the boxname option.
          * @return type
          */
-        function CreateCheckboxDiv($boxname,$label='',$msg='',$prefix=null, $disabled=false, $default=0) {
+        function CreateCheckboxDiv($boxname,$label='',$msg='',$prefix=null, $disabled=false, $default=0, $checkOption = null) {
             if ($prefix === null) { $prefix = $this->parent->prefix; }
             $whichbox = $prefix.$boxname;
+            if ($checkOption === null) { $checkOption = get_option($whichbox,$default); }
             return
                 "<div class='form_entry'>".
                     "<div class='".$this->parent->css_prefix."-input'>" .
@@ -223,7 +235,7 @@ class wpCSL_helper__slplus {
                         ">$label:</label>".
                     "<input name='$whichbox' value='1' ".
                         "type='checkbox' ".
-                        ((get_option($whichbox,$default) ==1)?' checked ':' ').
+                        (($checkOption ==1)?' checked ':' ').
                         ($disabled?"disabled='disabled'":' ') .
                     ">".
                     "</div>".
@@ -235,15 +247,32 @@ class wpCSL_helper__slplus {
     /**
      * function: SavePostToOptionsTable
      */
-    function SavePostToOptionsTable($optionname,$default=null) {
+
+
+    function SavePostToOptionsTable($optionname,$default=null,$cboptions=null) {
         if ($default != null) {
             if (!isset($_POST[$optionname])) {
                 $_POST[$optionname] = $default;
             }
         }
+
+        // Save the option
+        //
         if (isset($_POST[$optionname])) {
-            $_POST[$optionname] = stripslashes_deep($_POST[$optionname]);
-            update_option($optionname,$_POST[$optionname]);
+            $optionValue = $_POST[$optionname];
+
+            // Checkbox Pre-processor
+            //
+            if ($cboptions !== null){
+                foreach ($cboptions as $cbname) {
+                    if (!isset($optionValue[$cbname])) {
+                        $optionValue[$cbname] = '0';
+                    }
+                }
+            }
+
+            $optionValue = stripslashes_deep($optionValue);
+            update_option($optionname,$optionValue);
         }
     }
 
