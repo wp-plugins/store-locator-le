@@ -41,6 +41,11 @@ class SLPlus_Actions {
     // Methods
     //----------------------------------
 
+    function SLPlus_Actions() {
+        add_action( "load-post.php"     , array( $this, 'action_AddToPageHelp' ), 20 );
+        add_action( "load-post-new.php" , array( $this, 'action_AddToPageHelp' ), 20 );
+    }
+
     /**
      * Set the plugin property to point to the primary plugin object.
      *
@@ -115,6 +120,31 @@ class SLPlus_Actions {
     }
 
     /**
+     * Add content tab help to the post and post-new pages.
+     */
+    function action_AddToPageHelp() {
+        get_current_screen()->add_help_tab(
+            array(
+                'id' => 'slp_help_tab',
+                'title' => __('SLP Hints','csa-slplus'),
+                'content' => 
+                    '<p>'.
+                    sprintf(
+                        __('Store Locator Plus documentation can be found online at <a href="%s" target="csa">%s</a>.<br/>','csa-slplus'),
+                        'http://www.StoreLocatorPlus.com/support/documentation/store-locator-plus/',
+                        'StoreLocatorPlus.com/support/documentation/'
+                        ).
+                    sprintf(
+                        __('View the <a href="%s" target="csa">[slplus] shortcode documentation</a>.','csa-slplus'),
+                        'http://www.StoreLocatorPlus.com/support/documentation/store-locator-plus/shortcodes/'
+                        ).
+                    '</p>'
+
+            )
+        );
+    }
+
+    /**
      * Add the Store Locator panel to the admin sidebar.
      *
      */
@@ -132,7 +162,7 @@ class SLPlus_Actions {
                 $this->plugin->name,
                 'manage_slp',
                 $this->plugin->prefix,
-                array('SLPlus_AdminUI','renderPage_GeneralSettings'),
+                array($this->plugin->AdminUI,'renderPage_GeneralSettings'),
                 SLPLUS_PLUGINURL . '/images/icon_from_jpg_16x16.png'
                 );
 
@@ -468,3 +498,9 @@ class SLPlus_Actions {
      }
 
 }
+
+// These dogs are loaded up way before this class is instantiated.
+//
+add_action("load-post",array('SLPlus_Actions','init'));
+add_action("load-post-new",array('SLPlus_Actions','init'));
+

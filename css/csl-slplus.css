@@ -202,6 +202,10 @@ div#map {
     width: auto;
 }
 
+/* Fix IE10 Rules */
+div#map .gm-style-cc > div {
+  word-wrap: normal;
+}
 
 
 

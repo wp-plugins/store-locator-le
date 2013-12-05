@@ -170,6 +170,10 @@ class wpCSL_notifications__slplus {
 /**
  * This class represents each individual notice.
  *
+ * @author Lance Cleveland <lance@charlestonsw.com>
+ * @copyright 2013 Charleston Software Associates
+ * @package wpCSL/Notifications/Notice
+ *
  */
 class wpCSL_notifications_notice__slplus {
 

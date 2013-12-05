@@ -1,41 +1,19 @@
 === Store Locator Plus ===
 Plugin Name:  Store Locator Plus
 Contributors: charlestonsw
-Donate link: http://www.charlestonsw.com/product-category/slp4-products/
-Tags: store locator,location management,location map,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
+Donate link: http://www.storelocatorplus.com/product-category/slp4-products/
+Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
-Tested up to: 3.6.1
-Stable tag: 4.0.026
+Tested up to: 3.8
+Stable tag: 4.0.031
 License: GLPv2 or later
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
 
 == Description ==
 
-Learn more about [Store Locator Plus on the Charleston Software Associates website](http://www.charlestonsw.com/product-category/slp4-products/).
-The website offers [more screen shots](http://www.charlestonsw.com/product-category/slp4-products/), [technical documentation](http://www.charlestonsw.com/support/documentation/technical-documentation/), and [full release notes](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/).
-
-= Version 4 Major Upgrade =
-
-Version 4 is the first major upgrade in a couple of years.
-This upgrade provides new features that make it far easier to create a truly custom user exprience without having to leave the WordPress admin panel.
-You can learn more about the new release at the [Charleston Software Associates](http://www.charlestonsw.com) website.
-
-= Important Note About Version 3 Premium Add Ons =
-
-*Make sure all of your premium add-on packs are version 4.X or higher.*
-
-If you are using premium add-on packs for Store Locator Plus version 3 you must first upgrade to the Store Locator Plus 4 compatible add-on packs.
-Do not upgrade the base plugin if you are using SLP3 add-on packs.   You must follow these instructions:
-
-    * Login to your [Charleston Software Associates](http://www.charlestonsw.com) account.
-    * Purchase [the SLP4 compatible version of your add-on packs](http://www.charlestonsw.com/product-category/slp4-products/).
-    * Download the SLP4 add-on pack zip files.
-    * Login to your website's WordPress admin panel.
-    * Deactivate and delete all of your SLP premium add-on packs.
-    * Upgrade Store Locator Plus to SLP version 4.x.
-    * Install your newly downloaded SLP4 add-on pack zip files.
-    * Active the newly installed add-on packs.
+Learn more about [Store Locator Plus on the Charleston Software Associates website](http://www.storelocatorplus.com/product-category/slp4-products/).
+The website offers [more screen shots](http://www.storelocatorplus.com/product-category/slp4-products/), [technical documentation](http://www.storelocatorplus.com/support/documentation/technical-documentation/), and [full release notes](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/).
 
 = Details =
 
@@ -59,16 +37,16 @@ Re-label entry fields and results fields.
 
 The Store Locator Plus plugin is used by some of the biggest international brands as well as a number of smaller chains.
 It has been used to created interactive store finder maps, service directories, and as a product finder.
-Visit the [SLP Customers page](http://www.charlestonsw.com/support/documentation/store-locator-plus/slp-customers/) to see a sample of some of the people that are using the plugin today.
+Visit the [SLP Customers page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/slp-customers/) to see a sample of some of the people that are using the plugin today.
 
 = Features =
 
-* Very active support via the [free support forum](http://www.charlestonsw.com/forums/).
-* Regularly updated [online documentation](http://www.charlestonsw.com/support/documentation/store-locator-plus/).
-* Multiple [premium add-ons available](http://www.charlestonsw.com/product-category/slp4-products/).
-* You can use it for a [variety of countries](http://www.charlestonsw.com/support/documentation/store-locator-plus/), as supported by Google Maps.
-* Supports [international languages](http://www.charlestonsw.com/support/documentation/store-locator-plus/) and character sets.
-* Allows you to use [unique map markers](http://www.charlestonsw.com/support/documentation/store-locator-plus/) or your own custom map markers.
+* Very active support via the [free support forum](http://www.storelocatorplus.com/forums/).
+* Regularly updated [online documentation](http://www.storelocatorplus.com/support/documentation/store-locator-plus/).
+* Multiple [premium add-ons available](http://www.storelocatorplus.com/product-category/slp4-products/).
+* You can use it for a [variety of countries](http://www.storelocatorplus.com/support/documentation/store-locator-plus/), as supported by Google Maps.
+* Supports [international languages](http://www.storelocatorplus.com/support/documentation/store-locator-plus/) and character sets.
+* Allows you to use [unique map markers](http://www.storelocatorplus.com/support/documentation/store-locator-plus/) or your own custom map markers.
 * Change default map settings via the admin panel including:
 * Map type (terrain, satellite, street, etc.)
 * Inset map show/hide
@@ -79,29 +57,29 @@ Visit the [SLP Customers page](http://www.charlestonsw.com/support/documentation
 
 = Premium Add-Ons =
 
-[Premium add-on packages](http://www.charlestonsw.com/product-category/slp4-products/) are available to extend the capabilities of this plugin.
+[Premium add-on packages](http://www.storelocatorplus.com/product-category/slp4-products/) are available to extend the capabilities of this plugin.
 
-**[Enhanced Map](http://www.charlestonsw.com/product/store-locator-plus-enhanced-map) Extended Map Interface Controls**
+**[Enhanced Map](http://www.storelocatorplus.com/product/store-locator-plus-enhanced-map) Extended Map Interface Controls**
 
 * Custom tailor the map info bubble custom HTML/shortcode admin entry.
 * Center the starting map at any location in the world.
 * Turn the map display on or off or let the user decide with a slider switch.
 * Modify the built-in Google Map controls.
 
-**[Enhanced Results](http://www.charlestonsw.com/product/store-locator-plus-enhanced-results) Customize The Location Results**
+**[Enhanced Results](http://www.storelocatorplus.com/product/store-locator-plus-enhanced-results) Customize The Location Results**
 
 * Custom tailor the results output with a custom HTML/shortcode admin entry.
 * Change sort order on the the results.
 * Works with other add-on packs, like Tagalong, to show per-location icons.
 * Modify location field labels.
 
-**[Enhanced Search](http://www.charlestonsw.com/product/store-locator-plus-enhanced-search) Customize The Search Form**
+**[Enhanced Search](http://www.storelocatorplus.com/product/store-locator-plus-enhanced-search) Customize The Search Form**
 
 * Custom tailor the search form with a HTML/shortcode admin entry.
 * Turn the search interface on/off.
 * Works with other add-on packs to display category drop downs, tag drop downs, and other search features.
 
-**[Pro Pack](http://www.charlestonsw.com/product/slp4-pro/) Enterprise Location Management and Reporting**
+**[Pro Pack](http://www.storelocatorplus.com/product/slp4-pro/) Enterprise Location Management and Reporting**
 
 * Location Sensor support.
 * Bulk Data Import.
@@ -112,13 +90,18 @@ Visit the [SLP Customers page](http://www.charlestonsw.com/support/documentation
 * Location search reporting.
 * Location tags.
 
-**[Store Pages](http://www.charlestonsw.com/product/store-locator-plus-store-pages) SEO Friendly Location Pages**
+**[Store Pages](http://www.storelocatorplus.com/product/store-locator-plus-store-pages) SEO Friendly Location Pages**
 
 * Create pages for each location with the click of a button.
 * Each page can be edited as an individual post.
 * Pages support their own comments, featured image, page style, and other standard WordPress page template features.
 
-**[Tagalong](http://www.charlestonsw.com/product/store-locator-plus-tagalong/) Categorize Your Locations**
+**[Super Extendo](http://www.storelocatorplus.com/product/slp4-super-extendo/) Extend The Location Data**
+
+* Works with [Enhanced Results](http://www.storelocatorplus.com/product/store-locator-plus-enhanced-results) to add featured and ranked locations.
+* Future plans include a user-controlled field editor where you can add/edit/remove custom data fields for Store Locator Plus locations.
+
+**[Tagalong](http://www.storelocatorplus.com/product/store-locator-plus-tagalong/) Categorize Your Locations**
 
 * Provides a custom interface to the WordPress category manager to attach categories to locations.
 * Assign map markers and icons to locations.
@@ -126,11 +109,13 @@ Visit the [SLP Customers page](http://www.charlestonsw.com/support/documentation
 * Add a icon legend to the user interface.
 * Faster category filtering and searching than Pro Pack tags.
 
-**[Widget Pack](http://www.charlestonsw.com/product/store-locator-plus-widget-pack/) SLP Enabled Sidebar Widgets**
+**[Widget Pack](http://www.storelocatorplus.com/product/store-locator-plus-widget-pack/) SLP Enabled Sidebar Widgets**
 
 * The first 3rd party add-on.
 * Put location search in your widget-enabled areas.
 * Direct users to the default map page, or show results right in the widget area.
+
+**Create Your Own Add-On**
 
 If you are a plugin developer you will be interested in the new "Roll Your Own" program where you can create SLP based add-ons of your own.
 Create something great and list it on the CSA site!   Revenue sharing offered for premium add-on packs.
@@ -138,16 +123,16 @@ If they are 100% ready-to-go the revenue split is 75% to the plugin author, 25% 
 
 = Support =
 
-Support for the plugin can be found in the [CSA Forums](http://www.charlestonsw.com/forums/).  If you have an urgent issue or want one-on-one support you can [purchase premium support](http://www.charlestonsw.com/product/product-support).
+Support for the plugin can be found in the [CSA Forums](http://www.storelocatorplus.com/forums/).  If you have an urgent issue or want one-on-one support you can [purchase premium support](http://www.storelocatorplus.com/product/product-support).
 
-You can also view the [CSA Product Documentation](http://www.charlestonsw.com/support/documentation) for more information about the plugin including [known conflicts](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/troubleshooting/known-conflicts/) with themes and plugins.
+You can also view the [CSA Product Documentation](http://www.storelocatorplus.com/support/documentation) for more information about the plugin including [known conflicts](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/troubleshooting/known-conflicts/) with themes and plugins.
 
 = Special Requests =
 
 I accept feature requests for all plugins. The most requested features will make it into the next version if time permits.
 
 If you need something NOW, or are looking for something beyond a basic "tweak" of the plugin, please check out the
-[Customization Service](http://www.charlestonsw.com/product/customization/).  
+[Customization Service](http://www.storelocatorplus.com/product/customization/).
 
 = Upgrades and Patches =
 
@@ -186,17 +171,39 @@ Rating the plugin, hopefully with 5 stars, helps increase the exposure on WordPr
 The more add-ons I sell the easier it is to put food on the table and give me more time to code cool new features.
 No ratings, no food, more hours working as the Walmart Greeter, less coolness in the plugins.
 
-Give me a chance to address your concerns if this plugin doesn't earn 5 stars by [contacting me](http://www.charlestonsw.com/mindset/contact-us/) directly or by posting in the [support forum](http://www.charlestonsw.com/forums/) at the CSA website.
+Give me a chance to address your concerns if this plugin doesn't earn 5 stars by [contacting me](http://www.storelocatorplus.com/mindset/contact-us/) directly or by posting in the [support forum](http://www.storelocatorplus.com/forums/) at the CSA website.
 
 = Help Me "Speak" Your Language =
 
 Help me with translating the English words and phrases in the plugin and I will give you a premium add-on.
 The base plugin and the premium add-on packs have been updated to work with most language translation tools including the [Codestyling Localization]() plugin.
-[Contact me](http://www.charlestonsw.com/mindset/contact-us/) if you have a newly translated .po and .mo file to submit.
+[Contact me](http://www.storelocatorplus.com/mindset/contact-us/) if you have a newly translated .po and .mo file to submit.
 If I do not have the language files already, or if they were notably out-of-date, I will add the premium add-on pack of your choice to your account.
 Upon request I will also put a link to your site in the "special thanks" section.
 
 Any EASIER way to perform translations?  Load the [Codestyling Localization plugin](http://wordpress.org/extend/plugins/codestyling-localization/) and then find it under "Tools/Localization" in your admin panel.
+
+= Version 4 Major Upgrade =
+
+Version 4 is the first major upgrade in a couple of years.
+This upgrade provides new features that make it far easier to create a truly custom user experience without having to leave the WordPress admin panel.
+You can learn more about the new release at the [Charleston Software Associates](http://www.storelocatorplus.com) web site.
+
+= Important Note About Version 3 Premium Add Ons =
+
+*Make sure all of your premium add-on packs are version 4.X or higher.*
+
+If you are using premium add-on packs for Store Locator Plus version 3 you must first upgrade to the Store Locator Plus 4 compatible add-on packs.
+Do not upgrade the base plugin if you are using SLP3 add-on packs.   You must follow these instructions:
+
+    * Login to your [Charleston Software Associates](http://www.storelocatorplus.com) account.
+    * Purchase [the SLP4 compatible version of your add-on packs](http://www.storelocatorplus.com/product-category/slp4-products/).
+    * Download the SLP4 add-on pack zip files.
+    * Login to your website's WordPress admin panel.
+    * Deactivate and delete all of your SLP premium add-on packs.
+    * Upgrade Store Locator Plus to SLP version 4.x.
+    * Install your newly downloaded SLP4 add-on pack zip files.
+    * Active the newly installed add-on packs.
 
 == Installation ==
 
@@ -225,7 +232,7 @@ with ease using the built-in Theme System.   Copy an existing CSS file,
 change the file name and update the CSS header, upload to the server and you can now activate your
 new theme or any of the built-in defaults by selecting it from the auto-generated pulldown menu.
 
-[Pro Pack](http://www.charlestonsw.com/product/slp4-pro/) users can also add CSS rules via the Pro Pack CSS Rules entry on the admin panel.
+[Pro Pack](http://www.storelocatorplus.com/product/slp4-pro/) users can also add CSS rules via the Pro Pack CSS Rules entry on the admin panel.
 
 = Special Thanks =
 
@@ -259,8 +266,8 @@ Basic upgrades are free and available directly from the WordPress plugin reposit
 
 = How do I report a bug? =
 
-Post in the [support forum](http://www.charlestonsw.com/forums/).
-You can also [contact me](http://www.charlestonsw.com/product/product-support) to request premium support if you need immediate assistance.
+Post in the [support forum](http://www.storelocatorplus.com/forums/).
+You can also [contact me](http://www.storelocatorplus.com/product/product-support) to request premium support if you need immediate assistance.
 
 = What are the premium add-ons? =
 
@@ -285,7 +292,7 @@ Lately it has been almost exclusively work on Store Locator Plus due to the popu
 The license is GPL.  You get the code, feel free to modify it as you
 wish. I prefer that customers pay because they like what I do and
 want to support the effort that brings useful software to market.  Learn more
-on the [CSL License Terms page](http://www.charlestonsw.com/products/general-eula/).
+on the [License Terms page](http://www.storelocatorplus.com/products/general-eula/).
 
 = How can I translate the plugin into my language? =
 
@@ -299,7 +306,7 @@ I am looking into working with the WPML plugin for added support for those of yo
 
 == Screenshots ==
 
-The website offers [more screen shots](http://www.charlestonsw.com/product-category/slp4-products/) including those from the latest updates and premium add-on packages.
+The website offers [more screen shots](http://www.storelocatorplus.com/product-category/slp4-products/) including those from the latest updates and premium add-on packages.
 
 1. Example Map with Enhanced Maps On/Off Slider
 2. Manage Locations with Pro Pack and Store Pages
@@ -311,15 +318,15 @@ The website offers [more screen shots](http://www.charlestonsw.com/product-categ
 8. Add Locations with Pro Pack Bulk Import
 9. Directions from results link
 
-More screenshots are available via [the CSA website](http://www.charlestonsw.com/product-category/slp4-products/).
+More screenshots are available via [the CSA website](http://www.storelocatorplus.com/product-category/slp4-products/).
 
 ==Upgrade Notice==
 
 Store Locator Plus 4 is a MAJOR upgrade to the previous version.
 
-If you are using ANY of the [premium add-on packs](http://www.charlestonsw.com/product-category/slp4-products/) you must first deactivate and delete the premium add-on packs.
+If you are using ANY of the [premium add-on packs](http://www.storelocatorplus.com/product-category/slp4-products/) you must first deactivate and delete the premium add-on packs.
 
-You will need to purchase new [SLP4 compatible versions of the add-on packs](http://www.charlestonsw.com/product-category/slp4-products/).
+You will need to purchase new [SLP4 compatible versions of the add-on packs](http://www.storelocatorplus.com/product-category/slp4-products/).
 Discounts will be made available to users that purchased a premium add-on pack within 1 year of purchasing the SLP4 compatible upgrades.
 
 == Changelog ==
@@ -330,7 +337,54 @@ Please read the *description page* for this plugin for an important note about p
 
 I update about once per month or more frequently as needed.
 
-Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 4.0.031 =
+
+* Enhancement: Improve communication between add-on packs.
+* Enhancement: Reformat Admin UI checkbox for Chrome.
+* Fix: Fix vertical map image for IE.
+* Fix: Fix JavaScript warning for IE.
+* Tested with current WordPress 3.8 pre-release builds.
+
+= 4.0.030 =
+
+* Enhancement: Add hours field to default results output.  This can be turned off with [Enhanced Results](http://www.storelocatorplus.com/product/store-locator-plus-enhanced-results).
+* Enhancement: New base CSVImport class to assist other plugins with CSVImport including Pro Pack and Tagalong.
+* Enhancement: [New filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_ajaxsql_results to assist in managing AJAX search results.
+* Enhancement: [New filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_csv_processing_messages - Set the message array to be printed out for the above counters.
+* Enhancement: [New filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_csv_fieldnames - Modify the field names read in via the CSV header line.
+* Enhancement: [New filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_csv_default_fieldnames - Set default field names if the header line does not have field names.
+* Enhancement: [New Hook](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_csv_processing - Process the CSV data.
+* Fix: Chrome not rendering checkboxes on admin UI in the proper place.
+
+= 4.0.029 =
+
+* Enhancement: Update woo_memorable [SLP theme](http://www.storelocatorplus.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/) to show featured items.Update WooMemorable theme to highlight featured locations.
+* Enhancement: [New hook](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_build_locations_panels to create location tab panels using the managed wpCSL settings classes.
+* Change: [Retired Filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_locations_subpanels to create custom location tab panels use slp_build_locations_panels instead.
+
+
+= 4.0.028 =
+
+* Enhancement: Add placeholder for Pro Pack tags in map info bubble layout.
+* Enhancement: Set default [search_element selector_with_label="tag"] search form position.
+* Enhancement: [New filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_ajaxsql_where to extend data filters via AJAX
+* Enhancement: [New filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_ajaxsql_queryparams to manage the AJAX querey parameter list
+* Enhancement: Remove defunct options in activation class.
+* Fix: Default [SLP theme](http://www.storelocatorplus.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/) issue with on/off slider fixed.
+* Change: [Defunct filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_search_form_divs use filter_ModifySearchLayout and fitler_ProcessSearchElement.
+
+= 4.0.027 =
+
+* Enhancement: Better communication between add-on packs.
+* Enhancement: Plugin Environment on info tab shows installed-and-active add-on packs and the version info for each.
+* Enhancement: Wiring configured for new "featured locations" setting.  Featured locations requires [Enhanced Results](http://www.storelocatorplus.com/product/store-locator-plus-enhanced-results) and [Super Extendo](http://www.storelocatorplus.com/product/slp4-super-extendo/) premium add-ons.
+* Enhancement: Elogix Compatible [SLP theme](http://www.storelocatorplus.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/) is the first "featured locations" compatible theme.
+* Enhancement: Update default [SLP theme](http://www.storelocatorplus.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/) to support ER + Extendo featured locations.
+* Enhancement: [New filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_extend_get_SQL_selectall to extend data queries in base plugin
+* Enhancement: [Change filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_invalid_highlight is now slp_locations_manage_cssclass making it more flexible
+* Enhancement: Extend order by processor allowing more add-on packs to manipulate search result ordering.
 
 = 4.0.026 =
 
@@ -341,15 +395,15 @@ Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/su
 
 = 4.0.025 =
 
-* Enhancement: Make [SLP4 upgrades](http://www.charlestonsw.com/product-category/slp4-products/) deprecate more gracefully for SLP3 add-on pack users.  Show warning versus empty screens.
-* Fix:  No Results [SLP theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/) updated to match CSS rules to new responsive-friendly HTML layout.
+* Enhancement: Make [SLP4 upgrades](http://www.storelocatorplus.com/product-category/slp4-products/) deprecate more gracefully for SLP3 add-on pack users.  Show warning versus empty screens.
+* Fix:  No Results [SLP theme](http://www.storelocatorplus.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/) updated to match CSS rules to new responsive-friendly HTML layout.
 
 = 4.0.024 =
 
-* Enhancement: Revise the User Experience/View/Themes help text to link directly to [themes page](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/) in online documentation.
-* Fix: Basic Boxes [SLP theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/) updated to match CSS rules to new responsive-friendly HTML layout.
-* Fix: Clean Simple White [SLP theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/) updated to match CSS rules to new responsive-friendly HTML layout.
-* Fix: Scroll Bar in IE8 with Default  [SLP theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/).
+* Enhancement: Revise the User Experience/View/Themes help text to link directly to [themes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/) in online documentation.
+* Fix: Basic Boxes [SLP theme](http://www.storelocatorplus.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/) updated to match CSS rules to new responsive-friendly HTML layout.
+* Fix: Clean Simple White [SLP theme](http://www.storelocatorplus.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/) updated to match CSS rules to new responsive-friendly HTML layout.
+* Fix: Scroll Bar in IE8 with Default  [SLP theme](http://www.storelocatorplus.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/).
 * Fix: Address MySQL 5 Strict Mode "lastupdate" field warning message.
 
 = 4.0.023 =
@@ -406,38 +460,38 @@ Visit the [Store Locator Plus Release Notes page](http://www.charlestonsw.com/su
 * Enhancement: Geocoding maximum retry delay can be set to any value.  Higher values means slower geocoding for locations but can reduce Over Query Limit warnings.
 * Enhancement: New Dutch (nl_NL) translation.
 * Enhancement: New French (fr_FR) translation.
-* Enhancement: [New filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): wpcsl_admin_slugs to add new setting pages to the valid admin page list.
-* Enhancement: [New filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_view_features_panel to maninpulate the new UX tab : View section.
-* Enhancement: [New filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_js_options allows add-on packs to pass data to the slp.js script.
-* Enhancement: [New filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_searchlayout to modify the default search layout
-* Enhancement: [New filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): shortcode_slp_searchelement to modify the attributes when processing the slp_searchelement shortcode.
-* Enhancement: [New filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_ajaxsql_orderby provide a mechanism to change the order by on AJAX search results.
-* Enhancement: [New filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_locations_manage_bulkactions allows add-ons to add items to the manage locations bulk actions drop down.
-* Enhancement: [New filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_locations_manage_filters allows add-ons to add items to the manage locatinos filter drop down.
-* Enhancement: [New filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_extend_get_SQL provide a mechanism for extending the data interface..
-* Enhancement: [New filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_ui_headers allows add-on packs to modify the page header on the UI.
-* Enhancement: [New filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_invalid_highlight allow the manage locations class to be changed for non-geocoded rows.
-* Enhancement: [New hook](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_save_generalsettings fires when general settings are being saved.
-* Enhancement: [New hook](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_generalsettings_modify_adminpanel to manipulate the General Settings / User Interface panel.
-* Enhancement: [New hook](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_generalsettings_modify_googlepanel to manipulate the General Settings / Google panel.
-* Enhancement: [New hook](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_location_save called just before the locations admin UI calls the location_save method with currentLocation fully loaded.
-* Enhancement: [New hook](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_location_saved called just after the locations admin UI calls the location_save method with currentLocation fully loaded.
-* Enhancement: [New hook](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_location_add called just before the locations admin UI adds a new location via the location_AddToDatabase method.
-* Enhancement: [New hook](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_location_added called just before the locations admin UI adds a new location via the location_AddToDatabase method.
-* Enhancement: [New theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/themes-custom-css/) Genesis Monochrome for the Store Locator Plus interface.
-* Enhancement: [New theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/themes-custom-css/) Beside Myself that works with custom settings from the add-on packs to do a side-by-side map/search form + results layout.
-* Enhancement: [New theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/themes-custom-css/) Beside Myself Results that uses the same color scheme as Beside Myself but disables the map and search form output.
-* Enhancement: [New theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/themes-custom-css/) Beside The Point 2012 works with the add-on packs and the Twenty Twelve theme to show search + results to the left of the map.
-* Enhancement: [New theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/themes-custom-css/) Beside And Below Genesis puts the search form on the left with map and results on the right.
-* Enhancement: [New theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/themes-custom-css/) Blank Map Fix has NO custom CSS rules other than the patch to fix map images corrupted by WordPress rules.
-* Change: [Retired filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/) slp_add_search_form_label_setting
-* Change: [Retired filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/)slp_add_search_form_feature_settings
-* Change: [Retired filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/) slp_update_location_data
-* Change: [Retired filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/) slp_action_boxes
-* Change: [Retired filter](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/) slp_edit_location_data
-* Change: [Retired hook](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/)slp_render_search_form
-* Change: [Retired hook](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/)slp_location_updated
-* Change: [Retired hook](http://www.charlestonsw.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/)slp_add_manage_locations_action_box
+* Enhancement: [New filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): wpcsl_admin_slugs to add new setting pages to the valid admin page list.
+* Enhancement: [New filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_view_features_panel to maninpulate the new UX tab : View section.
+* Enhancement: [New filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_js_options allows add-on packs to pass data to the slp.js script.
+* Enhancement: [New filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_searchlayout to modify the default search layout
+* Enhancement: [New filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): shortcode_slp_searchelement to modify the attributes when processing the slp_searchelement shortcode.
+* Enhancement: [New filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_ajaxsql_orderby provide a mechanism to change the order by on AJAX search results.
+* Enhancement: [New filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_locations_manage_bulkactions allows add-ons to add items to the manage locations bulk actions drop down.
+* Enhancement: [New filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_locations_manage_filters allows add-ons to add items to the manage locatinos filter drop down.
+* Enhancement: [New filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_extend_get_SQL provide a mechanism for extending the data interface..
+* Enhancement: [New filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_ui_headers allows add-on packs to modify the page header on the UI.
+* Enhancement: [New filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_invalid_highlight allow the manage locations class to be changed for non-geocoded rows.
+* Enhancement: [New hook](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_save_generalsettings fires when general settings are being saved.
+* Enhancement: [New hook](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_generalsettings_modify_adminpanel to manipulate the General Settings / User Interface panel.
+* Enhancement: [New hook](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_generalsettings_modify_googlepanel to manipulate the General Settings / Google panel.
+* Enhancement: [New hook](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_location_save called just before the locations admin UI calls the location_save method with currentLocation fully loaded.
+* Enhancement: [New hook](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_location_saved called just after the locations admin UI calls the location_save method with currentLocation fully loaded.
+* Enhancement: [New hook](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_location_add called just before the locations admin UI adds a new location via the location_AddToDatabase method.
+* Enhancement: [New hook](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/): slp_location_added called just before the locations admin UI adds a new location via the location_AddToDatabase method.
+* Enhancement: [New theme](http://www.storelocatorplus.com/support/documentation/store-locator-plus/themes-custom-css/) Genesis Monochrome for the Store Locator Plus interface.
+* Enhancement: [New theme](http://www.storelocatorplus.com/support/documentation/store-locator-plus/themes-custom-css/) Beside Myself that works with custom settings from the add-on packs to do a side-by-side map/search form + results layout.
+* Enhancement: [New theme](http://www.storelocatorplus.com/support/documentation/store-locator-plus/themes-custom-css/) Beside Myself Results that uses the same color scheme as Beside Myself but disables the map and search form output.
+* Enhancement: [New theme](http://www.storelocatorplus.com/support/documentation/store-locator-plus/themes-custom-css/) Beside The Point 2012 works with the add-on packs and the Twenty Twelve theme to show search + results to the left of the map.
+* Enhancement: [New theme](http://www.storelocatorplus.com/support/documentation/store-locator-plus/themes-custom-css/) Beside And Below Genesis puts the search form on the left with map and results on the right.
+* Enhancement: [New theme](http://www.storelocatorplus.com/support/documentation/store-locator-plus/themes-custom-css/) Blank Map Fix has NO custom CSS rules other than the patch to fix map images corrupted by WordPress rules.
+* Change: [Retired filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/) slp_add_search_form_label_setting
+* Change: [Retired filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/)slp_add_search_form_feature_settings
+* Change: [Retired filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/) slp_update_location_data
+* Change: [Retired filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/) slp_action_boxes
+* Change: [Retired filter](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/) slp_edit_location_data
+* Change: [Retired hook](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/)slp_render_search_form
+* Change: [Retired hook](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/)slp_location_updated
+* Change: [Retired hook](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/slp-action-hooks-and-filters/)slp_add_manage_locations_action_box
 * Change: Default UI string on search form wraps radius drop down and search button in a div with class "search_item" for easier skinning with CSS.
 * Change: Locations management is now under one tab for manage, add, and import (pro pack feature).
 * Change: The div id sl_div can now be changed by the user with the Pro Pack page layout option.   Be careful, this can break a lot of SLP themes if removed.
