@@ -1,7 +1,7 @@
 /**
  ** file: woo-memorable.css
  ** label: Woo Memorable
- ** description: a basic SLP Theme that is used on a live site running the Memorable WordPress theme by WooThemes.
+ ** description: A basic SLP Theme that is used on a live site running the Memorable WordPress theme by WooThemes. Works with Enhanced Results + Super Extendo featured listings.
  **
  **/
 
@@ -31,6 +31,10 @@ div#map img {
     max-width: none;
     opacity: 1.0;
     visibility: visible;
+}
+/* Fix IE10 Rules */
+div#map .gm-style-cc > div {
+  word-wrap: normal;
 }
 
 /* Hide the default Google bubble shadow */

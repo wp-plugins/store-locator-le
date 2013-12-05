@@ -236,10 +236,8 @@ class SLPlus_Location {
             if ($crupdateOK) {
                 $this->debugMP('msg','','added page '.$touched_pageID);
             } else {
-                $this->debugMP('msg','',
-                        'Error Creating Page: '.$touched_pageID->get_error_message() . '<br/>' .
-                        'Page data: <pre>' . print_r($this->pageData,true) . '</pre>'
-                        );
+                $this->debugMP('msg','','Error Creating Page: '.$touched_pageID->get_error_message() . '<br/>' .'Page data: ');
+                $this->debugMP('pr','',$this->pageData);
             }
         }
 
@@ -377,6 +375,7 @@ class SLPlus_Location {
      * @param float $lng
      */
     public function set_LatLong($lat,$lng) {
+        $this->debugMP('msg',__FUNCTION__,"$lat , $lng");
         if($this->latitude  != $lat) {
             $this->latitude  = $lat;
             $this->dataChanged = true;
@@ -415,7 +414,7 @@ class SLPlus_Location {
                 'ID'            => '',
                 'post_type'     => $this->pageType,
                 'post_status'   => $this->pageDefaultStatus,
-                'post_title'    => $this->store,
+                'post_title'    => (empty($this->store)? 'SLP Location' : $this->store),
                 'post_content'  => '',
                 'slp_notes'     => 'new page'
             );

@@ -585,7 +585,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
      * @param string $address the address to geocode, if not set use currentLocation
      */
     function do_geocoding($address=null) {
-
+        $this->debugMP('msg',__FUNCTION__,$address);
         $this->count++;
         if ($this->count === 1) {
             $this->retry_maximum_delayms = (int) $this->plugin->options_nojs['retry_maximum_delay'] * 1000000;
@@ -596,11 +596,11 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         //
         if ($address === null) {
             $address =
-                $this->plugin->currentLocation->address  .
-                $this->plugin->currentLocation->address2 .
-                $this->plugin->currentLocation->city     .
-                $this->plugin->currentLocation->state    .
-                $this->plugin->currentLocation->zip      .
+                $this->plugin->currentLocation->address  . ' ' .
+                $this->plugin->currentLocation->address2 . ' ' .
+                $this->plugin->currentLocation->city     . ' ' .
+                $this->plugin->currentLocation->state    . ' ' .
+                $this->plugin->currentLocation->zip      . ' ' .
                 $this->plugin->currentLocation->country
                 ;
         }
@@ -609,12 +609,14 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
 
         // Get lat/long from Google
         //
+        $this->debugMP('msg','',$address);
         $json = $this->get_LatLong($address);
         if ($json!==null) {
 
             // Process the data based on the status of the JSON response.
             //
             $json = json_decode($json);
+            $this->debugMP('pr','',$json);
             switch ($json->{'status'}) {
 
                 // OK
@@ -1187,7 +1189,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         // Set not updated return code.
         //
         } else {
-            $return_code = 'not_upated';
+            $return_code = 'not_updated';
         }
 
         // HOOK: slp_location_added

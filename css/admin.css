@@ -436,7 +436,6 @@ button, input, textarea {
     border: 1px solid #CCCCCC;
     border-radius: 3px 3px 3px 3px;
     font-family: inherit;
-    padding: 0.428571rem;
 }
 div#sl_div div#address_search {
     text-align: left;
@@ -583,8 +582,11 @@ div.section_column .form_entry {
 }
 
 .section_description INPUT[type="checkbox"] {
-    width: 2em;
+    box-shadow: none;
+    height: 1.1em;
     text-align:left;
+    width: auto;
+    -webkit-box-shadow: none;
 }
 
 div.input_note {

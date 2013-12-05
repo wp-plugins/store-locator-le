@@ -162,7 +162,7 @@ class SLPlus_Actions {
                 $this->plugin->name,
                 'manage_slp',
                 $this->plugin->prefix,
-                array('SLPlus_AdminUI','renderPage_GeneralSettings'),
+                array($this->plugin->AdminUI,'renderPage_GeneralSettings'),
                 SLPLUS_PLUGINURL . '/images/icon_from_jpg_16x16.png'
                 );
 

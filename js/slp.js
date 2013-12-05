@@ -954,7 +954,7 @@ var csl = {
                                     switch (modarg) {
                                         case 'directions':
                                             prefix = '<a href="http://' + slplus.map_domain +
-                                                '/maps?saddr=' + encodeURIComponent(this.cslmap.getSearchAddress(this.cslmap.address)) +
+                                                '/maps?saddr=' + encodeURIComponent(cslmap.getSearchAddress(cslmap.address)) +
                                                 '&daddr=' + encodeURIComponent(thisMarker['fullAddress'])                              +
                                                 '" target="_blank" class="storelocatorlink">'                            ;
                                             suffix = '</a> ';

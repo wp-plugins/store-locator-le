@@ -44,7 +44,10 @@ div#map {
     width: 0px;
     display: none;
 }
-
+/* Fix IE10 Rules */
+div#map .gm-style-cc > div {
+  word-wrap: normal;
+}
 /*---------------------
  * Search Form
  * Base + Widget Pack

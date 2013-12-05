@@ -32,6 +32,11 @@ class SLPlus extends wpCSL_plugin__slplus {
     const linkToER = '<a href="http://www.storelocatorplus.com/product/slp4-enhanced-results/" target="csa">Enhanced Results</a>';
 
     /**
+     * ES: Enhanced Search web link.
+     */
+    const linkToES = '<a href="http://www.storelocatorplus.com/product/slp4-enhanced-search/" target="csa">Enhanced Search</a>';
+
+    /**
      * PRO: Pro Pack web link.
      */
     const linkToPRO = '<a href="http://www.storelocatorplus.com/product/slp4-pro/" target="csa">Pro Pack</a>';
@@ -218,6 +223,7 @@ class SLPlus extends wpCSL_plugin__slplus {
     [slp_search_element input_with_label="address"]
     [slp_search_element dropdown_with_label="state"]
     [slp_search_element selector_with_label="tag"]
+    [slp_search_element dropdown_with_label="category"]
     <div class="search_item">
         [slp_search_element dropdown_with_label="radius"]
         [slp_search_element button="submit"]
@@ -487,14 +493,24 @@ class SLPlus extends wpCSL_plugin__slplus {
     }
 
     /**
+     * Return true if the named add-on pack is active.
+     *
+     * @param string $addon_slug
+     * @return boolean
+     */
+    public function is_AddonActive($addon_slug) {
+        return (
+          array_key_exists($addon_slug,$this->addons) &&
+          is_object($this->addons[$addon_slug]) &&
+          !empty($this->addons[$addon_slug]->options['installed_version'])
+          );
+    }
+
+    /**
      * Return true if the Extendo plugin is active.
      */
     public function is_Extended() {
-      return (
-        array_key_exists('slp-extendo',$this->addons) &&
-        is_object($this->addons[SLPExtendo::PLUGIN_SLUG]) &&
-        !empty($this->addons[SLPExtendo::PLUGIN_SLUG]->options['extendo_version'])
-        );
+        return $this->is_AddonActive('slp-extendo');
     }
 
     /**
@@ -525,7 +541,6 @@ class SLPlus extends wpCSL_plugin__slplus {
                 !empty($val)
             ) {
             $this->options_nojs[$key] = stripslashes_deep($val);
-            $this->debugMP('slp.main','msg','',"set options_nojs[{$key}]=".stripslashes_deep($val),NULL,NULL,true);
         }
      }
 
