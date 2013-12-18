@@ -220,6 +220,26 @@ class SLPlus_AdminUI {
         $this->MapSettings->render_adminpage();
     }
 
+
+    /**
+     * Build a query string of the add-on packages.
+     *
+     * @return string
+     */
+    public function create_addon_query() {
+        if (!$this->setParent()) { return; }
+        $addon_slugs = array_keys($this->plugin->addons);
+        $addon_versions = array();
+        foreach ($addon_slugs as $addon_slug) {
+            if (is_object($this->plugin->addons[$addon_slug])) {
+                $addon_versions[$addon_slug.'_version'] = $this->plugin->addons[$addon_slug]->options['installed_version'];
+            }
+        }
+        return
+            http_build_query($addon_slugs,'addon_') . '&' .
+            http_build_query($addon_versions) ;
+    }
+
     /**
      * Render the admin page navbar (tabs)
      *

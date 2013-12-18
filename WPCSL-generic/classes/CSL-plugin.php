@@ -28,7 +28,7 @@
 
 // The wpCSL version
 //
-if (!defined('WPCSL__slplus__VERSION')) { define('WPCSL__slplus__VERSION', '2.5.1'); }
+if (!defined('WPCSL__slplus__VERSION')) { define('WPCSL__slplus__VERSION', '2.5.2'); }
 
 /**
  * The base WPCSL class, to which all the other WPCSL objects get attached.
@@ -36,7 +36,7 @@ if (!defined('WPCSL__slplus__VERSION')) { define('WPCSL__slplus__VERSION', '2.5.
  * @author Lance Cleveland <lance@charlestonsw.com>
  * @copyright 2013 Charleston Sofware Associates, LLC
  * @package wpCSL
- * @version 2.5.1
+ * @version 2.5.2
  *
  */
 class wpCSL_plugin__slplus {

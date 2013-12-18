@@ -107,6 +107,13 @@ class SLPlus_Actions {
         //
         if ($this->plugin->check_isOurAdminPage()) {
 
+            // Update the broadcast URL with the registered plugins
+            // registered plugins are expected to tell us they are here using
+            // slp_init_complete
+            //
+            $this->plugin->broadcast_url = $this->plugin->broadcast_url . '&' . $this->plugin->AdminUI->create_addon_query();
+            $this->plugin->settings->broadcast_url = $this->plugin->broadcast_url;
+
             // Admin UI Helpers
             //
             $this->attachAdminUI();
@@ -346,13 +353,6 @@ class SLPlus_Actions {
         //
         add_action('wp_enqueue_scripts',array($this,'wp_enqueue_scripts'));
         do_action('slp_init_complete', $this);
-
-        // Update the broadcast URL with the registered plugins
-        // registered plugins are expected to tell us they are here using
-        // slp_init_complete
-        //
-        $this->plugin->broadcast_url = $this->plugin->broadcast_url . '&' . $this->plugin->create_addon_query();
-        $this->plugin->settings->broadcast_url = $this->plugin->broadcast_url;
     }
 
     /**

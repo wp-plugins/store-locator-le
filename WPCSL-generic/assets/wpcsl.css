@@ -49,16 +49,6 @@
     min-width: 10%;
     padding-bottom: 0;
     position: relative;
-
-    /* Gray left, white right background */
-    background: #f1f1f1; /* Old browsers */
-    background: -moz-linear-gradient(left, #f1f1f1 0%, #f1f1f1 190px, #ffffff 191px, #ffffff 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, right top, color-stop(0%,#f1f1f1), color-stop(190px,#f1f1f1), color-stop(191px,#ffffff), color-stop(100%,#ffffff)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(left, #f1f1f1 0%,#f1f1f1 190px,#ffffff 191px,#ffffff 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(left, #f1f1f1 0%,#f1f1f1 190px,#ffffff 191px,#ffffff 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(left, #f1f1f1 0%,#f1f1f1 190px,#ffffff 191px,#ffffff 100%); /* IE10+ */
-    background: linear-gradient(to right, #f1f1f1 0%,#f1f1f1 190px,#ffffff 191px,#ffffff 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f1f1f1', endColorstr='#ffffff',GradientType=1 ); /* IE6-9 */
 }
 
 /* Navigation */
@@ -79,13 +69,10 @@
     width: 100%;
 }
 #wpcsl_container #wpcsl-nav {
-    border-left: solid 1px  #CCCCCC;
     position: absolute;
     width: 190px;
     z-index: 9999;
-    min-height: 650px;
-    background-color: #F1F1F1;
-    margin-top: -3px;
+    border: solid 1px #DDD;
 }
 
 #wpcsl_container #wpcsl-nav ul {
@@ -192,7 +179,7 @@
 #wpcsl_container #main #content {
     margin-left: 181px;
     position: relative;
-    background-color: #FFFFFF;
+    background-color: transparent;
 }
 
 /* Content Groups */
@@ -251,7 +238,7 @@ div.section_column h2, #rb_details h2 {
     display: block;
     min-height: 18px;
     min-width: 475px;
-    padding: 0 3px;
+    padding: 3px;
     position: relative;
 }
 
@@ -260,6 +247,10 @@ div.section_column h2, #rb_details h2 {
     display: inline-block;
     min-width: 30px;
     max-width: 95%;
+}
+form#importForm input#bulk_file {
+    border: none;
+    width: auto;
 }
 .wpcsl-input > INPUT {
     width: 270px;

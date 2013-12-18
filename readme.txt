@@ -5,7 +5,7 @@ Donate link: http://www.storelocatorplus.com/product-category/slp4-products/
 Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
 Tested up to: 3.8
-Stable tag: 4.0.031
+Stable tag: 4.0.032
 License: GLPv2 or later
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
@@ -59,21 +59,21 @@ Visit the [SLP Customers page](http://www.storelocatorplus.com/support/documenta
 
 [Premium add-on packages](http://www.storelocatorplus.com/product-category/slp4-products/) are available to extend the capabilities of this plugin.
 
-**[Enhanced Map](http://www.storelocatorplus.com/product/store-locator-plus-enhanced-map) Extended Map Interface Controls**
+**[Enhanced Map](http://www.storelocatorplus.com/product/slp4-enhanced-map/) Extended Map Interface Controls**
 
 * Custom tailor the map info bubble custom HTML/shortcode admin entry.
 * Center the starting map at any location in the world.
 * Turn the map display on or off or let the user decide with a slider switch.
 * Modify the built-in Google Map controls.
 
-**[Enhanced Results](http://www.storelocatorplus.com/product/store-locator-plus-enhanced-results) Customize The Location Results**
+**[Enhanced Results](http://www.storelocatorplus.com/product/slp4-enhanced-results/) Customize The Location Results**
 
 * Custom tailor the results output with a custom HTML/shortcode admin entry.
 * Change sort order on the the results.
 * Works with other add-on packs, like Tagalong, to show per-location icons.
 * Modify location field labels.
 
-**[Enhanced Search](http://www.storelocatorplus.com/product/store-locator-plus-enhanced-search) Customize The Search Form**
+**[Enhanced Search](http://www.storelocatorplus.com/product/slp4-enhanced-search/) Customize The Search Form**
 
 * Custom tailor the search form with a HTML/shortcode admin entry.
 * Turn the search interface on/off.
@@ -90,7 +90,7 @@ Visit the [SLP Customers page](http://www.storelocatorplus.com/support/documenta
 * Location search reporting.
 * Location tags.
 
-**[Store Pages](http://www.storelocatorplus.com/product/store-locator-plus-store-pages) SEO Friendly Location Pages**
+**[Store Pages](http://www.storelocatorplus.com/product/slp4-store-pages/) SEO Friendly Location Pages**
 
 * Create pages for each location with the click of a button.
 * Each page can be edited as an individual post.
@@ -98,8 +98,8 @@ Visit the [SLP Customers page](http://www.storelocatorplus.com/support/documenta
 
 **[Super Extendo](http://www.storelocatorplus.com/product/slp4-super-extendo/) Extend The Location Data**
 
-* Works with [Enhanced Results](http://www.storelocatorplus.com/product/store-locator-plus-enhanced-results) to add featured and ranked locations.
-* Future plans include a user-controlled field editor where you can add/edit/remove custom data fields for Store Locator Plus locations.
+* Works with [Enhanced Results](http://www.storelocatorplus.com/product/slp4-enhanced-results/) to add featured and ranked locations.
+* Works with [Contact Extender](http://www.charlestonsw.com/product/slp4-contact-extender/) to add a dozen contact related fields to location data.
 
 **[Tagalong](http://www.storelocatorplus.com/product/store-locator-plus-tagalong/) Categorize Your Locations**
 
@@ -338,6 +338,14 @@ Please read the *description page* for this plugin for an important note about p
 I update about once per month or more frequently as needed.
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 4.0.032 =
+
+* Enhancement: Admin Info page now has the ability to show installed v. latest release info for add-on packs.
+* Enhancement: Move add on update query builder out of base class, minor performance enhancement on front end UI.
+* Enhancement: Map info bubble can now display HTML in description fields via use of [slp_location description raw] as default info bubble layout.
+* Enhancement: Fix help icon position in Chrome on admin UX tab.
+* Enhancement: Work around WordPress dbDelta bug that generates duplicate indices and max index count warnings on updates.
 
 = 4.0.031 =
 

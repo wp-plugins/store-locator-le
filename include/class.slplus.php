@@ -27,6 +27,16 @@ class SLPlus extends wpCSL_plugin__slplus {
     const locationTaxonomy = 'stores';
 
     /**
+     * ER: Contact Extender web link.
+     */
+    const linkToCEX = '<a href="http://www.storelocatorplus.com/product/slp4-contact-extender/" target="csa">Contact Extender</a>';
+
+    /**
+     * ER: Enhanced Map web link.
+     */
+    const linkToEM = '<a href="http://www.storelocatorplus.com/product/slp4-enhanced-map/" target="csa">Enhanced Map</a>';
+
+    /**
      * ER: Enhanced Results web link.
      */
     const linkToER = '<a href="http://www.storelocatorplus.com/product/slp4-enhanced-results/" target="csa">Enhanced Results</a>';
@@ -50,6 +60,11 @@ class SLPlus extends wpCSL_plugin__slplus {
      * SLP: Store Locator Plus web link.
      */
     const linkToSLP = '<a href="http://www.storelocatorplus.com/product/store-locator-plus-4/" target="csa">Store Locator Plus</a>';
+
+    /**
+     * TAG: Tagalong web link.
+     */
+    const linkToTAG = '<a href="http://www.storelocatorplus.com/product/slp4-tagalong/" target="csa">Tagalong</a>';
 
     /**
      * Major Version Definition, SLP3
@@ -174,7 +189,7 @@ class SLPlus extends wpCSL_plugin__slplus {
 <span class="location_detail_label">[slp_option   label_phone   ifset   phone]</span>[slp_location phone         suffix    br]</span>
 <span id="slp_bubble_fax"><span class="location_detail_label">[slp_option   label_fax     ifset   fax  ]</span>[slp_location fax           suffix    br]<span>
 <span id="slp_bubble_description"><span id="slp_bubble_description">[html br ifset description]
-[slp_location description   suffix  br]</span></span>
+[slp_location description raw]</span>[html br ifset description]</span>
 <span id="slp_bubble_hours">[html br ifset hours]
 <span class="location_detail_label">[slp_option   label_hours   ifset   hours]</span>
 <span class="location_detail_hours">[slp_location hours         suffix    br]</span></span>
@@ -507,6 +522,24 @@ class SLPlus extends wpCSL_plugin__slplus {
     }
 
     /**
+     * Return '1' if the given value is set to 'true', 'on', or '1' (case insensitive).
+     * Return '0' otherwise.
+     *
+     * Useful for checkbox values that may be stored as 'on' or '1'.
+     *
+     * @param string $attValue
+     * @return boolean
+     */
+    public function is_CheckTrue($value) {
+        if (strcasecmp($value,'true')==0)   { return true; }
+        if (strcasecmp($value,'on'  )==0)   { return true; }
+        if (strcasecmp($value,'1'   )==0)   { return true; }
+        if ($value === 1)                   { return true; }
+        if ($value === true)                { return true; }
+        return false;
+    }
+
+    /**
      * Return true if the Extendo plugin is active.
      */
     public function is_Extended() {
@@ -586,14 +619,5 @@ class SLPlus extends wpCSL_plugin__slplus {
         $name = 'slp.'.$name;
         if (!isset($this->$name)) { $this->$name = $object; }
         $this->register_addon($name,$object);
-    }
-
-    /**
-     * Build a query string of the add-on packages.
-     *
-     * @return string
-     */
-    public function create_addon_query() {
-        return http_build_query(array_keys($this->addons),'addon_');
     }
 }

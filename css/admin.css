@@ -549,6 +549,7 @@ div.section_column .form_entry {
     min-width: 475px;
     padding: 0px;
     width: 100%;
+    position: relative;
 }
 
 .section_description {
@@ -775,6 +776,10 @@ div.section_column_content {
 p.slp_admin_info {
     clear: both;
     padding-left: 9px;
+    font-size: 14px;
+    color: #222;
+    font-weight: 600;
+    font-family: 'Open Sans', sans-serif;
 }
 
 .section_description {

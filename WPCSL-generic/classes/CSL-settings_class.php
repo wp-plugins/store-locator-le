@@ -89,7 +89,7 @@ class wpCSL_settings__slplus {
                 new wpCSL_helper__slplus(array('parent'=>$this)) ;
 
         if (isset($this->parent) && $this->parent->check_isOurAdminPage()){
-            add_action('admin_init',array($this,'create_InfoSection'));
+            add_action('admin_init',array($this,'create_InfoSection'),99);
         }
     }
 
@@ -347,12 +347,14 @@ class wpCSL_settings__slplus {
      * @param boolean $show_label if true prepend output with label
      * @param boolean $use_prefix if true prepend name with prefix and separator
      * @param string $selectedVal the drop down value to be marked as selected
+     * @param string $onClick onClick JavaScript trigger
      * @return null
      */
     function add_item($section, $display_name, $name, $type = 'text',
             $required = false, $description = null, $custom = null,
             $value = null, $disabled = false, $onChange = '', $group = null,
-            $separator = '-',$show_label=true,$use_prefix = true,$selectedVal=''
+            $separator = '-',$show_label=true,$use_prefix = true,$selectedVal='',
+            $onClick = ''
             ) {
 
         // Prefix not provided, prepend name with this->prefix and separator
@@ -388,6 +390,7 @@ class wpCSL_settings__slplus {
                 'value'         => $value,
                 'disabled'      => $disabled,
                 'onChange'      => $onChange,
+                'onClick'       => $onClick,
                 'group'         => $group,
                 'show_label'    => $show_label,
                 'selectedVal'   => $selectedVal
@@ -432,7 +435,8 @@ class wpCSL_settings__slplus {
                 isset($params['separator']  )?$params['separator']          : '-',
                 isset($params['show_label'] )?$params['show_label']         : true,
                 isset($params['use_prefix'] )?$params['use_prefix']         : true,
-                isset($params['selectedVal'])?$params['selectedVal']        : ''
+                isset($params['selectedVal'])?$params['selectedVal']        : '',
+                isset($params['onClick']    )?$params['onClick']            : ''                               // item->onClick
                 );
     }
 
@@ -637,9 +641,8 @@ class wpCSL_settings__slplus {
      */
     function header() {
         $selectedNav = isset($_REQUEST['selected_nav_element'])?$_REQUEST['selected_nav_element']:'';
-        print '<div id="wpcsl_container" class="wrap">';
-        screen_icon(preg_replace('/\W/','_',$this->name));
-        print
+        print 
+            '<div id="wpcsl_container" class="wrap">'                                           .
             "<h2>{$this->name}</h2>"                                                            .
             "<form method='post' "                                                              .
                 "action='{$this->form_action}' "                                                .
@@ -1040,6 +1043,13 @@ class wpCSL_settings_item__slplus {
     private $onChange;
 
     /**
+     * The onClick JavaScript for an input item.
+     *
+     * @var string $onClick
+     */
+    private $onClick;
+
+    /**
      * What comes after the label during rendering.
      *
      * @var string $post_label
@@ -1204,7 +1214,13 @@ class wpCSL_settings_item__slplus {
             // TYPE: submit_button
             //
             case 'submit_button':
-                echo '<input class="button-primary" type="submit" value="'.$showThis.'">';
+                echo
+                    '<input ' .
+                        'class="button-primary" '   .
+                        'type="submit" '            .
+                        'value="'.$showThis.'" '    .
+                        ( ! empty($this->onClick) ? 'onClick="'.$this->onClick.'" ' : '' ) .
+                        '>';
                 break;                
 
             // TYPE: custom

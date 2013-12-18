@@ -1844,6 +1844,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                     //
                     foreach ($this->columns as $slpField => $slpLabel) {
                         $labelAsClass = sanitize_title($slpLabel);
+                        if ( ! isset( $sl_value[$slpField] ) ) { $sl_value[$slpField] = ''; }
                         $content['locationstable'] .=
                             "<td class='slp_manage_locations_cell {$labelAsClass}'>"                                           .
                                 apply_filters('slp_column_data',stripslashes($sl_value[$slpField]), $slpField, $slpLabel)     .

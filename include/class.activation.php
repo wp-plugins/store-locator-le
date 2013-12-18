@@ -109,9 +109,9 @@ class SLPlus_Activate {
                 sl_option_value longtext NULL,
                 sl_lastupdated  timestamp NOT NULL default current_timestamp,			
                 PRIMARY KEY  (sl_id),
-                KEY (sl_store(255)),
-                KEY (sl_longitude(255)),
-                KEY (sl_latitude(255))
+                KEY sl_store (sl_store),
+                KEY sl_longitude (sl_longitude),
+                KEY sl_latitude (sl_latitude)
                 ) 
                 $charset_collate
                 ";

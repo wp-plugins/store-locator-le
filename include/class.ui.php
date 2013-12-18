@@ -127,7 +127,7 @@ class SLPlus_UI {
        //
        // return TRUE if the value is 'true' (this is for shortcode atts)
        if (isset($this->plugin->data[$attribute])) {
-            return ($this->ShortcodeAttTrue($this->plugin->data[$attribute]) === '1');
+            return $this->plugin->is_CheckTrue($this->plugin->data[$attribute]);
 
        // If the data attribute is NOT set or it is set and is null (isset = false if value is null)
        // return the value of the database setting
@@ -136,20 +136,6 @@ class SLPlus_UI {
        }
     }
 
-    /**
-     * Return '1' if the given value is set to 'true', 'on', or '1' (case insensitive).
-     * Return '0' otherwise.
-     *
-     * @param string $attValue
-     * @return boolean
-     */
-    function ShortcodeAttTrue($attValue) {
-        if (strcasecmp($attValue,'true')==0) { return '1'; }
-        if (strcasecmp($attValue,'on'  )==0) { return '1'; }
-        if (strcasecmp($attValue,'1'   )==0) { return '1'; }
-        return '0';
-    }
-    
     /**
      * Create a search form input div.
      */
@@ -858,6 +844,19 @@ class SLPlus_UI {
     function rawDeal($inStr) {
         return str_replace(array("\r","\n"),'',$inStr);
     }
+
+     /**
+      * Return '1' if the given value is set to 'true', 'on', or '1' (case insensitive).
+      * Return '0' otherwise.
+      *
+      * TODO: Remove this defunct function after all add-on pack updates are published this week.
+      *
+      * @param string $attValue
+      * @return boolean
+      */
+     function ShortcodeAttTrue($attValue) {
+         return ( $this->plugin->is_CheckTrue($attValue) ? '1' : '0' );
+     }
 
     /**
      * Puts the tag list on the search form for users to select tags.
