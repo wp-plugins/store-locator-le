@@ -41,6 +41,11 @@ class SLPlus_Actions {
     // Methods
     //----------------------------------
 
+    function SLPlus_Actions() {
+        add_action( "load-post.php"     , array( $this, 'action_AddToPageHelp' ), 20 );
+        add_action( "load-post-new.php" , array( $this, 'action_AddToPageHelp' ), 20 );
+    }
+
     /**
      * Set the plugin property to point to the primary plugin object.
      *
@@ -102,6 +107,13 @@ class SLPlus_Actions {
         //
         if ($this->plugin->check_isOurAdminPage()) {
 
+            // Update the broadcast URL with the registered plugins
+            // registered plugins are expected to tell us they are here using
+            // slp_init_complete
+            //
+            $this->plugin->broadcast_url = $this->plugin->broadcast_url . '&' . $this->plugin->AdminUI->create_addon_query();
+            $this->plugin->settings->broadcast_url = $this->plugin->broadcast_url;
+
             // Admin UI Helpers
             //
             $this->attachAdminUI();
@@ -112,6 +124,31 @@ class SLPlus_Actions {
             //
             do_action('slp_admin_init_complete');
         }
+    }
+
+    /**
+     * Add content tab help to the post and post-new pages.
+     */
+    function action_AddToPageHelp() {
+        get_current_screen()->add_help_tab(
+            array(
+                'id' => 'slp_help_tab',
+                'title' => __('SLP Hints','csa-slplus'),
+                'content' => 
+                    '<p>'.
+                    sprintf(
+                        __('Store Locator Plus documentation can be found online at <a href="%s" target="csa">%s</a>.<br/>','csa-slplus'),
+                        'http://www.StoreLocatorPlus.com/support/documentation/store-locator-plus/',
+                        'StoreLocatorPlus.com/support/documentation/'
+                        ).
+                    sprintf(
+                        __('View the <a href="%s" target="csa">[slplus] shortcode documentation</a>.','csa-slplus'),
+                        'http://www.StoreLocatorPlus.com/support/documentation/store-locator-plus/shortcodes/'
+                        ).
+                    '</p>'
+
+            )
+        );
     }
 
     /**
@@ -132,7 +169,7 @@ class SLPlus_Actions {
                 $this->plugin->name,
                 'manage_slp',
                 $this->plugin->prefix,
-                array('SLPlus_AdminUI','renderPage_GeneralSettings'),
+                array($this->plugin->AdminUI,'renderPage_GeneralSettings'),
                 SLPLUS_PLUGINURL . '/images/icon_from_jpg_16x16.png'
                 );
 
@@ -316,13 +353,6 @@ class SLPlus_Actions {
         //
         add_action('wp_enqueue_scripts',array($this,'wp_enqueue_scripts'));
         do_action('slp_init_complete', $this);
-
-        // Update the broadcast URL with the registered plugins
-        // registered plugins are expected to tell us they are here using
-        // slp_init_complete
-        //
-        $this->plugin->broadcast_url = $this->plugin->broadcast_url . '&' . $this->plugin->create_addon_query();
-        $this->plugin->settings->broadcast_url = $this->plugin->broadcast_url;
     }
 
     /**
@@ -468,3 +498,9 @@ class SLPlus_Actions {
      }
 
 }
+
+// These dogs are loaded up way before this class is instantiated.
+//
+add_action("load-post",array('SLPlus_Actions','init'));
+add_action("load-post-new",array('SLPlus_Actions','init'));
+

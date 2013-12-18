@@ -20,6 +20,13 @@ class SLPlus_UI {
      */
     private  $depnotice_setResultsString = false;
 
+    /**
+     * Name of this module.
+     *
+     * @var string $name
+     */
+    private $name;
+
     //----------------------------------
     // Methods
     //----------------------------------
@@ -30,6 +37,7 @@ class SLPlus_UI {
      * @param mixed[] $params
      */
     function __construct($params = null) {
+        $this->name = 'UI';
 
         // Do the setting override or initial settings.
         //
@@ -52,6 +60,7 @@ class SLPlus_UI {
         if (!isset($this->plugin) || ($this->plugin == null)) {
             global $slplus_plugin;
             $this->plugin = $slplus_plugin;
+            $this->plugin->register_module($this->name,$this);
         }
         return (isset($this->plugin) && ($this->plugin != null));
     }
@@ -118,7 +127,7 @@ class SLPlus_UI {
        //
        // return TRUE if the value is 'true' (this is for shortcode atts)
        if (isset($this->plugin->data[$attribute])) {
-            if (strcasecmp($this->plugin->data[$attribute],'true')==0) { return true; }
+            return $this->plugin->is_CheckTrue($this->plugin->data[$attribute]);
 
        // If the data attribute is NOT set or it is set and is null (isset = false if value is null)
        // return the value of the database setting
@@ -126,7 +135,7 @@ class SLPlus_UI {
             return ($this->plugin->settings->get_item($setting,0) == 1);
        }
     }
-    
+
     /**
      * Create a search form input div.
      */
@@ -162,16 +171,12 @@ class SLPlus_UI {
 
         // Process Layout With Shortcodes
         // 
-        // TODO: make slp_search_form_divs defunct, use filter_ModifySearchLayout and filter_ProcessSearchElement instead
-        //
-        // FILTER: slp_search_form_divs
-        // FILTER: slp_searchlayout
-        //
-        $HTML = apply_filters('slp_search_form_divs',
-                    do_shortcode(
-                        apply_filters('slp_searchlayout',$this->plugin->defaults['searchlayout'])
-                    )
-                );
+        $HTML =
+            do_shortcode(
+                // FILTER: slp_searchlayout
+                //
+                apply_filters('slp_searchlayout',$this->plugin->defaults['searchlayout'])
+            );
 
         // Disconnect shortcodes
         //
@@ -329,7 +334,6 @@ class SLPlus_UI {
     /**
      * Render the search form for the map.
      *
-     * FILTER: slp_search_form_divs
      * FILTER: slp_search_form_html
      */
     function create_DefaultSearchForm() {
@@ -347,7 +351,6 @@ class SLPlus_UI {
                     "<tr id='search_form_table_row'>".
                         "<td id='search_form_table_cell' valign='top'>".
                             "<div id='address_search'>".
-            apply_filters('slp_search_form_divs','') .
             $this->createstring_DefaultSearchDiv_Address() .
             $this->create_DefaultSearchDiv_Radius()  .
             $this->create_DefaultSearchDiv_Submit()  .
@@ -518,15 +521,22 @@ class SLPlus_UI {
         //
         $this->plugin->loadPluginData();
 
-        // Then load the attributes
-        // FILTER: slp_shortcode_atts
+        // Setup the base plugin allowed attributes
         //
         add_filter('slp_shortcode_atts',array($this,'filter_SetAllowedShortcodes'));
+
+        // FILTER: slp_shortcode_atts
+        // Apply the filter of allowed attributes.
+        //
         $attributes =
             shortcode_atts(
-                apply_filters('slp_shortcode_atts',array()),
+                apply_filters('slp_shortcode_atts',array(),$attributes,$content),
                 $attributes
                );
+
+        // Set the base plugin data elements to match the allowed
+        // shortcode attributes.
+        //
         $this->plugin->data =
             array_merge(
                 $this->plugin->data,
@@ -633,7 +643,6 @@ class SLPlus_UI {
             'map_typectrl'      => (get_option(SLPLUS_PREFIX.'_disable_maptypecontrol')==0),
             'msg_noresults'     => $this->plugin->settings->get_item('message_noresultsfound','No results found.','_'),
             'results_string'    => $resultString,
-            'show_tags'         => (get_option(SLPLUS_PREFIX.'_show_tags')==1),
             'overview_ctrl'     => get_option('sl_map_overview_control',0),
             'use_email_form'    => (get_option(SLPLUS_PREFIX.'_use_email_form',0)==1),
             'zoom_level'        => get_option('sl_zoom_level',12),
@@ -835,6 +844,19 @@ class SLPlus_UI {
     function rawDeal($inStr) {
         return str_replace(array("\r","\n"),'',$inStr);
     }
+
+     /**
+      * Return '1' if the given value is set to 'true', 'on', or '1' (case insensitive).
+      * Return '0' otherwise.
+      *
+      * TODO: Remove this defunct function after all add-on pack updates are published this week.
+      *
+      * @param string $attValue
+      * @return boolean
+      */
+     function ShortcodeAttTrue($attValue) {
+         return ( $this->plugin->is_CheckTrue($attValue) ? '1' : '0' );
+     }
 
     /**
      * Puts the tag list on the search form for users to select tags.

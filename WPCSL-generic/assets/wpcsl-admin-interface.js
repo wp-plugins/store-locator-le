@@ -17,10 +17,11 @@
         /**
          * Perform an action on the specified form.
          */
-        doAction: function(theAction,thePrompt,formID) {
-            formID = typeof formID !== 'undefined' ? formID : 'locationForm';
+        doAction: function(theAction,thePrompt,formID, fieldID) {
+            formID  = typeof formID  !== 'undefined' ? formID  : 'locationForm';
+            fieldID = typeof fieldID !== 'undefined' ? fieldID : 'act';
             if((thePrompt === '') || confirm(thePrompt)){
-                jQuery('#'+formID+' [name="act"]').attr('value',theAction);
+                jQuery('#'+formID+' [name="'+fieldID+'"]').attr('value',theAction);
                 jQuery('#'+formID).submit();
             }else{
                 return false;

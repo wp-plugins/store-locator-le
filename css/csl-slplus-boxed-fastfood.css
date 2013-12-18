@@ -283,6 +283,10 @@ div#map img {
     opacity: 1.0;
     visibility: visible;
 }
+/* Fix IE10 Rules */
+div#map .gm-style-cc > div {
+  word-wrap: normal;
+}
 
 table#map_table td {
     border: none;

@@ -172,6 +172,10 @@ div#map img {
     opacity: 1.0;
     visibility: visible;
 }
+/* Fix IE10 Rules */
+div#map .gm-style-cc > div {
+  word-wrap: normal;
+}
  #map_table {
     border: none;
     margin: 0px;
