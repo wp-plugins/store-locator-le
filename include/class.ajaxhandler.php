@@ -15,11 +15,36 @@ class SLPlus_AjaxHandler {
     //-------------------------------------
     // Properties
     //-------------------------------------
+
+    /**
+     * The formdata variables.
+     *
+     * @var string[] $formdata
+     */
+    public $formdata;
+
+    /**
+     * Default formdata values.
+     *
+     * @var mixed[] $formdata_defaults
+     */
+    private $formdata_defaults = array(
+        'addressInput'      => '',
+        'addressInputState' => '',
+        'nameSearch'        => '',
+    );
+
+    /**
+     * Name of this module.
+     *
+     * @var string $name
+     */
+    private $name;
     
     /**
      * The plugin object.
      * 
-     * @var SLPlus $plugin 
+     * @var \SLPlus $plugin
      */
     public $plugin;
 
@@ -39,6 +64,10 @@ class SLPlus_AjaxHandler {
      * The Constructor
      */
     function __construct($params=null) {
+        $this->name = 'AjaxHandler';
+        if (isset($_REQUEST['formdata'])) {
+            $this->formdata = wp_parse_args($_REQUEST['formdata'],$this->formdata_defaults);
+        }
     }
 
     /**
@@ -53,6 +82,7 @@ class SLPlus_AjaxHandler {
         if (!isset($this->plugin) || ($this->plugin == null)) {
             global $slplus_plugin;
             $this->plugin = $slplus_plugin;
+            $this->plugin->register_module($this->name,$this);
         }
         return (isset($this->plugin) && ($this->plugin != null));
     }
@@ -88,15 +118,19 @@ class SLPlus_AjaxHandler {
               'fax'         => esc_attr($row['sl_fax']),
               'image'       => esc_attr($row['sl_image']),
               'distance'    => $row['sl_distance'],
-              'tags'        => ((get_option(SLPLUS_PREFIX.'_show_tags',0) ==1)? esc_attr($row['sl_tags']) : ''),
+              'tags'        => esc_attr($row['sl_tags']),
               'option_value'=> esc_js($row['sl_option_value']),
               'attributes'  => maybe_unserialize($row['sl_option_value']),
               'id'          => $row['sl_id'],
           );
 
-        // FILTER: slp_results_marker_data
         $this->plugin->currentLocation->set_PropertiesViaArray($row);
+
+        // FILTER: slp_results_marker_data
+        // Modify the map marker object that is sent back to the UI in the JSONP response.
+        //
         $marker = apply_filters('slp_results_marker_data',$marker);
+
         return $marker;
     }
 
@@ -109,8 +143,10 @@ class SLPlus_AjaxHandler {
 
         // Get Locations
         //
-        $response = array();
-        $locations = $this->execute_LocationQuery('sl_num_initial_displayed');
+
+        // Return How Many?
+        //
+        $locations = $this->execute_LocationQuery($this->plugin->options_nojs['initial_results_returned']);
         foreach ($locations as $row){
             $response[] = $this->slp_add_marker($row);
         }
@@ -155,7 +191,7 @@ class SLPlus_AjaxHandler {
         // Get Locations
         //
         $response = array();
-        $locations = $this->execute_LocationQuery(SLPLUS_PREFIX.'_maxreturned');
+        $locations = $this->execute_LocationQuery($this->plugin->options_nojs['max_results_returned']);
         foreach ($locations as $row){
             $thisLocation = $this->slp_add_marker($row);
             if (!empty($thisLocation)) {
@@ -195,7 +231,7 @@ class SLPlus_AjaxHandler {
      * @param string $maxReturned how many results to max out at
      * @return object a MySQL result object
      */
-    function execute_LocationQuery($optName_HowMany='') {
+    function execute_LocationQuery($maxReturned) {
         //........
         // SLP options that tweak the query
         //........
@@ -205,13 +241,6 @@ class SLPlus_AjaxHandler {
         //
         $multiplier=(get_option('sl_distance_unit',__('miles', 'csa-slplus'))==__('km', 'csa-slplus'))? 6371 : 3959;
 
-        // Return How Many?
-        //
-        if (empty($optName_HowMany)) { $optName_HowMany = SLPLUS_PREFIX.'_maxreturned'; }
-        $maxReturned = trim(get_option($optName_HowMany,'25'));
-        if (!ctype_digit($maxReturned)) { $maxReturned = '25'; }
-
-
         //........
         // Post options that tweak the query
         //........
@@ -220,27 +249,44 @@ class SLPlus_AjaxHandler {
         // FILTER: slp_location_filters_for_AJAX
         //
         $filterClause = '';
-        $locationFilters = array();
-        foreach (apply_filters('slp_location_filters_for_AJAX',$locationFilters) as $filter) {
+        foreach (apply_filters('slp_location_filters_for_AJAX',array()) as $filter) {
             $filterClause .= $filter;
         }
 
-        // FILTER: slp_ajaxsql_orderby
+        // ORDER BY
         //
-        $orderby = apply_filters('slp_ajaxsql_orderby','sl_distance ASC');
+        add_filter('slp_ajaxsql_orderby',array($this,'filter_SetDefaultOrderByDistance'),100);
 
-        // Set the query
-        // FILTER: slp_mysql_search_query
+        // FILTER: slp_ajaxsql_fullquery
         //
-        $this->dbQuery =  apply_filters('slp_ajaxsql_fullquery',
-            "SELECT *,".
-            "( $multiplier * acos( cos( radians('%s') ) * cos( radians( sl_latitude ) ) * cos( radians( sl_longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( sl_latitude ) ) ) ) AS sl_distance ".
-            "FROM {$this->plugin->database->info['table']} "                  .
-            "WHERE {$this->plugin->database->info['query']['valid_latlong']} ".
-            "{$filterClause} "                                          .
-            "HAVING (sl_distance < %d) "                                .
-            "ORDER BY {$orderby} "                                      .
-            'LIMIT %d'
+        $this->dbQuery =  
+            apply_filters(
+                'slp_ajaxsql_fullquery',
+                $this->plugin->database->get_SQL(
+                    array(
+                        'selectall_with_distance',
+                        'where_default_validlatlong',
+                    )
+                 )                                                      .
+                "{$filterClause} "                                      .
+                'HAVING (sl_distance < %d) OR (sl_distance IS NULL) '   .
+                $this->plugin->database->get_SQL('orderby_default')     .
+                'LIMIT %d'
+            );
+
+        // Set the query parameters
+        // FILTER: slp_ajaxsql_queryparams
+        $queryParams =
+            apply_filters(
+                'slp_ajaxsql_queryparams',
+                array(
+                    $multiplier,
+                    $_POST['lat'],
+                    $_POST['lng'],
+                    $_POST['lat'],
+                    $_POST['radius'],
+                    $maxReturned
+                )
             );
 
         // Run the query
@@ -252,11 +298,7 @@ class SLPlus_AjaxHandler {
         $this->dbQuery =
             $wpdb->prepare(
                 $this->dbQuery,
-                $_POST['lat'],
-                $_POST['lng'],
-                $_POST['lat'],
-                $_POST['radius'],
-                $maxReturned
+                $queryParams
                 );
         $wpdb->hide_errors();
         $result = $wpdb->get_results($this->dbQuery, ARRAY_A);
@@ -272,8 +314,19 @@ class SLPlus_AjaxHandler {
         }
 
         // Return the results
+        // FILTER: slp_ajaxsql_results
         //
-        return $result;
+        return apply_filters('slp_ajaxsql_results',$result);
+    }
+
+    /**
+     * Add sort by distance ASC as default order.
+     *
+     * @param string $orderby
+     * @return string
+     */
+    function filter_SetDefaultOrderByDistance($orderby) {
+        return $this->plugin->database->extend_OrderBy($orderby,' sl_distance ASC ');
     }
 
     /**

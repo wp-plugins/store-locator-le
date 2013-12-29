@@ -1,7 +1,7 @@
 /**
  ** file: default.css
  ** label: Default Theme
- ** description: The default SLPLUS Theme.
+ ** description: The default SLPLUS Theme.  Works with Enhanced Results + Super Extendo featured listings.
  **
  **/
 
@@ -18,7 +18,7 @@
     margin-right: 8px;
 }
 .onoffswitch-pretext {
-    display: linline-block;
+    display: inline-block;
     padding-right: 12px;
     vertical-align: super;
 }
@@ -262,6 +262,10 @@ div#map img {
     opacity: 1.0;
     visibility: visible;
 }
+/* Fix IE10 Rules */
+div#map .gm-style-cc > div {
+  word-wrap: normal;
+}
 
 div.entry-content div#sl_div #map IMG {
     border-radius: 0px;
@@ -339,6 +343,13 @@ div.results_entry {
 div.results_entry:hover {
     background-color: #F2F2F2;
 }
+div.results_entry.featured {
+    background-color: #EFF0DE;
+}
+div.results_entry.featured:hover {
+    background-color: #E7F8D6;
+}
+
 div.results_row_left_column {
     display: inline-block;
     position: relative;
@@ -387,6 +398,10 @@ span.slp_result_contact {
     width: 100%;
     white-space: nowrap;
 }
+span.slp_result_contact.slp_result_hours {
+    white-space: pre-line;
+}
+
 div#map_sidebar {
     overflow: auto;
 }

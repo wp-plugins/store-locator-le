@@ -13,6 +13,26 @@ class wpCSL_settings__slplus {
     //-----------------------------
     // Properties
     //-----------------------------
+
+    /**
+     * The form encryption type.
+     * 
+     * If set, the enctype attribute will be added to the form output.
+     * 
+     * Default: none.
+     * 
+     * Usually: multipart/form-data
+     * 
+     * @var string
+     */
+    protected $form_enctype = '';
+
+    /**
+     * The form name and ID.
+     *
+     * @var string
+     */
+    private $form_name = '';
     
     /**
      * Skip the save button.
@@ -69,7 +89,7 @@ class wpCSL_settings__slplus {
                 new wpCSL_helper__slplus(array('parent'=>$this)) ;
 
         if (isset($this->parent) && $this->parent->check_isOurAdminPage()){
-            add_action('admin_init',array($this,'create_InfoSection'));
+            add_action('admin_init',array($this,'create_InfoSection'),99);
         }
     }
 
@@ -131,13 +151,23 @@ class wpCSL_settings__slplus {
         $this->csl_php_modules = get_loaded_extensions();
         natcasesort($this->csl_php_modules);
         $this->parent->metadata = get_plugin_data($this->parent->fqfile, false, false);
+
+        // Add ON Packs
+        //
+        $addonStr = '';
+        if (isset($this->parent->addons)) {
+            foreach ($this->parent->addons as $addon => $object) {
+                $version  = ($object!=null)?$object->metadata['Version']:'active';
+                $addonStr .= $this->create_EnvDiv($addon,$version);
+            }
+        }
+
         $this->add_section(
             array(
                 'name' => 'Plugin Environment',
                 'description' =>
                     $this->create_EnvDiv($this->parent->metadata['Name'] . ' Version' ,$this->parent->metadata['Version'] ).
-                    $this->create_EnvDiv('CSA IP Addresses'                         ,
-                            gethostbyname('charlestonsw.com') .' and ' .gethostbyname('license.charlestonsw.com')       ).
+                    $addonStr . 
                     '<br/><br/>' .
                     $this->create_EnvDiv('WPCSL Version'                            ,WPCSL__slplus__VERSION             ).
                     $this->create_EnvDiv('Active WPCSL'                             ,plugin_dir_path(__FILE__)          ).
@@ -316,12 +346,15 @@ class wpCSL_settings__slplus {
      * @param string $separator separator for prefix
      * @param boolean $show_label if true prepend output with label
      * @param boolean $use_prefix if true prepend name with prefix and separator
+     * @param string $selectedVal the drop down value to be marked as selected
+     * @param string $onClick onClick JavaScript trigger
      * @return null
      */
     function add_item($section, $display_name, $name, $type = 'text',
             $required = false, $description = null, $custom = null,
             $value = null, $disabled = false, $onChange = '', $group = null,
-            $separator = '-',$show_label=true,$use_prefix = true
+            $separator = '-',$show_label=true,$use_prefix = true,$selectedVal='',
+            $onClick = ''
             ) {
 
         // Prefix not provided, prepend name with this->prefix and separator
@@ -357,8 +390,10 @@ class wpCSL_settings__slplus {
                 'value'         => $value,
                 'disabled'      => $disabled,
                 'onChange'      => $onChange,
+                'onClick'       => $onClick,
                 'group'         => $group,
-                'show_label'    => $show_label
+                'show_label'    => $show_label,
+                'selectedVal'   => $selectedVal
             )
         );
 
@@ -399,7 +434,9 @@ class wpCSL_settings__slplus {
                 isset($params['group']      )?$params['group']              : null,
                 isset($params['separator']  )?$params['separator']          : '-',
                 isset($params['show_label'] )?$params['show_label']         : true,
-                isset($params['use_prefix'] )?$params['use_prefix']         : true
+                isset($params['use_prefix'] )?$params['use_prefix']         : true,
+                isset($params['selectedVal'])?$params['selectedVal']        : '',
+                isset($params['onClick']    )?$params['onClick']            : ''                               // item->onClick
                 );
     }
 
@@ -604,11 +641,21 @@ class wpCSL_settings__slplus {
      */
     function header() {
         $selectedNav = isset($_REQUEST['selected_nav_element'])?$_REQUEST['selected_nav_element']:'';
-        echo '<div id="wpcsl_container" class="wrap">';
-        screen_icon(preg_replace('/\W/','_',$this->name));
-        echo "<h2>{$this->name}</h2><form method='post' action='{$this->form_action}'>";
-        echo "<input type='hidden' id='selected_nav_element' name='selected_nav_element' value='{$selectedNav}'/>";
-        echo settings_fields($this->prefix.'-settings');
+        print 
+            '<div id="wpcsl_container" class="wrap">'                                           .
+            "<h2>{$this->name}</h2>"                                                            .
+            "<form method='post' "                                                              .
+                "action='{$this->form_action}' "                                                .
+                ( ( $this->form_name    !== '' ) ? "id='{$this->form_name}' "           : '' )  .
+                ( ( $this->form_name    !== '' ) ? "name='{$this->form_name}' "         : '' )  .
+                ( ( $this->form_enctype !== '' ) ? "enctype='{$this->form_enctype}' "   : '' )  .
+                ">"                                                                             .
+            "<input type='hidden' "                                                             .
+                "id='selected_nav_element' "                                                    .
+                "name='selected_nav_element' "                                                  .
+                "value='{$selectedNav}' "                                                       .
+                "/>"                                                                            ;
+        print settings_fields($this->prefix.'-settings');
     }
 
     /**------------------------------------
@@ -996,6 +1043,13 @@ class wpCSL_settings_item__slplus {
     private $onChange;
 
     /**
+     * The onClick JavaScript for an input item.
+     *
+     * @var string $onClick
+     */
+    private $onClick;
+
+    /**
      * What comes after the label during rendering.
      *
      * @var string $post_label
@@ -1008,6 +1062,13 @@ class wpCSL_settings_item__slplus {
      * @var boolean $show_label
      */
     private $show_label = true;
+
+    /**
+     * Value of item to be selected for a drop down object.
+     *
+     * @var string $selectedVal
+     */
+    private $selectedVal = '';
 
     /**
      * What type of item is it?
@@ -1046,8 +1107,9 @@ class wpCSL_settings_item__slplus {
      *
      */
     function display() {
-
-        $showThis = htmlspecialchars((isset($this->value)?$this->value:get_option($this->name)));
+        $optVal = get_option($this->name);
+        $optVal = is_array($optVal)?print_r($optVal,true):$optVal;
+        $showThis = htmlspecialchars((isset($this->value)?$this->value:$optVal));
 
         echo '<div class="wpcsl-setting">';
 
@@ -1134,10 +1196,11 @@ class wpCSL_settings_item__slplus {
                 echo
                     $this->parent->helper->createstring_DropDownMenu(
                         array(
-                            'id'        => $this->name,
-                            'name'      => $this->name,
-                            'items'     => $this->custom,
-                            'onchange'  => $this->onChange,
+                            'id'            => $this->name,
+                            'name'          => $this->name,
+                            'items'         => $this->custom,
+                            'onchange'      => $this->onChange,
+                            'selectedVal'   => $this->selectedVal,
                         )
                      );
                 break;
@@ -1151,7 +1214,13 @@ class wpCSL_settings_item__slplus {
             // TYPE: submit_button
             //
             case 'submit_button':
-                echo '<input class="button-primary" type="submit" value="'.$showThis.'">';
+                echo
+                    '<input ' .
+                        'class="button-primary" '   .
+                        'type="submit" '            .
+                        'value="'.$showThis.'" '    .
+                        ( ! empty($this->onClick) ? 'onClick="'.$this->onClick.'" ' : '' ) .
+                        '>';
                 break;                
 
             // TYPE: custom
