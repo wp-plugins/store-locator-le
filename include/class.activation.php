@@ -15,7 +15,19 @@ class SLPlus_Activate {
     // Properties
     //----------------------------------
 
+    /**
+     * Starting DB version of this plugin.
+     *
+     * @var string $db_version_on_start
+     */
     public  $db_version_on_start = '';
+
+    /**
+     * Starting Pluging version.
+     *
+     * @var string $plugin_version_on_start
+     */
+    public $plugin_version_on_start;
 
 
     //----------------------------------
@@ -341,19 +353,21 @@ class SLPlus_Activate {
             $updater = $this;
         }
 
-        // Set our starting version
-        //
-        $updater->db_version_on_start = get_option( SLPLUS_PREFIX."-db_version" );
-
         // New Installation
         //
+        $updater->db_version_on_start     = get_option( $updater->plugin->prefix."-db_version" );
         if ($updater->db_version_on_start == '') {
-            add_option(SLPLUS_PREFIX."-db_version", $updater->plugin->version);
-            add_option(SLPLUS_PREFIX.'_disable_find_image','1');                // Disable the image find locations on new installs
+            add_option($updater->plugin->prefix."-db_version", $updater->plugin->version);
+            add_option($updater->plugin->prefix.'_disable_find_image','1');                // Disable the image find locations on new installs
 
         // Updating previous install
         //
         } else {
+            $options_changed = false;
+            $updater->plugin_version_on_start = ($old_version !== null )        ?
+                $old_version                                                    :
+                get_option($updater->plugin->prefix."-installed_base_version")  ;
+
             // Save Image and Lanuages Files
             $filesSaved = $updater->save_important_files();
 
@@ -388,6 +402,32 @@ class SLPlus_Activate {
             //
             if (get_option('sl_google_map_domain','maps.google.com') === 'maps.googleapis.com') {
                 update_option('sl_google_map_domain','maps.google.com');
+            }
+            
+            // Upgrading to version 4.0.033
+            //
+            if ( version_compare($updater->plugin_version_on_start,'4.0.033','<') ) {
+
+                // Max Search Results Setting
+                //
+                $max_results = get_option(SLPLUS_PREFIX.'_maxreturned','25');
+                $updater->plugin->options_nojs['max_results_returned'] = empty( $max_results ) ? '25' : $max_results;
+                delete_option(SLPLUS_PREFIX.'_maxreturned');
+                $options_changed = $options_changed || ($max_results !== $updater->plugin->options_nojs['max_results_returned']);
+
+                // Number To Show Initially Setting
+                //
+                $initial_results = get_option('sl_num_initial_displayed','25');
+                $updater->plugin->options_nojs['initial_results_returned'] = empty( $initial_results ) ? '25' : $initial_results;
+                delete_option('sl_num_initial_displayed');
+                $options_changed = $options_changed || ($initial_results !== $updater->plugin->options_nojs['initial_results_returned']);
+
+            }
+
+            // Save Serialized Options
+            //
+            if ($options_changed) {
+                update_option(SLPLUS_PREFIX.'-options_nojs', $this->plugin->options_nojs);
             }
 
             // Set DB Version

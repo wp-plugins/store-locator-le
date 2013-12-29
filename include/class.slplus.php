@@ -286,7 +286,9 @@ class SLPlus extends wpCSL_plugin__slplus {
      * @var mixed[]
      */
     public $options_nojs    = array(
-        'retry_maximum_delay'    => '5.0',
+        'initial_results_returned'  => '25'     ,
+        'max_results_returned'      => '25'     ,
+        'retry_maximum_delay'       => '5.0'    ,
     );
 
     /**

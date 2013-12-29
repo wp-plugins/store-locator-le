@@ -5,7 +5,7 @@ Donate link: http://www.storelocatorplus.com/product-category/slp4-products/
 Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
 Tested up to: 3.8
-Stable tag: 4.0.032
+Stable tag: 4.0.033
 License: GLPv2 or later
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
@@ -338,6 +338,14 @@ Please read the *description page* for this plugin for an important note about p
 I update about once per month or more frequently as needed.
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 4.0.033 =
+
+* Enhancement: Center Map At property has been moved to the base plugin.   Enhanced Map is still required to set this via a shortcode attribute on a per-page basis.
+* Enhancement: Edit mode toggles into a single location listing, saving memory and making location edits via the admin panel much faster.
+* Enhancement: Better data checking on saving locations reduces unnecessary I/O if fields are unchanged.
+* Fix: Return locations that EXACTLY MATCH the search address entered.
+* Fix: Remember the page number in manage locations when saving an edited location.
 
 = 4.0.032 =
 

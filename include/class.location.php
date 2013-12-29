@@ -464,11 +464,8 @@ class SLPlus_Location {
         if ($this->id > 0) {
             $this->debugMP('msg','',"Update location {$this->id}");
             if(!$this->plugin->db->update($this->plugin->database->info['table'],$dataToWrite,array('sl_id' => $this->id))) {
-                $this->plugin->notifications->add_notice(
-                        'warning',
-                        sprintf(__('%s (location id %d) did not need to update the core location properties.','csa-slplus'),$this->store,$this->id)
-                        );
                 $dataWritten = false;
+                $this->debugMP('msg','',"Update location {$this->id} DID NOT update core data.");
             }
 
         // No location, add it.
@@ -504,11 +501,17 @@ class SLPlus_Location {
      *
      * If not id is presented, check the current location ID.
      *
+     * request_param is used if ID is set to null to try to set the value from a request variable of that name.
+     *
      * @param string $id
+     * @param string $request_param
      * @return boolean
      */
-    function isvalid_ID($id=null) {
-        if ($id===null) { $id = $this->id; }
+    function isvalid_ID($id=null, $request_param=null ) {
+
+        if ( isset( $_REQUEST[$request_param] ) ) { $id = $_REQUEST[$request_param];    }
+        if ( $id === null                       ) { $id = $this->id;                    }
+
         return ( ctype_digit( $id ) && ( $id > 0 ) );
     }
 

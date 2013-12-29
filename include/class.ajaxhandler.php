@@ -143,8 +143,11 @@ class SLPlus_AjaxHandler {
 
         // Get Locations
         //
-        $locations = $this->execute_LocationQuery('sl_num_initial_displayed');
-foreach ($locations as $row){
+
+        // Return How Many?
+        //
+        $locations = $this->execute_LocationQuery($this->plugin->options_nojs['initial_results_returned']);
+        foreach ($locations as $row){
             $response[] = $this->slp_add_marker($row);
         }
 
@@ -188,7 +191,7 @@ foreach ($locations as $row){
         // Get Locations
         //
         $response = array();
-        $locations = $this->execute_LocationQuery(SLPLUS_PREFIX.'_maxreturned');
+        $locations = $this->execute_LocationQuery($this->plugin->options_nojs['max_results_returned']);
         foreach ($locations as $row){
             $thisLocation = $this->slp_add_marker($row);
             if (!empty($thisLocation)) {
@@ -228,7 +231,7 @@ foreach ($locations as $row){
      * @param string $maxReturned how many results to max out at
      * @return object a MySQL result object
      */
-    function execute_LocationQuery($optName_HowMany='') {
+    function execute_LocationQuery($maxReturned) {
         //........
         // SLP options that tweak the query
         //........
@@ -237,13 +240,6 @@ foreach ($locations as $row){
         // Since miles is default, if kilometers is selected, divide by 1.609344 in order to convert the kilometer value selection back in miles
         //
         $multiplier=(get_option('sl_distance_unit',__('miles', 'csa-slplus'))==__('km', 'csa-slplus'))? 6371 : 3959;
-
-        // Return How Many?
-        //
-        if (empty($optName_HowMany)) { $optName_HowMany = SLPLUS_PREFIX.'_maxreturned'; }
-        $maxReturned = trim(get_option($optName_HowMany,'25'));
-        if (!ctype_digit($maxReturned)) { $maxReturned = '25'; }
-
 
         //........
         // Post options that tweak the query
@@ -273,7 +269,7 @@ foreach ($locations as $row){
                     )
                  )                                                      .
                 "{$filterClause} "                                      .
-                "HAVING (sl_distance < %d) "                            .
+                'HAVING (sl_distance < %d) OR (sl_distance IS NULL) '   .
                 $this->plugin->database->get_SQL('orderby_default')     .
                 'LIMIT %d'
             );

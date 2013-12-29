@@ -5,7 +5,7 @@
  ** add-ons: slp-pro
  ** csl-slplus-layout: <div id="sl_div"><div id="sl_leftcol">[slp_search]<div id="sl_arrow_container"><div id="sl_search_arrow"></div></div>[slp_results]</div><div id="sl_rightcol">[slp_map]</div></div>
  ** sl_load_locations_default: true
- ** sl_num_initial_displayed: 25
+ ** initial_results_returned: 25
  ** sl_search_label: Zip
  ** csl-slplus_find_button_label: Search
  **

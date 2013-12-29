@@ -672,7 +672,16 @@ class SLPlus_UI {
      * Uses country by default.
      */
     function set_MapCenter() {
-        return apply_filters('slp_map_center',esc_attr(get_option('sl_google_map_country','United States')));
+
+        // Map Settings "Center Map At"
+        //
+        $customAddress = get_option(SLPLUS_PREFIX.'_map_center','');
+        if ((preg_replace('/\W/','',$customAddress) != '')) {
+            $customAddress = str_replace(array("\r\n","\n","\r"),', ',esc_attr($customAddress));
+        } else {
+            $customAddress = esc_attr(get_option('sl_google_map_country','United States'));
+        }
+        return apply_filters('slp_map_center',$customAddress);
     }
 
     /**
@@ -844,45 +853,6 @@ class SLPlus_UI {
     function rawDeal($inStr) {
         return str_replace(array("\r","\n"),'',$inStr);
     }
-
-     /**
-      * Return '1' if the given value is set to 'true', 'on', or '1' (case insensitive).
-      * Return '0' otherwise.
-      *
-      * TODO: Remove this defunct function after all add-on pack updates are published this week.
-      *
-      * @param string $attValue
-      * @return boolean
-      */
-     function ShortcodeAttTrue($attValue) {
-         return ( $this->plugin->is_CheckTrue($attValue) ? '1' : '0' );
-     }
-
-    /**
-     * Puts the tag list on the search form for users to select tags.
-     *
-     * @param string[] $tags tags as an array of strings
-     * @param boolean $showany show the any pulldown entry if true
-     */
-    static function slp_render_search_form_tag_list($tags,$showany = false) {
-        print "<select id='tag_to_search_for' >";
-
-        // Show Any Option (blank value)
-        //
-        if ($showany) {
-            print "<option value=''>".
-                get_option(SLPLUS_PREFIX.'_tag_pulldown_first',__('Any','csa-slplus')).
-                '</option>';
-        }
-
-        foreach ($tags as $selection) {
-            $clean_selection = preg_replace('/\((.*)\)/','$1',$selection);
-            print "<option value='$clean_selection' ";
-            print (preg_match('#\(.*\)#', $selection))? " selected='selected' " : '';
-            print ">$clean_selection</option>";
-        }print "</select>";
-    }
-
 
      //------------------------------------------------------------------------
      // DEPRECATED
