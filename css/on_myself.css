@@ -10,7 +10,7 @@
  ** sl_map_height_units: %
  ** sl_remove_credits: true
  ** sl_load_locations_default: true
- ** sl_num_initial_displayed: 25
+ ** initial_results_returned: 25
  ** sl_search_label: Zip Code
  ** csl-slplus_find_button_label: Search
  **
@@ -66,6 +66,10 @@ div#map img {
     max-width: none;
     opacity: 1.0;
     visibility: visible;
+}
+/* Fix IE10 Rules */
+div#map .gm-style-cc > div {
+  word-wrap: normal;
 }
 
 div.entry-content div#sl_div #map IMG {

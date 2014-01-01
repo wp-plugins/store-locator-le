@@ -37,7 +37,7 @@ if (! class_exists('csl_mobile_listener')) {
                 }
 
                 if (!isset($_REQUEST['max'])) {
-                    $max = get_option(SLPLUS_PREFIX.'_maxreturned');
+                    $max = $slplus_plugin->options_nojs['max_results_returned'];
                 }
                 else {
                     $max = $_REQUEST['max'];
@@ -121,6 +121,7 @@ if (! class_exists('csl_mobile_listener')) {
 
             function PerformSearch() {
                 global $wpdb;
+                global $slplus;
 	            $username=DB_USER;
 	            $password=DB_PASSWORD;
 	            $database=DB_NAME;
@@ -142,7 +143,6 @@ if (! class_exists('csl_mobile_listener')) {
 	            //
 	            $tag_filter = ''; 
 	            if (
-		            (get_option(SLPLUS_PREFIX.'_show_tag_search') ==1) &&
 		            isset($this->tags) && ($this->tags != '')
 	            ){
 		            $posted_tag = preg_replace('/^\s+(.*?)/','$1',$this->tags);
@@ -160,13 +160,7 @@ if (! class_exists('csl_mobile_listener')) {
 
                 // Radian multiplier to get linear distance
                 $multiplier=(get_option('sl_distance_unit',__('miles', 'csa-slplus'))==__('km'    ,'csa-slplus'))? 6371 : 3959;
-
-	            $option[SLPLUS_PREFIX.'_maxreturned']=(trim(get_option(SLPLUS_PREFIX.'_maxreturned'))!="")? 
-                get_option(SLPLUS_PREFIX.'_maxreturned') : 
-                '25';
-	
-	            $max = $option[SLPLUS_PREFIX.'_maxreturned'];
-
+	            $max = $slplus_plugin->options_nojs['max_results_returned'];
                 if ($this->max < $max) {
                     $max = $this->max;
                 }
@@ -178,7 +172,7 @@ if (! class_exists('csl_mobile_listener')) {
 			            "( $multiplier * acos( cos( radians('%s') ) * cos( radians( sl_latitude ) ) * cos( radians( sl_longitude ) - radians('%s') ) + sin( radians('%s') ) * sin( radians( sl_latitude ) ) ) ) AS sl_distance ".
 			            "FROM ${dbPrefix}store_locator ".
 			            "WHERE sl_longitude<>'' %s %s ".
-			            "HAVING (sl_distance < '%s') ".
+			            "HAVING (sl_distance < '%s') OR (sl_distance IS NULL) ".
 			            'ORDER BY sl_distance ASC '.
 			            'LIMIT %s',
 			            mysql_real_escape_string($this->center_lat),
@@ -194,10 +188,6 @@ if (! class_exists('csl_mobile_listener')) {
 		            if (!$result) {
 			            $this->Respond( false, 'Invalid query: ' . mysql_error() . '- '.$query);
 		            }
-
-		            // Show Tags
-		            //
-		            $slplus_show_tags = (get_option(SLPLUS_PREFIX.'_show_tags') ==1);
 
 		            // Reporting
 		            // Insert the query into the query DB
@@ -244,7 +234,7 @@ if (! class_exists('csl_mobile_listener')) {
                             'units' => get_option('sl_distance_unit',__('miles', 'csa-slplus')),
 				            'image' => esc_attr($row['sl_image']),
 				            'distance' => $row['sl_distance'],
-				            'tags' => ($slplus_show_tags) ? esc_attr($row['sl_tags']) : ''
+				            'tags' => esc_attr($row['sl_tags'])
 			            );
 			            $response[] = $marker;
 			

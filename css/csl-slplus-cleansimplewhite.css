@@ -103,6 +103,10 @@ div#map img {
     max-width: none;
     visibility: visible;
 }
+/* Fix IE10 Rules */
+div#map .gm-style-cc > div {
+  word-wrap: normal;
+}
 /* Hide the default Google bubble shadow */
 div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
     display:none;
