@@ -237,7 +237,9 @@ if (!class_exists('CSVImport')) {
 
             // Turn off notifications for OK addresses.
             //
-            $this->plugin->AdminUI->ManageLocations->geocodeSkipOKNotices = true;
+            if ( is_object( $this->plugin->AdminUI->ManageLocations ) ) {
+                $this->plugin->AdminUI->ManageLocations->geocodeSkipOKNotices = true;
+            }
 
             // Loop through all records
             //

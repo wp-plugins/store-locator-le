@@ -2080,7 +2080,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
             // Locations Per Page Action
             //   - update the option first,
             //   - then reload the
-            case 'locationsPerPage':
+            case 'locationsperpage':
                 $newLimit = preg_replace('/\D/','',$_REQUEST['displaylimit']);
                 if (ctype_digit($newLimit) && (int)$newLimit > 9) {
                     update_option('sl_admin_locations_per_page', $newLimit);

@@ -146,6 +146,7 @@ class SLPlus_AjaxHandler {
 
         // Return How Many?
         //
+        $response=array();
         $locations = $this->execute_LocationQuery($this->plugin->options_nojs['initial_results_returned']);
         foreach ($locations as $row){
             $response[] = $this->slp_add_marker($row);
