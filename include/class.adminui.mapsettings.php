@@ -351,7 +351,7 @@ class SLPlus_AdminUI_MapSettings {
                     ) .
             $this->CreateTextAreaDiv(
                     SLPLUS_PREFIX.'_map_center',
-                    __('Center Map At','csa-slp-em'),
+                    __('Center Map At','csa-slplus'),
                     __('Enter an address to serve as the initial focus for the map. '                                   ,'csa-slplus') .
                     __('Default is the center of the country.'                                                          ,'csa-slplus') .
                     __('Enhanced Map add-on must be installed to set per-page with center_map_at="address" shortcode. ' ,'csa-slplus') .

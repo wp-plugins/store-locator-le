@@ -771,6 +771,14 @@ var csl = {
                             addressInput = results[0].formatted_address;
                         }
                     } else {
+                        //check to see if the map exists, if it doesn't then set the location to nowhere ... 
+                        //probably not the best, but this should (hopefully) be rare.
+                        if (_this.gmap === null) {
+                            _this.address = "0,0";
+                            _this.doGeocode();
+                            return;
+                        }
+
                         //address couldn't be processed, so use the center of the map
                         var tag_to_search_for = _this.saneValue('tag_to_search_for', '');
                         var radius = _this.saneValue('radiusSelect');
