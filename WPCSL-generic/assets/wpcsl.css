@@ -352,3 +352,48 @@ input.onoffswitch-checkbox[type="checkbox"] {
 div.theme_details {
     display: none;
 }
+
+
+/* Icons */
+div.action_buttons{
+    white-space: normal;
+    overflow: auto;
+    min-width: 44px;
+}
+.action_icon {
+    background: url("../WPCSL-generic/assets/General_icons16.png") no-repeat scroll transparent;
+    height: 20px;
+    width: 20px;
+    display: inline-block;
+}
+.view_icon {
+    background-position: -40px 0px;
+}
+.view_icon:hover {
+  background-position: -40px -20px;
+}
+.edit_icon {
+  background-position: -62px 0px;
+}
+.edit_icon:hover {
+  background-position: -62px -20px;
+}
+.delete_icon {
+  background-position: -85px 0px;
+}
+.delete_icon:hover {
+  background-position: -85px -20px;
+}
+.createpage_icon {
+  background-position: -150px 0px;
+}
+.createpage_icon:hover {
+  background-position: -150px -20px;
+}
+
+.haspage_icon {
+  background-position: -150px -40px;
+}
+.haspage_icon:hover {
+  background-position: -150px -20px;
+}

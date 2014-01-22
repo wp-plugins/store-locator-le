@@ -5,7 +5,7 @@ Donate link: http://www.storelocatorplus.com/product-category/slp4-products/
 Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
 Tested up to: 3.8
-Stable tag: 4.0.034
+Stable tag: 4.0.035
 License: GLPv2 or later
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
@@ -240,6 +240,7 @@ new theme or any of the built-in defaults by selecting it from the auto-generate
 
 * Dutch (nl_NL) by [Jan de Baat](http://www.de-baat.nl/)
 * French (fr_FR) by François Serrault
+* German (de_DE) by Tobias Rechtsteiner
 * Japanese (ja) by [Karen Ellrick](http://l4jp.com)
 
 *Graphics*
@@ -338,6 +339,11 @@ Please read the *description page* for this plugin for an important note about p
 I update about once per month or more frequently as needed.
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 4.0.035 =
+
+* Enhancement: Added German (de_DE) [text translations](http://www.storelocatorplus.com/support/documentation/store-locator-plus/user-experience/map/countries-and-languages/).
+* Fix: Stop crashing the map when an invalid or empty address is passed in from the Widget Pack or Enhanced Search URL address.
 
 = 4.0.034 =
 

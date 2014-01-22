@@ -156,14 +156,14 @@ if (!class_exists('CSVImport')) {
             // Is the file name set?  If not, exit.
             //
             if (!isset($_FILES['csvfile']['name']) || empty($_FILES['csvfile']['name'])) {
-                print "<div class='updated fade'>".__('Import file name not set.','csa-slp-pro').'</div>';
+                print "<div class='updated fade'>".__('Import file name not set.','csa-slplus').'</div>';
                 return;
             }
 
             // Does the file have any content?  If not, exit.
             //
             if ($_FILES['csvfile']['size'] <= 0)    {
-                print "<div class='updated fade'>".__('Import file was empty.','csa-slp-pro').'</div>';
+                print "<div class='updated fade'>".__('Import file was empty.','csa-slplus').'</div>';
                 return;
             }
             
@@ -172,8 +172,8 @@ if (!class_exists('CSVImport')) {
             $arr_file_type = wp_check_filetype(basename($_FILES['csvfile']['name']));
             if ($arr_file_type['type'] != 'text/csv') {
                 print "<div class='updated fade'>".
-                    __('Uploaded file needs to be in CSV format.','csa-slp-pro')        .
-                    sprintf(__('Type was %s.','csa-slp-pro'),$arr_file_type['type'])    .
+                    __('Uploaded file needs to be in CSV format.','csa-slplus')        .
+                    sprintf(__('Type was %s.','csa-slplus'),$arr_file_type['type'])    .
                     '</div>';
                 return;
             }
@@ -196,7 +196,7 @@ if (!class_exists('CSVImport')) {
             //
             if (($this->filehandle = fopen($updir.'/'.$_FILES['csvfile']['name'], "r")) === FALSE) {
                 print "<div class='updated fade'>".
-                    __('Could not open CSV file for processing.','csa-slp-pro')         . '<br/>' .
+                    __('Could not open CSV file for processing.','csa-slplus')         . '<br/>' .
                     $updir.'/'.$_FILES['csvfile']['name']                               .
                     '</div>';
                 ini_set('auto_detect_line_endings', $adle_setting);
@@ -271,7 +271,7 @@ if (!class_exists('CSVImport')) {
             if ($reccount > 0) {
                 print "<div class='updated fade'>".
                         sprintf("%d",$reccount) ." " .
-                        __(" processed.",'csa-slp-pro') .
+                        __(" processed.",'csa-slplus') .
                         '</div>';
             }
             foreach ($this->processing_counts as $count_type=>$count) {

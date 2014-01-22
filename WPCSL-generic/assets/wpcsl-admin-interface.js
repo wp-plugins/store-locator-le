@@ -15,18 +15,25 @@
         },
 
         /**
-         * Perform an action on the specified form.
-         */
-        doAction: function(theAction,thePrompt,formID, fieldID) {
-            formID  = typeof formID  !== 'undefined' ? formID  : 'locationForm';
-            fieldID = typeof fieldID !== 'undefined' ? fieldID : 'act';
-            if((thePrompt === '') || confirm(thePrompt)){
-                jQuery('#'+formID+' [name="'+fieldID+'"]').attr('value',theAction);
-                jQuery('#'+formID).submit();
-            }else{
-                return false;
-            }
-        },
+		 * Perform an action on the specified form.
+		*/
+		doAction: function(theAction,thePrompt,formID, fieldID) {
+			formID  = typeof formID  !== 'undefined' ? formID  : 'locationForm';
+
+	        if (jQuery('#'+formID).length && jQuery('#'+formID).is('form')) {
+		        targetForm = '#'+formID;
+	        } else {
+		        targetForm = '#'+formID+' form';
+			}
+
+	        fieldID = typeof fieldID !== 'undefined' ? fieldID : 'act';
+		    if((thePrompt === '') || confirm(thePrompt)){
+			    jQuery(targetForm+' [name="'+fieldID+'"]').attr('value',theAction);
+				jQuery(targetForm).submit();
+	        }else{
+		        return false;
+	        }
+		},
   
 /**
  * toggle_nav_tabs()
