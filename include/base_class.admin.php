@@ -34,13 +34,6 @@ if (! class_exists('SLP_BaseClass_Admin')) {
         protected $admin_page_slug;
 
         /**
-         * The parent add-on pack.
-         *
-         * @var mixed $parent
-         */
-        protected $parent = null;
-
-        /**
          * The base SLPlus object.
          *
          * @var \SLPlus $slplus
