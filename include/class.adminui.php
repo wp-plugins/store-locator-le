@@ -33,17 +33,10 @@ class SLPlus_AdminUI {
 
     /**
      * The SLPlus Plugin
-     * 
-     * @var \SLPlus
-     */
-    public $parent = null;
-
-    /**
-     * The SLPlus Plugin
      *
      * @var \SLPlus
      */
-    public $plugin = null;
+    public $slplus = null;
 
     /**
      *
@@ -72,6 +65,8 @@ class SLPlus_AdminUI {
      *
      */
     function __construct() {
+        global $slplus_plugin;
+        $this->slplus = $slplus_plugin;
 
         // Register our admin styleseheet
         //
@@ -81,29 +76,10 @@ class SLPlus_AdminUI {
     }
 
     /**
-     * Set the parent property to point to the primary plugin object.
-     *
-     * Returns false if we can't get to the main plugin object.
-     *
-     * @global wpCSL_plugin__slplus $slplus_plugin
-     * @return type boolean true if plugin property is valid
-     */
-    function setParent() {
-        if (!isset($this->parent) || ($this->parent == null)) {
-            global $slplus_plugin;
-            $this->parent = $slplus_plugin;
-            $this->plugin = $slplus_plugin;
-        }
-
-        return (isset($this->parent) && ($this->parent != null));
-    }
-
-    /**
      * Setup some of the general settings interface elements.
      */
     function build_basic_admin_settings() {
-        if (!$this->setParent()) { return; }
-        $this->parent->settings->add_section(
+        $this->slplus->settings->add_section(
             array(
                 'name'          => __('Navigation','csa-slplus'),
                 'div_id'        => 'navbar_wrapper',
@@ -120,7 +96,7 @@ class SLPlus_AdminUI {
         //-------------------------
         require_once(SLPLUS_PLUGINDIR . '/include/class.adminui.info.php');
         $this->Info = new SLPlus_AdminUI_Info();
-        $this->parent->settings->add_section(
+        $this->slplus->settings->add_section(
             array(
                 'name' => __('How to Use','csa-slplus'),
                 'description' => $this->Info->createstring_HowToUse(),
@@ -179,7 +155,7 @@ class SLPlus_AdminUI {
      * Enqueue the admin stylesheet when needed.
      */
     function enqueue_admin_stylesheet($hook) {
-        if ($this->plugin->check_isOurAdminPage()) {wp_enqueue_style($this->styleHandle);}
+        if ($this->slplus->check_isOurAdminPage()) {wp_enqueue_style($this->styleHandle);}
     }
 
     /**
@@ -197,9 +173,8 @@ class SLPlus_AdminUI {
      *
      */
     function renderPage_Info() {
-        if (!$this->setParent()) { return; }
-        $this->parent->settings->no_save_button = true;
-        $this->parent->settings->render_settings_page();
+        $this->slplus->settings->no_save_button = true;
+        $this->slplus->settings->render_settings_page();
     }
 
     /**
@@ -227,12 +202,11 @@ class SLPlus_AdminUI {
      * @return string
      */
     public function create_addon_query() {
-        if (!$this->setParent()) { return; }
-        $addon_slugs = array_keys($this->plugin->addons);
+        $addon_slugs = array_keys($this->slplus->addons);
         $addon_versions = array();
         foreach ($addon_slugs as $addon_slug) {
-            if (is_object($this->plugin->addons[$addon_slug])) {
-                $addon_versions[$addon_slug.'_version'] = $this->plugin->addons[$addon_slug]->options['installed_version'];
+            if (is_object($this->slplus->addons[$addon_slug])) {
+                $addon_versions[$addon_slug.'_version'] = $this->slplus->addons[$addon_slug]->options['installed_version'];
             }
         }
         return
@@ -248,10 +222,8 @@ class SLPlus_AdminUI {
      * @return string
      */
     function create_Navbar($addWrap = false) {
-        if (!$this->setParent()) { return; }
-
         global $submenu;
-        if (!isset($submenu[$this->parent->prefix]) || !is_array($submenu[$this->parent->prefix])) {
+        if (!isset($submenu[$this->slplus->prefix]) || !is_array($submenu[$this->slplus->prefix])) {
             echo apply_filters('slp_navbar','');
         } else {
             $content =
@@ -261,7 +233,7 @@ class SLPlus_AdminUI {
 
             // Loop through all SLP sidebar menu items on admin page
             //
-            foreach ($submenu[$this->parent->prefix] as $slp_menu_item) {
+            foreach ($submenu[$this->slplus->prefix] as $slp_menu_item) {
 
                 // Create top menu item
                 //
@@ -287,7 +259,6 @@ class SLPlus_AdminUI {
      * @return string
      */
      function CreateIconSelector($inputFieldID = null, $inputImageID = null) {
-        if (!$this->setParent()) { return 'could not set parent'; }
         if (($inputFieldID == null) || ($inputImageID == null)) { return ''; }
 
 
@@ -299,11 +270,11 @@ class SLPlus_AdminUI {
         // If we already got a list of icons and URLS, just use those
         //
         if (
-            isset($this->parent->data['iconselector_files']) &&
-            isset($this->parent->data['iconselector_urls'] )
+            isset($this->slplus->data['iconselector_files']) &&
+            isset($this->slplus->data['iconselector_urls'] )
            ) {
-            $files = $this->parent->data['iconselector_files'];
-            $fqURL = $this->parent->data['iconselector_urls'];
+            $files = $this->slplus->data['iconselector_files'];
+            $fqURL = $this->slplus->data['iconselector_urls'];
 
         // If not, build the icon info but remember it for later
         // this helps cut down looping directory info twice (time consuming)
@@ -337,20 +308,20 @@ class SLPlus_AdminUI {
                         closedir($iconDir);
                         $fqURLIndex++;
                     } else {
-                        $this->parent->notifications->add_notice(
+                        $this->slplus->notifications->add_notice(
                                 9,
                                 sprintf(
                                         __('Could not read icon directory %s','csa-slplus'),
                                         $directory
                                         )
                                 );
-                         $this->parent->notifications->display();
+                         $this->slplus->notifications->display();
                     }
                }
             }
             ksort($files);
-            $this->parent->data['iconselector_files'] = $files;
-            $this->parent->data['iconselector_urls']  = $fqURL;
+            $this->slplus->data['iconselector_files'] = $files;
+            $this->slplus->data['iconselector_urls']  = $fqURL;
         }
 
         // Build our icon array now that we have a full file list.
@@ -425,16 +396,6 @@ class SLPlus_AdminUI {
         return $optionValue;
      }
 
-    /**
-     * Check if a URL starts with http://
-     *
-     * @param type $url
-     * @return type
-     */
-    function url_test($url) {
-        return (strtolower(substr($url,0,7))=="http://");
-    }
-
      //------------------------------------------------------------------------
      // DEPRECATED
      //------------------------------------------------------------------------
@@ -455,8 +416,8 @@ class SLPlus_AdminUI {
       */
      function create_InputElement() {
          if (!$this->depnotice_create_InputElement) {
-            $this->parent->notifications->add_notice(9,$this->plugin->createstring_Deprecated(__FUNCTION__));
-            $this->parent->notifications->display();
+            $this->slplus->notifications->add_notice(9,$this->slplus->createstring_Deprecated(__FUNCTION__));
+            $this->slplus->notifications->display();
             $this->depnotice_create_InputElement = true;
          }
      }

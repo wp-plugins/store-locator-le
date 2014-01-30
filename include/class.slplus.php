@@ -109,18 +109,41 @@ class SLPlus extends wpCSL_plugin__slplus {
     public $addons = array();
 
     /**
+     * An array of all the available add-on packs we know about.
+     *
+     * Set by a remote service calls.
+     *
+     * @var mixed[] all available add-ons.
+     */
+    public $available_addons = array();
+
+    /**
      * The Admin UI object.
      * 
      * @var SLPlus_AdminUI $AdminUI
      */
-    public $AdminUI;
+	public $AdminUI;
+
+	/**
+     * The Admin WPML object.
+     * 
+     * @var SLPlus_AdminWPML $AdminWPML
+     */
+    public $AdminWPML;
 
     /**
      * The User Interface object.
      *
      * @var SLPlus_UI $UI
      */
-    public $UI;
+	public $UI;
+
+	/**
+     * The WPML Interface object.
+     *
+     * @var SLPlus_WPML $WPML
+     */
+	public $WPML;
 
     /**
      * The current location.
@@ -286,8 +309,11 @@ class SLPlus extends wpCSL_plugin__slplus {
      * @var mixed[]
      */
     public $options_nojs    = array(
+        'has_extended_data'         => ''       ,
         'initial_results_returned'  => '25'     ,
         'max_results_returned'      => '25'     ,
+        'next_field_id'             => 1        ,
+        'next_field_ported'         => ''       ,
         'retry_maximum_delay'       => '5.0'    ,
     );
 
@@ -318,7 +344,6 @@ class SLPlus extends wpCSL_plugin__slplus {
      * @var string $dir
      */
     private $dir;
-
 
     /**
      * Sets the values of the $data array.
@@ -542,10 +567,91 @@ class SLPlus extends wpCSL_plugin__slplus {
     }
 
     /**
-     * Return true if the Extendo plugin is active.
+     * Returns true if the database is extended.
+     *
+     * Use the direct database call instead.
+     *
+     * @deprecated since version 4.1.00
+     * @return boolean
      */
     public function is_Extended() {
-        return $this->is_AddonActive('slp-extendo');
+        return $this->database->is_Extended();
+    }
+
+    /**
+     * Set the info array for the available add-on packs.
+     */
+    function set_AvailableAddons() {
+        if ( count($this->available_addons) > 0 ) { return; }
+
+        $this->available_addons['slp-contact-extender'] =
+            array(
+                'name'  => 'Contact Extender',
+                'link'  => SLPlus::linkToCEX,
+            );
+
+        $this->available_addons['slp-enhanced-map'] =
+            array(
+                'name'  => 'Enhanced Map',
+                'link'  => SLPlus::linkToEM,
+             );
+
+        $this->available_addons['slp-enhanced-results'] =
+            array(
+                'name' => 'Enhanced Results',
+                'link'  => SLPlus::linkToER,
+             );
+
+        $this->available_addons['slp-enhanced-search'] =
+            array(
+                'name' => 'Enhanced Search',
+                'link'  => SLPlus::linkToES,
+             );
+
+        $this->available_addons['slp-extendo'] =
+            array(
+                'name' => 'Super Extendo',
+                'link'  => SLPlus::linkToSE,
+             );
+
+        $this->available_addons['slp-janitor'] =
+            array(
+                'name' => 'Janitor',
+                'link' => '<a href="http://www.storelocatorplus.com/product/store-locator-plus-janitor/" target="csa">Janitor</a>',
+             );
+
+        $this->available_addons['slp-pages'] =
+            array(
+                'name' => 'Store Pages',
+                'link' => '<a href="http://www.storelocatorplus.com/product/slp4-store-pages/" target="csa">Store Pages</a>',
+             );
+
+        $this->available_addons['slp-pro'] =
+            array(
+                'name' => 'Pro Pack',
+                'link'  => SLPlus::linkToPRO,
+             );
+
+        $this->available_addons['slp-tagalong'] =
+            array(
+                'name' => 'Tagalong',
+                'link' => SLPlus::linkToTAG,
+             );
+
+        $this->available_addons['slp-widget'] =
+            array(
+                'name' => 'Widget',
+                'link' => '<a href="http://www.storelocatorplus.com/product/slp4-Widgets/" target="csa">Widgets</a>',
+             );
+
+
+        // Set add on active boolean flag
+        // If active set addon property to point to active addon object.
+        //
+        foreach ($this->available_addons as $slug=>$properties) {
+            $this->available_addons[$slug]['active'] =  $this->is_AddonActive($slug);
+            $this->available_addons[$slug]['addon'] = $this->available_addons[$slug]['active'] ? $this->addons[$slug] : null;
+        }
     }
 
     /**
