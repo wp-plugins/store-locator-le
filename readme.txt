@@ -12,8 +12,11 @@ A full featured location management system. Add a location finder or directory t
 
 == Description ==
 
-Learn more about [Store Locator Plus on the Charleston Software Associates website](http://www.storelocatorplus.com/product-category/slp4-products/).
+Over 30,000 active installations. Learn more about [Store Locator Plus on the Charleston Software Associates website](http://www.storelocatorplus.com/product-category/slp4-products/).
 The website offers [more screen shots](c), [technical documentation](http://www.storelocatorplus.com/support/documentation/technical-documentation/), and [full release notes](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/).
+
+*Note For Current Users*
+If you are upgrading from SLP 3 to SLP 4.* or SLP 4.* to SLP 4.1, please read the Update Notice section below.
 
 = Details =
 
@@ -322,12 +325,27 @@ More screenshots are available via [the CSA website](http://www.storelocatorplus
 
 ==Upgrade Notice==
 
+*Upgrading From SLP 3.X to 4.0.Y*
+
+
 Store Locator Plus 4 is a MAJOR upgrade to the previous version.
 
 If you are using ANY of the [premium add-on packs](http://www.storelocatorplus.com/product-category/slp4-products/) you must first deactivate and delete the premium add-on packs.
 
 You will need to purchase new [SLP4 compatible versions of the add-on packs](http://www.storelocatorplus.com/product-category/slp4-products/).
 Discounts will be made available to users that purchased a premium add-on pack within 1 year of purchasing the SLP4 compatible upgrades.
+
+
+*Upgrading From SLP 4.0.Y to SLP 4.1*
+
+If you are using Enhanced Results or Contact Extender and activated Super Extendo at ANY TIME you must:
+
+1. Deactivate Enhanced Results, Contact Extender, and Super Extendo.
+2. Upgrade to SLP 4.1+.
+3. Upgrade Enhanced Results and/or Contact Extender to 4.1+.
+
+Super Extendo can be deleted AFTER upgrading Enhanced Results and/or Contact Extender to 4.1+.
+
 
 == Changelog ==
 
@@ -346,3 +364,4 @@ Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.co
 * Enhancement: Make some of the admin interface elements more responsive allowing for textarea inputs to grow without scrolling when screen real estate allows.
 * Enhancement: Improved info bubble layout processor, does not balk when using [slp_location name] instead of [slp_location name ].
 * Enhancement: WPML integration has been started.   The search form string have been added, but we need more from WPML to make this viable.
+* Enhancement: Add one-click SLP theme settings implementation for Advanced Themes.
