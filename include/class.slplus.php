@@ -567,18 +567,6 @@ class SLPlus extends wpCSL_plugin__slplus {
     }
 
     /**
-     * Returns true if the database is extended.
-     *
-     * Use the direct database call instead.
-     *
-     * @deprecated since version 4.1.00
-     * @return boolean
-     */
-    public function is_Extended() {
-        return $this->database->is_Extended();
-    }
-
-    /**
      * Set the info array for the available add-on packs.
      */
     function set_AvailableAddons() {
@@ -727,5 +715,22 @@ class SLPlus extends wpCSL_plugin__slplus {
         $name = 'slp.'.$name;
         if (!isset($this->$name)) { $this->$name = $object; }
         $this->register_addon($name,$object);
+    }
+
+
+    //----------------------------------------------------
+    // DEPRECATED
+    //----------------------------------------------------
+
+    /**
+     * Returns false.  This is a legacy function that has been replaced.
+     *
+     * Use the direct database call instead.
+     *
+     * @deprecated since version 4.1.00
+     * @return boolean
+     */
+    public function is_Extended() {
+        return false;
     }
 }
