@@ -76,6 +76,20 @@ class SLPlus_Actions {
         return true;
     }
 
+	/**
+     * Attach and instantiated AdminWPML object to the main plugin object.
+     *
+     * @return boolean - true unless the main plugin is not found
+     */
+    function attachAdminWPML() {
+        if (!$this->set_Plugin()) { return false; }
+        if (!isset($this->plugin->AdminWPML) || !is_object($this->plugin->AdminWPML)) {
+            require_once(SLPLUS_PLUGINDIR . '/include/class.adminwpml.php');
+            $this->plugin->AdminWPML = new SLPlus_AdminWMPL();     // Lets invoke this and make it an object
+        }
+        return true;
+	}
+
     /**
      * method: admin_init()
      *
@@ -118,7 +132,12 @@ class SLPlus_Actions {
             //
             $this->attachAdminUI();
             add_action('admin_enqueue_scripts',array($this->plugin->AdminUI,'enqueue_admin_stylesheet'));
-            $this->plugin->AdminUI->build_basic_admin_settings();
+			$this->plugin->AdminUI->build_basic_admin_settings();
+
+			// Admin WPML Helper
+			// 
+			$this->attachAdminWPML();
+			$this->plugin->AdminWPML->setParent();
 
             // Action hook for 3rd party plugins
             //

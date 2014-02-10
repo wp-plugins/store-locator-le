@@ -1,11 +1,11 @@
-/**
- ** file: beside_myself.css
- ** label: Beside Myself
- ** description: Search On Right Side. "Myself" palette (blue and orange).
- ** add-ons: slp-pro, slp-enhanced-results, slp-enhanced-map, slp-enhanced-search, slp-widgets
- ** csl-slplus-layout: <div id="sl_div"><div id="sl_leftcol">[slp_map]</div><div id="sl_rightcol">[slp_search]<div id="sl_arrow_container"><div id="sl_search_arrow"></div></div>[slp_results]</div></div>
- ** csl-slplus_slpes[searchlayout]: <span class="search_header">Find Our Locations</span>[slp_search_element input_with_label="address"][slp_search_element dropdown_with_label="radius"][slp_search_element button="submit"]
- ** csl-slplus_slper[resultslayout]: <div class="results_row_left_column" id="slp_left_cell_[slp_location id]" ><span class="location_name">[slp_location name]</span><span class="slp_result_address slp_result_street">[slp_location address]</span><span class="slp_result_address slp_result_street2">[slp_location address2]</span><span class="slp_result_address slp_result_citystatezip">[slp_location city_state_zip]</span><span class="slp_result_address slp_result_phone">[slp_location phone]</span></div><div class="results_row_right_column"  id="slp_right_cell_[slp_location id]" ><span class="location_distance">[slp_location distance_1] [slp_location distance_unit]</span><span class="slp_result_contact slp_result_website">[slp_location web_link]</span><span class="slp_result_contact slp_result_directions"><a href="http://[slp_location map_domain]/maps?saddr=[slp_location search_address]&daddr=[slp_location location_address]" target="_blank" class="storelocatorlink">[slp_location directions_text]</a></span></div>
+/** file: beside_myself.css
+ ** label: Beside Myself (A)
+ ** description: Map on left, Search and Results on right. Simplified search layout only supports basic search form options. Recommended for WordPress themes with a wide content area, such as Twenty Twelve's full width template.  Primary colors: blue, orange.
+ ** add-ons: slp-pro,slp-enhanced-results,slp-enhanced-search
+ ** Pro Pack Locator Layout: <div id="sl_div"><div id="sl_leftcol">[slp_map]</div><div id="sl_rightcol">[slp_search]<div id="sl_arrow_container"><div id="sl_search_arrow"></div></div>[slp_results]</div></div>
+ ** Enhanced Results Results Layout: <div class="results_row_left_column" id="slp_left_cell_[slp_location id]" ><span class="location_name">[slp_location name]</span><span class="slp_result_address slp_result_street">[slp_location address]</span><span class="slp_result_address slp_result_street2">[slp_location address2]</span><span class="slp_result_address slp_result_citystatezip">[slp_location city_state_zip]</span><span class="slp_result_address slp_result_phone">[slp_location phone]</span></div><div class="results_row_right_column"  id="slp_right_cell_[slp_location id]" ><span class="location_distance">[slp_location distance_1] [slp_location distance_unit]</span><span class="slp_result_contact slp_result_website">[slp_location web_link]</span><span class="slp_result_contact slp_result_directions"><a href="http://[slp_location map_domain]/maps?saddr=[slp_location search_address]&daddr=[slp_location location_address]" target="_blank" class="storelocatorlink">[slp_location directions_text]</a></span></div>
+ ** Enhanced Search Search Layout: <span class="search_header">Find Our Locations</span>[slp_search_element input_with_label="address"][slp_search_element dropdown_with_label="radius"][slp_search_element button="submit"]
+ **
  ** sl_map_height: 100
  ** sl_map_height_units: %
  ** sl_remove_credits: true
@@ -13,9 +13,7 @@
  ** initial_results_returned: 25
  ** sl_search_label: Zip Code
  ** csl-slplus_find_button_label: Search
- **
  **/
-
 
 /*---------------------
  * Entire SLPlus UI
@@ -169,9 +167,10 @@ div#slpw_submitline
     padding-top: 6px;
 }
 div#radius_in_submit {
-    display: inline-block;
-    margin-left: 8px;
-    width: 100px;
+    display: block;
+    margin: 6px auto;
+    width: auto;
+    text-align: center;
 }
 input#addressSubmit,
 input#slpw_addressSubmit
@@ -186,7 +185,7 @@ input#slpw_addressSubmit
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
     text-transform: uppercase;
     vertical-align: text-bottom;
-    width: 54px;
+    width: auto;
 }
 
 /*---------------------
