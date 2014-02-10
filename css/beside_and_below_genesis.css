@@ -1,11 +1,12 @@
-/**
- ** file: beside_and_below_genesis.css
- ** label: Beside And Below Genesis
- ** description: Search On Left Side, Map and Results on Right, Genesis Compatible
- ** add-ons: slp-pro
- ** csl-slplus-layout: <div id="sl_div"><div id="sl_leftcol"><div class="searchbox">[slp_search]</div><div class="legendbox"><h1>Services</h1>[tagalong legend]</div></div><div id="sl_rightcol">[slp_map][slp_results]</div></div>
- ** csl-slplus_slpes[searchlayout]: <div class="searchbox"><div class="searchheader">Search</div><div class="searchcontent">[slp_search_element dropdown_with_label="city"][slp_search_element dropdown_with_label="state"][slp_search_element dropdown_with_label="country"][slp_search_element input_with_label="name"][slp_search_element input_with_label="address"][slp_search_element dropdown_with_label="radius"][slp_search_element dropdown_with_label="category"][slp_search_element button="submit"]</div></div>
- ** csl-slplus_slper[resultslayout]: <div id="slp_results_[slp_location id]" class="results_entry"><div class="results_row_left_column"   id="slp_left_cell_[slp_location id]"   >[slp_location name wrap="fullspan"]<span class="results_line"><span class="location_distance_label">Distance:</span>[slp_location distance_1] [slp_location distance_unit]</span>[slp_location iconarray wrap="fullspan"]</div><div class="results_row_right_column"  id="slp_right_cell_[slp_location id]"  >[slp_location web_link wrap="fullspan"]<span class="results_line slp_result_directions"><a href="http://[slp_location map_domain]/maps?saddr=[slp_location search_address]&daddr=[slp_location location_address]" target="_blank" class="storelocatorlink">[slp_location directions_text]</a></span></div></div>
+/** file: beside_and_below_genesis.css
+ ** label: Beside And Below Genesis (A)
+ ** description: Search On Left Side, Map and Results on Right. Built to work with the Genesis WordPress theme.
+ ** add-ons: slp-pro,slp-enhanced-map,slp-enhanced-results,slp-enhanced-search
+ **
+ ** Pro Pack Locator Layout: <div id="sl_div"><div id="sl_leftcol"><div class="searchbox">[slp_search]</div><div class="legendbox"><h1>Services</h1>[tagalong legend]</div></div><div id="sl_rightcol">[slp_map][slp_results]</div></div>
+ ** Enhanced Results Results Layout: <div id="slp_results_[slp_location id]" class="results_entry"><div class="results_row_left_column"   id="slp_left_cell_[slp_location id]"   >[slp_location name wrap="fullspan"]<span class="results_line"><span class="location_distance_label">Distance:</span>[slp_location distance_1] [slp_location distance_unit]</span>[slp_location iconarray wrap="fullspan"]</div><div class="results_row_right_column"  id="slp_right_cell_[slp_location id]"  >[slp_location web_link wrap="fullspan"]<span class="results_line slp_result_directions"><a href="http://[slp_location map_domain]/maps?saddr=[slp_location search_address]&daddr=[slp_location location_address]" target="_blank" class="storelocatorlink">[slp_location directions_text]</a></span></div></div>
+ ** Enhanced Search Search Layout: <div class="searchbox"><div class="searchheader">Search</div><div class="searchcontent">[slp_search_element dropdown_with_label="city"][slp_search_element dropdown_with_label="state"][slp_search_element dropdown_with_label="country"][slp_search_element input_with_label="name"][slp_search_element input_with_label="address"][slp_search_element dropdown_with_label="radius"][slp_search_element dropdown_with_label="category"][slp_search_element button="submit"]</div></div>
+ **
  ** csl-slplus_show_search_by_name: on
  ** csl-slplus-TAGALONG-show_cats_on_search-checkbox: on
  ** csl-slplus-TAGALONG-show_icon_array-checkbox: on

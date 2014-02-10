@@ -1,5 +1,5 @@
 /** file: simple-white-4col.css
- ** label: Simple White Four Column
+ ** label: Simple White Four Column (A)
  ** description: A simple white layout with 4 columns for map results.  Emphasis on contact data from Contact Extender. Uses "Source Sans Pro", available from the Google Fonts library.  Falls back to web standard fonts.
  ** add-ons: slp-contact-extender, slp-pro, slp-enhanced-map, slp-enhanced-results
  ** Pro Pack Locator Layout: <div id="sl_div">[slp_search][slp_map][slp_results]</div>
