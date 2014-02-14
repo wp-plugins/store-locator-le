@@ -63,7 +63,9 @@ class SLPlus_Activate {
 
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
-
+        global $EZSQL_ERROR;
+        $EZSQL_ERROR=array();
+        
         return $retval;
     }
 
@@ -416,15 +418,15 @@ class SLPlus_Activate {
                 // Number To Show Initially Setting
                 //
                 $initial_results = get_option('sl_num_initial_displayed','25');
-                $updater->plugin->options_nojs['initial_results_returned'] = empty( $initial_results ) ? '25' : $initial_results;
+                $updater->plugin->options['initial_results_returned'] = empty( $initial_results ) ? '25' : $initial_results;
                 delete_option('sl_num_initial_displayed');
-                $options_changed = $options_changed || ($initial_results !== $updater->plugin->options_nojs['initial_results_returned']);
+                $options_changed = $options_changed || ($initial_results !== $updater->plugin->options['initial_results_returned']);
 
             }
 
             // Upgrading to version 4.1.00
             //
-            if ( version_compare($updater->plugin_version_on_start,'4.1.00','<') ) {
+            if ( version_compare($updater->plugin_version_on_start,'4.1.03','<') ) {
                 delete_option(SLPLUS_PREFIX.'-theme_details');
             }
 

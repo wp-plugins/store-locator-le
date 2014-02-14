@@ -624,8 +624,6 @@ class SLPlus_Location {
                 //
                 $ssd_value = stripslashes_deep($value);
                 if ($this->$property != $ssd_value ) {
-                    $debug_message = empty($this->property)?"set to {$value}":"changed {$this->$property} to {$value} ";
-                    $this->debugMP('msg','',"{$property}: {$debug_message}");
                     $this->$property = $ssd_value;
                     $this->plugin->currentLocation->dataChanged = true;
                 }

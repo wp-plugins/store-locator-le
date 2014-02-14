@@ -1084,6 +1084,7 @@ var slp = {
                 lat     : center.lat(),
                 lng     : center.lng(),
                 name    : this.saneValue('nameSearch', ''),
+                options : slplus.options,
                 radius  : radius,
                 tags    : tags
              };

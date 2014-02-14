@@ -224,14 +224,17 @@ class SLPlus extends wpCSL_plugin__slplus {
 
         'label_email'    => 'Email'                                         ,
 
+        // If you change this change default.css theme as well.
         'layout'         =>
             '<div id="sl_div">[slp_search][slp_map][slp_results]</div>'     ,
 
+        // If you change this change default.css theme as well.
         'maplayout'      =>
             '[slp_mapcontent][slp_maptagline]'                              ,
 
 
-        'resultslayout'  => 
+        // If you change this change default.css theme as well.
+        'resultslayout'  =>
 '<div id="slp_results_[slp_location id]" class="results_entry  [slp_location featured]">
     <div class="results_row_left_column"   id="slp_left_cell_[slp_location id]"   >
         <span class="location_name">[slp_location name]</span>
@@ -255,11 +258,14 @@ class SLPlus extends wpCSL_plugin__slplus {
 </div>'
                                                                             ,
 
+        // If you change this change default.css theme as well.
         'searchlayout'  => 
 '<div id="address_search">
     [slp_search_element input_with_label="name"]
     [slp_search_element input_with_label="address"]
+    [slp_search_element dropdown_with_label="city"]
     [slp_search_element dropdown_with_label="state"]
+    [slp_search_element dropdown_with_label="country"]
     [slp_search_element selector_with_label="tag"]
     [slp_search_element dropdown_with_label="category"]
     <div class="search_item">
@@ -292,15 +298,16 @@ class SLPlus extends wpCSL_plugin__slplus {
      * @var mixed[] $options
      */
     public  $options            = array(
-        'bubblelayout'          => ''               ,
-        'initial_radius'        => '10000'          ,
-        'label_directions'      => ''               ,
-        'label_email'           => ''               ,
-        'label_fax'             => ''               ,
-        'label_hours'           => ''               ,
-        'label_phone'           => ''               ,
-        'label_website'         => ''               ,
-        'slplus_version'        => SLPLUS_VERSION   ,
+        'bubblelayout'              => ''               ,
+        'initial_radius'            => '10000'          ,
+        'initial_results_returned'  => '25'             ,
+        'label_directions'          => ''               ,
+        'label_email'               => ''               ,
+        'label_fax'                 => ''               ,
+        'label_hours'               => ''               ,
+        'label_phone'               => ''               ,
+        'label_website'             => ''               ,
+        'slplus_version'            => SLPLUS_VERSION   ,
     );
 
     /**
@@ -310,7 +317,6 @@ class SLPlus extends wpCSL_plugin__slplus {
      */
     public $options_nojs    = array(
         'has_extended_data'         => ''       ,
-        'initial_results_returned'  => '25'     ,
         'max_results_returned'      => '25'     ,
         'next_field_id'             => 1        ,
         'next_field_ported'         => ''       ,
@@ -471,9 +477,6 @@ class SLPlus extends wpCSL_plugin__slplus {
      *
      * FILTER: slp_attribute_values
      * This filter only fires at the very start of SLP, it may not run add-on pack stuff.
-     *
-     * FILTER: wpcsl_loadplugindata__slplus
-     * This filter fires much later, only when loadplugindata() methods are called in wpcsl.
      *
      * The slp_attribute_values fitler takes an array of arrays.
      *

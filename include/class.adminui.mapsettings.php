@@ -801,7 +801,7 @@ class SLPlus_AdminUI_MapSettings {
                     __('Number To Show Initially','csa-slplus'),
                     __('How many locations should be shown when Immediately Show Locations is checked.  Recommended maximum is 50.','csa-slplus'),
                     '',
-                    $this->plugin->options_nojs['initial_results_returned']
+                    $this->plugin->options['initial_results_returned']
                     ).
             $this->CreateInputDiv(
                     'initial_radius',

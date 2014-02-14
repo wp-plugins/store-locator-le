@@ -390,7 +390,6 @@ class wpCSL_helper__slplus {
         if (!isset($this->parent->dataElements)) {
             $this->parent->dataElements = array();
         }
-        $this->parent->dataElements = apply_filters('wpcsl_loadplugindata__slplus',$this->parent->dataElements);
         if (count($this->parent->dataElements) > 0) {
             foreach ($this->parent->dataElements as $element) {
                 $this->getData($element[0],$element[1],$element[2]);

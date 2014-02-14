@@ -1,22 +1,19 @@
 === Store Locator Plus ===
 Plugin Name:  Store Locator Plus
 Contributors: charlestonsw
-Donate link: http://www.storelocatorplus.com/product-category/slp4-products/
+Donate link: http://www.storelocatorplus.com/
 Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
 Tested up to: 3.8.1
-Stable tag: 4.1.02
+Stable tag: 4.1.04
 License: GLPv2 or later
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
 
 == Description ==
 
-Over 30,000 active installations. Learn more about [Store Locator Plus on the Charleston Software Associates website](http://www.storelocatorplus.com/product-category/slp4-products/).
-The website offers [more screen shots](c), [technical documentation](http://www.storelocatorplus.com/support/documentation/technical-documentation/), and [full release notes](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/).
-
-*Note For Current Users*
-If you are upgrading from SLP 3 to SLP 4.* or SLP 4.* to SLP 4.1, please read the Update Notice section below.
+Over 30,000 active installations. Learn more at the [Store Locator Plus website](http://www.storelocatorplus.com/).
+The website offers more [screen shots](http://www.storelocatorplus.com/support/documentation/store-locator-plus/store-locator-plus-screen-shots/), [technical documentation](http://www.storelocatorplus.com/support/documentation/technical-documentation/), and [full release notes](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/release-notes-4-0/), and a very active [user forum](http://www.charlestonsw.com/forums/).
 
 = Details =
 
@@ -62,6 +59,10 @@ Visit the [SLP Customers page](http://www.storelocatorplus.com/support/documenta
 
 [Premium add-on packages](http://www.storelocatorplus.com/product-category/slp4-products/) are available to extend the capabilities of this plugin.
 
+** [Contact Extender](http://www.charlestonsw.com/product/slp4-contact-extender/) Contacts Data **
+
+* Adds a dozen extra contact specific data fields for each location.
+
 **[Enhanced Map](http://www.storelocatorplus.com/product/slp4-enhanced-map/) Extended Map Interface Controls**
 
 * Custom tailor the map info bubble custom HTML/shortcode admin entry.
@@ -98,11 +99,6 @@ Visit the [SLP Customers page](http://www.storelocatorplus.com/support/documenta
 * Create pages for each location with the click of a button.
 * Each page can be edited as an individual post.
 * Pages support their own comments, featured image, page style, and other standard WordPress page template features.
-
-**[Super Extendo](http://www.storelocatorplus.com/product/slp4-super-extendo/) Extend The Location Data**
-
-* Works with [Enhanced Results](http://www.storelocatorplus.com/product/slp4-enhanced-results/) to add featured and ranked locations.
-* Works with [Contact Extender](http://www.charlestonsw.com/product/slp4-contact-extender/) to add a dozen contact related fields to location data.
 
 **[Tagalong](http://www.storelocatorplus.com/product/slp4-tagalong/) Categorize Your Locations**
 
@@ -142,30 +138,20 @@ If you need something NOW, or are looking for something beyond a basic "tweak" o
 I try to release at least one upgrade/patch every month.
 
 The main product will always remain fully functional and free.
+
 If you'd like to have some of the latest "bells & whistles" purchasing a premium add-on is a great way to help support me and encourage even more items get added the next time around.
 
 = My Philosophy =
 
-I strive to create code that runs efficiently and without bugs.
-In my opinion, well-written plugins are few and far between.
-While there are plenty of plugins that look nice, far too many of those plugins, including the "cool shiny ones" have too many hidden problems.
-I have found that over 90% of the plugins available on the WordPress plugin directory generate dozens, if not hundreds, of warnings and errors when you turn off the "hide all the problems" settings.
+I strive to create code that runs efficiently and without bugs. Well-written plugins are few and far between. While there are plenty of plugins that look nice, many of those plugins, including the "cool shiny ones" have hidden problems. Over 90% of the plugins available on the WordPress plugin directory generate dozens, if not hundreds, of warnings and errors when you turn off the "hide all the problems" settings.
 
-These hidden problems impact memory usage, fill up disk space, and reduce performance via the typical default logging settings.
-While you may not see the errors on your WordPress site, they are still being tracked.
-The more errors, the more disk I/O, the slower the app.
+These hidden problems impact memory usage, fill up disk space, and reduce performance. While you may not see the errors on your WordPress site, they are still being tracked. The more errors, the more disk I/O, the slower the app.
 
-During 20+ years of software development, I have found that leaving "innocuous" warnings in place tends to lead to trouble further down the road.
-Warnings today often become errors tomorrow.
-Many programming languages, PHP included, continue to tighten security and close loopholes that are typically found living near all those warning messages.
-Some warnings are telling you to "change this now, it will be gone tomorrow".
-Eventually tomorrow will come.
+During my 20 years of software development, I have found that leaving "innocuous" warnings in place tends to lead to trouble further down the road. Warnings today often become errors tomorrow. Many programming languages, PHP included, continue to tighten security and close loopholes that are typically found living near warning messages. Some warnings are telling you to "change this now, it will be gone tomorrow". Eventually tomorrow will come.
 
-While my plugins may not be the prettiest on the block, I do try to make sure that all the hidden stuff you don't see is designed as well as it can be.
-My code is not perfect, but when I find a bug I try to fix it fast. 
-If I create a bug I try to fix it even faster.
-To sum it all up, I like to write plugins that last.
-I hope you appreciate my work.
+While my plugins may not be the prettiest on the block, I do try to make sure that all the hidden stuff you don't see is designed as well as it can be. My code is not perfect, but when I find a bug I try to fix it fast.  If I create a bug I try to fix it even faster.
+
+I like to write plugins that last. I hope you appreciate my work.
 
 = Rate This Plugin =
 
@@ -288,7 +274,7 @@ Installed an add-on pack will not change location data or modify base plugin set
 = Who is Charleston Software Associates? =
 
 Currently it is one guy hacking code in a home office.
-I ONLY do mobile apps and WordPress plugins for a living.
+I ONLY do WordPress plugins for a living.
 Lately it has been almost exclusively work on Store Locator Plus due to the popularity and requests for added features that come in every month.
 
 = What are the terms of the license? =
@@ -357,6 +343,21 @@ Please read the *description page* for this plugin for an important note about p
 I update about once per month or more frequently as needed.
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 4.1.04 =
+
+* Enhancement: Add Enhanced Map on/off toggle support and Bubble Layout updates to Beside And Below Genesis [theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/).
+* Enhancement: Add Enhanced Map on/off toggle support and Bubble/Search/Results updates to Beside The Point 2012 [theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/).
+* Enhancement: Add Enhanced Map on/off toggle support and Bubble Layout updates to Beside Myself [theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/).
+* Enhancement: Add Search Layout updates to Simple White 4 Column [theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/).
+
+= 4.1.03 =
+
+* NOTICE: Enhanced Map add-on pack users must upgrade to EM version 4.1+.
+* Enhancement: Make Beside The Point 2012 an [Advanced Theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/).
+* Enhancement: Create better default search form position for Enhanced Search country or city selector element.
+* Enhancement: Add base plugin option passing to Ajax Handler so the search form can control more interface elements.
+* Enhancement: Eliminate the now-defunct wpcsl_loadplugindata__slplus filter.  Enhanced Map users must upgrade to version 4.1.
 
 = 4.1.02 =
 

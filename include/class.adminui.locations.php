@@ -1419,7 +1419,6 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                 //
                 $stripped_value = stripslashes_deep($value);
                 if ($this->slplus->currentLocation->$slpFieldName !== $stripped_value) {
-                    $this->debugMP('msg','',"location $slpFieldName set to $stripped_value");
                     $this->slplus->currentLocation->$slpFieldName = $stripped_value;
                     $this->slplus->currentLocation->dataChanged = true;
                 }

@@ -68,6 +68,10 @@ class SLPlus_AjaxHandler {
         if (isset($_REQUEST['formdata'])) {
             $this->formdata = wp_parse_args($_REQUEST['formdata'],$this->formdata_defaults);
         }
+        if (isset($_REQUEST['options'])) {
+            $this->setPlugin();
+            $this->plugin->options = wp_parse_args($_REQUEST['options'],$this->plugin->options);
+        }
     }
 
     /**
@@ -147,7 +151,7 @@ class SLPlus_AjaxHandler {
         // Return How Many?
         //
         $response=array();
-        $locations = $this->execute_LocationQuery($this->plugin->options_nojs['initial_results_returned']);
+        $locations = $this->execute_LocationQuery($this->plugin->options['initial_results_returned']);
         foreach ($locations as $row){
             $response[] = $this->slp_add_marker($row);
         }
