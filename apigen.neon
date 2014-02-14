@@ -5,7 +5,7 @@ destination: '/home/lcleveland/NetBeansProjects/codex-slp-nb-apigen'
 # List of allowed file extensions
 extensions: [php]
 # Mask to exclude file or directory from processing
-exclude: '*WPCSL-generic/b*'
+exclude: '*assets/*'
 # Don't generate documentation for classes from file or directory with this mask
 skipDocPath: a
 # Don't generate documentation for classes with this name prefix
