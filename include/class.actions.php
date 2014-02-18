@@ -231,6 +231,12 @@ class SLPlus_Actions {
 
                 // Sidebar connect...
                 //
+				// Differentiate capability for User Managed Locations
+				if ($menuItem['label'] == __('Locations','csa-slplus')) {
+					$slpCapability = 'manage_slp_user';
+				} else {
+					$slpCapability = 'manage_slp_admin';
+				}
 
                 // Using class names (or objects)
                 //
@@ -239,7 +245,7 @@ class SLPlus_Actions {
                         $this->plugin->prefix,
                         $menuItem['label'],
                         $menuItem['label'],
-                        'manage_slp',
+						$slpCapability,
                         $menuItem['slug'],
                         array($menuItem['class'],$menuItem['function'])
                         );
@@ -251,7 +257,7 @@ class SLPlus_Actions {
                         $this->plugin->prefix,
                         $menuItem['label'],
                         $menuItem['label'],
-                        'manage_slp',
+						$slpCapability,
                         $menuItem['url']
                         );
                 }
@@ -345,7 +351,7 @@ class SLPlus_Actions {
                         'description'       => __('Store Locator Plus location pages.','csa-slplus'),
                         'menu_postion'      => 20,
                         'menu_icon'         => SLPLUS_PLUGINURL . '/images/icon_from_jpg_16x16.png',
-                        'show_in_menu'      => current_user_can('manage_slp'),
+                        'show_in_menu'      => current_user_can('manage_slp_admin'),
                         'capability_type'   => 'page',
                         'supports'          => $storepage_features,
                     )

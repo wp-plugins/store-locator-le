@@ -224,8 +224,10 @@ class SLPlus_Activate {
      */
     function add_splus_roles_and_caps() {
         $role = get_role('administrator');
-        if (is_object($role) && !$role->has_cap('manage_slp')) {
+        if (is_object($role) && !$role->has_cap('manage_slp_admin')) {
             $role->add_cap('manage_slp');
+			$role->add_cap('manage_slp_admin');
+			$role->add_cap('manage_slp_user');
         }
     }
 
@@ -424,10 +426,13 @@ class SLPlus_Activate {
 
             }
 
-            // Upgrading to version 4.1.00
+            // Upgrading to version 4.1.XX
+            // Always re-load theme details data.
             //
-            if ( version_compare($updater->plugin_version_on_start,'4.1.03','<') ) {
+            if ( version_compare($updater->plugin_version_on_start,'4.1.99','<') ) {
                 delete_option(SLPLUS_PREFIX.'-theme_details');
+                delete_option(SLPLUS_PREFIX.'-theme_array');
+                delete_option(SLPLUS_PREFIX.'-theme_lastupdated');
             }
 
             // Save Serialized Options

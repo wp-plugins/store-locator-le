@@ -392,10 +392,12 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         //
         $this->cleanURL = preg_replace('/&orderBy=\w*&sortorder=\w*/i','',$_SERVER['REQUEST_URI']);
 
-        $this->totalLocations=
-            $this->slplus->db->get_var(
-                "SELECT count(sl_id) FROM ".$this->slplus->db->prefix."store_locator {$this->db_where}"
-                );
+        $dataQuery =
+            $this->slplus->database->get_SQL('selectall') .
+            $this->db_where;
+        $dataQuery = str_replace('*','count(sl_id)',$dataQuery);
+        $this->totalLocations = $this->slplus->db->get_var($dataQuery);	
+
 
         // Starting Location (Page)
         //
@@ -2120,7 +2122,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         return
             '<div class="alignleft actions">'                                                                               .
                 "<input id='searchfor' value='{$currentSearch}' type='text' name='searchfor' "                              .
-                    ' onkeypress=\'if (event.keyCode == 13) { AdminUI.doAction("search",""); } \' '              .
+                    ' onkeypress=\'if (event.keyCode == 13) { event.preventDefault();AdminUI.doAction("search",""); } \' '              .
                     ' />'                                                                                                   .
                 "<input id='doaction_search' class='button action' type='submit' "                                          .
                     "value='".__('Search','csa-slplus')."' "                                                                .

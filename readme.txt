@@ -5,7 +5,7 @@ Donate link: http://www.storelocatorplus.com/
 Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.3
 Tested up to: 3.8.1
-Stable tag: 4.1.04
+Stable tag: 4.1.05
 License: GLPv2 or later
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
@@ -107,6 +107,12 @@ Visit the [SLP Customers page](http://www.storelocatorplus.com/support/documenta
 * Assign multiple categories to a single location.
 * Add a icon legend to the user interface.
 * Faster category filtering and searching than Pro Pack tags.
+
+**[User Managed Locations](http://www.storelocatorplus.com/product/slp4-user-managed-locations/) Allow Users To Manage Locations**
+
+* Provides a user capabilities interface to grant/deny access to SLP location management on a user-by-user basis.
+* Site administrators have access to the full management interface.
+* Users granted location management capabilities can add, edit, and delete locations they own from their WordPress login.
 
 **[Widget Pack](http://www.storelocatorplus.com/product/store-locator-plus-widget-pack/) SLP Enabled Sidebar Widgets**
 
@@ -343,6 +349,13 @@ Please read the *description page* for this plugin for an important note about p
 I update about once per month or more frequently as needed.
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 4.1.05 =
+
+* Fix: Manage Locations search box, pressing enter runs search by default.
+* Enhancement: Add new manage_slp_user and manage_slp_admin roles to the base plugin for better caps & roles processing for the new UML plugin support.
+* Enhancement: Make Beside Myself Results an advanced [theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/).
+* Enhancement: Add default name, state/city/country selectors, tag/category selectors positioning to the Beside Myself [theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/).
 
 = 4.1.04 =
 

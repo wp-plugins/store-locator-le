@@ -12,13 +12,6 @@ class SLPlus_Data_Extension {
     //-------------------------------------------------
     // Properties
     //-------------------------------------------------
-
-    /**
-     * Has the join already been executed on the extended data table.
-     * 
-     * @var boolean
-     */
-    private $already_joined = false;
     
     /**
      * The properties of the meta table.
@@ -115,8 +108,14 @@ class SLPlus_Data_Extension {
         $nextval = str_pad($nextval, 3, "0", STR_PAD_LEFT);
         update_option(SLPLUS_PREFIX.'-options_nojs', $this->slplus->options_nojs);
 
+
+		// Check whether slug is provided in $options
         add_filter('sanitize_title',array($this,'filter_SanitizeTitleForMySQLField'),10,3);
-        $slug = sanitize_title($label,'','save');
+		if (isset($options['slug']) && (trim($options['slug']) !== '')) {
+			$slug = $options['slug'];
+		} else {
+			$slug = sanitize_title($label,'','save');
+		}
         remove_filter('sanitize_title',array($this,'filter_SanitizeTitleForMySQLField'));
 
         // Check if slug already exists before adding it.
@@ -139,6 +138,40 @@ class SLPlus_Data_Extension {
 
         return $slug;
     }
+
+	/**
+	 * Removes a field from the data table
+	 *
+	 * mode parameter
+	 * - 'immediate' = default, run update table command when removing the field
+	 * - 'wait' = do not run the update table command when removing this field
+	 *
+	 * @param $label string The label to remove
+	 * @param $options mixed[] wpdb options
+	 * @param $mode string operating mode
+	 */
+	function remove_field($label, $options = array(), $mode = 'immediate') {
+
+		// Check whether a slug is provided in $options
+		add_filter('sanitize_title',array($this,'filter_SanitizeTitleForMySQLField'),10,3);
+		if (isset($options['slug']) && (trim($options['slug']) !== '')) {
+			$slug = $options['slug'];
+		} else {
+			$slug = sanitize_title($label,'','save');
+		}
+		remove_filter('sanitize_title',array($this,'filter_SanitizeTitleForMySQLField'));
+
+		// Check if slug exists before removing it.
+		//
+		if ($this->has_field($slug)) {
+			$this->slplus->db->delete($this->metatable['name'], array('slug' => $slug));
+			if ($mode==='immediate') {
+				$this->update_data_table(array('mode'=>'force'));
+			}
+		}
+
+		return $slug;
+	}
 
     /**
      * Extend the SQL query set for extended data queries.
@@ -172,8 +205,7 @@ class SLPlus_Data_Extension {
      * @return string
      */
     function filter_ExtendSelectAll($sqlStatement) {
-        if ( $this->already_joined ) { return $sqlStatement; }
-        $this->already_joined = true;
+        if (false !== strpos('LEFT JOIN ' . $this->metatable['name'],$sqlStatement) )  { return $sqlStatement; }
         return $sqlStatement . $this->filter_ExtendedDataQueries('join_extendo');
     }
 
