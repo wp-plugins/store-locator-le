@@ -25,12 +25,20 @@ class SLPlus_AdminUI_MapSettings {
      *
      * @var \SLPlus $plugin
      */
-    private $plugin;
+	private $plugin;
+
+	/**
+	 * A string array store user notify message
+	 *
+	 * @var string[] $update_info
+	 */
+	private $update_info = array();
 
     /**
      * @var \wpCSL_settings__slplus $settings
      */
-    public $settings;
+	public $settings;
+
 
     //-----------------------------
     // Methods
@@ -87,7 +95,7 @@ class SLPlus_AdminUI_MapSettings {
 
         // Theme Selector
         //
-        $this->plugin->themes->add_admin_settings($this->settings,$sectName,'Style');
+        $this->plugin->themes->admin->add_settings($this->settings,$sectName,'Style');
 
         // ACTION: slp_uxsettings_modify_viewpanel
         //    params: settings object, section name
@@ -177,7 +185,7 @@ class SLPlus_AdminUI_MapSettings {
                 $default                                                   :
                 stripslashes(esc_textarea(get_option($whichbox,$default))) ;
         return
-            "<div class='wpcsl-setting'>" .
+            "<div class='form_entry'>" .
                 "<div class='wpcsl-input wpcsl-textarea'>" .
                     "<label for='$whichbox'>$label:</label>".
                     "<textarea  name='$whichbox'>{$value}</textarea>".
@@ -198,7 +206,18 @@ class SLPlus_AdminUI_MapSettings {
         update_option('sl_google_map_country', $sl_google_map_arr[0]);
         update_option('sl_google_map_domain', $sl_google_map_arr[1]);
 
-        // Height, strip non-digits, if % set range 0..100
+		// Set height uint to blank, if height is "auto !important"
+		if ($_POST['sl_map_height'] === "auto !important" && $_POST['sl_map_height_units'] != "") {
+			$_POST['sl_map_height_units'] = "";
+			array_push($this->update_info, __("Auto set height unit to blank when height is 'auto !important'", 'csa-slplus'));
+		}
+		// Set weight uint to blank, if height is "auto !important"
+		if ($_POST['sl_map_width'] === "auto !important" && $_POST['sl_map_width_units'] != "") {
+			$_POST['sl_map_width_units'] = "";
+			array_push($this->update_info, __("Auto set width unit to blank when width is 'auto !important'", 'csa-slplus'));
+		}
+		
+		// Height, strip non-digits, if % set range 0..100
         if (in_array($_POST['sl_map_height_units'],array('%','px','pt','em'))) {
             $_POST['sl_map_height']=preg_replace('/[^0-9]/', '', $_POST['sl_map_height']);
             if ($_POST['sl_map_height_units'] == '%') {
@@ -246,8 +265,19 @@ class SLPlus_AdminUI_MapSettings {
             );
         foreach ($BoxesToHit as $JustAnotherBox) {
             $this->plugin->helper->SavePostToOptionsTable($JustAnotherBox);
-        }
-
+		}
+		// Register need translate text to WPML
+		//
+		$BoxesToHit =
+            apply_filters('slp_regwpml_map_settings_inputs',
+                array(
+                    'sl_radius_label'                       ,
+                    'sl_search_label'                       ,
+                )
+            );
+		foreach ($BoxesToHit as $JustAnotherBox) {
+            $this->plugin->AdminWPML->regPostOptions($JustAnotherBox);
+		}
         // Checkboxes
         //
         $BoxesToHit =
@@ -648,7 +678,10 @@ class SLPlus_AdminUI_MapSettings {
         if ($_POST) {
             add_action('slp_save_map_settings',array($this,'save_settings') ,10);
             do_action('slp_save_map_settings');
-            $update_msg = "<div class='highlight'>".__('Successful Update', 'csa-slplus').'</div>';
+			$update_msg = "<div class='highlight'>".__('Successful Update', 'csa-slplus');
+			foreach( $this->update_info as $info_msg)
+				$update_msg	.= '<br/>'.$info_msg;
+			$update_msg	.= '</div>';
         }
 
         // Initialize Plugin Settings Data
@@ -768,7 +801,7 @@ class SLPlus_AdminUI_MapSettings {
                     __('Number To Show Initially','csa-slplus'),
                     __('How many locations should be shown when Immediately Show Locations is checked.  Recommended maximum is 50.','csa-slplus'),
                     '',
-                    $this->plugin->options_nojs['initial_results_returned']
+                    $this->plugin->options['initial_results_returned']
                     ).
             $this->CreateInputDiv(
                     'initial_radius',
