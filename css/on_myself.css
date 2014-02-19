@@ -2,7 +2,7 @@
  ** file: on_myself.css
  ** label: On Myself
  ** description: Map on Search on Results.  "Myself" palette (blue and orange).
- ** add-ons: slp-pro, slp-enhanced-results, slp-enhanced-map, slp-enhanced-search, slp-widgets
+ ** add-ons: slp-pro, slp-enhanced-results, slp-enhanced-map, slp-enhanced-search, slp-widget
  ** csl-slplus-layout: <div id="sl_div"><div id="sl_leftcol">[slp_map]</div><div id="sl_rightcol">[slp_search]<div id="sl_arrow_container"><div id="sl_search_arrow"></div></div>[slp_results]</div></div>
  ** csl-slplus_slpes[searchlayout]: <span class="search_header">Find Our Locations</span>[slp_search_element input_with_label="address"][slp_search_element dropdown_with_label="radius"][slp_search_element button="submit"]
  ** csl-slplus_slper[resultslayout]: <div class="results_row_left_column" id="slp_left_cell_[slp_location id]" ><span class="location_name">[slp_location name]</span><span class="slp_result_address slp_result_street">[slp_location address]</span><span class="slp_result_address slp_result_street2">[slp_location address2]</span><span class="slp_result_address slp_result_citystatezip">[slp_location city_state_zip]</span><span class="slp_result_address slp_result_phone">[slp_location phone]</span></div><div class="results_row_right_column"  id="slp_right_cell_[slp_location id]" ><span class="location_distance">[slp_location distance_1] [slp_location distance_unit]</span><span class="slp_result_contact slp_result_website">[slp_location web_link]</span><span class="slp_result_contact slp_result_directions"><a href="http://[slp_location map_domain]/maps?saddr=[slp_location search_address]&daddr=[slp_location location_address]" target="_blank" class="storelocatorlink">[slp_location directions_text]</a></span></div>

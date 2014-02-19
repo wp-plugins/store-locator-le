@@ -1,0 +1,306 @@
+/** file: simple-white-4col.css
+ ** label: Simple White Four Column (A)
+ ** description: A simple white layout with 4 columns for map results.  Emphasis on contact data from Contact Extender. Uses "Source Sans Pro", available from the Google Fonts library.  Falls back to web standard fonts.
+ ** add-ons: slp-contact-extender, slp-pro, slp-enhanced-map, slp-enhanced-results
+ ** Pro Pack Locator Layout: <div id="sl_div">[slp_search][slp_map][slp_results]</div>
+ ** Enhanced Map Bubble Layout: <div id="sl_info_bubble" class="[slp_location featured]"><span class="bold_entry">[slp_location name]</span><span>[slp_location department]</span><span>[slp_location contact suffix comma][slp_location title]</span><span>[slp_location address][html br ifset address2][slp_location address2]</span><span>[slp_location city suffix  comma][slp_location state suffix space][slp_location zip]</span><span>[slp_option label_directions wrap directions]</span><br/><span>[slp_option   label_phone   ifset   phone][slp_location phone]</span><span>[slp_option   label_fax     ifset   fax  ][slp_location fax]<span><span>[slp_location facility_type]</span><span>[slp_location url           wrap    website][slp_option label_website ifset url][html closing_anchor ifset url]</span></div>
+ ** Enhanced Results Results Layout: <div id="slp_results_[slp_location id]" class="results_entry [slp_location featured]"><div class="results_row_col_1"><span class="location_name">[slp_location name]</span><span>[slp_location distance_1] [slp_location distance_unit]</span></div><div class="results_row_col_2"><span>[slp_location contact]</span><span>[slp_location phone]</span></div><div class="results_row_col_3"><span>[slp_location title]</span></div><div class="results_row_col_4"><span>[slp_location city]</span><span>[slp_location state]</span><span>[slp_location country]</span></div></div>
+ ** Enhanced Search Search Layout: <div id="address_search">[slp_search_element input_with_label="name"][slp_search_element input_with_label="address"][slp_search_element dropdown_with_label="city"][slp_search_element dropdown_with_label="state"][slp_search_element dropdown_with_label="country"][slp_search_element selector_with_label="tag"][slp_search_element dropdown_with_label="category"]<div class="search_item">[slp_search_element dropdown_with_label="radius"][slp_search_element button="submit"]</div></div>
+ **/
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro);
+
+/* Slider from proto.io/freebies/onoff/
+*/
+.onoffswitch-block {
+    display: inline-block;
+    float: right;
+    margin-right: 8px;
+}
+.onoffswitch-pretext {
+    display: linline-block;
+    padding-right: 12px;
+    vertical-align: super;
+}
+.onoffswitch {
+display: inline-block;
+position: relative; width: 56px;
+-webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+}
+.onoffswitch-checkbox {
+display: none;
+}
+.onoffswitch-label {
+display: block; overflow: hidden; cursor: pointer;
+border: 2px solid #999999; border-radius: 20px;
+}
+.onoffswitch-inner {
+width: 200%; margin-left: -100%;
+-moz-transition: margin 0.3s ease-in 0s; -webkit-transition: margin 0.3s ease-in 0s;
+-o-transition: margin 0.3s ease-in 0s; transition: margin 0.3s ease-in 0s;
+}
+.onoffswitch-inner:before, .onoffswitch-inner:after {
+float: left; width: 50%; height: 17px; padding: 0; line-height: 17px;
+font-size: 10px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+-moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+}
+.onoffswitch-inner:before {
+content: "ON";
+padding-left: 8px;
+background-color: #2FCCFF; color: #FFFFFF;
+}
+.onoffswitch-inner:after {
+content: "OFF";
+padding-right: 8px;
+background-color: #EEEEEE; color: #999999;
+text-align: right;
+}
+.onoffswitch-switch {
+width: 8px; margin: 4.5px;
+background: #FFFFFF;
+border: 2px solid #999999; border-radius: 20px;
+position: absolute; top: 0; bottom: 0; right: 35px;
+-moz-transition: all 0.3s ease-in 0s; -webkit-transition: all 0.3s ease-in 0s;
+-o-transition: all 0.3s ease-in 0s; transition: all 0.3s ease-in 0s;
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+margin-left: 0;
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+right: 0px;
+}
+
+/**
+ * Search Form
+ **/
+
+/**
+ * Search Form : Line
+ */
+form#searchForm div.search_item {
+    display: block;
+    margin-bottom: 3px;
+}
+form#searchForm LABEL {
+    display: inline-block;
+    padding-right: 9px;
+    text-align: right;
+    width: 25%
+}
+form#searchForm INPUT {
+    display: inline-block;
+    width: 72%;
+}
+form#searchForm div#addy_in_radius {
+    display: inline-block;
+    width: 50%;
+    vertical-align: top;
+}
+form#searchForm div#addy_in_radius LABEL {
+    width: 50%;
+}
+form#searchForm div#radius_in_submit {
+    display: inline-block;
+    width: 40%;
+}
+
+/**
+ * Map
+ **/
+div#map {
+    border-top: solid 1px #CCCCCC;
+    border-left: solid 1px #CCCCCC;
+    border-right: solid 1px #CCCCCC;
+    width: auto;
+}
+
+/* Don't let WordPress Mangle Map Images */
+div#map img {
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+    max-width: none;
+    visibility: visible;
+}
+/* Fix IE10 Rules */
+div#map .gm-style-cc > div {
+  word-wrap: normal;
+}
+/* Hide the default Google bubble shadow */
+div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
+    display:none;
+}
+div.entry-content div#sl_div #map_table IMG {
+	max-width:none;
+    box-shadow: none;
+    border-radius: 0px;
+    border: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+/**
+ * Map Info Bubble
+ **/
+div#sl_div .gm-style-iw {
+    max-width: 90%;
+    width: auto !important;
+}
+
+/**
+ * Tagline Area (immediately below map)
+ **/
+div#slp_tagline {
+    text-align: right;
+    opacity: 0.45;
+    filter:alpha(opacity=45);
+    padding-right: 3px;
+    width: 100%;
+
+}
+table.sl_footer {
+    margin-bottom: 12px;
+    border-bottom: solid 1px #CCCCCC;
+    border-left: solid 1px #CCCCCC;
+    border-right: solid 1px #CCCCCC;
+}
+tr.slp_map_tagline td {
+    color: #444444;
+    background-color: #F4F4F4;
+    font-size: 0.9em;
+    font-style: italic;
+    padding: 3px;
+    text-align: right;    
+}
+
+/**
+ * Map Info Bubble
+ **/
+div#sl_info_bubble {
+    color: #3D5887;
+}
+div#sl_info_bubble span {
+    display: block;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 15px;
+    width: 100%;
+}
+div#sl_info_bubble span.bold_entry {
+    font-weight: bold;
+    width: 99%;
+}
+div#sl_info_bubble A {
+    text-decoration: none;
+}
+
+/**
+ * Results
+ **/
+div.results_entry {
+    color: #3D5887;
+    cursor: pointer;
+    display: inline-block;
+    padding-bottom: 18px;
+    width: 100%;
+}
+div.results_entry:hover {
+    background-color: #F2F2F2;
+}
+
+/* Results -  Col 1 */
+div.results_row_col_1 {
+    display: inline-block;
+    position: relative;
+    text-align: left;
+    vertical-align: top;
+    width: 30%;
+}
+/* Results -  Col 2 */
+div.results_row_col_2 {
+    display: inline-block;
+    position: relative;
+    text-align: left;
+    vertical-align: top;
+    width: 25%;
+}
+/* Results -  Col 3 */
+div.results_row_col_3 {
+    display: inline-block;
+    position: relative;
+    text-align: left;
+    vertical-align: top;
+    width: 25%;
+}
+/* Results -  Col41 */
+div.results_row_col_4 {
+    display: inline-block;
+    position: relative;
+    text-align: right;
+    vertical-align: top;
+    width: 20%;
+}
+
+div.results_entry span {
+    display: block;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 15px;
+    width: 100%;
+}
+
+/* Bold Store Name Field */
+div.results_entry span.location_name {
+    color: #CC0000;
+    font-weight: bold;
+}
+div.results_entry .slp_map_search_results a {
+    color: #444444;
+    display: inline-block;
+    text-decoration: none;
+    width: 100%;
+}
+div.results_entry .slp_map_search_results a:hover {
+    color: #4444FF;
+    background-color: #F2F2F2;
+}
+
+
+/* Tagalong result icons */
+.results_line.location_iconarray > a {
+    display: inline-block;
+    height: auto;
+    width: auto;
+}
+#tagalong_category_selector {
+    display: block;
+    height: 2em;
+    width: 100%;
+}
+#tagalong_category_selector .category_selector.parent {
+    display: block;
+    float: left;
+}
+#tagalong_category_selector .category_selector.child {
+    display: none;
+    float: left;
+}
+#tagalong_legend {
+    border: 3px double #444444;
+    padding: 12px;
+}
+#tagalong_legend .legend_text {
+    display: inline-block;
+    margin-left: 6px;
+    margin-right: 20px;
+    vertical-align: middle;
+}
+#tagalong_legend .tagalong_legend_icon {
+    display: inline-block;
+    margin-bottom: 12px;
+    min-width: 190px;
+}
+
+/**
+ * Default Formatting If Special Content Not Set
+ */
+#sl_info_bubble #slp_bubble_name {
+    width: 99%;
+}

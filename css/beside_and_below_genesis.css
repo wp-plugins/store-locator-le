@@ -1,17 +1,83 @@
-/**
- ** file: beside_and_below_genesis.css
- ** label: Beside And Below Genesis
- ** description: Search On Left Side, Map and Results on Right, Genesis Compatible
- ** add-ons: slp-pro
- ** csl-slplus-layout: <div id="sl_div"><div id="sl_leftcol"><div class="searchbox">[slp_search]</div><div class="legendbox"><h1>Services</h1>[tagalong legend]</div></div><div id="sl_rightcol">[slp_map][slp_results]</div></div>
- ** csl-slplus_slpes[searchlayout]: <div class="searchbox"><div class="searchheader">Search</div><div class="searchcontent">[slp_search_element dropdown_with_label="city"][slp_search_element dropdown_with_label="state"][slp_search_element dropdown_with_label="country"][slp_search_element input_with_label="name"][slp_search_element input_with_label="address"][slp_search_element dropdown_with_label="radius"][slp_search_element dropdown_with_label="category"][slp_search_element button="submit"]</div></div>
- ** csl-slplus_slper[resultslayout]: <div id="slp_results_[slp_location id]" class="results_entry"><div class="results_row_left_column"   id="slp_left_cell_[slp_location id]"   >[slp_location name wrap="fullspan"]<span class="results_line"><span class="location_distance_label">Distance:</span>[slp_location distance_1] [slp_location distance_unit]</span>[slp_location iconarray wrap="fullspan"]</div><div class="results_row_right_column"  id="slp_right_cell_[slp_location id]"  >[slp_location web_link wrap="fullspan"]<span class="results_line slp_result_directions"><a href="http://[slp_location map_domain]/maps?saddr=[slp_location search_address]&daddr=[slp_location location_address]" target="_blank" class="storelocatorlink">[slp_location directions_text]</a></span></div></div>
+/** file: beside_and_below_genesis.css
+ ** label: Beside And Below Genesis (A)
+ ** description: Search On Left Side, Map and Results on Right. Designed to work well with Tagalong categories. Built to work with the Genesis WordPress theme.
+ ** add-ons: slp-pro,slp-enhanced-map,slp-enhanced-results,slp-enhanced-search,slp-tagalong
+ ** Pro Pack Locator Layout: <div id="sl_div"><div id="sl_leftcol"><div class="searchbox">[slp_search]</div><div class="legendbox"><h1>Services</h1>[tagalong legend]</div></div><div id="sl_rightcol">[slp_map][slp_results]</div></div>
+ ** Enhanced Map Bubble Layout: <div id="sl_info_bubble" class="[slp_location featured]"><span id="slp_bubble_name"><strong>[slp_location name  suffix  br]</strong></span><span id="slp_bubble_address">[slp_location address       suffix  br]</span><span id="slp_bubble_address2">[slp_location address2      suffix  br]</span><span id="slp_bubble_city">[slp_location city          suffix  comma]</span><span id="slp_bubble_state">[slp_location state suffix    space]</span><span id="slp_bubble_zip">[slp_location zip suffix  br]</span><span id="slp_bubble_country"><span id="slp_bubble_country">[slp_location country       suffix  br]</span></span><span id="slp_bubble_directions">[html br ifset directions][slp_option label_directions wrap directions]</span><span id="slp_bubble_website">[html br ifset url][slp_location url           wrap    website][slp_option label_website ifset url][html closing_anchor ifset url][html br ifset url]</span><span id="slp_bubble_email">[slp_location email         wrap    mailto ][slp_option label_email ifset email][html closing_anchor ifset email][html br ifset email]</span><span id="slp_bubble_phone">[html br ifset phone]<span class="location_detail_label">[slp_option   label_phone   ifset   phone]</span>[slp_location phone         suffix    br]</span><span id="slp_bubble_fax"><span class="location_detail_label">[slp_option   label_fax     ifset   fax  ]</span>[slp_location fax           suffix    br]<span><span id="slp_bubble_description"><span id="slp_bubble_description">[html br ifset description][slp_location description raw]</span>[html br ifset description]</span><span id="slp_bubble_hours">[html br ifset hours]<span class="location_detail_label">[slp_option   label_hours   ifset   hours]</span><span class="location_detail_hours">[slp_location hours         suffix    br]</span></span><span id="slp_bubble_img">[html br ifset img][slp_location image         wrap    img]</span><span id="slp_tags">[slp_location tags]</span></div>
+ ** Enhanced Results Results Layout: <div id="slp_results_[slp_location id]" class="results_entry"><div class="results_row_left_column"   id="slp_left_cell_[slp_location id]"   >[slp_location name wrap="fullspan"]<span class="results_line"><span class="location_distance_label">Distance:</span>[slp_location distance_1] [slp_location distance_unit]</span>[slp_location iconarray wrap="fullspan"]</div><div class="results_row_right_column"  id="slp_right_cell_[slp_location id]"  >[slp_location web_link wrap="fullspan"]<span class="results_line slp_result_directions"><a href="http://[slp_location map_domain]/maps?saddr=[slp_location search_address]&daddr=[slp_location location_address]" target="_blank" class="storelocatorlink">[slp_location directions_text]</a></span></div></div>
+ ** Enhanced Search Search Layout: <div class="searchbox"><div class="searchheader">Search</div><div class="searchcontent">[slp_search_element dropdown_with_label="city"][slp_search_element dropdown_with_label="state"][slp_search_element dropdown_with_label="country"][slp_search_element input_with_label="name"][slp_search_element input_with_label="address"][slp_search_element dropdown_with_label="radius"][slp_search_element dropdown_with_label="category"][slp_search_element button="submit"]</div></div>
+ **
  ** csl-slplus_show_search_by_name: on
  ** csl-slplus-TAGALONG-show_cats_on_search-checkbox: on
  ** csl-slplus-TAGALONG-show_icon_array-checkbox: on
  ** csl-slplus-TAGALONG-show_option_all: Select a service
  ** csl-slplus-TAGALONG-label_category: Services
  **/
+
+/**
+ * General - All areas
+ **/
+
+/* Slider from proto.io/freebies/onoff/
+*/
+.onoffswitch-block {
+    display: inline-block;
+    float: right;
+    margin-right: 8px;
+}
+.onoffswitch-pretext {
+    display: inline-block;
+    padding-right: 12px;
+    vertical-align: super;
+}
+    .onoffswitch {
+    display: inline-block;
+    position: relative; width: 56px;
+    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+    }
+    .onoffswitch-checkbox {
+    display: none;
+    }
+    .onoffswitch-label {
+    display: block; overflow: hidden; cursor: pointer;
+    border: 2px solid #999999; border-radius: 20px;
+    }
+    .onoffswitch-inner {
+    width: 200%; margin-left: -100%;
+    -moz-transition: margin 0.3s ease-in 0s; -webkit-transition: margin 0.3s ease-in 0s;
+    -o-transition: margin 0.3s ease-in 0s; transition: margin 0.3s ease-in 0s;
+    }
+    .onoffswitch-inner:before, .onoffswitch-inner:after {
+    float: left; width: 50%; height: 17px; padding: 0; line-height: 17px;
+    font-size: 10px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+    }
+    .onoffswitch-inner:before {
+    content: "ON";
+    padding-left: 8px;
+    background-color: #2FCCFF; color: #FFFFFF;
+    }
+    .onoffswitch-inner:after {
+    content: "OFF";
+    padding-right: 8px;
+    background-color: #EEEEEE; color: #999999;
+    text-align: right;
+    }
+    .onoffswitch-switch {
+    width: 8px; margin: 4.5px;
+    background: #FFFFFF;
+    border: 2px solid #999999; border-radius: 20px;
+    position: absolute; top: 0; bottom: 0; right: 35px;
+    -moz-transition: all 0.3s ease-in 0s; -webkit-transition: all 0.3s ease-in 0s;
+    -o-transition: all 0.3s ease-in 0s; transition: all 0.3s ease-in 0s;
+    }
+    .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+    margin-left: 0;
+    }
+    .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+    right: 0px;
+    }
+
 
 /*---------------------
  * Entire SLPlus UI
