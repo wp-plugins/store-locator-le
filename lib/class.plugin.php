@@ -210,7 +210,9 @@ class wpCSL_plugin__slplus {
     /**
      * Sets $this->isOurAdminPage true if we are on a SLP managed admin page.  Returns true/false accordingly.
      */
-    function check_IsOurAdminPage() {
+	function check_IsOurAdminPage() {
+		$this->admin_slugs = apply_filters('wpcsl_admin_slugs',$this->admin_slugs);
+
         if ( ! is_admin() )          { $this->isOurAdminPage = false; return false; }
         if ( $this->isOurAdminPage ) { return true; }
         
@@ -241,7 +243,7 @@ class wpCSL_plugin__slplus {
         // To use: pass an array of strings that are valid admin page slugs for
         // this plugin.  You can also pass a single string, we catch that too.
         //
-        $this->admin_slugs = apply_filters('wpcsl_admin_slugs',$this->admin_slugs);
+        
         if (isset($this->admin_slugs)) {
             if (!is_array($this->admin_slugs)) {
                 $this->admin_slugs = array($this->admin_slugs);

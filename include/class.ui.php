@@ -880,4 +880,18 @@ class SLPlus_UI {
             $this->depnotice_setResultsString = true;
          }
      }
+
+     /**
+      * Do not use, deprecated.
+      *
+      * @deprecated 4.0
+      */
+     function slp_render_search_form_tag_list() {
+        if (!$this->setPlugin()) { return false; }
+        if (!$this->depnotice_setResultsString) {
+            $this->plugin->notifications->add_notice(9,$this->plugin->createstring_Deprecated(__FUNCTION__));
+            $this->plugin->notifications->display();
+            $this->depnotice_setResultsString = true;
+         }
+     }
 }

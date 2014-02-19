@@ -1463,49 +1463,6 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
     }
 
     /**
-     * Tag a location
-     * 
-     * @param mixed $locationID - a single location ID (int) or an array of them.
-     */
-    function location_tag($locationID) {
-        global $wpdb;
-
-        //adding or removing tags for specified a locations
-        //
-        if (is_array($locationID)) {
-            $id_string='';
-            foreach ($locationID as $sl_value) {
-                $id_string.="$sl_value,";
-            }
-            $id_string=substr($id_string, 0, strlen($id_string)-1);
-        } else {
-            $id_string=$locationID;
-        }
-
-        // If we have some store IDs
-        //
-        if ($id_string != '') {
-
-            //adding tags
-            if ( $this->current_action === 'add_tag' ) {
-                $wpdb->query("UPDATE ".$wpdb->prefix."store_locator SET ".
-                        "sl_tags=CONCAT_WS(',',sl_tags,'".strtolower($_REQUEST['sl_tags'])."') ".
-                        "WHERE sl_id IN ($id_string)"
-                        );
-
-            //removing tags
-            } elseif ( $this->current_action === 'remove_tag' ) {
-                if (empty($_REQUEST['sl_tags'])) {
-                    //if no tag is specified, all tags will be removed from selected locations
-                    $wpdb->query("UPDATE ".$wpdb->prefix."store_locator SET sl_tags='' WHERE sl_id IN ($id_string)");
-                } else {
-                    $wpdb->query("UPDATE ".$wpdb->prefix."store_locator SET sl_tags=REPLACE(sl_tags, ',{$_REQUEST['sl_tags']},', '') WHERE sl_id IN ($id_string)");
-                }
-            }
-        }
-    }
-
-    /**
      * Create the bulk actions drop down for the top-of-table navigation.
      * 
      */
@@ -2074,6 +2031,8 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                             __("No locations have been created yet.", 'csa-slplus')   :
                             __("Search Locations returned no matches.", 'csa-slplus')
                     ) .
+                    ($this->slplus->is_CheckTrue($this->slplus->options_nojs['extended_admin_messages'])?'<br/><br/>'.__('Where: ','csa-slplus').$this->db_where : '');
+
                 "</div>";
         }
         
@@ -2285,15 +2244,11 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                 }
                 break;
 
-            // Stuff that is not an exact string match
+            // All other things do nothing here...
+            // But they may be handled by an add-on pack via the
+            // FILTER: slp_manage_locations_action
             //
             default:
-                
-                // TODO: Move To Pro Pack
-                //
-                if ( preg_match( '#tag#i' , $this->current_action ) ) {
-                    if (isset($_REQUEST['sl_id'])) { $this->location_tag($_REQUEST['sl_id']); }
-                }
                 break;
         }
         do_action('slp_manage_locations_action');

@@ -176,57 +176,28 @@ class SLPlus_AjaxHandler {
         global $wpdb;
         $this->setPlugin();
 
-        // Reporting
-        // Insert the query into the query DB
-        //
-		
-		if (
-            $this->plugin->is_AddonActive('slp-pro')                                &&
-            isset( $this->plugin->addons['slp-pro']->options['reporting_enabled'] ) &&
-            $this->plugin->is_CheckTrue( $this->plugin->addons['slp-pro']->options['reporting_enabled'] )
-            ) {
-
-	            $qry = sprintf(
-		                "INSERT INTO {$this->plugin->db->prefix}slp_rep_query ".
-			                       "(slp_repq_query,slp_repq_tags,slp_repq_address,slp_repq_radius) ".
-				            "values ('%s','%s','%s','%s')",
-					        mysql_real_escape_string($_SERVER['QUERY_STRING']),
-						    mysql_real_escape_string($_POST['tags']),
-							mysql_real_escape_string($_POST['address']),
-	                        mysql_real_escape_string($_POST['radius'])
-		                );
-			    $wpdb->query($qry);
-				$slp_QueryID = mysql_insert_id();
-        }
-
         // Get Locations
         //
-        $response = array();
+		$response = array();
+		$resultRowids = array();
         $locations = $this->execute_LocationQuery($this->plugin->options_nojs['max_results_returned']);
         foreach ($locations as $row){
             $thisLocation = $this->slp_add_marker($row);
             if (!empty($thisLocation)) {
-                $response[] = $thisLocation;
-
-                // Reporting
-                // Insert the results into the reporting table
-				//
-                if (
-                    $this->plugin->is_AddonActive('slp-pro')                                &&
-                    isset( $this->plugin->addons['slp-pro']->options['reporting_enabled'] ) &&
-                    $this->plugin->is_CheckTrue( $this->plugin->addons['slp-pro']->options['reporting_enabled'] )
-                    ) {
-	                    $wpdb->query(
-		                    sprintf(
-			                    "INSERT INTO {$this->plugin->db->prefix}slp_rep_query_results
-				                    (slp_repq_id,sl_id) values (%d,%d)",
-					                $slp_QueryID,
-						            $row['sl_id']
-	                            )
-		                    );
-				}
+				$response[] = $thisLocation;
+				$resultRowids[] = $row['sl_id'];
             }
-        }
+		}
+
+		// Do report work
+		//
+		$queryParams = array();
+		$queryParams['QUERY_STRING'] = $_SERVER['QUERY_STRING'];
+		$queryParams['tags'] = $_POST['tags'];
+		$queryParams['address'] = $_POST['address'];
+		$queryParams['radius'] = $_POST['radius'];
+
+		do_action('slp_report_query_result', $queryParams, $resultRowids);
 
         // Output the JSON and Exit
         //

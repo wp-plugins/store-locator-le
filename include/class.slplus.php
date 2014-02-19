@@ -67,6 +67,11 @@ class SLPlus extends wpCSL_plugin__slplus {
     const linkToTAG = '<a href="http://www.storelocatorplus.com/product/slp4-tagalong/" target="csa">Tagalong</a>';
 
     /**
+     * UML: User Managed Locations web link.
+     */
+    const linkToUML = '<a href="http://www.storelocatorplus.com/product/slp4-user-managed-locations/" target="csa">User Managed Locations</a>';
+
+    /**
      * Major Version Definition, SLP3
      */
     const SLP3 = '3';
@@ -99,6 +104,7 @@ class SLPlus extends wpCSL_plugin__slplus {
      * o 'slp-pages' Store Pages
      * o 'slp-pro' Pro Pack
      * o 'slp-tagalong' Tagalong
+     * o 'slp-user-managed-locations' User Managed Locations
      * o 'slp-widget' Widget
      *
      * The values will be null if there is no pointer to the object,
@@ -316,6 +322,7 @@ class SLPlus extends wpCSL_plugin__slplus {
      * @var mixed[]
      */
     public $options_nojs    = array(
+        'extended_admin_messages'   => '0'      ,
         'has_extended_data'         => ''       ,
         'max_results_returned'      => '25'     ,
         'next_field_id'             => 1        ,
@@ -621,6 +628,12 @@ class SLPlus extends wpCSL_plugin__slplus {
             array(
                 'name' => 'Pro Pack',
                 'link'  => SLPlus::linkToPRO,
+             );
+
+        $this->available_addons['slp-user-managed-locations'] =
+            array(
+                'name' => 'User Managed Locations',
+                'link' => SLPlus::linkToUML,
              );
 
         $this->available_addons['slp-tagalong'] =

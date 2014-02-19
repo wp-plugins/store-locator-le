@@ -3,9 +3,9 @@ Plugin Name:  Store Locator Plus
 Contributors: charlestonsw
 Donate link: http://www.storelocatorplus.com/
 Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
-Requires at least: 3.3
+Requires at least: 3.4
 Tested up to: 3.8.1
-Stable tag: 4.1.05
+Stable tag: 4.1.06
 License: GLPv2 or later
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
@@ -20,7 +20,7 @@ The website offers more [screen shots](http://www.storelocatorplus.com/support/d
 Store Locator Plus is an advanced system for managing multiple physical locations via a fully integrated WordPress solution.
 Whether you have ten locations or ten-thousand, you manage them with ease right from within your WordPress admin panel.
 There is no special programming or extra setup required.
-Simply enter your locations, create a page or edit an existing page and put the [STORE-LOCATOR] short code on it.
+Simply enter your locations, create a page or edit an existing page and put the [SLPLUS] short code on it.
 The Store Locator Plus search form and map will "magically" appear.
 
 The base plugin, [available for free from the WordPress Plugin Directory](http://wordpress.org/extend/plugins/store-locator-le) has all the features you need
@@ -45,7 +45,7 @@ Visit the [SLP Customers page](http://www.storelocatorplus.com/support/documenta
 * Regularly updated [online documentation](http://www.storelocatorplus.com/support/documentation/store-locator-plus/).
 * Multiple [premium add-ons available](http://www.storelocatorplus.com/product-category/slp4-products/).
 * You can use it for a [variety of countries](http://www.storelocatorplus.com/support/documentation/store-locator-plus/), as supported by Google Maps.
-* Supports [international languages](http://www.storelocatorplus.com/support/documentation/store-locator-plus/) and character sets.
+* Supports [international languages](http://www.storelocatorplus.com/support/documentation/store-locator-plus/) and character sets and is [WPML compatible](http://wpml.org/plugin/store-locator/).
 * Allows you to use [unique map markers](http://www.storelocatorplus.com/support/documentation/store-locator-plus/) or your own custom map markers.
 * Change default map settings via the admin panel including:
 * Map type (terrain, satellite, street, etc.)
@@ -204,8 +204,8 @@ Do not upgrade the base plugin if you are using SLP3 add-on packs.   You must fo
 
 = Requirements =
 
-* PHP 5.2.4+ (same as WordPress 3.3.2)
-* WordPress: 3.3.2+
+* PHP 5.2.4 (same as WordPress 3.4)
+* WordPress: 3.4
 
 = Main Plugin =
 
@@ -349,6 +349,14 @@ Please read the *description page* for this plugin for an important note about p
 I update about once per month or more frequently as needed.
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 4.1.06 =
+
+* Enhancement: Store Locator Plus has been tested as [WPML Compatible](http://wpml.org/plugin/store-locator/).
+* Enhancement: Add a new General Setting to show extended admin messages that may be useful in debugging an install.
+* Fix: Admin page css styles when saving settings in add-on packs.
+* Change: Move Pro Pack bulk action add/remove tag operations into Pro Pack.
+* Change: Add a more graceful deprecated function notice for slp_render_search_form_tag_list.
 
 = 4.1.05 =
 

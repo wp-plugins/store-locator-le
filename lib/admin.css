@@ -277,15 +277,6 @@ div.section_column {
 }
 
 
-div.section_column h2, #rb_details h2 {
-    background: none repeat scroll 0 0 #E0E0D0;
-    border-bottom: 1px solid #D0D0D0;
-    font-size: 16px;
-    margin-bottom: 12px;
-    margin-top: 0;
-    padding: 0 6px;
-}
-
 /* Settings Group */
 .wpcsl-group .section_column_intro {
     font-weight: normal;
