@@ -76,6 +76,20 @@ class SLPlus_Actions {
         return true;
     }
 
+	/**
+     * Attach and instantiated AdminWPML object to the main plugin object.
+     *
+     * @return boolean - true unless the main plugin is not found
+     */
+    function attachAdminWPML() {
+        if (!$this->set_Plugin()) { return false; }
+        if (!isset($this->plugin->AdminWPML) || !is_object($this->plugin->AdminWPML)) {
+            require_once(SLPLUS_PLUGINDIR . '/include/class.adminwpml.php');
+            $this->plugin->AdminWPML = new SLPlus_AdminWMPL();     // Lets invoke this and make it an object
+        }
+        return true;
+	}
+
     /**
      * method: admin_init()
      *
@@ -118,7 +132,12 @@ class SLPlus_Actions {
             //
             $this->attachAdminUI();
             add_action('admin_enqueue_scripts',array($this->plugin->AdminUI,'enqueue_admin_stylesheet'));
-            $this->plugin->AdminUI->build_basic_admin_settings();
+			$this->plugin->AdminUI->build_basic_admin_settings();
+
+			// Admin WPML Helper
+			// 
+			$this->attachAdminWPML();
+			$this->plugin->AdminWPML->setParent();
 
             // Action hook for 3rd party plugins
             //
@@ -212,6 +231,12 @@ class SLPlus_Actions {
 
                 // Sidebar connect...
                 //
+				// Differentiate capability for User Managed Locations
+				if ($menuItem['label'] == __('Locations','csa-slplus')) {
+					$slpCapability = 'manage_slp_user';
+				} else {
+					$slpCapability = 'manage_slp_admin';
+				}
 
                 // Using class names (or objects)
                 //
@@ -220,7 +245,7 @@ class SLPlus_Actions {
                         $this->plugin->prefix,
                         $menuItem['label'],
                         $menuItem['label'],
-                        'manage_slp',
+						$slpCapability,
                         $menuItem['slug'],
                         array($menuItem['class'],$menuItem['function'])
                         );
@@ -232,7 +257,7 @@ class SLPlus_Actions {
                         $this->plugin->prefix,
                         $menuItem['label'],
                         $menuItem['label'],
-                        'manage_slp',
+						$slpCapability,
                         $menuItem['url']
                         );
                 }
@@ -326,7 +351,7 @@ class SLPlus_Actions {
                         'description'       => __('Store Locator Plus location pages.','csa-slplus'),
                         'menu_postion'      => 20,
                         'menu_icon'         => SLPLUS_PLUGINURL . '/images/icon_from_jpg_16x16.png',
-                        'show_in_menu'      => current_user_can('manage_slp'),
+                        'show_in_menu'      => current_user_can('manage_slp_admin'),
                         'capability_type'   => 'page',
                         'supports'          => $storepage_features,
                     )
