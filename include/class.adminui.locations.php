@@ -2031,7 +2031,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                             __("No locations have been created yet.", 'csa-slplus')   :
                             __("Search Locations returned no matches.", 'csa-slplus')
                     ) .
-                    ($this->slplus->is_CheckTrue($this->slplus->options_nojs['extended_admin_messages'])?'<br/><br/>'.__('Where: ','csa-slplus').$this->db_where : '');
+                    ($this->slplus->is_CheckTrue($this->slplus->options_nojs['extended_admin_messages'])?'<br/><br/>'.__('Where: ','csa-slplus').$this->db_where : '').
 
                 "</div>";
         }
