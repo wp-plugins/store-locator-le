@@ -195,6 +195,11 @@ class SLPlus_Data_Extension {
             //
             case 'where_slugis':
                 return ' WHERE slug = %s ';
+
+            // DEFAULT
+            //
+            default:
+                return $command;
         }
     }
 
@@ -360,7 +365,6 @@ class SLPlus_Data_Extension {
             KEY slid_id (sl_id,id)
             ) {$this->slplus->database->collate}";
 
-        $this->slplus->debugMP('slp.main','msg',__FUNCTION__,$create);
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($create);
         global $EZSQL_ERROR;

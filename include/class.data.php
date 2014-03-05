@@ -236,7 +236,13 @@ class SLPlus_Data {
 
 
     /**
-     *Return a record as an array based on a given SQL select statement keys and params list.
+     * Return a record as an array based on a given SQL select statement keys and params list.
+     *
+     * Executes wpdb get_row using the specified SQL statement.
+     * If more than one row is returned by the query, only the specified row is returned by the function, but all rows are cached for later use.
+     * Returns NULL if no result is found
+     *
+     * @link https://codex.wordpress.org/Class_Reference/wpdb WordPress WPDB Class
      *
      * @param string[] $commandList
      * @param mixed[] $params

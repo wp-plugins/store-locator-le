@@ -314,11 +314,27 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
             $this->columns = array_merge($this->columns,
                         array(
                             'sl_description'=> __('Description'  ,'csa-slplus'),
-                            'sl_url'        => get_option('sl_website_label',__('Website','csa-slplus')),
                             'sl_email'      => __('Email'        ,'csa-slplus'),
-                            'sl_hours'      => $this->slplus->settings->get_item('label_hours',__('Hours','csa-slplus'),'_'),
-                            'sl_phone'      => $this->slplus->settings->get_item('label_phone',__('Phone','csa-slplus'),'_'),
-                            'sl_fax'        => $this->slplus->settings->get_item('label_fax'  ,__('Fax','csa-slplus')  ,'_'),
+                            'sl_url'        =>
+                                $this->slplus->WPML->getWPMLText(
+                                    'sl_website_label' ,
+                                     get_option( 'sl_website_label', __('Website','csa-slplus') )
+                                     ) ,
+                            'sl_hours'      =>
+                                $this->slplus->WPML->getWPMLText(
+                                    'label_hours' ,
+                                    $this->slplus->settings->get_item( 'label_hours' , __('Hours','csa-slplus') , '_' )
+                                    ) ,
+                            'sl_phone'      => 
+                                $this->slplus->WPML->getWPMLText(
+                                    'label_phone' ,
+                                    $this->slplus->settings->get_item( 'label_phone' , __('Phone','csa-slplus') , '_' )
+                                    ) ,
+                            'sl_fax'        =>
+                                $this->slplus->WPML->getWPMLText(
+                                    'label_fax' ,
+                                    $this->slplus->settings->get_item( 'label_fax'  , __('Fax','csa-slplus')  , '_' )
+                                    ) ,
                         )
                     );
             // FILTER: slp_manage_expanded_location_columns - add columns to expanded view on manage locations

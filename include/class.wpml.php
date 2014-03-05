@@ -63,11 +63,12 @@ class SLPlus_WPML {
 	 *
 	 * @param string The name of the text need to translate.
 	 * @param string The value of the text need to translate.
+     * @param string The textdomain to be used for the translation.
 	 * @return string WPML translated text
 	 */
-	public function getWPMLText($name, $value) {
+	public function getWPMLText($name, $value, $textdomain = 'csa-slplus') {
 		if ( $this->isActive() ) {
-			return icl_t('csa-slplus', $name, $value);
+			return icl_t($textdomain, $name, $value);
 		} else {
 			return $value;
 		}

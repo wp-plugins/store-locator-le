@@ -5,7 +5,7 @@ Donate link: http://www.storelocatorplus.com/
 Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.4
 Tested up to: 3.8.1
-Stable tag: 4.1.07
+Stable tag: 4.1.08
 License: GLPv2 or later
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
@@ -44,8 +44,8 @@ Visit the [SLP Customers page](http://www.storelocatorplus.com/support/documenta
 * Very active support via the [free support forum](http://www.storelocatorplus.com/forums/).
 * Regularly updated [online documentation](http://www.storelocatorplus.com/support/documentation/store-locator-plus/).
 * Multiple [premium add-ons available](http://www.storelocatorplus.com/product-category/slp4-products/).
-* You can use it for a [variety of countries](http://www.storelocatorplus.com/support/documentation/store-locator-plus/), as supported by Google Maps.
-* Supports [international languages](http://www.storelocatorplus.com/support/documentation/store-locator-plus/) and character sets and is [WPML compatible](http://wpml.org/plugin/store-locator/).
+* You can use it for a [variety of countries](http://www.storelocatorplus.com/support/documentation/store-locator-plus/user-experience/map/countries-and-languages/), as supported by Google Maps.
+* Supports [international languages](http://www.storelocatorplus.com/support/documentation/store-locator-plus/user-experience/map/countries-and-languages/) and character sets and is [WPML compatible](http://wpml.org/plugin/store-locator/).
 * Allows you to use [unique map markers](http://www.storelocatorplus.com/support/documentation/store-locator-plus/) or your own custom map markers.
 * Change default map settings via the admin panel including:
 * Map type (terrain, satellite, street, etc.)
@@ -59,31 +59,31 @@ Visit the [SLP Customers page](http://www.storelocatorplus.com/support/documenta
 
 [Premium add-on packages](http://www.storelocatorplus.com/product-category/slp4-products/) are available to extend the capabilities of this plugin.
 
-** [Contact Extender](http://www.charlestonsw.com/product/slp4-contact-extender/) Contacts Data **
+**Contacts Data** via [Contact Extender](http://www.charlestonsw.com/product/slp4-contact-extender/)
 
 * Adds a dozen extra contact specific data fields for each location.
 
-**[Enhanced Map](http://www.storelocatorplus.com/product/slp4-enhanced-map/) Extended Map Interface Controls**
+**Extended Map Interface Controls** via [Enhanced Map](http://www.storelocatorplus.com/product/slp4-enhanced-map/)
 
 * Custom tailor the map info bubble custom HTML/shortcode admin entry.
 * Center the starting map at any location in the world.
 * Turn the map display on or off or let the user decide with a slider switch.
 * Modify the built-in Google Map controls.
 
-**[Enhanced Results](http://www.storelocatorplus.com/product/slp4-enhanced-results/) Customize The Location Results**
+**Customize The Location Results** with [Enhanced Results](http://www.storelocatorplus.com/product/slp4-enhanced-results/)
 
 * Custom tailor the results output with a custom HTML/shortcode admin entry.
 * Change sort order on the the results.
 * Works with other add-on packs, like Tagalong, to show per-location icons.
 * Modify location field labels.
 
-**[Enhanced Search](http://www.storelocatorplus.com/product/slp4-enhanced-search/) Customize The Search Form**
+**Customize The Search Form** with [Enhanced Search](http://www.storelocatorplus.com/product/slp4-enhanced-search/)
 
 * Custom tailor the search form with a HTML/shortcode admin entry.
 * Turn the search interface on/off.
 * Works with other add-on packs to display category drop downs, tag drop downs, and other search features.
 
-**[Pro Pack](http://www.storelocatorplus.com/product/slp4-pro/) Enterprise Location Management and Reporting**
+**Enterprise Location Management and Reporting** via [Pro Pack](http://www.storelocatorplus.com/product/slp4-pro/)
 
 * Location Sensor support.
 * Bulk Data Import.
@@ -94,13 +94,13 @@ Visit the [SLP Customers page](http://www.storelocatorplus.com/support/documenta
 * Location search reporting.
 * Location tags.
 
-**[Store Pages](http://www.storelocatorplus.com/product/slp4-store-pages/) SEO Friendly Location Pages**
+**SEO Friendly Location Pages** with [Store Pages](http://www.storelocatorplus.com/product/slp4-store-pages/)
 
 * Create pages for each location with the click of a button.
 * Each page can be edited as an individual post.
 * Pages support their own comments, featured image, page style, and other standard WordPress page template features.
 
-**[Tagalong](http://www.storelocatorplus.com/product/slp4-tagalong/) Categorize Your Locations**
+**Categorize Your Locations** via [Tagalong](http://www.storelocatorplus.com/product/slp4-tagalong/)
 
 * Provides a custom interface to the WordPress category manager to attach categories to locations.
 * Assign map markers and icons to locations.
@@ -108,15 +108,14 @@ Visit the [SLP Customers page](http://www.storelocatorplus.com/support/documenta
 * Add a icon legend to the user interface.
 * Faster category filtering and searching than Pro Pack tags.
 
-**[User Managed Locations](http://www.storelocatorplus.com/product/slp4-user-managed-locations/) Allow Users To Manage Locations**
+**Allow Users To Manage Locations** with [User Managed Locations](http://www.storelocatorplus.com/product/slp4-user-managed-locations/)
 
 * Provides a user capabilities interface to grant/deny access to SLP location management on a user-by-user basis.
 * Site administrators have access to the full management interface.
 * Users granted location management capabilities can add, edit, and delete locations they own from their WordPress login.
 
-**[Widget Pack](http://www.storelocatorplus.com/product/store-locator-plus-widget-pack/) SLP Enabled Sidebar Widgets**
+**Location Sidebar Widgets** with the [Widget Pack](http://www.storelocatorplus.com/product/store-locator-plus-widget-pack/)
 
-* The first 3rd party add-on.
 * Put location search in your widget-enabled areas.
 * Direct users to the default map page, or show results right in the widget area.
 
@@ -124,13 +123,12 @@ Visit the [SLP Customers page](http://www.storelocatorplus.com/support/documenta
 
 If you are a plugin developer you will be interested in the new "Roll Your Own" program where you can create SLP based add-ons of your own.
 Create something great and list it on the CSA site!   Revenue sharing offered for premium add-on packs.
-If they are 100% ready-to-go the revenue split is 75% to the plugin author, 25% is retained for payment processing fees and marketing expenses.
 
 = Support =
 
-Support for the plugin can be found in the [CSA Forums](http://www.storelocatorplus.com/forums/).  If you have an urgent issue or want one-on-one support you can [purchase premium support](http://www.storelocatorplus.com/product/product-support).
+Support for the plugin can be found in the [Forums](http://www.storelocatorplus.com/forums/).  If you have an urgent issue or want one-on-one support you can [purchase premium support](http://www.storelocatorplus.com/product/product-support).
 
-You can also view the [CSA Product Documentation](http://www.storelocatorplus.com/support/documentation) for more information about the plugin including [known conflicts](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/troubleshooting/known-conflicts/) with themes and plugins.
+You can also view the [Product Documentation](http://www.storelocatorplus.com/support/documentation) for more information about the plugin including [known conflicts](http://www.storelocatorplus.com/support/documentation/technical-documentation/store-locator-plus/troubleshooting/known-conflicts/) with themes and plugins.
 
 = Special Requests =
 
@@ -171,34 +169,12 @@ Give me a chance to address your concerns if this plugin doesn't earn 5 stars by
 = Help Me "Speak" Your Language =
 
 Help me with translating the English words and phrases in the plugin and I will give you a premium add-on.
-The base plugin and the premium add-on packs have been updated to work with most language translation tools including the [Codestyling Localization]() plugin.
+The base plugin and the premium add-on packs have been updated to work with most language translation tools including the [Codestyling Localization](http://wordpress.org/plugins/codestyling-localization/) plugin.
 [Contact me](http://www.storelocatorplus.com/mindset/contact-us/) if you have a newly translated .po and .mo file to submit.
 If I do not have the language files already, or if they were notably out-of-date, I will add the premium add-on pack of your choice to your account.
 Upon request I will also put a link to your site in the "special thanks" section.
 
 Any EASIER way to perform translations?  Load the [Codestyling Localization plugin](http://wordpress.org/extend/plugins/codestyling-localization/) and then find it under "Tools/Localization" in your admin panel.
-
-= Version 4 Major Upgrade =
-
-Version 4 is the first major upgrade in a couple of years.
-This upgrade provides new features that make it far easier to create a truly custom user experience without having to leave the WordPress admin panel.
-You can learn more about the new release at the [Charleston Software Associates](http://www.storelocatorplus.com) web site.
-
-= Important Note About Version 3 Premium Add Ons =
-
-*Make sure all of your premium add-on packs are version 4.X or higher.*
-
-If you are using premium add-on packs for Store Locator Plus version 3 you must first upgrade to the Store Locator Plus 4 compatible add-on packs.
-Do not upgrade the base plugin if you are using SLP3 add-on packs.   You must follow these instructions:
-
-    * Login to your [Charleston Software Associates](http://www.storelocatorplus.com) account.
-    * Purchase [the SLP4 compatible version of your add-on packs](http://www.storelocatorplus.com/product-category/slp4-products/).
-    * Download the SLP4 add-on pack zip files.
-    * Login to your website's WordPress admin panel.
-    * Deactivate and delete all of your SLP premium add-on packs.
-    * Upgrade Store Locator Plus to SLP version 4.x.
-    * Install your newly downloaded SLP4 add-on pack zip files.
-    * Active the newly installed add-on packs.
 
 == Installation ==
 
@@ -237,6 +213,7 @@ new theme or any of the built-in defaults by selecting it from the auto-generate
 * Dutch (nl_NL) by [Jan de Baat](http://www.de-baat.nl/)
 * French (fr_FR) by François Serrault
 * Japanese (ja) by [Karen Ellrick](http://l4jp.com)
+* Latvian (lt-LT) by Paulius Bakutis
 
 *Graphics*
 
@@ -349,6 +326,16 @@ Please read the *description page* for this plugin for an important note about p
 I update about once per month or more frequently as needed.
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 4.1.08 =
+
+* Enhancement: Updated Dutch (nl_NL) [language files](http://www.storelocatorplus.com/support/documentation/store-locator-plus/user-experience/map/countries-and-languages/).
+* Enhancement: Add Latvian (lt_LT) [language files](http://www.storelocatorplus.com/support/documentation/store-locator-plus/user-experience/map/countries-and-languages/).
+* Enhancement: Add Traditional Chinese (zh_TW) [language files](http://www.storelocatorplus.com/support/documentation/store-locator-plus/user-experience/map/countries-and-languages/).
+* Enhancement: Add website, hours, phone, fax to WPML supported options fields.
+* Enhancement: Make csv import smarter about stripping special characters from field names row.
+* Fix: Fix data extensions mangling of SQL commands for add-on packs.
+* Change: Update the SLP Default theme to make the find button less horrific on Twenty Fourteen default setup.
 
 = 4.1.07 =
 

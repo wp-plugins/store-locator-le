@@ -260,6 +260,7 @@ class SLPlus extends wpCSL_plugin__slplus {
         <span class="slp_result_contact slp_result_directions"><a href="http://[slp_location map_domain]/maps?saddr=[slp_location search_address]&daddr=[slp_location location_address]" target="_blank" class="storelocatorlink">[slp_location directions_text]</a></span>
         <span class="slp_result_contact slp_result_hours">[slp_location hours]</span>
         [slp_location iconarray wrap="fullspan"]
+        [slp_location socialiconarray wrap="fullspan"]
         </div>
 </div>'
                                                                             ,
