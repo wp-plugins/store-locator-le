@@ -1,7 +1,7 @@
 /**
  ** file: wp-elogix.css
  ** label: Elogix Compatible
- ** description: Default theme with Enhanced Results featured listing styling and some tweaks to work better with eLogix.  To see featured highlights change Results Layout so the very first div class looks like this: class="results_entry [slp_location featured]".  Open this file in a text editor for more hints.  Makes web links for non-featured locations disappear.  Works with Enhanced Results + Super Extendo featured listings.
+ ** description: Default theme with Enhanced Results featured listing styling and some tweaks to work better with eLogix.  To see featured highlights change Results Layout so the very first div class looks like this: class="results_entry [slp_location featured]".  Open this file in a text editor for more hints.  Makes web links for non-featured locations disappear.  Works with Enhanced Results.
  **
  ** Put phone and | Email under name, drop fax, drop directions, drop tagalong icons.  Add featured class marker on outer div.
  ** csl-slplus_slper[resultslayout]:

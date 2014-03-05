@@ -292,7 +292,8 @@ if (!class_exists('CSVImport')) {
             if ($this->skip_firstline && $this->firstline_has_fieldname) {
                 if (($headerColumns = fgetcsv($this->filehandle)) !== FALSE) {
                     foreach($headerColumns as $label) {
-                        $label = preg_replace('/\W/','_',trim(strtolower($label)));
+                        $clean_label = trim(sanitize_key($label));
+                        $label = preg_replace('/\W/','_',$clean_label);
                         if (!empty($this->strip_prefix)) {
                             if (preg_match('/^'.$this->strip_prefix.'/',$label)!==1) { $label = $this->strip_prefix.$label; }
                         }
