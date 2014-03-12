@@ -3,7 +3,7 @@
 Plugin Name: Store Locator Plus
 Plugin URI: http://www.storelocatorplus.com/
 Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Google Maps.  This is a highly customizable, easily expandable, enterprise-class location management system.
-Version: 4.1.08
+Version: 4.1.09
 Tested up to: 3.8.1
 Author: Charleston Software Associates
 Author URI: http://www.storelocatorplus.com
@@ -33,7 +33,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 if (!defined( 'ABSPATH'     )) { exit;   } // Exit if accessed directly, dang hackers
 
 if (defined('SLPLUS_VERSION') === false) {
-    define('SLPLUS_VERSION', '4.1.08');
+    define('SLPLUS_VERSION', '4.1.09');
 }
 
 // Drive Path Defines
@@ -112,7 +112,7 @@ if (defined('SLP_ADMIN_PAGEPRE') === false) {
 global $slplus_plugin;
 
 /**
- * We need the generic WPCSL plugin class, since that is the
+ * We need the generic WPCSL plugin class, since that is thed
  * foundation of much of our plugin.  So here we make sure that it has
  * not already been loaded by another plugin that may also be
  * installed, and if not then we load it.

@@ -5,7 +5,7 @@ Donate link: http://www.storelocatorplus.com/
 Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.4
 Tested up to: 3.8.1
-Stable tag: 4.1.08
+Stable tag: 4.1.09
 License: GLPv2 or later
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
@@ -326,6 +326,12 @@ Please read the *description page* for this plugin for an important note about p
 I update about once per month or more frequently as needed.
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 4.1.09 =
+
+* Enhancement: Tagalong icon array on Beside The Point 2012 has been adjusted to appear on its own line.
+* Update: Setup Bellard-RT as an Advanced Theme.
+* Fix: Activation error $this when not in array context.
 
 = 4.1.08 =
 

@@ -244,6 +244,26 @@ class SLPlus_AjaxHandler {
         //
         add_filter('slp_ajaxsql_orderby',array($this,'filter_SetDefaultOrderByDistance'),100);
 
+        // Having clause filter
+        // Do filter after sl_distance has been caculated
+        //
+        // FILTER: slp_location_having_filters_for_AJAX
+        // append new having clause logic to the array and return the new array
+        // to extend/modify the having clause.
+        //
+        $havingClause = 'HAVING ';
+        $havingClauseElements =
+            apply_filters(
+                'slp_location_having_filters_for_AJAX',
+                array(
+                    '(sl_distance < %d) ',
+                    'OR (sl_distance IS NULL) '
+                )
+             );
+        foreach ($havingClauseElements as $filter) {
+            $havingClause .= $filter;
+        }
+
         // FILTER: slp_ajaxsql_fullquery
         //
         $this->dbQuery =  
@@ -256,7 +276,7 @@ class SLPlus_AjaxHandler {
                     )
                  )                                                      .
                 "{$filterClause} "                                      .
-                'HAVING (sl_distance < %d) OR (sl_distance IS NULL) '   .
+                "{$havingClause} "                                      .
                 $this->plugin->database->get_SQL('orderby_default')     .
                 'LIMIT %d'
             );

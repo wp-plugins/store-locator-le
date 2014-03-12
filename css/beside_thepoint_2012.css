@@ -415,3 +415,8 @@ span.location_distance
     margin-bottom: 12px;
     min-width: 190px;
 }
+
+/* Make the icon array appear on its own line */
+.results_line.location_iconarray {
+    display: block;
+}

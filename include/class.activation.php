@@ -433,12 +433,16 @@ class SLPlus_Activate {
                 delete_option(SLPLUS_PREFIX.'-theme_details');
                 delete_option(SLPLUS_PREFIX.'-theme_array');
                 delete_option(SLPLUS_PREFIX.'-theme_lastupdated');
+                
+                // Deactivate Super Extendo
+                //
+                deactivate_plugins('slp-super-extendo/slp-extendo.php');
             }
 
             // Save Serialized Options
             //
             if ($options_changed) {
-                update_option(SLPLUS_PREFIX.'-options_nojs', $this->plugin->options_nojs);
+                update_option(SLPLUS_PREFIX.'-options_nojs', $updater->plugin->options_nojs);
             }
 
             // Set DB Version

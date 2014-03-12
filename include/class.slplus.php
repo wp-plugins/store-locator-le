@@ -7,7 +7,7 @@
  *
  * @package StoreLocatorPlus
  * @author Lance Cleveland <lance@charlestonsw.com>
- * @copyright 2012-2013 Charleston Software Associates, LLC
+ * @copyright 2012-2014 Charleston Software Associates, LLC
  *
  */
 class SLPlus extends wpCSL_plugin__slplus {
@@ -50,11 +50,6 @@ class SLPlus extends wpCSL_plugin__slplus {
      * PRO: Pro Pack web link.
      */
     const linkToPRO = '<a href="http://www.storelocatorplus.com/product/slp4-pro/" target="csa">Pro Pack</a>';
-
-    /**
-     * SE: Super Extendo web link.
-     */
-    const linkToSE = '<a href="http://www.storelocatorplus.com/product/slp4-super-extendo/" target="csa">Super Extendo</a>';
 
     /**
      * SLP: Store Locator Plus web link.
@@ -605,12 +600,6 @@ class SLPlus extends wpCSL_plugin__slplus {
             array(
                 'name' => 'Enhanced Search',
                 'link'  => SLPlus::linkToES,
-             );
-
-        $this->available_addons['slp-extendo'] =
-            array(
-                'name' => 'Super Extendo',
-                'link'  => SLPlus::linkToSE,
              );
 
         $this->available_addons['slp-janitor'] =
