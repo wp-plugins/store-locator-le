@@ -59,21 +59,72 @@ class SLPlus_Activate {
      */
     function dbupdater($sql,$table_name) {
         global $wpdb;
+        $retval = ( $wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name ) ? 'new' : 'updated';
 
-        // New installation
-        //
-        if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
-            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-            dbDelta($sql);
-            return 'new';
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        dbDelta($sql);
+        global $EZSQL_ERROR;
+        $EZSQL_ERROR=array();
+        
+        return $retval;
+    }
 
-        // Installation upgrade
+    /**
+     * Setup the extended data tables.
+     */
+    function install_ExtendedDataTables() {
+        global $wpdb;
+        $charset_collate = '';
+        if ( ! empty($wpdb->charset) )
+            $charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
+        if ( ! empty($wpdb->collate) )
+            $charset_collate .= " COLLATE $wpdb->collate";
+
+        // Meta Data Table
+        // Contains the architecture of the extended data fields.
         //
-        } else {        
-            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-            dbDelta($sql);
-            return 'updated';    
-        }   
+        $table_name = $wpdb->prefix . 'slp_extendo_meta';
+        $sql = "CREATE TABLE $table_name (
+                        id mediumint(8) not null auto_increment,
+                        field_id varchar(15),
+                        label varchar(250),
+                        slug varchar(250),
+                        type varchar(55),
+                        options text,
+                        key id (id),
+                        key field_id (field_id),
+                        key label (label),
+                        key slug (slug)
+                )
+                $charset_collate
+                ";
+        $table_status = $this->dbupdater($sql,$table_name);
+
+        // Extendo Table Was Already Here
+        // Set the next field id based on the extendo options and write it back out.
+        //
+        if ($table_status === 'updated') {
+
+            // Check that we did not import the next field ID first.
+            //
+            $slplus_options = get_option(SLPLUS_PREFIX.'-options_nojs');
+            if ( ! isset($slplus_options['next_field_ported']) || empty($slplus_options['next_field_ported']) ) {
+
+                // Get the next field ID From Extendo
+                //
+                $extendo_options = get_option('slplus-extendo-options');
+                if ( isset ( $extendo_options['next_field_id'] ) ) {
+                    if ( ! is_array( $slplus_options )                   ) { $slplus_options = array();                    }
+                    if ( isset ( $extendo_options['installed_version'] ) ) { unset($extendo_options['installed_version']); }
+                    array_merge($slplus_options, $extendo_options);
+                }
+
+                // Set the ported flag and write that along with next field ID back to database.
+                //
+                $slplus_options['next_field_ported'] = '1';
+                update_option(SLPLUS_PREFIX.'-options_nojs', $slplus_options);
+            }
+        }
     }
 
     /*************************************
@@ -169,63 +220,14 @@ class SLPlus_Activate {
     }
 
     /*************************************
-     * Install reporting tables
-     *
-     * Update the plugin version in config.php on every structure change.
-     */
-    function install_reporting_tables() {
-        global $wpdb;
-
-        $charset_collate = '';
-        if ( ! empty($wpdb->charset) )
-            $charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
-        if ( ! empty($wpdb->collate) )
-            $charset_collate .= " COLLATE $wpdb->collate";
-
-        // Reporting: Queries
-        //
-        $table_name = $wpdb->prefix . "slp_rep_query";
-        $sql = "CREATE TABLE $table_name (
-                slp_repq_id    bigint(20) unsigned NOT NULL auto_increment,
-                slp_repq_time  timestamp NOT NULL default current_timestamp,
-                slp_repq_query varchar(255) NOT NULL,
-                slp_repq_tags  varchar(255),
-                slp_repq_address varchar(255),
-                slp_repq_radius varchar(5),
-                PRIMARY KEY  (slp_repq_id),
-                INDEX (slp_repq_time)
-                )
-                $charset_collate						
-                ";
-        $this->dbupdater($sql,$table_name);	
-
-
-
-        // Reporting: Query Results
-        //
-        $table_name = $wpdb->prefix . "slp_rep_query_results";
-        $sql = "CREATE TABLE $table_name (
-                slp_repqr_id    bigint(20) unsigned NOT NULL auto_increment,
-                slp_repq_id     bigint(20) unsigned NOT NULL,
-                sl_id           mediumint(8) unsigned NOT NULL,
-                PRIMARY KEY  (slp_repqr_id),
-                INDEX (slp_repq_id)
-                )
-                $charset_collate						
-                ";
-
-        // Install or Update the slp_rep_query_results table
-        //
-        $this->dbupdater($sql,$table_name);     
-    }
-
-    /*************************************
      * Add roles and caps
      */
     function add_splus_roles_and_caps() {
         $role = get_role('administrator');
-        if (is_object($role) && !$role->has_cap('manage_slp')) {
+        if (is_object($role) && !$role->has_cap('manage_slp_admin')) {
             $role->add_cap('manage_slp');
+			$role->add_cap('manage_slp_admin');
+			$role->add_cap('manage_slp_user');
         }
     }
 
@@ -418,16 +420,33 @@ class SLPlus_Activate {
                 // Number To Show Initially Setting
                 //
                 $initial_results = get_option('sl_num_initial_displayed','25');
-                $updater->plugin->options_nojs['initial_results_returned'] = empty( $initial_results ) ? '25' : $initial_results;
+                $updater->plugin->options['initial_results_returned'] = empty( $initial_results ) ? '25' : $initial_results;
                 delete_option('sl_num_initial_displayed');
-                $options_changed = $options_changed || ($initial_results !== $updater->plugin->options_nojs['initial_results_returned']);
+                $options_changed = $options_changed || ($initial_results !== $updater->plugin->options['initial_results_returned']);
+
+            }
+
+            // Upgrading to version 4.1.XX
+            // Always re-load theme details data.
+            //
+            if ( version_compare($updater->plugin_version_on_start,'4.1.99','<') ) {
+                delete_option(SLPLUS_PREFIX.'-theme_details');
+                delete_option(SLPLUS_PREFIX.'-theme_array');
+                delete_option(SLPLUS_PREFIX.'-theme_lastupdated');
+                
+                // Deactivate Super Extendo
+                //
+                include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+                if ( function_exists('deactivate_plugins') ) {
+                    deactivate_plugins('slp-super-extendo/slp-extendo.php');
+                }
 
             }
 
             // Save Serialized Options
             //
             if ($options_changed) {
-                update_option(SLPLUS_PREFIX.'-options_nojs', $this->plugin->options_nojs);
+                update_option(SLPLUS_PREFIX.'-options_nojs', $updater->plugin->options_nojs);
             }
 
             // Set DB Version
@@ -439,7 +458,7 @@ class SLPlus_Activate {
         // Update Tables, Setup Roles
         //
         $updater->install_main_table();
-        $updater->install_reporting_tables();
+        $updater->install_ExtendedDataTables();
         $updater->add_splus_roles_and_caps();
     }
 

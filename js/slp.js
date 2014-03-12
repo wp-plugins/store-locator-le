@@ -1,9 +1,9 @@
-/*****************************************************************
- * file: slp.js
- *
- *****************************************************************/
+// ==ClosureCompiler==
+// @compilation_level SIMPLE_OPTIMIZATIONS
+// @output_file_name slp.min.js
+// ==/ClosureCompiler==
 
-var csl = {
+var slp = {
 
    /***************************
   	* Animation enum technically
@@ -113,7 +113,7 @@ var csl = {
   	 * create a google maps marker
   	 * parameters:
   	 * 	animationType: The Animation type to do the animation
-	 *		map: the csl.Map type to put it on
+	 *		map: the slp.Map type to put it on
 	 *		title: the title of the marker for mouse over
 	 *		markerImage: todo: load a custom icon, null for default
 	 *		position: the lat/long to put the marker at
@@ -534,7 +534,7 @@ var csl = {
 				this.centerMarker.__gmarker.setMap(null);
 			}
 			if (this.homePoint) {
-				this.centerMarker = new csl.Marker(csl.Animation.None, this, "", this.homePoint, this.mapHomeIconUrl);
+				this.centerMarker = new slp.Marker(slp.Animation.None, this, "", this.homePoint, this.mapHomeIconUrl);
 			}
   	  	};
 
@@ -565,9 +565,9 @@ var csl = {
   	  	 * 		Puts an array of markers on the map with the given animation set
   	  	 * parameters:
   	  	 * 		markerList:
-		 *			a list of csl.Markers
+		 *			a list of slp.Markers
 		 *		animation:
-		 *			the csl.Animation type
+		 *			the slp.Animation type
   	  	 * returns: none
   	  	 */
 		this.putMarkers = function(markerList, animation) {
@@ -580,7 +580,7 @@ var csl = {
 
 			//don't animate for a large set of results
             var markerCount = (markerList) ? markerList.length : 0;
-			if (markerCount > 25) animation = csl.Animation.None;
+			if (markerCount > 25) animation = slp.Animation.None;
 
 			var bounds;
             var locationIcon;
@@ -612,7 +612,7 @@ var csl = {
                             markerList[markerNumber].icon :
                             this.mapEndIconUrl
                         );
-				this.markers.push(new csl.Marker(animation, this, "", position, locationIcon));
+				this.markers.push(new slp.Marker(animation, this, "", position, locationIcon));
 				_this = this;
 
 				//create a sidebar entry
@@ -689,26 +689,26 @@ var csl = {
   	  	 * 		Puts a list of markers on the screen and makes them bounce
   	  	 * parameters:
   	  	 * 		markerlist:
-		 *			the list of csl.Markers to add to the map
+		 *			the list of slp.Markers to add to the map
   	  	 * returns: none
   	  	 */
 		this.bounceMarkers = function(markerList) {
 			this.clearMarkers();
-			this.putMarkers(markerList, csl.Animation.None);
+			this.putMarkers(markerList, slp.Animation.None);
 		};
 
 		/***************************
   	  	 * function: dropMarkers
   	  	 * usage:
-  	  	 * 		drops a list of csl.Markers on the map
+  	  	 * 		drops a list of slp.Markers on the map
   	  	 * parameters:
   	  	 * 		markerList:
-		 *			the list of csl.Markers to drop
+		 *			the list of slp.Markers to drop
   	  	 * returns: none
   	  	 */
 		this.dropMarkers = function(markerList) {
 			this.clearMarkers();
-			this.putMarkers(markerList, csl.Animation.Drop);
+			this.putMarkers(markerList, slp.Animation.Drop);
 		};
 
 		/***************************
@@ -719,7 +719,7 @@ var csl = {
   	  	 * 		infoData:
 		 *			the information to build the info window from (ajax result)
 		 *		marker:
-		 *			the csl.Marker to add the information to
+		 *			the slp.Marker to add the information to
   	  	 * returns: none
   	  	 */
 		this.__handleInfoClicks = function(infoData, marker) {
@@ -865,7 +865,7 @@ var csl = {
             thisMarker['url'        ] = this.__getMarkerUrl(thisMarker);
             thisMarker['fullAddress'] = this.__createAddress(thisMarker);
 
-            nout = slplus.options.bubblelayout.replace(/\[(\w+)\s+(\S+)\s*(\S*)\s*(\S*)\s*\]/g,
+            nout = slplus.options.bubblelayout.replace(/\[(\w+)\s+(\w+)\s*(\w*)\s*(\w*)\s*\]/g,
                 function(match,shortcode,attribute,modifier,modarg) {
                     switch(shortcode){
 
@@ -1074,7 +1074,7 @@ var csl = {
             if (tags === null) { tags = ''; }
 
             var _this = this;
-            var ajax = new csl.Ajax();
+            var ajax = new slp.Ajax();
 
             // Setup our variables sent to the AJAX listener.
             //
@@ -1084,6 +1084,7 @@ var csl = {
                 lat     : center.lat(),
                 lng     : center.lng(),
                 name    : this.saneValue('nameSearch', ''),
+                options : slplus.options,
                 radius  : radius,
                 tags    : tags
              };
@@ -1217,42 +1218,6 @@ var csl = {
 
             var address = this.__createAddress(aMarker);
 
-            // JavaScript version of sprintf
-            //
-            String.prototype.format = function() {
-             var args = arguments;
-             return this.replace(/{(\d+)(\.(\w+)\.?(\w+)?)?}/g, function(match, number, dotsubname, subname,subsubname) {
-
-               // aMarker[#] is defined
-               return typeof args[number] !== 'undefined'
-
-                 // aMarker[#] is not a complex object - just return the value of that field number
-                 //
-                 ? typeof args[number] !== 'object'
-                     ? args[number]
-
-                     // aMarker[#] is a complex oject,
-                     // check aMarker[#][subname] to see if it is an object, if not just return the value we find there
-                     //
-                     : typeof args[number][subname] !== 'object'
-                         ? typeof args[number][subname] !== 'undefined' ? args[number][subname] : ''
-
-                        // aMarker[#][subname] is a complex oject,
-                        // check aMarker[#][subname][subsubname] to see if it is an object, if not just return the value we find there
-                        //
-                         : (args[number][subname] !== null)
-                            ? typeof args[number][subname][subsubname] !== 'undefined' ? args[number][subname][subsubname] : ''
-
-                            // Ran out of possibilities, just return the shortcode back.
-                            //
-                            : match
-
-                 // aMarker[#] not defined, return blank
-                 : ''
-               ;
-             });
-           };
-
          /** Create the results table
           *
           * use {0} to {17} to place in the output
@@ -1321,15 +1286,62 @@ var cslmap;
 var cslutils;
 
 /**
+ * Set various functions and methods to help manage the map.
+ *
+ * @returns {undefined}
+ */
+function setup_Helpers() {
+
+    /**
+     * String Formatting, JavaScript sprintf
+     * 
+     * @returns {String.prototype@call;replace}
+     */
+    String.prototype.format = function() {
+     var args = arguments;
+     return this.replace(/{(\d+)(\.(\w+)\.?(\w+)?)?}/g, function(match, number, dotsubname, subname,subsubname) {
+
+       // aMarker[#] is defined
+       return typeof args[number] !== 'undefined'
+
+         // aMarker[#] is not a complex object - just return the value of that field number
+         //
+         ? typeof args[number] !== 'object'
+             ? args[number]
+
+             // aMarker[#] is a complex oject,
+             // check aMarker[#][subname] to see if it is an object, if not just return the value we find there
+             //
+             : typeof args[number][subname] !== 'object'
+                 ? typeof args[number][subname] !== 'undefined' ? args[number][subname] : ''
+
+                // aMarker[#][subname] is a complex oject,
+                // check aMarker[#][subname][subsubname] to see if it is an object, if not just return the value we find there
+                //
+                 : (args[number][subname] !== null)
+                    ? typeof args[number][subname][subsubname] !== 'undefined' ? args[number][subname][subsubname] : ''
+
+                    // Ran out of possibilities, just return an empty string.
+                    //
+                    : ''
+
+         // aMarker[#] not defined, return blank
+         : ''
+       ;
+     });
+    };
+}
+
+/**
  * Setup the map settings and get it rendered.
  *
  * @returns {undefined}
  */
-function InitializeTheMap() {
+function setup_Map() {
 
     // Initialize Utilities
     //
-	cslutils = new csl.Utils();
+	cslutils = new slp.Utils();
 
     // Initialize the map based on sensor activity
     //
@@ -1342,14 +1354,14 @@ function InitializeTheMap() {
     // 4) Sensor Inactive
     //
     if (slplus.use_sensor) {
-        sensor = new csl.LocationServices();
+        sensor = new slp.LocationServices();
         if (sensor.LocationSupport) {
             sensor.currentLocation(
 
                 // 1) Success on Location
                 //
                 function(loc) {
-                	cslmap = new csl.Map();
+                	cslmap = new slp.Map();
                     cslmap.usingSensor = true;
                     clearTimeout(sensor.location_timeout);
                     sensor.lat = loc.coords.latitude;
@@ -1361,7 +1373,7 @@ function InitializeTheMap() {
                 //
                 function(error) {
                     clearTimeout(sensor.location_timeout);
-                	cslmap = new csl.Map();
+                	cslmap = new slp.Map();
                     cslmap.doGeocode();
                 }
             );
@@ -1370,14 +1382,14 @@ function InitializeTheMap() {
         //
         } else {
             slplus.use_sensor = false;
-        	cslmap = new csl.Map();
+        	cslmap = new slp.Map();
             cslmap.doGeocode();            
         }
 
     // 4) No Sensor
     //
     } else {
-    	cslmap = new csl.Map();
+    	cslmap = new slp.Map();
         cslmap.doGeocode();
     }
 }
@@ -1477,7 +1489,8 @@ jQuery(document).ready(
                 //
                 if (jQuery('div#sl_div').is(":visible")) {
                     if (typeof slplus !== 'undefined') {
-                        InitializeTheMap();
+                        setup_Helpers();
+                        setup_Map();
                     } else {
                         jQuery('#sl_div').html('Store Locator Plus did not initialize properly.');
                     }

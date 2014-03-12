@@ -254,7 +254,7 @@ class SLPlus_UI {
         $this->plugin->debugMP('msg',__FUNCTION__);
         return $this->plugin->UI->createstring_InputDiv(
             'addressInput',
-            get_option('sl_search_label',__('Address','csa-slplus')),
+            $this->plugin->WPML->getWPMLText('sl_search_label', get_option('sl_search_label',__('Address','csa-slplus'))),
             $placeholder,
             (get_option(SLPLUS_PREFIX.'_hide_address_entry',0) == 1),
             'addy_in_address',
@@ -271,7 +271,7 @@ class SLPlus_UI {
             $HTML =
                 "<div id='addy_in_radius'>".
                 "<label for='radiusSelect'>".
-                get_option('sl_radius_label',__('Within','csa-slplus')).
+                $this->plugin->WPML->getWPMLText('sl_radius_label', get_option('sl_radius_label',__('Within','csa-slplus'))).
                 '</label>'.
                 "<select id='radiusSelect'>".$this->plugin->data['radius_options'].'</select>'.
                 "</div>"
@@ -873,6 +873,20 @@ class SLPlus_UI {
       * @deprecated 4.0
       */
      function setResultsString() {
+        if (!$this->setPlugin()) { return false; }
+        if (!$this->depnotice_setResultsString) {
+            $this->plugin->notifications->add_notice(9,$this->plugin->createstring_Deprecated(__FUNCTION__));
+            $this->plugin->notifications->display();
+            $this->depnotice_setResultsString = true;
+         }
+     }
+
+     /**
+      * Do not use, deprecated.
+      *
+      * @deprecated 4.0
+      */
+     function slp_render_search_form_tag_list() {
         if (!$this->setPlugin()) { return false; }
         if (!$this->depnotice_setResultsString) {
             $this->plugin->notifications->add_notice(9,$this->plugin->createstring_Deprecated(__FUNCTION__));

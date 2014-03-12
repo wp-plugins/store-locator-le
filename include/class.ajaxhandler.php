@@ -68,6 +68,10 @@ class SLPlus_AjaxHandler {
         if (isset($_REQUEST['formdata'])) {
             $this->formdata = wp_parse_args($_REQUEST['formdata'],$this->formdata_defaults);
         }
+        if (isset($_REQUEST['options'])) {
+            $this->setPlugin();
+            $this->plugin->options = wp_parse_args($_REQUEST['options'],$this->plugin->options);
+        }
     }
 
     /**
@@ -147,7 +151,7 @@ class SLPlus_AjaxHandler {
         // Return How Many?
         //
         $response=array();
-        $locations = $this->execute_LocationQuery($this->plugin->options_nojs['initial_results_returned']);
+        $locations = $this->execute_LocationQuery($this->plugin->options['initial_results_returned']);
         foreach ($locations as $row){
             $response[] = $this->slp_add_marker($row);
         }
@@ -172,47 +176,28 @@ class SLPlus_AjaxHandler {
         global $wpdb;
         $this->setPlugin();
 
-        // Reporting
-        // Insert the query into the query DB
-        //
-        if (get_option(SLPLUS_PREFIX.'-reporting_enabled','0') === '1') {
-            $qry = sprintf(
-                    "INSERT INTO {$this->plugin->db->prefix}slp_rep_query ".
-                               "(slp_repq_query,slp_repq_tags,slp_repq_address,slp_repq_radius) ".
-                        "values ('%s','%s','%s','%s')",
-                        mysql_real_escape_string($_SERVER['QUERY_STRING']),
-                        mysql_real_escape_string($_POST['tags']),
-                        mysql_real_escape_string($_POST['address']),
-                        mysql_real_escape_string($_POST['radius'])
-                    );
-            $wpdb->query($qry);
-            $slp_QueryID = mysql_insert_id();
-        }
-
         // Get Locations
         //
-        $response = array();
+		$response = array();
+		$resultRowids = array();
         $locations = $this->execute_LocationQuery($this->plugin->options_nojs['max_results_returned']);
         foreach ($locations as $row){
             $thisLocation = $this->slp_add_marker($row);
             if (!empty($thisLocation)) {
-                $response[] = $thisLocation;
-
-                // Reporting
-                // Insert the results into the reporting table
-                //
-                if (get_option(SLPLUS_PREFIX.'-reporting_enabled','0') === '1') {
-                    $wpdb->query(
-                        sprintf(
-                            "INSERT INTO {$this->plugin->db->prefix}slp_rep_query_results
-                                (slp_repq_id,sl_id) values (%d,%d)",
-                                $slp_QueryID,
-                                $row['sl_id']
-                            )
-                        );
-                }
+				$response[] = $thisLocation;
+				$resultRowids[] = $row['sl_id'];
             }
-        }
+		}
+
+		// Do report work
+		//
+		$queryParams = array();
+		$queryParams['QUERY_STRING'] = $_SERVER['QUERY_STRING'];
+		$queryParams['tags'] = $_POST['tags'];
+		$queryParams['address'] = $_POST['address'];
+		$queryParams['radius'] = $_POST['radius'];
+
+		do_action('slp_report_query_result', $queryParams, $resultRowids);
 
         // Output the JSON and Exit
         //
@@ -236,6 +221,7 @@ class SLPlus_AjaxHandler {
         //........
         // SLP options that tweak the query
         //........
+        $this->plugin->database->createobject_DatabaseExtension();
 
         // Distance Unit (KM or MI) Modifier
         // Since miles is default, if kilometers is selected, divide by 1.609344 in order to convert the kilometer value selection back in miles
@@ -258,6 +244,26 @@ class SLPlus_AjaxHandler {
         //
         add_filter('slp_ajaxsql_orderby',array($this,'filter_SetDefaultOrderByDistance'),100);
 
+        // Having clause filter
+        // Do filter after sl_distance has been caculated
+        //
+        // FILTER: slp_location_having_filters_for_AJAX
+        // append new having clause logic to the array and return the new array
+        // to extend/modify the having clause.
+        //
+        $havingClause = 'HAVING ';
+        $havingClauseElements =
+            apply_filters(
+                'slp_location_having_filters_for_AJAX',
+                array(
+                    '(sl_distance < %d) ',
+                    'OR (sl_distance IS NULL) '
+                )
+             );
+        foreach ($havingClauseElements as $filter) {
+            $havingClause .= $filter;
+        }
+
         // FILTER: slp_ajaxsql_fullquery
         //
         $this->dbQuery =  
@@ -270,7 +276,7 @@ class SLPlus_AjaxHandler {
                     )
                  )                                                      .
                 "{$filterClause} "                                      .
-                'HAVING (sl_distance < %d) OR (sl_distance IS NULL) '   .
+                "{$havingClause} "                                      .
                 $this->plugin->database->get_SQL('orderby_default')     .
                 'LIMIT %d'
             );

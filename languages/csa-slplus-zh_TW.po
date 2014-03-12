@@ -1,0 +1,1846 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Store Locator Plus v4.1.00\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2014-02-28 22:50+0800\n"
+"Last-Translator: lxt <isurgeli@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=1;\n"
+"X-Generator: Poedit 1.6.4\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
+"_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
+"X-Poedit-Basepath: ../\n"
+"X-Textdomain-Support: yes\n"
+"Language: zh\n"
+"X-Poedit-SearchPath-0: .\n"
+
+# @ csa-slplus
+#: include/class.actions.php:155
+msgid "SLP Hints"
+msgstr "SLP提示"
+
+# @ csa-slplus
+#: include/class.actions.php:159
+#, php-format
+msgid ""
+"Store Locator Plus documentation can be found online at <a href=\"%s\" "
+"target=\"csa\">%s</a>.<br/>"
+msgstr ""
+"Store Locator Plus 相關文件可參考此連結<a href=\"%s\" target=\"csa\">%s</a>。"
+"<br/>"
+
+# @ csa-slplus
+#: include/class.actions.php:164
+#, php-format
+msgid ""
+"View the <a href=\"%s\" target=\"csa\">[slplus] shortcode documentation</a>."
+msgstr "查看<a href=\"%s\" target=\"csa\">快捷碼[slplus]相關文檔</a>。"
+
+# @ csa-slplus
+#: include/class.actions.php:199
+msgid "Info"
+msgstr "信息"
+
+# @ csa-slplus
+#: include/class.actions.php:205
+msgid "Locations"
+msgstr "位置"
+
+# @ csa-slplus
+#: include/class.actions.php:211
+msgid "User Experience"
+msgstr "使用者經驗"
+
+# @ csa-slplus
+#: include/class.actions.php:217 include/class.adminui.generalsettings.php:272
+msgid "General Settings"
+msgstr "常規設置"
+
+# @ csa-slplus
+#: include/class.actions.php:314
+msgid "Store Pages"
+msgstr "商店頁面"
+
+# @ csa-slplus
+#: include/class.actions.php:315
+msgid "Store Page"
+msgstr "商店頁面"
+
+# @ csa-slplus
+#: include/class.actions.php:316
+msgid "Add New Store Page"
+msgstr "增加商店頁面"
+
+# @ csa-slplus
+#: include/class.actions.php:345
+msgid "Store Locator Plus location pages."
+msgstr "Store Locator Plusw位置頁面"
+
+# @ csa-slplus
+#: include/class.actions.php:364
+msgid "Categories"
+msgstr "類別"
+
+# @ csa-slplus
+#: include/class.actions.php:365
+msgid "Store Categories"
+msgstr "商店類別"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:121
+msgid "Admin"
+msgstr "管理"
+
+# @ csa-slplus
+# @ wpcsl
+#: include/class.adminui.generalsettings.php:126 lib/class.plugin.php:468
+msgid "Settings"
+msgstr "設置"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:127
+msgid "Turn off rate notification"
+msgstr "關閉評分提示"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:131
+msgid "This will disable the notification asking you to rate our product."
+msgstr "將關閉對產品進行評分的請求提示。"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:144
+msgid "Google"
+msgstr "谷歌"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:147
+msgid "Geocoding"
+msgstr "地理座標"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:152
+msgid "Geocode Retries"
+msgstr "重新請求地理坐標"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:171
+msgid ""
+"How many times should we try to set the latitude/longitude for a new "
+"address? "
+msgstr "對新地址應請求設置經緯度的次數？"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:172
+msgid "Higher numbers mean slower bulk uploads. "
+msgstr "高數值代表較慢的批量上傳速度。"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:173
+msgid ""
+"Lower numbers make it more likely the location will not be set during bulk "
+"uploads. "
+msgstr "低數值代表批量上傳過程位置無法正確設置的可能性較大。"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:174
+#: include/class.adminui.generalsettings.php:190
+#, php-format
+msgid "Bulk import or re-geocoding is a %s feature."
+msgstr "批量上傳和重設經緯度是一個%s的特性。"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:182
+msgid "Maximum Retry Delay"
+msgstr "最大重試延時"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:187
+msgid "Maximum time to wait between retries, in seconds. "
+msgstr "兩次重試間的最大間隔，以秒為單位。"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:188
+msgid "Use multiples of 1. "
+msgstr "使用一之倍數。"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:189
+msgid "Recommended value is 5. "
+msgstr "推薦數值為5。"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:198
+msgid "Google API Key"
+msgstr "谷歌API口令"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:201
+msgid ""
+"This setting helps with query limits for businesses with a Google Business "
+"Account only."
+msgstr "此設定只影響谷歌商業用戶的查詢上限。"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:202
+msgid "The free Google API keys do not have an impact on query limits."
+msgstr "免費的谷歌API指令對查詢上限無影響。"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:210
+msgid "Turn Off SLP Maps"
+msgstr "關閉SLP地圖"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:215
+msgid ""
+"Check this box if your Theme or another plugin is providing Google Maps and "
+"generating warning messages. THIS MAY BREAK THIS PLUGIN."
+msgstr ""
+"若其他主題或插件會提供谷歌地圖及會產生警告信息，請勾選此選項。這可能會影響此"
+"插件的運作。"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:229
+msgid "User Interface"
+msgstr "用戶界面"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:232
+msgid "JavaScript"
+msgstr "JavaScript"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:237
+msgid "Force Load JavaScript"
+msgstr "強制使用JavaScript"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:242
+msgid ""
+"Force the JavaScript for Store Locator Plus to load on every page with early "
+"loading. "
+msgstr "在每個預載新頁面載入時強制裝載StoreLocatorPlus JavaScript"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:243
+msgid ""
+"This can slow down your site, but is compatible with more themes and plugins."
+msgstr "這可能使網站變慢，但與更多的主題或插件兼容。"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:284
+msgid " - Locations"
+msgstr " - 位置"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:303
+#: include/class.adminui.locations.php:929
+msgid "Name"
+msgstr "名稱"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:304
+#: include/class.adminui.locations.php:926
+#: include/class.adminui.locations.php:2164
+#: include/class.adminui.mapsettings.php:956 include/class.ui.php:257
+msgid "Address"
+msgstr "地址"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:316
+#: include/class.adminui.locations.php:1041
+msgid "Description"
+msgstr "描述"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:317
+#: include/class.adminui.locations.php:1049
+#: include/class.adminui.mapsettings.php:833
+msgid "Website"
+msgstr "網站"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:318
+#: include/class.adminui.locations.php:1054
+#: include/class.adminui.locations.php:1971
+msgid "Email"
+msgstr "電子郵件"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:319
+#: include/class.adminui.locations.php:1059
+#: include/class.adminui.mapsettings.php:837
+#: include/class.adminui.mapsettings.php:840
+msgid "Hours"
+msgstr "營運時間"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:320
+#: include/class.adminui.locations.php:1067
+#: include/class.adminui.mapsettings.php:844
+#: include/class.adminui.mapsettings.php:847
+msgid "Phone"
+msgstr "電話"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:321
+#: include/class.adminui.locations.php:1072
+#: include/class.adminui.mapsettings.php:851
+#: include/class.adminui.mapsettings.php:854
+msgid "Fax"
+msgstr "傳真"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:515
+msgid " at "
+msgstr "位于"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:731
+#, php-format
+msgid "Address %s (%d in current series) hit the Google query limit.\n"
+msgstr "地址：%s（在當前系列出現%d次），達到谷歌查詢限制。 \n"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:760
+#, php-format
+msgid ""
+"Waited up to %4.2f seconds between request, total wait for this location was "
+"%4.2f seconds."
+msgstr "請求間隔為%4.2f秒，這個位置總共需等待%4.2f秒。"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:766
+#, php-format
+msgid "%d total attempts for this location."
+msgstr "此位置需要嘗試%d次。"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:776
+#: include/class.adminui.locations.php:789
+#, php-format
+msgid "Address #%d : %s <font color=red>failed to geocode</font>."
+msgstr "地址：%d-%s <font color=red>獲取坐標失敗</font>。"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:780
+#, php-format
+msgid "Unknown Address! Received status %s."
+msgstr "不明確的地址！查詢狀態：%s。"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:793
+#, php-format
+msgid "Received status %s."
+msgstr "查詢狀態：%s。"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:796
+#, php-format
+msgid "Received data %s."
+msgstr "查詢數據：%s。"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:808
+msgid "Geocode service non-responsive"
+msgstr "坐標服務無回應。"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:821
+#, php-format
+msgid "Read <a href=\"%s\">this</a> if you are having geocoding issues."
+msgstr "坐標相關問題，請點擊<a href=\"%s\">這裡</a> 。"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:837
+#, php-format
+msgid ""
+"Google thinks %s is at <a href=\"%s\" target=\"_blank\">lat: %s long %s</a>"
+msgstr "谷歌認為%s位於<a href=\"%s\" target=\"_blank\">緯度：%s 經度：%s</a>"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:934
+msgid "Street - Line 1"
+msgstr "街道 - 首行"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:939
+msgid "Street - Line 2"
+msgstr "街道 - 次行"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:944
+msgid "City, State, ZIP"
+msgstr "縣市，地區，郵編區號"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:964
+#: include/class.adminui.locations.php:2180
+msgid "Country"
+msgstr "國家"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:969
+msgid "Latitude (N/S)"
+msgstr "緯度（南北）"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:974
+msgid "Longitude (E/W)"
+msgstr "經度（東西）"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:996
+msgid "Add Location"
+msgstr "新增位置"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:997
+msgid "Update Location"
+msgstr "更新位置"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1002
+#: include/class.adminui.locations.php:1825
+#: include/class.adminui.locations.php:2338
+msgid "Add"
+msgstr "新增"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1003
+msgid "Update"
+msgstr "更新"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1021
+msgid "Cancel"
+msgstr "取消"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1038
+msgid "Additional Information"
+msgstr "附加信息"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1077
+msgid "Image URL"
+msgstr "圖片URL地址"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1225
+msgid "Added Successfully"
+msgstr "新增成功"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1229
+msgid "Location not added."
+msgstr "未能增加位置。"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1230
+msgid "The add location form on your server is not rendering properly."
+msgstr "新增位置的表單無法正確顯示。"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1517
+msgid "Bulk Actions"
+msgstr "批量操作"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1522
+msgid "Delete Permanently"
+msgstr "永久删除"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1542
+msgid "Are you sure you want to "
+msgstr "你确定要"
+
+# @ csa-slplus
+# @ wpcsl
+#: include/class.adminui.locations.php:1551 lib/class.helper.php:153
+msgid "Apply"
+msgstr "套用"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1582
+msgid "Show All"
+msgstr "全部顯示"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1598
+msgid "Filter"
+msgstr "過濾"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1655
+msgid "Normal"
+msgstr "常規"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1660
+msgid "Expanded"
+msgstr "展開"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1665
+#: include/class.adminui.locations.php:1670
+#: include/class.adminui.locations.php:1675
+#: include/class.adminui.locations.php:1680
+#: include/class.adminui.locations.php:1685
+#: include/class.adminui.locations.php:1690
+#, php-format
+msgid "%d locations"
+msgstr "%d個位置"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1706
+msgid "Display"
+msgstr "顯示"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1733
+msgid "for your search of"
+msgstr "對於此搜尋"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1735
+msgid "Clear&nbsp;Results"
+msgstr "清除&nbsp;结果"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1807
+msgid "locations"
+msgstr "位置"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1844
+msgid "Edit"
+msgstr "編輯"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1850
+#: include/class.adminui.locations.php:2337
+msgid "Manage"
+msgstr "管理"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1965
+#: include/class.adminui.locations.php:1975
+#: include/class.adminui.mapsettings.php:93
+msgid "View"
+msgstr "查看"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1980
+msgid "edit"
+msgstr "編輯"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1983
+msgid "delete"
+msgstr "删除"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1985
+#, php-format
+msgid "Delete %s?"
+msgstr "删除%s？"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:2073
+msgid "No locations have been created yet."
+msgstr "尚未建立任何位置。"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:2074
+msgid "Search Locations returned no matches."
+msgstr "無符合位置。"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:2127
+msgid "Search"
+msgstr "查詢"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:2153
+msgid "Actions"
+msgstr "操作"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:2168
+msgid "City"
+msgstr "城市"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:2172
+msgid "State"
+msgstr "省"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:2176
+msgid "Zip"
+msgstr "郵編區號"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:2192
+msgid "Lat, Lon"
+msgstr "緯度，經度"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:63
+msgid " - User Experience"
+msgstr "- 使用者經驗"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:67
+msgid "Save Settings"
+msgstr "保存設定"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:212
+msgid "Auto set height unit to blank when height is 'auto !important'"
+msgstr "當高度設置為'auto !important'時，自動設置高度單位為空。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:217
+msgid "Auto set width unit to blank when width is 'auto !important'"
+msgstr "當寬度設置為'auto !important'時，自動設置寬度單位為空。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:324
+msgid "Look and Feel"
+msgstr "界面效果"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:328
+msgid "Map Height"
+msgstr "地圖高度"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:329
+msgid "The initial map height in pixels or percent of initial page height. "
+msgstr "地圖的像素高度或相對於頁面高度的比例。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:330
+msgid ""
+"Can also use rules like auto and inherit if Height Units is set to blank "
+msgstr "當高度單位為空時，也可設置高度為'auto'或'inherit'"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:339
+msgid "Height Units"
+msgstr "高度單位"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:340
+msgid "Is the width a percentage of page width or absolute pixel size? "
+msgstr "寬度是像素大小或相對於頁面的比例？"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:341
+msgid ""
+"Select blank to use CSS rules like auto or inherit in the Map Height setting."
+msgstr "當高度設定為'auto'或'inherit'等CSS規則時需選擇空。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:349
+msgid "Map Width"
+msgstr "地圖寬度"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:350
+msgid ""
+"The initial map width in pixels or percent of page width. Also sets results "
+"width."
+msgstr "地圖單位是像素寬度或相對於頁面的比例。同時需要調置寬度值。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:351
+msgid ""
+"Can also use rules like auto and inherit if Width Units is set to blank "
+msgstr "当宽度单位为空时，也可设置宽度为'auto'或'inherit'"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:359
+msgid "Width Units"
+msgstr "寬度單位"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:360
+msgid "Is the width a percentage of page width or absolute pixel size?"
+msgstr "寬度為像素大小或頁面相對比例？"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:361
+msgid ""
+"Select blank to use CSS rules like auto or inherit in the Map Width setting."
+msgstr "當寬度設定為'auto'或'inherit'等CSS規則時需選擇空。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:369
+msgid "Default Map Type"
+msgstr "默認地圖類型"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:370
+msgid "What style Google Map should we use?"
+msgstr "谷歌地圖風格？"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:376
+msgid "Remove Credits"
+msgstr "移除版權信息"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:377
+msgid "Remove the search provided by tagline under the map."
+msgstr "移除地圖下方標籤信息。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:384
+msgid "Center Map At"
+msgstr "地圖中心於"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:385
+msgid "Enter an address to serve as the initial focus for the map. "
+msgstr "輸入一個地址作為地圖的初始點。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:386
+msgid "Default is the center of the country."
+msgstr "默認於國家的中點。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:387
+msgid ""
+"Enhanced Map add-on must be installed to set per-page with center_map_at="
+"\"address\" shortcode. "
+msgstr "需要安裝加強地圖包，來使用[center_map_at=\"address\"]快捷碼。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:388
+msgid ""
+"Force JavaScript setting must be off when using the shortcode attribute. "
+msgstr "使用快捷碼屬性需要[強制JavaScript]設定為關。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:398
+msgid "Behavior"
+msgstr "行為"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:403
+msgid "Map Domain"
+msgstr "地圖域"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:417
+msgid "Map Language"
+msgstr "地圖語言"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:431
+msgid "Zoom Level"
+msgstr "放大比例"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:432
+msgid ""
+"Initial zoom level of the map if \"immediately show locations\" is NOT "
+"selected or if only a single location is found.  0 = world view, 19 = house "
+"view."
+msgstr ""
+"當[立即顯示位置]沒有被選擇或只查找到一個位置時的初始放大比例。 0為全球圖像，"
+"19為房屋圖像。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:440
+msgid "Zoom Adjustment"
+msgstr "放大比例調整"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:441
+msgid ""
+"Changes how tight auto-zoom bounds the locations shown.  Lower numbers are "
+"closer to the locations."
+msgstr "m默認放大級別，越小離指定位置越近。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:460
+msgid "Home Marker"
+msgstr "起始標記"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:468
+msgid "Destination Marker"
+msgstr "目標標記"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:476
+msgid "Saved markers live here: "
+msgstr "已儲存之標記："
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:484
+msgid "Map Features"
+msgstr "地圖特性"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:490
+msgid "Map Settings"
+msgstr "地圖設定"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:496
+msgid "Map Markers"
+msgstr "地圖標記"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:504
+msgid "Map"
+msgstr "地圖"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:522
+msgid "United States"
+msgstr "美國"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:523
+msgid "Argentina"
+msgstr "阿根廷"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:524
+msgid "Australia"
+msgstr "澳洲"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:525
+msgid "Austria"
+msgstr "奧地利"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:526
+msgid "Bahamas"
+msgstr "巴哈馬"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:527
+msgid "Belgium"
+msgstr "比利時"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:528
+msgid "Brazil"
+msgstr "巴西"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:529
+msgid "Canada"
+msgstr "加拿大"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:530
+msgid "Chile"
+msgstr "智利"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:531
+msgid "China"
+msgstr "中華人民共和國"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:532
+msgid "Czech Republic"
+msgstr "捷克共和國"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:533
+msgid "Denmark"
+msgstr "丹麥"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:534
+msgid "Estonia"
+msgstr "愛沙尼亞"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:535
+msgid "Finland"
+msgstr "芬蘭"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:536
+msgid "France"
+msgstr "法國"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:537
+msgid "Germany"
+msgstr "德國"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:538
+msgid "Greece"
+msgstr "希臘"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:539
+msgid "Hong Kong"
+msgstr "中國香港"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:540
+msgid "Hungary"
+msgstr "匈牙利"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:541
+msgid "India"
+msgstr "印度"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:542
+msgid "Philippines"
+msgstr "菲律賓"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:543
+msgid "Republic of Ireland"
+msgstr "愛爾蘭"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:544
+msgid "Israel"
+msgstr "以色列"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:545
+msgid "Italy"
+msgstr "意大利"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:546
+msgid "Japan"
+msgstr "日本"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:547
+msgid "Liechtenstein"
+msgstr "列支敦士登"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:548
+msgid "Lithuania"
+msgstr "立陶宛"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:549
+msgid "Mexico"
+msgstr "墨西哥"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:550
+msgid "Netherlands"
+msgstr "荷蘭"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:551
+msgid "New Zealand"
+msgstr "紐西蘭"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:552
+msgid "Norway"
+msgstr "挪威"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:553
+msgid "Poland"
+msgstr "波蘭"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:554
+msgid "Portugal"
+msgstr "葡萄牙"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:555
+msgid "Russia"
+msgstr "俄羅斯"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:556
+msgid "Singapore"
+msgstr "新加坡"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:557
+msgid "South Africa"
+msgstr "南非"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:558
+msgid "South Korea"
+msgstr "韓國"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:559
+msgid "Spain"
+msgstr "西班牙"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:560
+msgid "Sweden"
+msgstr "瑞典"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:561
+msgid "Switzerland"
+msgstr "i瑞士"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:562
+msgid "Taiwan"
+msgstr "台灣"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:563
+msgid "United Arab Emirates"
+msgstr "阿拉伯聯合酋長國"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:564
+msgid "United Kingdom"
+msgstr "英格蘭"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:579
+msgid "English"
+msgstr "英語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:580
+msgid "Arabic"
+msgstr "阿拉伯語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:581
+msgid "Basque"
+msgstr "巴斯克語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:582
+msgid "Bulgarian"
+msgstr "保加利亞語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:583
+msgid "Bengali"
+msgstr "孟加拉語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:584
+msgid "Catalan"
+msgstr "加泰羅尼亞語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:585
+msgid "Czech"
+msgstr "捷克語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:586
+msgid "Danish"
+msgstr "丹麥語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:587
+msgid "German"
+msgstr "德語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:588
+msgid "Greek"
+msgstr "希臘語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:589
+msgid "English (Australian)"
+msgstr "英語（澳）"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:590
+msgid "English (Great Britain)"
+msgstr "英語（英）"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:591
+msgid "Spanish"
+msgstr "西班牙語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:592
+#, fuzzy
+msgid "Farsi"
+msgstr "Farsi"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:593
+msgid "Finnish"
+msgstr "芬蘭語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:594
+msgid "Filipino"
+msgstr "菲律賓語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:595
+msgid "French"
+msgstr "法語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:596
+msgid "Galician"
+msgstr "加利西亞語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:597
+msgid "Gujarati"
+msgstr "古吉拉特語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:598
+msgid "Hindi"
+msgstr "北印度語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:599
+msgid "Croatian"
+msgstr "克羅地亞語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:600
+msgid "Hungarian"
+msgstr "匈牙利語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:601
+msgid "Indonesian"
+msgstr "印尼語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:602
+msgid "Italian"
+msgstr "意大利語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:603
+msgid "Hebrew"
+msgstr "希伯來語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:604
+msgid "Japanese"
+msgstr "日語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:605
+msgid "Kannada"
+msgstr "坎那達語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:606
+msgid "Korean"
+msgstr "韓語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:607
+msgid "Lithuanian"
+msgstr "立陶宛語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:608
+msgid "Latvian"
+msgstr "拉脫維亞語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:609
+msgid "Malayalam"
+msgstr "馬來語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:610
+msgid "Marathi"
+msgstr "馬拉地語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:611
+msgid "Dutch"
+msgstr "荷蘭語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:612
+msgid "Norwegian"
+msgstr "挪威語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:613
+msgid "Polish"
+msgstr "波蘭語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:614
+msgid "Portuguese"
+msgstr "葡萄牙語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:615
+msgid "Portuguese (Brazil)"
+msgstr "葡萄牙語（巴西）"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:616
+msgid "Portuguese (Portugal)"
+msgstr "葡萄牙語（葡萄牙）"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:617
+msgid "Romanian"
+msgstr "羅馬尼亞語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:618
+msgid "Russian"
+msgstr "俄語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:619
+msgid "Slovak"
+msgstr "斯洛伐克語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:620
+msgid "Slovenian"
+msgstr "斯洛維尼亞語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:621
+msgid "Serbian"
+msgstr "塞爾維亞語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:622
+msgid "Swedish"
+msgstr "瑞典語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:623
+msgid "Tagalog"
+msgstr "塔加拉族語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:624
+msgid "Tamil"
+msgstr "泰米爾語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:625
+msgid "Telugu"
+msgstr "泰盧固語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:626
+msgid "Thai"
+msgstr "泰國語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:627
+msgid "Turkish"
+msgstr "土耳其語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:628
+msgid "Ukrainian"
+msgstr "烏克蘭語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:629
+msgid "Vietnamese"
+msgstr "越南語"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:630
+msgid "Chinese (Simplified)"
+msgstr "漢語（簡體）"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:631
+msgid "Chinese (Traditional)"
+msgstr "漢語（正體）"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:681
+msgid "Successful Update"
+msgstr "更新成功"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:720
+#, php-format
+msgid "Your home marker %s cannot be located, please select a new one."
+msgstr "標記為起始的地址%s無法被定位，請設定一個新的標記。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:730
+#, php-format
+msgid "Your destination marker %s cannot be located, please select a new one."
+msgstr "標記為目標的地址%s無法被定位，請設定一個新的標記。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:783
+msgid "Search Results"
+msgstr "查詢結果"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:786
+msgid "Max Search Results"
+msgstr "查詢結果最大數"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:787
+msgid "How many locations does a search return? Default is 25."
+msgstr "查詢返回位置數？默認為25。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:793
+msgid "Immediately Show Locations"
+msgstr "立即顯示位置"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:794
+msgid ""
+"Display locations as soon as map loads, based on map center and default "
+"radius. "
+msgstr "地圖載入後，立即根據地圖中心與默認範圍顯示位置。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:801
+msgid "Number To Show Initially"
+msgstr "初始顯示數值"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:802
+msgid ""
+"How many locations should be shown when Immediately Show Locations is "
+"checked.  Recommended maximum is 50."
+msgstr "[立即顯示位置]被選擇後，顯示位置的個數。推薦最大為50。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:808
+msgid "Radius To Search Initially"
+msgstr "初始查詢範圍"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:809
+msgid ""
+"What should immediately show locations use as the default search radius? "
+"Leave empty to use map radius default or set to a large number like 25000 to "
+"search everywhere."
+msgstr ""
+"[立即顯示位置]使用的默認查詢範圍。空為地圖默認範圍，非常大的數值（25000）可用"
+"於查詢所有位置。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:811
+#, php-format
+msgid ""
+"Can be set with <a href=\"%s\" target=\"csa\">shortcode attribute "
+"initial_radius</a> if Force Load JavaScript is turned off."
+msgstr ""
+"如果[強制裝載JavaScript]被關閉，可以通過<a href=\"%s\" target=\"csa\">快捷碼"
+"屬性[initial_radius]</a>進行設置。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:827
+#: include/class.adminui.mapsettings.php:886
+msgid "Results Labels"
+msgstr "結果標籤"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:830
+msgid "Website URL"
+msgstr "網址"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:831
+msgid "Search results text for the website link."
+msgstr "網址連結的查詢結果文字。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:838
+msgid "Hours label."
+msgstr "時間標籤。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:845
+msgid "Phone label."
+msgstr "電話標籤。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:852
+msgid "Fax label."
+msgstr "傳真標籤。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:858
+#: include/class.adminui.mapsettings.php:861
+msgid "Directions"
+msgstr "方向"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:859
+msgid "Directions label."
+msgstr "方向標籤。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:865
+msgid "Instructions"
+msgstr "指示"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:866
+msgid ""
+"Search results instructions shown if immediately show locations is not "
+"selected."
+msgstr "如果[立即顯示位置]沒有被選擇，顯示搜尋結果指令。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:868
+msgid "Enter an address or zip code and click the find locations button."
+msgstr "輸入地址或郵遞區號，然後點擊查詢位置按鈕。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:880
+msgid "Results Features"
+msgstr "结果特性"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:896
+msgid "Results"
+msgstr "结果"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:913
+msgid "Search Features"
+msgstr "查詢特性"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:918
+msgid "Radii Options"
+msgstr "範圍選項"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:919
+msgid ""
+"Separate each number with a comma \",\". Put parenthesis \"( )\" around the "
+"default."
+msgstr "用逗號 \",\"分隔每個數值。在默認數值上加括號\"( )\"。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:925
+msgid "Distance Unit"
+msgstr "距離單位"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:929
+msgid "Kilometers"
+msgstr "公里"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:929
+#: include/class.ajax.mobilelistener.php:162 include/class.ajaxhandler.php:244
+msgid "km"
+msgstr "km"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:930
+msgid "Miles"
+msgstr "英里"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:930
+#: include/class.ajax.mobilelistener.php:162
+#: include/class.ajax.mobilelistener.php:234 include/class.ajaxhandler.php:244
+#: include/class.ui.php:629 include/class.ui.php:709
+msgid "miles"
+msgstr "英里"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:940
+msgid "Use Find Location Text Button"
+msgstr "使用[查找位置]文字按鈕"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:941
+msgid ""
+"Use a standard text button for \"Find Locations\" instead of the provided "
+"button images."
+msgstr "使用一個標准文字按鈕[查找位置]代替默認的圖像按鈕。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:957
+msgid "Search form address label."
+msgstr "查詢表單地址標籤。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:959
+msgid "Address / Zip"
+msgstr "地址或郵遞區號"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:963
+msgid "Radius"
+msgstr "範圍"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:964
+msgid "Search form radius label."
+msgstr "從表單範圍標籤查詢。"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:966 include/class.ui.php:274
+msgid "Within"
+msgstr "位於之內"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:974
+msgid "Search Labels"
+msgstr "查詢標籤"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:981
+msgid "Search Form"
+msgstr "查詢表單"
+
+# @ csa-slplus
+#: include/class.adminui.php:84
+msgid "Navigation"
+msgstr "導航"
+
+# @ csa-slplus
+#: include/class.adminui.php:101
+msgid "How to Use"
+msgstr "如何使用"
+
+# @ csa-slplus
+#: include/class.adminui.php:314
+#, php-format
+msgid "Could not read icon directory %s"
+msgstr "無法讀取圖標目錄%s"
+
+# @ csa-slplus
+#: include/class.ajax.mobilelistener.php:106
+msgid "no latitude passed"
+msgstr "無緯度"
+
+# @ csa-slplus
+#: include/class.ajax.mobilelistener.php:110
+msgid "no longitude passed"
+msgstr "無經度"
+
+# @ csa-slplus
+#: include/class.ajaxhandler.php:350
+msgid "renderJSON_Response did not get an array()"
+msgstr "[renderJSON_Response]無返回數組"
+
+# @ csa-slplus
+#: include/class.csvimport.php:159
+msgid "Import file name not set."
+msgstr "無設置導入文件名。"
+
+# @ csa-slplus
+#: include/class.csvimport.php:166
+msgid "Import file was empty."
+msgstr "導入文件為空。"
+
+# @ csa-slplus
+#: include/class.csvimport.php:175
+msgid "Uploaded file needs to be in CSV format."
+msgstr "上載的文件需為CSV格式。"
+
+# @ csa-slplus
+#: include/class.csvimport.php:176
+#, php-format
+msgid "Type was %s."
+msgstr "類型為%s。"
+
+# @ csa-slplus
+#: include/class.csvimport.php:199
+msgid "Could not open CSV file for processing."
+msgstr "無法打開CSV文件。"
+
+# @ csa-slplus
+#: include/class.csvimport.php:274
+msgid " processed."
+msgstr "處理完成。"
+
+# @ csa-slplus
+#: include/class.location.php:203
+msgid "draft"
+msgstr "草稿"
+
+# @ csa-slplus
+#: include/class.location.php:268
+msgid "Could not create or update the custom page for this location."
+msgstr "無法對此位置建立或更新訂製頁面。"
+
+# @ csa-slplus
+#: include/class.location.php:482
+#, php-format
+msgid "Could not add %s as a new location"
+msgstr "無法新增位置%s。"
+
+# @ csa-slplus
+#: include/class.ui.php:390
+#, php-format
+msgid "search provided by %s"
+msgstr "%s提供的查詢"
+
+# @ csa-slplus
+#: include/class.ui.php:403
+msgid "Enter Your Address or Zip Code Above."
+msgstr "輸入你的地址或郵遞區號。"
+
+# @ csa-slplus
+#: include/class.ui.php:510
+#, php-format
+msgid "%s is not ready"
+msgstr "%s尚未準備好"
+
+# @ csa-slplus
+#. translators: plugin header field 'Name'
+#: include/class.ui.php:510 store-locator-le.php:0 store-locator-le.php:169
+msgid "Store Locator Plus"
+msgstr "Store Locator Plus"
+
+# @ wpcsl
+#: lib/class.notifications.php:89
+msgid "needs attention"
+msgstr "注意"
+
+# @ wpcsl
+#: lib/class.notifications.php:128
+msgid "wants you to know"
+msgstr "需知"
+
+# @ wpcsl
+#: lib/class.notifications.php:140
+#, php-format
+msgid "<p><strong><a href=\"%s\">%s</a> %s: </strong>"
+msgstr "<p><strong><a href=\"%s\">%s</a> %s: </strong>"
+
+# @ wpcsl
+#: lib/class.plugin.php:460 lib/class.plugin.php:461
+msgid "Support"
+msgstr "支持"
+
+# @ wpcsl
+#: lib/class.plugin.php:464
+msgid "Purchase"
+msgstr "購買"
+
+# @ wpcsl
+#: lib/class.plugin.php:465
+msgid "Buy Now"
+msgstr "現在購買"
+
+# @ csa-slplus
+#: lib/class.plugin.php:488
+#, php-format
+msgid "The %s method is no longer available. "
+msgstr "方法%s不存在。"
+
+# @ csa-slplus
+#: lib/class.plugin.php:492
+msgid "It is likely that one of your add-on pack is out of date. "
+msgstr "附加包已過期。"
+
+# @ csa-slplus
+#: lib/class.plugin.php:496
+#, php-format
+msgid ""
+"You need to <a href=\"%s\" target=\"csa\">upgrade</a> to the latest %s "
+"compatible version or <a href=\"%s\" target=\"csa\">downgrade</a> the %s "
+"plugin."
+msgstr ""
+"需<a href=\"%s\" target=\"csa\">更新</a>%s到最新兼容版本或<a href=\"%s\" "
+"target=\"csa\">降級</a>%s插件。"
+
+# @ wpcsl
+#: lib/class.plugin.php:607
+#, php-format
+msgid "%s has been deactivated."
+msgstr "%s尚未激活。"
+
+# @ wpcsl
+#: lib/class.plugin.php:613
+#, php-format
+msgid "You have %s version %s."
+msgstr "安装%s，版本%s。"
+
+# @ wpcsl
+#: lib/class.plugin.php:619
+#, php-format
+msgid "You need version %s or greater for this version of %s."
+msgstr "需升級到版本%s或更高來使用這個版本的%s。"
+
+# @ wpcsl
+#: lib/class.plugin.php:625
+#, php-format
+msgid "Please install an older version of %s or upgrade."
+msgstr "請安裝舊版本的%s或升級。"
+
+# @ wpcsl
+#: lib/class.plugin.php:630
+#, php-format
+msgid ""
+"Upgrading major versions of %s requires paid upgrades to all related add-on "
+"packs."
+msgstr "升級%s的主版本需要升級所有相關擴展包。"
+
+# @ wpcsl
+#: lib/class.settings.php:75
+msgid "Save Changes"
+msgstr "保存"
+
+# @ wpcsl
+#: lib/class.settings.php:368
+#, php-format
+msgid "Program Error: section <em>%s</em> not defined."
+msgstr "程序錯誤：<em>%s</em>沒有定義。"
+
+# @ wpcsl
+#: lib/class.settings.php:1169
+msgid "ON"
+msgstr "開啟"
+
+# @ wpcsl
+#: lib/class.settings.php:1170
+msgid "OFF"
+msgstr "關閉"
+
+# @ wpcsl
+#: lib/class.themes.admin.php:118
+msgid "About This Theme"
+msgstr "關於此主題"
+
+# @ wpcsl
+#: lib/class.themes.admin.php:120
+msgid "No description has been set for this theme."
+msgstr "主題無相關描述。"
+
+# @ wpcsl
+#: lib/class.themes.admin.php:132
+msgid "Add On Packs"
+msgstr "擴展包"
+
+# @ wpcsl
+#: lib/class.themes.admin.php:133
+msgid "Works best with the following add-on packs enabled: "
+msgstr "啟動以下擴展包以獲得更佳效果："
+
+# @ wpcsl
+#: lib/class.themes.admin.php:175
+msgid "Preferred Settings"
+msgstr "優先設定"
+
+# @ wpcsl
+#: lib/class.themes.admin.php:176
+msgid "The following settings will make the most of this theme: "
+msgstr "以下為主題相關設定："
+
+# @ wpcsl
+#: lib/class.themes.admin.php:195
+msgid ""
+"Settings have been made. Click Save Settings to activate or the User "
+"Exprience tab to cancel."
+msgstr "設定完成，點擊儲存生效，點擊使用者體驗取消。"
+
+# @ wpcsl
+#: lib/class.themes.admin.php:201
+msgid "Set Options"
+msgstr "設置選項"
+
+# @ wpcsl
+#: lib/class.themes.admin.php:249
+#, php-format
+msgid "The theme directory:<br/>%s<br/>is missing. "
+msgstr "主題目錄:<br/>%s<br/>不存在"
+
+# @ wpcsl
+#: lib/class.themes.admin.php:250
+msgid "Create it to enable themes and get rid of this message."
+msgstr "建立以啟動主題並屏蔽此信息。"
+
+# @ wpcsl
+#: lib/class.themes.admin.php:314
+msgid "Select A Theme"
+msgstr "選擇主題"
+
+# @ wpcsl
+#: lib/class.themes.admin.php:320
+msgid "How should the plugin UI elements look?  "
+msgstr "界面元素應看起來如何？"
+
+# @ wpcsl
+#: lib/class.themes.admin.php:322
+#, php-format
+msgid ""
+"Learn more in the <a href=\"%s\" target=\"csa\">online documentation</a>."
+msgstr "線上參考文件：<a href=\"%s\" target=\"csa\"></a>。"
+
+# @ csa-slplus
+#. translators: plugin header field 'PluginURI'
+#: store-locator-le.php:0
+msgid "http://www.storelocatorplus.com/product-category/slplus/"
+msgstr "http://www.storelocatorplus.com/product-category/slplus/"
+
+# @ csa-slplus
+#. translators: plugin header field 'Description'
+#: store-locator-le.php:0
+msgid ""
+"Manage multiple locations with ease. Map stores or other points of interest "
+"with ease via Google Maps.  This is a highly customizable, easily "
+"expandable, enterprise-class location management system."
+msgstr ""
+"通過谷歌地圖方便的管理多個銷售點或其它地點的位置。此為客製化、擴展性強的企業"
+"級位置管理系統。"
+
+# @ csa-slplus
+#. translators: plugin header field 'Author'
+#: store-locator-le.php:0
+#, fuzzy
+msgid "Charleston Software Associates"
+msgstr "Charleston 軟件聯盟"
+
+# @ csa-slplus
+#. translators: plugin header field 'AuthorURI'
+#: store-locator-le.php:0
+msgid "http://www.storelocatorplus.com"
+msgstr "http://www.storelocatorplus.com"
+
+# @ csa-slplus
+#. translators: plugin header field 'Version'
+#: store-locator-le.php:0
+msgid "4.1.00"
+msgstr "4.1.00"
