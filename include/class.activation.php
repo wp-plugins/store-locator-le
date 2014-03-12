@@ -436,7 +436,11 @@ class SLPlus_Activate {
                 
                 // Deactivate Super Extendo
                 //
-                deactivate_plugins('slp-super-extendo/slp-extendo.php');
+                include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+                if ( function_exists('deactivate_plugins') ) {
+                    deactivate_plugins('slp-super-extendo/slp-extendo.php');
+                }
+
             }
 
             // Save Serialized Options
