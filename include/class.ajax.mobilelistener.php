@@ -188,27 +188,10 @@ if (! class_exists('csl_mobile_listener')) {
 		            if (!$result) {
 			            $this->Respond( false, 'Invalid query: ' . mysql_error() . '- '.$query);
 		            }
-
-		            // Reporting
-		            // Insert the query into the query DB
-		            // 
-		            if (get_option(SLPLUS_PREFIX.'-reporting_enabled') === 'on') {
-			            $qry = sprintf(                                              
-					            "INSERT INTO ${dbPrefix}slp_rep_query ". 
-							               "(slp_repq_query,slp_repq_tags,slp_repq_address,slp_repq_radius) ". 
-						            "values ('%s','%s','%s','%s')",
-						            mysql_real_escape_string($_SERVER['QUERY_STRING']),
-						            mysql_real_escape_string($this->tags),
-						            mysql_real_escape_string($_POST['address']),
-						            mysql_real_escape_string($this->radius)
-					            );
-			            $wpdb->query($qry);
-			            $slp_QueryID = mysql_insert_id();
-		            }
 		
 		            // Start the response string
 		            $response = array();
-		
+					$resultRowids = array();
 		            // Iterate through the rows, printing XML nodes for each
 		            while ($row = @mysql_fetch_assoc($result)){
 			            // ADD to array of markers
@@ -236,27 +219,19 @@ if (! class_exists('csl_mobile_listener')) {
 				            'distance' => $row['sl_distance'],
 				            'tags' => esc_attr($row['sl_tags'])
 			            );
-			            $response[] = $marker;
+						$response[] = $marker;
+						$resultRowids[] = $row['sl_id'];
 			
-			            // Reporting
-			            // Insert the results into the reporting table
-			            //
-			            if (get_option(SLPLUS_PREFIX.'-reporting_enabled') === "on") {
-				            $wpdb->query(
-					            sprintf(
-						            "INSERT INTO ${dbPrefix}slp_rep_query_results 
-							            (slp_repq_id,sl_id) values (%d,%d)",
-							            $slp_QueryID,
-							            $row['sl_id']  
-						            )
-					            );           
-			            }
-		            }
-		
-		            //if (count($response) > 1) {
-		            //	break;
-		            //}
-	            //}
+					}
+					// Do report work
+					//
+					$queryParams = array();
+					$queryParams['QUERY_STRING'] = $_SERVER['QUERY_STRING'];
+		            $queryParams['tags'] = $this->tags;
+		            $queryParams['address'] = $_POST['address'];
+					$queryParams['radius'] = $this->radius;
+
+					do_action('slp_report_query_result', $queryParams, $resultRowids);
 
 	            $this->Respond(true, $response);
             }

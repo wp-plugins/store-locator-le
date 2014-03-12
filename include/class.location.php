@@ -287,7 +287,11 @@ class SLPlus_Location {
         if (property_exists($this, $property)) {
             return $this->$property;
         }
-        if ($this->plugin->is_Extended() && isset($this->exdata[$property])) {
+        if (
+            $this->plugin->database->is_Extended()                  &&
+            $this->plugin->database->extension->has_ExtendedData()  &&
+            isset($this->exdata[$property])
+            ) {
             return $this->exdata[$property];
         }
         return null;
@@ -552,7 +556,11 @@ class SLPlus_Location {
         // Extended Data, allow property as long as it does not conflict
         // with a built-in property.
         //
-        if ($this->plugin->is_Extended() && !property_exists($this,$property)) {
+        if (
+            $this->plugin->database->is_Extended()                  &&
+            $this->plugin->database->extension->has_ExtendedData()  &&
+            ! property_exists($this,$property)
+            ) {
             $this->exdata[$property] = $value;
         }
         return $this;
@@ -616,8 +624,6 @@ class SLPlus_Location {
                 //
                 $ssd_value = stripslashes_deep($value);
                 if ($this->$property != $ssd_value ) {
-                    $debug_message = empty($this->property)?"set to {$value}":"changed {$this->$property} to {$value} ";
-                    $this->debugMP('msg','',"{$property}: {$debug_message}");
                     $this->$property = $ssd_value;
                     $this->plugin->currentLocation->dataChanged = true;
                 }

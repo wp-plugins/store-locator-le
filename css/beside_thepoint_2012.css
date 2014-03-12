@@ -1,15 +1,83 @@
-/**
- ** file: beside_thepoint_2012.css
- ** label: Beside The Point 2012
+/** file: beside_thepoint_2012.css
+ ** label: Beside The Point 2012 (A)
  ** description: Search On Left Side, 2012 Compatible
  ** add-ons: slp-pro
- ** csl-slplus-layout: <div id="sl_div"><div id="sl_leftcol">[slp_search]<div id="sl_arrow_container"><div id="sl_search_arrow"></div></div>[slp_results]</div><div id="sl_rightcol">[slp_map]</div></div>
+ ** Pro Pack Locator Layout: <div id="sl_div"><div id="sl_leftcol">[slp_search]<div id="sl_arrow_container"><div id="sl_search_arrow"></div></div>[slp_results]</div><div id="sl_rightcol">[slp_map]</div></div>
+ ** Enhanced Map Bubble Layout: <div id="sl_info_bubble" class="[slp_location featured]"><span id="slp_bubble_name"><strong>[slp_location name  suffix  br]</strong></span><span id="slp_bubble_address">[slp_location address       suffix  br]</span><span id="slp_bubble_address2">[slp_location address2      suffix  br]</span><span id="slp_bubble_city">[slp_location city          suffix  comma]</span><span id="slp_bubble_state">[slp_location state suffix    space]</span><span id="slp_bubble_zip">[slp_location zip suffix  br]</span><span id="slp_bubble_country"><span id="slp_bubble_country">[slp_location country       suffix  br]</span></span><span id="slp_bubble_directions">[html br ifset directions][slp_option label_directions wrap directions]</span><span id="slp_bubble_website">[html br ifset url][slp_location url           wrap    website][slp_option label_website ifset url][html closing_anchor ifset url][html br ifset url]</span><span id="slp_bubble_email">[slp_location email         wrap    mailto ][slp_option label_email ifset email][html closing_anchor ifset email][html br ifset email]</span><span id="slp_bubble_phone">[html br ifset phone]<span class="location_detail_label">[slp_option   label_phone   ifset   phone]</span>[slp_location phone         suffix    br]</span><span id="slp_bubble_fax"><span class="location_detail_label">[slp_option   label_fax     ifset   fax  ]</span>[slp_location fax           suffix    br]<span><span id="slp_bubble_description"><span id="slp_bubble_description">[html br ifset description][slp_location description raw]</span>[html br ifset description]</span><span id="slp_bubble_hours">[html br ifset hours]<span class="location_detail_label">[slp_option   label_hours   ifset   hours]</span><span class="location_detail_hours">[slp_location hours         suffix    br]</span></span><span id="slp_bubble_img">[html br ifset img][slp_location image         wrap    img]</span><span id="slp_tags">[slp_location tags]</span></div>
+ ** Enhanced Results Results Layout: <div id="slp_results_[slp_location id]" class="results_entry  [slp_location featured]"><div class="results_row_left_column"   id="slp_left_cell_[slp_location id]"   ><span class="location_name">[slp_location name]</span><span class="location_distance">[slp_location distance_1] [slp_location distance_unit]</span></div><div class="results_row_center_column" id="slp_center_cell_[slp_location id]" ><span class="slp_result_address slp_result_street">[slp_location address]</span><span class="slp_result_address slp_result_street2">[slp_location address2]</span><span class="slp_result_address slp_result_citystatezip">[slp_location city_state_zip]</span><span class="slp_result_address slp_result_country">[slp_location country]</span><span class="slp_result_address slp_result_phone">[slp_location phone]</span><span class="slp_result_address slp_result_fax">[slp_location fax]</span></div><div class="results_row_right_column"  id="slp_right_cell_[slp_location id]"  ><span class="slp_result_contact slp_result_website">[slp_location web_link]</span><span class="slp_result_contact slp_result_email">[slp_location email_link]</span><span class="slp_result_contact slp_result_directions"><a href="http://[slp_location map_domain]/maps?saddr=[slp_location search_address]&daddr=[slp_location location_address]" target="_blank" class="storelocatorlink">[slp_location directions_text]</a></span><span class="slp_result_contact slp_result_hours">[slp_location hours]</span>[slp_location iconarray wrap="fullspan"]</div></div>
+ ** Enhanced Search Search Layout: <div id="address_search">[slp_search_element input_with_label="name"][slp_search_element input_with_label="address"][slp_search_element dropdown_with_label="city"][slp_search_element dropdown_with_label="state"][slp_search_element dropdown_with_label="country"][slp_search_element selector_with_label="tag"][slp_search_element dropdown_with_label="category"]<div class="search_item">[slp_search_element dropdown_with_label="radius"][slp_search_element button="submit"]</div></div>
+ **
  ** sl_load_locations_default: true
  ** initial_results_returned: 25
  ** sl_search_label: Zip
  ** csl-slplus_find_button_label: Search
- **
  **/
+
+
+/**
+ * General - All areas
+ **/
+
+/* Slider from proto.io/freebies/onoff/
+*/
+.onoffswitch-block {
+    display: inline-block;
+    float: right;
+    margin-right: 8px;
+}
+.onoffswitch-pretext {
+    display: inline-block;
+    padding-right: 12px;
+    vertical-align: super;
+}
+    .onoffswitch {
+    display: inline-block;
+    position: relative; width: 56px;
+    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+    }
+    .onoffswitch-checkbox {
+    display: none;
+    }
+    .onoffswitch-label {
+    display: block; overflow: hidden; cursor: pointer;
+    border: 2px solid #999999; border-radius: 20px;
+    }
+    .onoffswitch-inner {
+    width: 200%; margin-left: -100%;
+    -moz-transition: margin 0.3s ease-in 0s; -webkit-transition: margin 0.3s ease-in 0s;
+    -o-transition: margin 0.3s ease-in 0s; transition: margin 0.3s ease-in 0s;
+    }
+    .onoffswitch-inner:before, .onoffswitch-inner:after {
+    float: left; width: 50%; height: 17px; padding: 0; line-height: 17px;
+    font-size: 10px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+    }
+    .onoffswitch-inner:before {
+    content: "ON";
+    padding-left: 8px;
+    background-color: #2FCCFF; color: #FFFFFF;
+    }
+    .onoffswitch-inner:after {
+    content: "OFF";
+    padding-right: 8px;
+    background-color: #EEEEEE; color: #999999;
+    text-align: right;
+    }
+    .onoffswitch-switch {
+    width: 8px; margin: 4.5px;
+    background: #FFFFFF;
+    border: 2px solid #999999; border-radius: 20px;
+    position: absolute; top: 0; bottom: 0; right: 35px;
+    -moz-transition: all 0.3s ease-in 0s; -webkit-transition: all 0.3s ease-in 0s;
+    -o-transition: all 0.3s ease-in 0s; transition: all 0.3s ease-in 0s;
+    }
+    .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+    margin-left: 0;
+    }
+    .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+    right: 0px;
+    }
+
 
 /*---------------------
  * WordPress Tweaks
@@ -24,7 +92,7 @@
  *---------------------*/
 div#sl_div {
     display: block;
-    height: 520px;
+    min-height: 650px;
     position: relative;
     width: 100%;
 }
@@ -49,7 +117,7 @@ div#sl_rightcol {
     top: 0;
     right: 0;
     padding: 0px;
-    height: 400px;
+    height: 100%;
     width: 66%;
 }
 
@@ -149,11 +217,20 @@ form#searchForm td
     padding: 0px;
     width: 100%;
 }
+form#searchForm         #div_nameSearch,
+div#slpw_searchform     #div_nameSearch,
 form#searchForm         #addy_in_address,
-div#slpw_searchform     #addy_in_address
+div#slpw_searchform     #addy_in_address,
+form#searchForm         #addy_in_city,
+div#slpw_searchform     #addy_in_city,
+form#searchForm         #addy_in_state,
+div#slpw_searchform     #addy_in_state,
+form#searchForm         #addy_in_country,
+div#slpw_searchform     #addy_in_country,
+form#searchForm         #tagalong_category_selector,
+div#slpw_searchform     #tagalong_category_selector
 {
     padding-bottom: 6px;
-    text-align: center;
 }
 form#searchForm         LABEL,
 div#slpw_searchform     LABEL
@@ -161,7 +238,7 @@ div#slpw_searchform     LABEL
     display: inline-block;
     padding-right: 6px;
     text-align: right;
-    width: 44px;
+    width: 70px;
 }
 form#searchForm         INPUT,
 div#slpw_searchform     INPUT
@@ -171,6 +248,7 @@ div#slpw_searchform     INPUT
 form#searchForm         SELECT,
 div#slpw_searchform     SELECT
 {
+    display: inline-block;
     padding-right: 3px;
 }
 input#addressInput {
@@ -179,14 +257,22 @@ input#addressInput {
     display: inline;
     height: 18px;
     padding: 0 5px;
-    width: 134px;
+    width: 205px;
 }
+input#nameSearch {
+    border: 1px solid #C0C0C0;
+    border-radius: 3px 3px 3px 3px;
+    display: inline;
+    height: 18px;
+    padding: 0 5px;
+    width: 205px;
+}
+
 div#addy_in_radius,
 div#slpw_submitline
 {
     display: block;
     padding-top: 6px;
-    text-align: center;
 }
 div#radius_in_submit {
     display: block;
@@ -222,7 +308,7 @@ div#slpw_resultsbox #slpw_results
     background-color: #EDEDED;
     border-top: 1px solid #E4E4E4;
     box-shadow: 0 3px 4px rgba(0, 0, 0, 0.5);
-    height: 332px;
+    max-height: 332px;
     overflow: auto;
 }
 div#slpw_resultsbox #slpw_results {
@@ -249,6 +335,10 @@ div#slpw_resultsbox .results_entry:hover
     background: linear-gradient(to bottom, #eeeeee 0%,#ffffff 45%,#ffffff 61%,#eeeeee 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#eeeeee',GradientType=0 ); /* IE6-9 */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#eeeeee), color-stop(45%,#ffffff), color-stop(61%,#ffffff), color-stop(100%,#eeeeee)); /* Chrome,Safari4+ */
+}
+
+div.no_results_found {
+    margin-left: 6px;
 }
 
 div#map_sidebar     .results_row_left_column,
@@ -302,11 +392,6 @@ span.location_distance
     height: auto;
     width: auto;
 }
-#tagalong_category_selector {
-    display: block;
-    height: 2em;
-    width: 100%;
-}
 #tagalong_category_selector .category_selector.parent {
     display: block;
     float: left;
@@ -329,4 +414,9 @@ span.location_distance
     display: inline-block;
     margin-bottom: 12px;
     min-width: 190px;
+}
+
+/* Make the icon array appear on its own line */
+.results_line.location_iconarray {
+    display: block;
 }

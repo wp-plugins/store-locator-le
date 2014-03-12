@@ -1,10 +1,12 @@
-/**
- ** file: default.css
- ** label: Default Theme
- ** description: The default SLPLUS Theme.  Works with Enhanced Results + Super Extendo featured listings.
- **
+/** file: default.css
+ ** label: Default Theme (A)
+ ** description: The default SLPLUS Theme.  Search form on top of the map on top of the results.  Add on packs listed will be set back to the default layout settings when using set options and save settings.  Add on packs are not required for this theme to function properly.
+ ** add-ons: slp-pro,slp-enhanced-map,slp-enhanced-results,slp-enhanced-search
+ ** Pro Pack Locator Layout: <div id="sl_div">[slp_search][slp_map][slp_results]</div>
+ ** Enhanced Map Bubble Layout: <div id="sl_info_bubble" class="[slp_location featured]"><span id="slp_bubble_name"><strong>[slp_location name  suffix  br]</strong></span><span id="slp_bubble_address">[slp_location address       suffix  br]</span><span id="slp_bubble_address2">[slp_location address2      suffix  br]</span><span id="slp_bubble_city">[slp_location city          suffix  comma]</span><span id="slp_bubble_state">[slp_location state suffix    space]</span><span id="slp_bubble_zip">[slp_location zip suffix  br]</span><span id="slp_bubble_country"><span id="slp_bubble_country">[slp_location country       suffix  br]</span></span><span id="slp_bubble_directions">[html br ifset directions][slp_option label_directions wrap directions]</span><span id="slp_bubble_website">[html br ifset url][slp_location url           wrap    website][slp_option label_website ifset url][html closing_anchor ifset url][html br ifset url]</span><span id="slp_bubble_email">[slp_location email         wrap    mailto ][slp_option label_email ifset email][html closing_anchor ifset email][html br ifset email]</span><span id="slp_bubble_phone">[html br ifset phone]<span class="location_detail_label">[slp_option   label_phone   ifset   phone]</span>[slp_location phone         suffix    br]</span><span id="slp_bubble_fax"><span class="location_detail_label">[slp_option   label_fax     ifset   fax  ]</span>[slp_location fax           suffix    br]<span><span id="slp_bubble_description"><span id="slp_bubble_description">[html br ifset description][slp_location description raw]</span>[html br ifset description]</span><span id="slp_bubble_hours">[html br ifset hours]<span class="location_detail_label">[slp_option   label_hours   ifset   hours]</span><span class="location_detail_hours">[slp_location hours         suffix    br]</span></span><span id="slp_bubble_img">[html br ifset img][slp_location image         wrap    img]</span><span id="slp_tags">[slp_location tags]</span></div>
+ ** Enhanced Results Results Layout: <div id="slp_results_[slp_location id]" class="results_entry  [slp_location featured]"><div class="results_row_left_column"   id="slp_left_cell_[slp_location id]"   ><span class="location_name">[slp_location name]</span><span class="location_distance">[slp_location distance_1] [slp_location distance_unit]</span></div><div class="results_row_center_column" id="slp_center_cell_[slp_location id]" ><span class="slp_result_address slp_result_street">[slp_location address]</span><span class="slp_result_address slp_result_street2">[slp_location address2]</span><span class="slp_result_address slp_result_citystatezip">[slp_location city_state_zip]</span><span class="slp_result_address slp_result_country">[slp_location country]</span><span class="slp_result_address slp_result_phone">[slp_location phone]</span><span class="slp_result_address slp_result_fax">[slp_location fax]</span></div><div class="results_row_right_column"  id="slp_right_cell_[slp_location id]"  ><span class="slp_result_contact slp_result_website">[slp_location web_link]</span><span class="slp_result_contact slp_result_email">[slp_location email_link]</span><span class="slp_result_contact slp_result_directions"><a href="http://[slp_location map_domain]/maps?saddr=[slp_location search_address]&daddr=[slp_location location_address]" target="_blank" class="storelocatorlink">[slp_location directions_text]</a></span><span class="slp_result_contact slp_result_hours">[slp_location hours]</span>[slp_location iconarray wrap="fullspan"]</div></div>
+ ** Enhanced Search Search Layout: <div id="address_search">[slp_search_element input_with_label="name"][slp_search_element input_with_label="address"][slp_search_element dropdown_with_label="city"][slp_search_element dropdown_with_label="state"][slp_search_element dropdown_with_label="country"][slp_search_element selector_with_label="tag"][slp_search_element dropdown_with_label="category"]<div class="search_item">[slp_search_element dropdown_with_label="radius"][slp_search_element button="submit"]</div></div>
  **/
-
 
 /**
  * General - All areas
@@ -138,16 +140,16 @@
 	clear: both;
     display: block;
 	float: none;
-    padding-bottom: 6px;
-    vertical-align: middle;
+     vertical-align: middle;
 }
 #searchForm LABEL {
     text-align: right;
     min-width: 100px;
+    width: 25%;
     font-size: 14px;
-    display:block;
-    float: left;
+    display: inline-block;
     padding-right: 8px;
+    vertical-align: top;
 }
 #searchForm SELECT {
 	margin:0px 6px 0px 0px;
@@ -155,19 +157,23 @@
 #searchForm INPUT {
 	border:solid 1px silver;
 	color: black;
-	margin:0px 6px 0px 0px;
-	padding-left:3px; 
-	padding-top:0px;
+    width: 70%;
 }
 
 /* Radius */
 #addy_in_radius {
     display: inline-block;
+    vertical-align: top;
+    width: 50%;
+}
+#searchForm #addy_in_radius LABEL {
+    width: 50%;
 }
 
 /* Submit Button */
 #radius_in_submit {
     display: inline-block;
+    margin-bottom: 0.5em;
 }
 #addressSubmit.slp_ui_button {
     /* like-a-button */
@@ -178,7 +184,6 @@
     text-decoration: none;
 
     border: 1px solid #BBBBBB;
-    padding: 0px 4px;
     text-align: center;
     cursor: pointer;
     color: #5F5E5E;
@@ -226,13 +231,17 @@ span.slp_checkbox_entry input[type="checkbox"] {
 
 /* Tagalong Search Inputs */
 #tagalong_category_selector {
-    display: block;
+    display: inline-block;
     height: 2em;
     width: 100%;
 }
 #tagalong_category_selector .category_selector.parent {
     display: block;
     float: left;
+}
+#tagalong_cascade_dropdowns {
+    display: inline-block;
+    position: relative;
 }
 #tagalong_category_selector .category_selector.child {
     display: none;

@@ -1,146 +1,6 @@
-/*--------------------------
- * WordPress Overrides
- *--------------------------*/
-#wpbody-content {
-    width: auto;
-}
-
-/*--------------------------
- * WordPress Overrides
- *--------------------------*/
-
-/* Slider from proto.io/freebies/onoff/
-*/
-.onoffswitch-block {
-    display: inline-block;
-    float: right;
-    margin-right: 8px;
-}
-.onoffswitch-pretext {
-    display: linline-block;
-    padding-right: 12px;
-    vertical-align: super;
-}
-    .onoffswitch {
-    display: inline-block;
-    position: relative; width: 56px;
-    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
-    }
-    .onoffswitch-checkbox {
-    display: none;
-    }
-    .onoffswitch-label {
-    display: block; overflow: hidden; cursor: pointer;
-    border: 2px solid #999999; border-radius: 20px;
-    }
-    .onoffswitch-inner {
-    width: 200%; margin-left: -100%;
-    -moz-transition: margin 0.3s ease-in 0s; -webkit-transition: margin 0.3s ease-in 0s;
-    -o-transition: margin 0.3s ease-in 0s; transition: margin 0.3s ease-in 0s;
-    }
-    .onoffswitch-inner:before, .onoffswitch-inner:after {
-    float: left; width: 50%; height: 17px; padding: 0; line-height: 17px;
-    font-size: 10px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
-    -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
-    }
-    .onoffswitch-inner:before {
-    padding-left: 8px;
-    background-color: #2FCCFF; color: #FFFFFF;
-    }
-    .onoffswitch-inner:after {
-    padding-right: 8px;
-    background-color: #EEEEEE; color: #999999;
-    text-align: right;
-    }
-    .onoffswitch-switch {
-    width: 8px; margin: 4.5px;
-    background: #FFFFFF;
-    border: 2px solid #999999; border-radius: 20px;
-    position: absolute; top: 0; bottom: 0; right: 35px;
-    -moz-transition: all 0.3s ease-in 0s; -webkit-transition: all 0.3s ease-in 0s;
-    -o-transition: all 0.3s ease-in 0s; transition: all 0.3s ease-in 0s;
-    }
-    .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
-    margin-left: 0;
-    }
-    .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
-    right: 0px;
-    }
-    
-/*----------------------------------
- *
- * A div that looks like a button. 
- */
-.like-a-button {
-	background: #FFF; /* for non-css3 browsers */
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD'); /* for IE */
-    background: -webkit-gradient(linear, left top, left bottom, from(#FFF), to(#DDD)); /* for webkit browsers */
-    background: -moz-linear-gradient(top,  #FFF,  #DDD); /* for firefox 3.6+ */
-    text-decoration: none;
-  
-  border: 1px solid #BBBBBB;
-  border-radius: 3px 3px 3px 3px;
-  margin: 6px;
-  padding: 3px;
-  text-align: center;
-  width: 150px;
-  cursor: pointer;
-  color: #5F5E5E;
-  display: block;
-  
-  /* Corners */
-  -webkit-border-radius:6px;
-  -moz-border-radius:6px;
-  border-radius:6px;
-   -khtml-border-radius: 6px;
-   
-   /* Shadow */
-   -moz-box-shadow: 0px 1px 3px #AAA;
-   -webkit-box-shadow: 0px 1px 3px #AAA;
-   box-shadow: 0px 1px 3px #AAA;   
-}
-.like-a-button:hover {
-	background: #DDD; /* for non-css3 browsers */
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF'); /* for IE */
-    background: -webkit-gradient(linear, left top, left bottom, from(#DDD), to(#FFF)); /* for webkit browsers */
-    background: -moz-linear-gradient(top,  #DDD,  #FFF); /* for firefox 3.6+ */  
-}
-.like-a-button A {
-    text-decoration:none;
-}
-
-/*----------------------------------
- * WPCSL Magic
- */
- div.debugging {
-     margin: 12px;
-     padding: 6px;
-     background-color: #EEE;
-     border: solid 1px #888;
-     font-family: "Courier", sans-serif;
- }
- div.debugging_wrap {
-     margin: 2px;
-     padding: 3px;
-     background-color: #F4F4F4;
-     border: solid 1px #888;
-     font-family: "Courier", sans-serif;
- }
-div.csl-slplus-input,
-div.csl-slplus-input-disabled
-{
-    float: left;
-}
-div.csl-slplus-input textarea {
-    min-height: 150px;
-    margin-left: 3px;
-    min-width: 300px;
-    width: 100%;
-}
-
 /* More Info Box */
 div.csl-slplus-moreicon {
-    background: url("../WPCSL-generic/assets/General_icons16.png")
+    background: url("../lib/General_icons16.png")
         no-repeat scroll 
         -15px 0px
         transparent; 
@@ -350,6 +210,7 @@ p.centerbutton {
 table.slp_locationinfoform_table LABEL,
 table.manual_add_table LABEL,
 .add_location_form LABEL {
+    clear: both;
     width: 120px;
     float: left;
     text-align: right;
@@ -388,6 +249,7 @@ table.manual_add_table LABEL,
 
 .add_location_form INPUT[type='checkbox'] {
     display: inline-block;
+    width: auto;
 }
 
 /* Add / Edit Locations */
@@ -428,14 +290,6 @@ div#sl_div div#address_search input[type="submit"] {
     font-weight: normal;
     line-height: 1.42857;
     padding: 0.428571rem 0.714286rem;
-}
-button, input {
-    line-height: normal;
-}
-button, input, textarea {
-    border: 1px solid #CCCCCC;
-    border-radius: 3px 3px 3px 3px;
-    font-family: inherit;
 }
 div#sl_div div#address_search {
     text-align: left;
@@ -508,6 +362,9 @@ tr.slp_managelocations_row.featured td.slp_manage_locations_cell.featured {
     background-repeat: no-repeat;
     background-size: 16px auto
 }
+tr.featured td {
+    font-size: 1.25em;
+}
 
 
 
@@ -534,75 +391,6 @@ tr.slp_managelocations_row.featured td.slp_manage_locations_cell.featured {
      font-size: 1.5em;
  }
 
-/***************************
- * Settings: Map
- */
- 
-
-.form_entry {
-    clear:both;
-}
-div.section_column .form_entry {
-    clear: both;
-    display: inline-block;
-    min-height: 18px;
-    min-width: 475px;
-    padding: 0px;
-    width: 100%;
-    position: relative;
-}
-
-.section_description {
-    font-size: 12px;
-    padding: 0px;
-}
-
-.section_description H3 {
-	margin: 0px;
-}
-
-.section_description H4 {
-	margin: 0px 0px 3px 6px;
-}
-
-.section_description label {
-    width: 185px;
-    float: left;
-    text-align: right;
-    margin: 0px 3px 0px 6px;
-    display: block;
-    clear: left;
-    font-size: 12px;
-}
-.section_description label.disabled {
-    color: #CCC;
-}
-
-.section_description INPUT {
-    width: 270px;
-}
-
-.section_description INPUT[type="checkbox"] {
-    box-shadow: none;
-    height: 1.1em;
-    text-align:left;
-    width: auto;
-    -webkit-box-shadow: none;
-}
-
-div.input_note {
-	clear: both;
-	text-align: left;
-	margin: 0px 0px 6px 190px;
-	display: block;
-	color: #888;
-	width: 260px;
-}
-
-.section_description .small {
-	width: 3em;
-    vertical-align: top;
-}
 
 .slplus_innertable td {
     vertical-align: top;
@@ -730,41 +518,6 @@ td.optionpack {
     padding: 7px 0px;
 }
 
-
-/***************************
- * Reporting Interface
- */
-
-#rb_details th {
-    font-size: 12px;
-    background: #F4F4DD;
-    padding: 6px 20px 6px 6px;
-}
-
-#rb_details td {
-    line-height: 1.5em;
-}
-
-#rb_details.reportblock .form_entry {
-    width: 120px;
-    text-align: center;
-}
-
-#rb_details.reportblock label {
-    width: 90px;
-    text-align: right;
-}
-
-
-
-#rb_details .rb_column {
-    float: left;
-    border: solid 1px #D0D0FF;
-    margin-right: 24px;
-    margin-top: 3px;
-}
-
-
 div.section_column_intro {
     padding: 0px 6px;
 }
@@ -787,86 +540,45 @@ p.slp_admin_info {
     color: #666666;
 }
 
+div.section_column h2 {
+    background: none repeat scroll 0 0 #E0E0D0;
+    border-bottom: 1px solid #D0D0D0;
+    font-size: 16px;
+    margin-bottom: 12px;
+    margin-top: 0;
+    padding: 0 6px;
+}
+
+.inside.section H2,
+.section_description H2,
+.inside.section H3,
+.section_description H3 {
+    font-weight: 600;
+    font-family: 'Open Sans',sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    padding-left: 9px;
+}
+.inside.section H2,
+.section_description H2 {
+    color: #222;
+    font-size: 14px;
+}
+.inside.section H3,
+.section_description H3 {
+    color: #333;
+    font-size: 13px;
+}
+
 .alignright {
     text-align: right;
 }
 
-
-/* Table Header */
-#rb_details thead tr .header {
-  	background-repeat: no-repeat;
-	background-position: center right;
-	cursor: pointer;    
-}
-
-#rb_details .headerSortUp {
-    background-image: url("../images/arrow_sm_black_down.png");
-}
-
-#rb_details .headerSortDown {
-    background-image: url("../images/arrow_sm_black_up.png");
-}
-
-
-/* Table Body */
-#rb_details tbody td {
-    padding-right: 6px;
-    min-width: 53px;    
-}
 .rowon {
     background: #F4F4F4;
 }
 .rowoff {
     background: #FFFFFF;
-}
-
-/* Report Block Buttons */
-#rb_details input[type="button"] {
-    width: 100px;
-}
-
-/* Icons */
-div.action_buttons{
-    white-space: normal;
-    overflow: auto;
-    min-width: 44px;
-}
-.action_icon {
-    background: url("../WPCSL-generic/assets/General_icons16.png") no-repeat scroll transparent;
-    height: 20px;
-    width: 20px;
-    display: inline-block;
-}
-.view_icon {
-    background-position: -40px 0px; 
-}
-.view_icon:hover {
-  background-position: -40px -20px;
-}
-.edit_icon {
-  background-position: -62px 0px;
-}
-.edit_icon:hover {
-  background-position: -62px -20px;
-}
-.delete_icon {
-  background-position: -85px 0px;
-}
-.delete_icon:hover {
-  background-position: -85px -20px;
-}
-.createpage_icon {
-  background-position: -150px 0px;
-}
-.createpage_icon:hover {
-  background-position: -150px -20px;
-}
-
-.haspage_icon {
-  background-position: -150px -40px;
-}
-.haspage_icon:hover {
-  background-position: -150px -20px;
 }
 
 /*** Generic Formatting ***/

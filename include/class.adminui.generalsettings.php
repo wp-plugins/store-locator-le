@@ -101,6 +101,17 @@ class SLPlus_AdminUI_GeneralSettings {
             $this->plugin->helper->SaveCheckBoxToDB($JustAnotherBox, '','');
         }
 
+        // Serialized Checkboxes, Need To Blank If Not Received
+        //
+        $BoxesToHit = array(
+            'extended_admin_messages'      ,
+            );
+        foreach ($BoxesToHit as $BoxName) {
+            if (!isset($_REQUEST[$BoxName])) {
+                $_REQUEST[$BoxName] = 'off';
+            }
+        }
+
         // Serialized Options Setting for stuff going into slp.js.
         // This should be used for ALL new JavaScript options.
         //
@@ -118,12 +129,13 @@ class SLPlus_AdminUI_GeneralSettings {
      * Build the admin settings panel.
      */
      function build_AdminSettingsPanel() {
-        $sectName = __('Admin','csa-slplus');
-        $this->settings->add_section(array('name' => $sectName));
+        $panel_name     = __('Admin'    ,'csa-slplus');
+        $section_name   = __('Settings' ,'csa-slplus');
+        $this->settings->add_section(array('name' => $panel_name));
         $this->settings->add_ItemToGroup(
                 array(
-                    'section'       => $sectName                                    ,
-                    'group'         => __('Settings'                  ,'csa-slplus'),
+                    'section'       => $panel_name                                    ,
+                    'group'         => $section_name,
                     'label'         => __('Turn off rate notification','csa-slplus'),
                     'setting'       => 'thisbox'                                    ,
                     'type'          => 'checkbox'                                   ,
@@ -131,10 +143,23 @@ class SLPlus_AdminUI_GeneralSettings {
                         __('This will disable the notification asking you to rate our product.','csa-slplus')
                 )
             );
+        $this->settings->add_ItemToGroup(
+                array(
+                    'section'       => $panel_name                                  ,
+                    'group'         => $section_name                                ,
+                    'type'          => 'checkbox'                                   ,
+                    'use_prefix'    => false,
+                    'label'         => __('Extended Admin Messages'   ,'csa-slplus'),
+                    'setting'       => 'extended_admin_messages'                    ,
+                    'value'         => $this->plugin->is_CheckTrue($this->plugin->options_nojs['extended_admin_messages']),
+                    'description'   =>
+                        __('Show extended messages on the admin panel.','csa-slplus')
+                )
+            );
         
         // ACTION: slp_generalsettings_modify_adminpanel
         //    params: settings object, section name
-        do_action('slp_generalsettings_modify_adminpanel',$this->settings,$sectName);
+        do_action('slp_generalsettings_modify_adminpanel',$this->settings,$panel_name);
      }
 
      /**

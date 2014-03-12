@@ -17,6 +17,13 @@ class SLPlus_Data {
     public $db;
 
     /**
+     * The extended data object.
+     * 
+     * @var \SLPlus_Data_Extended $extension
+     */
+    public $extension;
+
+    /**
      * Info strings for the database interface.
      *
      * info['table'] = table name
@@ -25,6 +32,13 @@ class SLPlus_Data {
      * @var string[] database info
      */
     public $info;
+
+    /**
+     * True if the extended data set is available.
+     *
+     * @var boolean $is_extended
+     */
+    public $is_extended = false;
 
     //-------------------------------------------------
     // Methods
@@ -57,6 +71,23 @@ class SLPlus_Data {
                 ),
         );
 
+    }
+
+    /**
+     * Extend the database by adding the meta and extended data table helper object.
+     */
+    public function createobject_DatabaseExtension() {
+        if ( ! class_exists( 'SLPlus_Data_Extension' ) ) {
+            require_once('class.data.extension.php');
+        }
+        if ( ! isset( $this->extension ) ) {
+            global $slplus_plugin;
+            $this->extension = new SLPlus_Data_Extension(
+                        array(
+                            'slplus' => $slplus_plugin
+                        )
+                    );
+        }
     }
 
     /**
@@ -193,7 +224,10 @@ class SLPlus_Data {
                 // FILTER: slp_extend_get_SQL
                 //
                 default:
-                    $sqlStatement .= apply_filters('slp_extend_get_SQL',$command);
+                    $sql_from_filter = apply_filters('slp_extend_get_SQL',$command);
+                    if ( $sql_from_filter !== $command ) {
+                        $sqlStatement .= $sql_from_filter;
+                    }
                     break;
             }
         }
@@ -202,7 +236,13 @@ class SLPlus_Data {
 
 
     /**
-     *Return a record as an array based on a given SQL select statement keys and params list.
+     * Return a record as an array based on a given SQL select statement keys and params list.
+     *
+     * Executes wpdb get_row using the specified SQL statement.
+     * If more than one row is returned by the query, only the specified row is returned by the function, but all rows are cached for later use.
+     * Returns NULL if no result is found
+     *
+     * @link https://codex.wordpress.org/Class_Reference/wpdb WordPress WPDB Class
      *
      * @param string[] $commandList
      * @param mixed[] $params
@@ -236,5 +276,18 @@ class SLPlus_Data {
                     $params
                     )
             );
+    }
+
+    /**
+     * Return true if the Extendo plugin is active.
+     */
+    public function is_Extended() {
+        if ( ! $this->is_extended ) {
+            $this->createobject_DatabaseExtension();
+            if ( is_a( $this->extension , 'SLPlus_Data_Extension' ) ) {
+                $this->is_extended = true;
+            }
+        }
+        return $this->is_extended;
     }
 }
