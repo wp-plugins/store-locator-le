@@ -286,7 +286,7 @@ class SLPlus_AdminUI_MapSettings {
                     SLPLUS_PREFIX.'_use_email_form'             ,
                     SLPLUS_PREFIX.'_email_form'                 ,
                     SLPLUS_PREFIX.'_disable_find_image'         ,
-                    SLPLUS_PREFIX.'-force_load_js'              ,
+                    //SLPLUS_PREFIX.'-force_load_js'              ,
                     'sl_load_locations_default'                 ,
                     'sl_remove_credits'                         ,
                     )

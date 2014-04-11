@@ -3,8 +3,8 @@
 Plugin Name: Store Locator Plus
 Plugin URI: http://www.storelocatorplus.com/
 Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Google Maps.  This is a highly customizable, easily expandable, enterprise-class location management system.
-Version: 4.1.10
-Tested up to: 3.8.1
+Version: 4.1.12
+Tested up to: 3.9
 Author: Charleston Software Associates
 Author URI: http://www.storelocatorplus.com
 License: GPL3
@@ -12,7 +12,7 @@ License: GPL3
 Text Domain: csa-slplus
 Domain Path: /languages/
 
-Copyright 2013  Charleston Software Associates (info@charlestonsw.com)
+Copyright 2014  Charleston Software Associates (info@charlestonsw.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

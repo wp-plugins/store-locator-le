@@ -1,6 +1,6 @@
-/** file: woo-memorable.css
- ** label: Woo Memorable
- ** description: A basic SLP Theme that is used on a live site running the Memorable WordPress theme by WooThemes. Works with Enhanced Results + Super Extendo featured listings.
+/** file: twenty_fourteen_01.css
+ ** label: Twenty Fourteen Rev 01
+ ** description: Works with the WordPress Twenty Fourteen theme.
  ** add-ons: slp-pro,slp-enhanced-map,slp-enhanced-results,slp-enhanced-search
  ** Pro Pack Locator Layout: <div id="sl_div">[slp_search][slp_map][slp_results]</div>
  ** Enhanced Map Bubble Layout: <div id="sl_info_bubble" class="[slp_location featured]"><span id="slp_bubble_name"><strong>[slp_location name  suffix  br]</strong></span><span id="slp_bubble_address">[slp_location address       suffix  br]</span><span id="slp_bubble_address2">[slp_location address2      suffix  br]</span><span id="slp_bubble_city">[slp_location city          suffix  comma]</span><span id="slp_bubble_state">[slp_location state suffix    space]</span><span id="slp_bubble_zip">[slp_location zip suffix  br]</span><span id="slp_bubble_country"><span id="slp_bubble_country">[slp_location country       suffix  br]</span></span><span id="slp_bubble_directions">[html br ifset directions][slp_option label_directions wrap directions]</span><span id="slp_bubble_website">[html br ifset url][slp_location url           wrap    website][slp_option label_website ifset url][html closing_anchor ifset url][html br ifset url]</span><span id="slp_bubble_email">[slp_location email         wrap    mailto ][slp_option label_email ifset email][html closing_anchor ifset email][html br ifset email]</span><span id="slp_bubble_phone">[html br ifset phone]<span class="location_detail_label">[slp_option   label_phone   ifset   phone]</span>[slp_location phone         suffix    br]</span><span id="slp_bubble_fax"><span class="location_detail_label">[slp_option   label_fax     ifset   fax  ]</span>[slp_location fax           suffix    br]<span><span id="slp_bubble_description"><span id="slp_bubble_description">[html br ifset description][slp_location description raw]</span>[html br ifset description]</span><span id="slp_bubble_hours">[html br ifset hours]<span class="location_detail_label">[slp_option   label_hours   ifset   hours]</span><span class="location_detail_hours">[slp_location hours         suffix    br]</span></span><span id="slp_bubble_img">[html br ifset img][slp_location image         wrap    img]</span><span id="slp_tags">[slp_location tags]</span></div>
@@ -22,6 +22,121 @@ div#map .gm-style-cc > div {
 /* Hide the default Google bubble shadow */
 div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
   display: none; }
+
+/* On Off Slider from SCSS include/_slider.scss */
+.onoffswitch-block {
+  display: inline-block;
+  float: right;
+  margin-right: 8px; }
+
+.onoffswitch-pretext {
+  display: inline-block;
+  padding-right: 12px;
+  vertical-align: super; }
+
+.onoffswitch {
+  display: inline-block;
+  position: relative;
+  width: 56px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none; }
+
+.onoffswitch-checkbox {
+  display: none; }
+
+.onoffswitch-label {
+  display: block;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid #999999;
+  border-radius: 20px; }
+
+.onoffswitch-inner {
+  width: 200%;
+  margin-left: -100%;
+  -moz-transition: margin 0.3s ease-in 0s;
+  -webkit-transition: margin 0.3s ease-in 0s;
+  -o-transition: margin 0.3s ease-in 0s;
+  transition: margin 0.3s ease-in 0s; }
+
+.onoffswitch-inner:before, .onoffswitch-inner:after {
+  float: left;
+  width: 50%;
+  height: 17px;
+  padding: 0;
+  line-height: 17px;
+  font-size: 10px;
+  color: white;
+  font-family: Trebuchet, Arial, sans-serif;
+  font-weight: bold;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box; }
+
+.onoffswitch-inner:before {
+  content: "ON";
+  padding-left: 8px;
+  background-color: #2FCCFF;
+  color: #FFFFFF; }
+
+.onoffswitch-inner:after {
+  content: "OFF";
+  padding-right: 8px;
+  background-color: #EEEEEE;
+  color: #999999;
+  text-align: right; }
+
+.onoffswitch-switch {
+  width: 8px;
+  margin: 4.5px;
+  background: #FFFFFF;
+  border: 2px solid #999999;
+  border-radius: 20px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 35px;
+  -moz-transition: all 0.3s ease-in 0s;
+  -webkit-transition: all 0.3s ease-in 0s;
+  -o-transition: all 0.3s ease-in 0s;
+  transition: all 0.3s ease-in 0s; }
+
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+  margin-left: 0; }
+
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+  right: 0px; }
+
+/* A div that looks like a button. */
+.like-a-button {
+  background: #FFF;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD');
+  background: -webkit-gradient(linear, left top, left bottom, from(white), to(#dddddd));
+  background: -moz-linear-gradient(top, white, #dddddd);
+  text-decoration: none;
+  border: 1px solid #BBBBBB;
+  margin: 0;
+  padding: 3px 12px;
+  text-align: center;
+  width: auto;
+  cursor: pointer;
+  color: #333;
+  display: inline-block;
+  line-height: 1em;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  -khtml-border-radius: 3px; }
+
+.like-a-button:hover {
+  background: #DDD;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF');
+  background: -webkit-gradient(linear, left top, left bottom, from(#dddddd), to(white));
+  background: -moz-linear-gradient(top, #dddddd, white); }
+
+.like-a-button A {
+  text-decoration: none; }
 
 #sl_info_bubble .location_detail_hours {
   white-space: pre-wrap; }
@@ -51,58 +166,112 @@ div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
   float: left;
   margin-left: 0.2em; }
 
-/*---------------------
- * Search
- *---------------------*/
-#searchForm LABEL {
-  padding-right: 3px; }
+#searchForm {
+  margin-bottom: 1em; }
 
-#searchForm div {
-  display: inline-block; }
+.search_item {
+  display: block;
+  width: 100%;
+  margin-bottom: 0.25em; }
 
-#searchForm input[type="submit"] {
-  padding: 0.518em 1.387em; }
-
-/*---------------------
- * Map
- *---------------------*/
-div#slp_tagline {
-  text-align: right;
-  margin-bottom: 18px; }
-
-/*---------------------
- * Results
- *---------------------*/
-div.results_entry {
-  cursor: pointer;
+.search_item label {
   display: inline-block;
-  padding: 0px 12px 18px 12px;
-  width: 98%; }
-
-div.results_entry:hover {
-  background-color: #F2F2F2; }
-
-div.results_entry.featured {
-  background-color: #EFF0DE; }
-
-div.results_entry.featured:hover {
-  background-color: #E7F8D6; }
-
-#map_sidebar .results_wrapper {
-  margin-bottom: 24px;
-  position: relative; }
-
-#map_sidebar .results_wrapper:hover {
-  background-color: #F4F4F4; }
-
-#map_sidebar .results_wrapper span {
-  display: block; }
-
-#map_sidebar .results_wrapper span.location_name {
-  font-weight: bold; }
-
-#map_sidebar .results_wrapper .results_row_right_column {
-  position: absolute;
-  right: 0;
+  margin-right: 1%;
   text-align: right;
-  top: 0; }
+  width: 20%; }
+
+.search_item INPUT {
+  width: 79%; }
+
+.search_item INPUT[type="text"] {
+  padding: 0.2em; }
+
+.search_item #addy_in_radius {
+  margin-bottom: 0.25em; }
+
+.search_item #radius_in_submit {
+  margin-left: 21%;
+  width: 100%; }
+
+#radiusSelect {
+  padding-right: 0.2em;
+  text-align: center;
+  width: 79%; }
+
+div#sl_div div#slp_tagline {
+  color: #B4B4B4;
+  text-align: right;
+  font-size: 0.7em;
+  margin-right: 1px; }
+
+div#map {
+  border: solid 1px #ABABAB; }
+
+.results_wrapper {
+  display: block;
+  margin-bottom: 2em;
+  position: relative;
+  width: 100%; }
+
+.results_wrapper:first-child {
+  margin-top: 3em; }
+
+.results_entry {
+  padding: 0.3em;
+  -webkit-box-shadow: 2px 4px 4px 0px #dadada;
+  -moz-box-shadow: 2px 4px 4px 0px #dadada;
+  box-shadow: 2px 4px 4px 0px #dadada;
+  border-bottom: 1px solid #DDDDDD;
+  border-right: 1px solid #EEEEEE; }
+
+.results_entry:hover {
+  background-color: #FAFAFA; }
+
+.results_entry.featured {
+  background-color: #DDFFDD; }
+
+.results_row_left_column {
+  margin-bottom: 0.5em;
+  position: relative;
+  width: 100%; }
+
+.results_row_center_column {
+  display: inline-block;
+  width: 59%;
+  text-align: left;
+  vertical-align: top; }
+
+.results_row_right_column {
+  display: inline-block;
+  width: 40%;
+  text-align: right;
+  vertical-align: top; }
+
+.location_name {
+  font-size: 14px;
+  font-weight: 900;
+  font-style: normal;
+  color: #2b2b2b;
+  text-decoration: none;
+  line-height: 24px;
+  vertical-align: baseline;
+  display: inline-block;
+  width: 80%; }
+
+.location_distance {
+  display: inline-block;
+  text-align: right;
+  width: 19%; }
+
+.slp_result_address {
+  display: block;
+  width: 100%; }
+
+.slp_result_contact {
+  display: block;
+  width: 100%; }
+
+.slp_result_contact.slp_result_email {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; }

@@ -4,7 +4,7 @@
  *
  * @package StoreLocatorPlus\Data
  * @author Lance Cleveland <lance@charlestonsw.com>
- * @copyright 2013 Charleston Software Associates, LLC
+ * @copyright 2013 - 2014 Charleston Software Associates, LLC
  *
  */
 class SLPlus_Data {
@@ -56,8 +56,8 @@ class SLPlus_Data {
         //
         $collate = '';
         if( $this->db->has_cap( 'collation' ) ) {
-            if( ! empty($this->db->charset ) ) $collate .= "DEFAULT CHARACTER SET {$this->db->charset}";
-            if( ! empty($this->db->collate ) ) $collate .= " COLLATE {$this->db->collate}";
+            if( ! empty($this->db->charset ) ) { $collate .= "DEFAULT CHARACTER SET {$this->db->charset}"; }
+            if( ! empty($this->db->collate ) ) { $collate .= " COLLATE {$this->db->collate}"; }
         }
         $this->collate   = $collate;
 
@@ -138,6 +138,7 @@ class SLPlus_Data {
      * o selectall - select from store locator table with additional slp_extend_get_SQL_selectall filter.
      * o selectall_with_distance - select from store locator table with additional slp_extend_get_SQL_selectall filter and distance calculation math, requires extra parm passing on get record.
      * o selectslid - select only the store id from store locator table.
+     * o select_state_list - fetch a list of all states in the location table with a valid lat/long and state is not empty.
      *
      * WHERE
      * o where_default - the default where clause that is built up by the slp_ajaxsql_where filters.
@@ -189,6 +190,19 @@ class SLPlus_Data {
 
                 case 'selectslid':
                     $sqlStatement .= 'SELECT sl_id FROM '   .$this->info['table'].' ';
+                    break;
+
+                // select_state_list
+                // Fetch a list of all states in the location table where state is not empty.
+                //
+                case 'select_state_list':
+                    $sqlStatement .=
+                        'SELECT trim(sl_state) as state ' .
+                        ' FROM ' . $this->info['table'] . ' ' .
+                        "WHERE sl_state<>'' " .
+                        'GROUP BY sl_state ' .
+                        'ORDER BY sl_state ASC '
+                        ;
                     break;
 
                 // WHERE
@@ -249,15 +263,15 @@ class SLPlus_Data {
      * @param int $offset
      */
     function get_Record($commandList,$params=array(),$offset=0) {
-        return
-            $this->db->get_row(
-                $this->db->prepare(
-                    $this->get_SQL($commandList),
-                    $params
-                    ),
-                ARRAY_A,
-                $offset
-            );
+        $query = $this->get_SQL($commandList);
+
+        // No placeholders, just call direct with no prepare
+        //
+        if ( strpos( $query, '%' ) !== false ) {
+            $query = $this->db->prepare( $query , $params );
+        }
+
+        return $this->db->get_row( $query , ARRAY_A ,$offset );
     }
 
     /**

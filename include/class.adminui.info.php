@@ -18,7 +18,7 @@ class SLPlus_AdminUI_Info {
         return
         '<h4>Add A Location</h4>
         <p style="padding-left: 30px;">
-        Add a location or two via the <a href="<?php echo admin_url();?>admin.php?page=slp_add_locations">Add Location form</a>.
+        Add a location or two via the <a href="'.admin_url().'admin.php?page=slp_manage_locations">Add Location form</a>.
         You will find this link, and other Store Locator Plus links, in the left sidebar under the "Store Locator Plus" entry.
         If you have many locations to add, check out the <a href="http://www.charlestonsw.com/product-category/slplus/" target="csa">Pro Pack</a> and the bulk import options.
         </p>
@@ -32,10 +32,10 @@ class SLPlus_AdminUI_Info {
 
         <h4>Tweak The Settings</h4>
         <p style="padding-left: 30px;">
-        You can modify basic settings such as the options shown on the radius pull down list on the <a href="<?php echo admin_url();?>admin.php?page=slp_map_settings">User Experience</a> page.
+        You can modify basic settings such as the options shown on the radius pull down list on the <a href="'.admin_url().'admin.php?page=slp_map_settings">User Experience</a> page.
         Even more settings are available via <a href="http://www.charlestonsw.com/product-category/slp4-products/" target="csa">the premium add-on packs</a>.
         </p>
-        <p style="padding-left: 30px;"><strong>It is strongly recommended that you start by going to  <a href="<?php echo admin_url();?>admin.php?page=slp_general_settings">General Settings</a> and turning OFF "Force Load JavaScript".</strong>&nbsp;
+        <p style="padding-left: 30px;"><strong>It is strongly recommended that you start by going to  <a href="'.admin_url().'admin.php?page=slp_general_settings">General Settings</a> and turning OFF "Force Load JavaScript".</strong>&nbsp;
         That settings appears in the "General Settings" tab.    It is on by default because 20% of the WordPress themes on the market
         do not properly support WordPress 3.3 standard page footer processing and thus break Store Locator Plus functionality.   Since many users will not
         read this section it is ON be default.   It makes ALL of your pages load a little slower.  It also means that some features like the extended

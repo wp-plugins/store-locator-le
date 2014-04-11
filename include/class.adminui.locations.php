@@ -127,14 +127,14 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
     /**
      * The wpCSL settings object that helps render location settings.
      *
-     * @var \wpCSL_settings__slplus $settings
+     * @var wpCSL_settings__slplus $settings
      */
     public $settings;
 
     /**
      * The SLPlus plugin object.
      *
-     * @var \SLPlus $plugin
+     * @var SLPlus $plugin
      */
     private $slplus;
 
@@ -649,9 +649,10 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
      * @param string $inputclass class for input field
      * @param boolean $noBR skip the <br/> after input
      * @param string $inType type of input field (default:input)
+     * @param string $placeholder the placeholder for the input field (default: blank)
      * @return string the form HTML output
      */
-    function createstring_InputElement($fldName,$fldLabel,$fldValue, $inputClass='', $noBR = false, $inType='input') {
+    function createstring_InputElement($fldName,$fldLabel,$fldValue, $inputClass='', $noBR = false, $inType='input', $placeholder = '') {
         $matches = array();
         $matchStr = '/(.+)\[(.*)\]/';
         if (preg_match($matchStr,$fldName,$matches)) {
@@ -662,9 +663,10 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         }
         return
             (empty($fldLabel)?'':"<label  for='{$fldName}-{$this->slplus->currentLocation->id}{$subFldName}'>{$fldLabel}</label>").
-            "<{$inType} "                                                                .
-                "id='edit-{$fldName}-{$this->slplus->currentLocation->id}{$subFldName}' "                                     .
-                "name='{$fldName}-{$this->slplus->currentLocation->id}{$subFldName}' "   .
+            "<{$inType} "                                                                   .
+                "id='edit-{$fldName}-{$this->slplus->currentLocation->id}{$subFldName}' "   .
+                "name='{$fldName}-{$this->slplus->currentLocation->id}{$subFldName}' "      .
+                ( empty ( $placeholder ) ? '' : " placeholder='{$placeholder}' " )          .
                 (($inType==='input')?
                         "value='".esc_html($fldValue)."' "  :
                         "rows='5' cols='17'  "
@@ -985,12 +987,16 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
             $this->createstring_InputElement(
                     'latitude',
                     __('Latitude (N/S)', 'csa-slplus'),
-                    $this->slplus->currentLocation->latitude
+                    $this->slplus->currentLocation->latitude,
+                    '', false, 'input',
+                    __('Leave blank to have Google look up the latitude.', 'csa-slplus')
                     ).
             $this->createstring_InputElement(
                     'longitude',
                     __('Longitude (E/W)', 'csa-slplus'),
-                    $this->slplus->currentLocation->longitude
+                    $this->slplus->currentLocation->longitude,
+                    '', false, 'input',
+                    __('Leave blank to have Google look up the longitude.', 'csa-slplus')
                     ).
             $HTML
             ;
@@ -1701,7 +1707,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         $next = min(max(0,$start+$num_per_page),$totalLocations);
         $num_per_page = max(1,$num_per_page);
         $qry = isset($_GET['q'])?$_GET['q']:'';
-        $cleared=preg_replace('/q=$qry/', '', $_SERVER['REQUEST_URI']);
+        $cleared=preg_replace('/q=$qry/', '', $this->hangoverURL);
 
         $extra_text=(trim($qry)!='')    ?
             __("for your search of", 'csa-slplus').
@@ -1711,12 +1717,12 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
 
         // URL Regex Replace
         //
-        if (preg_match('#&start='.$start.'#',$_SERVER['QUERY_STRING'])) {
-            $prev_page=str_replace("&start=$start","&start=$prev",$_SERVER['REQUEST_URI']);
-            $next_page=str_replace("&start=$start","&start=$next",$_SERVER['REQUEST_URI']);
+        if (preg_match('#&start='.$start.'#',$this->hangoverURL)) {
+            $prev_page=str_replace("&start=$start","&start=$prev",$this->hangoverURL);
+            $next_page=str_replace("&start=$start","&start=$next",$this->hangoverURL);
         } else {
-            $prev_page=$_SERVER['REQUEST_URI']."&start=$prev";
-            $next_page=$_SERVER['REQUEST_URI']."&start=$next";
+            $prev_page=$this->hangoverURL ."&start=$prev";
+            $next_page=$this->hangoverURL."&start=$next";
         }
 
         // Pages String
@@ -1742,7 +1748,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                     $curr_page=$_SERVER['QUERY_STRING']."&start=$pos";
                 }
                 if (($start-($k-1)*$num_per_page)<0 || ($start-($k-1)*$num_per_page)>=$num_per_page) {
-                    $pagesString .= "<a class='page-button' href=\"{$_SERVER['SCRIPT_NAME']}?$curr_page\" >";
+                    $pagesString .= "<a class='page-button' href=\"{$this->hangoverURL}&$curr_page\" >";
                 } else {
                     $pagesString .= "<a class='page-button thispage' href='#'>";
                 }

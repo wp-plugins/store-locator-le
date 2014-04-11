@@ -169,7 +169,7 @@ if (!class_exists('CSVImport')) {
             
             // Is the file CSV?  If not, exit.
             //
-            $arr_file_type = wp_check_filetype(basename($_FILES['csvfile']['name']));
+            $arr_file_type = wp_check_filetype( basename( $_FILES['csvfile']['name'] ) , array( 'csv' => 'text/csv' ) );
             if ($arr_file_type['type'] != 'text/csv') {
                 print "<div class='updated fade'>".
                     __('Uploaded file needs to be in CSV format.','csa-slplus')        .

@@ -1,11 +1,11 @@
 === Store Locator Plus ===
 Plugin Name:  Store Locator Plus
 Contributors: charlestonsw
-Donate link: http://www.storelocatorplus.com/
+Donate link: http://www.charlestonsw.com/product/store-locator-plus-4/
 Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.4
-Tested up to: 3.8.1
-Stable tag: 4.1.10
+Tested up to: 3.9
+Stable tag: 4.1.12
 License: GLPv2 or later
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
@@ -213,7 +213,8 @@ new theme or any of the built-in defaults by selecting it from the auto-generate
 * Dutch (nl_NL) by [Jan de Baat](http://www.de-baat.nl/)
 * French (fr_FR) by François Serrault
 * Japanese (ja) by [Karen Ellrick](http://l4jp.com)
-* Latvian (lt-LT) by Paulius Bakutis
+* Latvian (lt_LT) by Paulius Bakutis
+* Portuguese (pt_BR) by Carlos Utiama
 
 *Graphics*
 
@@ -326,6 +327,18 @@ Please read the *description page* for this plugin for an important note about p
 I update about once per month or more frequently as needed.
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 4.1.12 =
+
+* Fix: Fix the help screen hyperlinks.
+* Fix: Update the select state list option to show states with no lat/long.
+* Fix: Force Load JavaScript now stays checked when changing other map options.
+* Fix: Force mime type to on files ending with .csv to text/csv.
+* Fix: Update WooMemorable theme to handle the Tagalong CSS cascade feature.
+* Fix: Pagination in Locations/Manage next page and page numbers retain search filters.
+* Enhancement: Update the data interface engine to work with WordPress 3.9 prepare statement updates.
+* Enhancement: New Twenty Fourteen Rev 01 Advanced Theme that better fits with the WP Twenty Fourteen theme.
+* Enhancement: Added Portuguese Brazil translation.
 
 = 4.1.10 =
 
