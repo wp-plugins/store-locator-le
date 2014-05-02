@@ -7,23 +7,6 @@
  ** Enhanced Results Results Layout: <div id="slp_results_[slp_location id]" class="results_entry  [slp_location featured]"><div class="results_row_left_column"   id="slp_left_cell_[slp_location id]"   ><span class="location_name">[slp_location name]</span><span class="location_distance">[slp_location distance_1] [slp_location distance_unit]</span></div><div class="results_row_center_column" id="slp_center_cell_[slp_location id]" ><span class="slp_result_address slp_result_street">[slp_location address]</span><span class="slp_result_address slp_result_street2">[slp_location address2]</span><span class="slp_result_address slp_result_citystatezip">[slp_location city_state_zip]</span><span class="slp_result_address slp_result_country">[slp_location country]</span><span class="slp_result_address slp_result_phone">[slp_location phone]</span><span class="slp_result_address slp_result_fax">[slp_location fax]</span></div><div class="results_row_right_column"  id="slp_right_cell_[slp_location id]"  ><span class="slp_result_contact slp_result_website">[slp_location web_link]</span><span class="slp_result_contact slp_result_email">[slp_location email_link]</span><span class="slp_result_contact slp_result_directions"><a href="http://[slp_location map_domain]/maps?saddr=[slp_location search_address]&daddr=[slp_location location_address]" target="_blank" class="storelocatorlink">[slp_location directions_text]</a></span><span class="slp_result_contact slp_result_hours">[slp_location hours]</span>[slp_location iconarray wrap="fullspan"]</div></div>
  ** Enhanced Search Search Layout: <div id="address_search">[slp_search_element input_with_label="name"][slp_search_element input_with_label="address"][slp_search_element dropdown_with_label="city"][slp_search_element dropdown_with_label="state"][slp_search_element dropdown_with_label="country"][slp_search_element selector_with_label="tag"][slp_search_element dropdown_with_label="category"]<div class="search_item">[slp_search_element dropdown_with_label="radius"][slp_search_element button="submit"]</div></div>
  **/
-div#map img {
-  background-color: transparent;
-  box-shadow: none;
-  border: none;
-  max-width: none;
-  opacity: 1.0;
-  visibility: visible; }
-
-/* Fix IE10 Rules */
-div#map .gm-style-cc > div {
-  word-wrap: normal; }
-
-/* Hide the default Google bubble shadow */
-div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
-  display: none; }
-
-/* On Off Slider from SCSS include/_slider.scss */
 .onoffswitch-block {
   display: inline-block;
   float: right;
@@ -144,6 +127,28 @@ div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
 .slp_result_contact.slp_result_hours {
   white-space: pre-wrap; }
 
+div#map img {
+  background-color: transparent;
+  box-shadow: none;
+  border: none;
+  max-width: none;
+  opacity: 1.0;
+  visibility: visible; }
+
+/* Fix IE10 Rules */
+div#map .gm-style-cc > div {
+  word-wrap: normal; }
+
+/* Hide the default Google bubble shadow */
+div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
+  display: none; }
+
+#map_box_image {
+  display: block; }
+
+#map_box_map {
+  display: none; }
+
 #search_by_tag span {
   margin-right: 0.4em; }
 
@@ -152,6 +157,21 @@ div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
   width: 1em;
   vertical-align: sub; }
 
+/*#tagalong_legend {
+    border: none;
+    padding: 12px;
+}
+#tagalong_legend .legend_text {
+    display: inline-block;
+    margin-left: 6px;
+    margin-right: 20px;
+    vertical-align: middle;
+}
+#tagalong_legend .tagalong_legend_icon {
+    display: inline-block;
+    margin-bottom: 12px;
+    min-width: 190px;
+}*/
 #tagalong_category_selector .category_selector.parent {
   display: block;
   float: left; }
@@ -166,6 +186,9 @@ div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
   float: left;
   margin-left: 0.2em; }
 
+/*---------------------
+ * Search
+ *---------------------*/
 #searchForm {
   margin-bottom: 1em; }
 
@@ -198,6 +221,9 @@ div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
   text-align: center;
   width: 79%; }
 
+/*---------------------
+ * Map
+ *---------------------*/
 div#sl_div div#slp_tagline {
   color: #B4B4B4;
   text-align: right;
@@ -207,6 +233,9 @@ div#sl_div div#slp_tagline {
 div#map {
   border: solid 1px #ABABAB; }
 
+/*---------------------
+ * Results
+ *---------------------*/
 .results_wrapper {
   display: block;
   margin-bottom: 2em;

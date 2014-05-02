@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-4/
 Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.4
 Tested up to: 3.9
-Stable tag: 4.1.12
+Stable tag: 4.1.16
 License: GLPv2 or later
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
@@ -328,6 +328,25 @@ I update about once per month or more frequently as needed.
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
 
+= 4.1.16 =
+
+**Note: Upgrade Enhanced Results to version 4.1.04+  and Enhanced Search to version 4.1.01+.**
+
+* Fix: Stop showing database errors when updating SLP.  This happens because WP dbDelta does not handle index management well.
+* Fix: Force Load JavaScript on WordPress themes that have malformed/missing wp_footer() now loads the SLP theme styles.
+* Fix: Sensor failure hangs on Safari and IE8 browsers.
+* Enhancement: Add a couple of new map icons to the set.
+* Enhancement: SLP Default Theme fix Tagalong cascading categories, Pro Pack tag labels.
+* Enhancement: SLP Default Rev 02 Theme fixes the starting image width (remove max-width:none).
+* Enhancement: SLP Twenty Fourteen 01 Theme fix Enhanced Map hide map, starting image, and default map display.
+* Enhancement: SLP Woo Memorable Theme fix Enhanced Map hide map, starting image, and default map display.
+* Enhancement: SLP Basic Boxes Theme fix Enhanced Map hide map, starting image, and default map display.  Add Pro Pack tag search formatting. Add advanced attributes.
+* Enhancement: Support for Enhanced Results immediately_show_locations shortcode.
+* Enhancement: shortcode_atts_slplus filters are now supported for the SLPLUS shortcode.
+* Change: Force Load JavaScript mode does not process shortcode attributes, elminate unnecessary overhead when operating in this mode.
+* Change: Force Load JavaScript is TURNED OFF by default on all new installs.   
+* Change: Immediately Show Locations is TURNED ON by default on all new installs.
+
 = 4.1.12 =
 
 * Fix: Fix the help screen hyperlinks.
@@ -358,6 +377,7 @@ Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.co
 * Enhancement: Add website, hours, phone, fax to WPML supported options fields.
 * Enhancement: Make csv import smarter about stripping special characters from field names row.
 * Fix: Fix data extensions mangling of SQL commands for add-on packs.
+* Fix: Default, Default Rev 02 SLP Theme find locations button on Chrome.
 * Change: Update the SLP Default theme to make the find button less horrific on Twenty Fourteen default setup.
 
 = 4.1.07 =

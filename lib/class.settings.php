@@ -5,7 +5,7 @@
  *
  * @package wpCSL\Settings
  * @author Lance Cleveland <lance@charlestonsw.com>
- * @copyright 2012-2013 Charleston Software Associates, LLC
+ * @copyright 2012-2014 Charleston Software Associates, LLC
  *
  */
 class wpCSL_settings__slplus {

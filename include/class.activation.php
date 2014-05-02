@@ -7,7 +7,7 @@
  *
  * @package StoreLocatorPlus\Activation
  * @author Lance Cleveland <lance@charlestonsw.com>
- * @copyright 2012-2013 Charleston Software Associates, LLC
+ * @copyright 2012-2014 Charleston Software Associates, LLC
  */
 class SLPlus_Activate {
 
@@ -62,9 +62,14 @@ class SLPlus_Activate {
         $retval = ( $wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name ) ? 'new' : 'updated';
 
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        $were_showing_errors = $wpdb->show_errors;
+        $wpdb->hide_errors();
         dbDelta($sql);
         global $EZSQL_ERROR;
         $EZSQL_ERROR=array();
+        if ( $were_showing_errors ) {
+            $wpdb->show_errors();
+        }
         
         return $retval;
     }
@@ -425,11 +430,34 @@ class SLPlus_Activate {
                 $options_changed = $options_changed || ($initial_results !== $updater->plugin->options['initial_results_returned']);
 
             }
+            
+            // Upgrading to version 4.1.13
+            //
+            if ( version_compare($updater->plugin_version_on_start,'4.1.13','<') ) {
 
+                // Force Load JS serialization
+                //
+                $option_name  = SLPLUS_PREFIX.'-force_load_js';
+                $option_value = get_option( $option_name , false );
+                $serial_key   = 'force_load_js';
+                $updater->plugin->options_nojs[$serial_key] = $option_value;
+                delete_option( $option_name );
+                $options_changed = $options_changed || ( $option_value !== $updater->plugin->options_nojs[$serial_key] );
+                
+                // Immediately Show Locations serialization
+                //
+                $option_name  = 'sl_load_locations_default';
+                $option_value = get_option( $option_name , true );
+                $serial_key   = 'immediately_show_locations';
+                $updater->plugin->options_nojs[$serial_key] = $option_value;
+                delete_option( $option_name );
+                $options_changed = $options_changed || ( $option_value !== $updater->plugin->options_nojs[$serial_key] );
+            }                     
+            
             // Upgrading to version 4.1.XX
             // Always re-load theme details data.
             //
-            if ( version_compare($updater->plugin_version_on_start,'4.1.99','<') ) {
+            if ( version_compare($updater->plugin_version_on_start,'4.99.99','<') ) {
                 delete_option(SLPLUS_PREFIX.'-theme_details');
                 delete_option(SLPLUS_PREFIX.'-theme_array');
                 delete_option(SLPLUS_PREFIX.'-theme_lastupdated');

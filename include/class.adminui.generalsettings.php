@@ -92,7 +92,6 @@ class SLPlus_AdminUI_GeneralSettings {
         $BoxesToHit =
             apply_filters('slp_save_general_settings_checkboxes',
                 array(
-                    SLPLUS_PREFIX.'-force_load_js'              ,
                     SLPLUS_PREFIX.'-no_google_js'               ,
                     SLPLUS_PREFIX.'-thisbox'                    ,
                     )
@@ -104,11 +103,12 @@ class SLPlus_AdminUI_GeneralSettings {
         // Serialized Checkboxes, Need To Blank If Not Received
         //
         $BoxesToHit = array(
-            'extended_admin_messages'      ,
+            'extended_admin_messages'   ,
+            'force_load_js'             ,
             );
         foreach ($BoxesToHit as $BoxName) {
             if (!isset($_REQUEST[$BoxName])) {
-                $_REQUEST[$BoxName] = 'off';
+                $_REQUEST[$BoxName] = '0';
             }
         }
 
@@ -259,16 +259,18 @@ class SLPlus_AdminUI_GeneralSettings {
                 array(
                     'section'       => $sectName,
                     'group'         => $groupName,
+                    'type'          => 'checkbox',
+                    'use_prefix'    => false,
                     'label'         => __('Force Load JavaScript','csa-slplus'),
                     'setting'       => 'force_load_js',
-                    'type'          => 'checkbox',
-                    'default'       => 1,
+                    'value'         => $this->plugin->is_CheckTrue($this->plugin->options_nojs['force_load_js']),
                     'description'   =>
                         __('Force the JavaScript for Store Locator Plus to load on every page with early loading. ' , 'csa-slplus') .
-                        __('This can slow down your site, but is compatible with more themes and plugins.'          , 'csa-slplus')
+                        __('This can slow down your site, but is compatible with more themes and plugins. '         , 'csa-slplus') . 
+                        __('If you need to do this to make SLP work you should ask your theme author to add proper wp_footer() support to their code. '         , 'csa-slplus')
                    )
                );
-
+        
         // ACTION: slp_generalsettings_modify_userpanel
         //    params: settings object, section name
         do_action('slp_generalsettings_modify_userpanel',$this->settings,$sectName);

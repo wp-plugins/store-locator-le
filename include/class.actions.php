@@ -8,7 +8,7 @@
  *
  * @package StoreLocatorPlus\Actions
  * @author Lance Cleveland <lance@charlestonsw.com>
- * @copyright 2012-2013 Charleston Software Associates, LLC
+ * @copyright 2012-2014 Charleston Software Associates, LLC
  */
 class SLPlus_Actions {
 
@@ -132,12 +132,12 @@ class SLPlus_Actions {
             //
             $this->attachAdminUI();
             add_action('admin_enqueue_scripts',array($this->plugin->AdminUI,'enqueue_admin_stylesheet'));
-			$this->plugin->AdminUI->build_basic_admin_settings();
+            $this->plugin->AdminUI->build_basic_admin_settings();
 
-			// Admin WPML Helper
-			// 
-			$this->attachAdminWPML();
-			$this->plugin->AdminWPML->setParent();
+            // Admin WPML Helper
+            // 
+            $this->attachAdminWPML();
+            $this->plugin->AdminWPML->setParent();
 
             // Action hook for 3rd party plugins
             //
@@ -406,13 +406,16 @@ class SLPlus_Actions {
      * This is called whenever the WordPress wp_enqueue_scripts action is called.
      */
     function wp_enqueue_scripts() {
-        $this->plugin->debugMP('slp.main','msg','SLPlus_Actions:'.__FUNCTION__);
-        $force_load = $this->plugin->settings->get_item('force_load_js',true);
+        $this->plugin->debugMP('slp.main','msg','SLPlus_Actions:'.__FUNCTION__);                
+        
+        $force_load = $this->plugin->is_CheckTrue( $this->plugin->options_nojs['force_load_js'] );
+        
+        $this->plugin->debugMP('slp.main','msg','', ( $force_load ? 'force load' : 'late loading' ) );
 
         //------------------------
         // Register our scripts for later enqueue when needed
         //
-        if (get_option(SLPLUS_PREFIX.'-no_google_js','off') != 'on') {
+        if ( ! $this->plugin->is_CheckTrue( get_option(SLPLUS_PREFIX.'-no_google_js','0')  ) ) {
             $dbAPIKey = trim(get_option(SLPLUS_PREFIX.'-api_key',''));
             $api_key  = (empty($dbAPIKey)?'':'&key='.$dbAPIKey);
             $language = '&language='.$this->plugin->helper->getData('map_language','get_item',null,'en');
@@ -421,7 +424,7 @@ class SLPlus_Actions {
                     'http'.(is_ssl()?'s':'').'://'.get_option('sl_google_map_domain','maps.google.com').'/maps/api/js?sensor=false' . $api_key . $language,
                     array(),
                     SLPLUS_VERSION,
-                    !$force_load
+                    ! $force_load
                     );
         }
 
@@ -430,14 +433,33 @@ class SLPlus_Actions {
             preg_replace('/http:/','https:',SLPLUS_PLUGINURL) :
             SLPLUS_PLUGINURL
             );
-        wp_enqueue_script(
-                'csl_script',
-                $sslURL.'/js/slp.js',
-                array('jquery'),
-                SLPLUS_VERSION,
-                !$force_load
-        );
-        $this->plugin->UI->localizeSLPScript();
+        
+        
+        // Force load?  Enqueue and localize.
+        //
+        if ( $force_load ) {
+            wp_enqueue_script(
+                    'csl_script',
+                    $sslURL.'/js/slp.js',
+                    array('jquery'),
+                    SLPLUS_VERSION,
+                    ! $force_load
+            );
+            $this->plugin->UI->localizeSLPScript();        
+            $this->plugin->UI->setup_stylesheet_for_slplus();
+            
+        // No force load?  Register only.
+        // Localize happens when rendering a shortcode.
+        //
+        } else {
+            wp_register_script(
+                    'csl_script',
+                    $sslURL.'/js/slp.js',
+                    array('jquery'),
+                    SLPLUS_VERSION,
+                    ! $force_load
+            );           
+        }
     }     
 
 

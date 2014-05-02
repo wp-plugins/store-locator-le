@@ -291,6 +291,9 @@ class SLPlus extends wpCSL_plugin__slplus {
      * The options that the user has set for Store Locator Plus.
      *
      * Key is the name of a supported option, value is the default value.
+     * 
+     * NOTE: Booleans must be set as a string '0' or '1'.
+     * That is how serialize/deserialize stores and pulls them from the DB.
      *
      * Anything stored in here also gets passed to the slp.js via the slplus.options object.
      * Reference the settings in the slp.js via slplus.options.<key>
@@ -301,6 +304,7 @@ class SLPlus extends wpCSL_plugin__slplus {
      */
     public  $options            = array(
         'bubblelayout'              => ''               ,
+        'immediately_show_locations'=> '1'              ,
         'initial_radius'            => '10000'          ,
         'initial_results_returned'  => '25'             ,
         'label_directions'          => ''               ,
@@ -319,6 +323,7 @@ class SLPlus extends wpCSL_plugin__slplus {
      */
     public $options_nojs    = array(
         'extended_admin_messages'   => '0'      ,
+        'force_load_js'             => '0'      ,
         'has_extended_data'         => ''       ,
         'max_results_returned'      => '25'     ,
         'next_field_id'             => 1        ,
@@ -467,7 +472,12 @@ class SLPlus extends wpCSL_plugin__slplus {
                 $this->options[$name] = $this->defaults[$name];
             }
         }
-
+        
+        $this->debugMP('slp.main','msg','','Options passed to JavaScript:');
+        $this->debugMP('slp.main','pr' ,'',$this->options);
+        
+        $this->debugMP('slp.main','msg','','Non-JavaScript Options:');
+        $this->debugMP('slp.main','pr' ,'',$this->options_nojs);
     }
 
     /**
@@ -657,7 +667,7 @@ class SLPlus extends wpCSL_plugin__slplus {
     function set_ValidOptions($val,$key) {
         if (
                 array_key_exists($key, $this->options) &&
-                !empty($val)
+                ( is_numeric($val) ||  ! empty( $val )          )
             ) {
             $this->options[$key] = stripslashes_deep($val);
             $this->debugMP('slp.main','msg','',"set options[{$key}]=".stripslashes_deep($val),NULL,NULL,true);
@@ -666,6 +676,8 @@ class SLPlus extends wpCSL_plugin__slplus {
 
     /**
      * Set valid options from the incoming REQUEST
+     * 
+     * Set this if the incoming value is not an empty string.
      *
      * @param mixed $val - the value of a form var
      * @param string $key - the key for that form var
@@ -673,7 +685,7 @@ class SLPlus extends wpCSL_plugin__slplus {
     function set_ValidOptionsNoJS($val,$key) {
         if (
                 array_key_exists($key, $this->options_nojs) &&
-                !empty($val)
+                ( is_numeric($val) ||  ! empty( $val )          )
             ) {
             $this->options_nojs[$key] = stripslashes_deep($val);
         }

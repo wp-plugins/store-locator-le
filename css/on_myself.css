@@ -9,7 +9,7 @@
  ** sl_map_height: 100
  ** sl_map_height_units: %
  ** sl_remove_credits: true
- ** sl_load_locations_default: true
+ ** immediately_show_locations: true
  ** initial_results_returned: 25
  ** sl_search_label: Zip Code
  ** csl-slplus_find_button_label: Search

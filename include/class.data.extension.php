@@ -277,7 +277,7 @@ class SLPlus_Data_Extension {
      * @return boolean
      */
     public function has_ExtendedData() {
-        return ! empty ( $this->slplus->options_nojs['has_extended_data'] );
+        return $this->slplus->is_CheckTrue( $this->slplus->options_nojs['has_extended_data'] );
     }
 
     /**
@@ -336,46 +336,55 @@ class SLPlus_Data_Extension {
      * 
      */
     function update_data_table($params=array()) {
+        $extended_fields = $this->get_cols( isset($params['mode']) && ( $params['mode'] = 'force') );       
+        
+        // If we have some extended data fields...
+        //
+        if ( count( $extended_fields ) > 0 ) {        
+            $create = "CREATE TABLE {$this->plugintable['name']} (
+            id mediumint(8) NOT NULL AUTO_INCREMENT,
+            sl_id mediumint(8) UNSIGNED NOT NULL,
+            ";
+            foreach($extended_fields as  $field) {
+                switch($field->type) {
+                    case 'text':
+                        $type = 'longtext';
+                        break;
+                    case 'varchar':
+                        $type = 'varchar(250)';
+                        break;
+                    default:
+                        $type = $field->type;
+                        break;
+                }
 
-        $create = "CREATE TABLE {$this->plugintable['name']} (
-        id mediumint(8) NOT NULL AUTO_INCREMENT,
-        sl_id mediumint(8) UNSIGNED NOT NULL,
-        ";
-
-        $extended_fields = $this->get_cols( isset($params['mode']) && ( $params['mode'] = 'force') );
-        foreach($extended_fields as  $field) {
-            switch($field->type) {
-                case 'text':
-                    $type = 'longtext';
-                    break;
-                case 'varchar':
-                    $type = 'varchar(250)';
-                    break;
-                default:
-                    $type = $field->type;
-                    break;
+                $create .= $field->slug . " $type" . ",\n";
             }
 
-            $create .= $field->slug . " $type" . ",\n";
-        }
+            $create .=
+               "KEY sl_id (sl_id),
+                KEY id (id),
+                KEY slid_id (sl_id,id)
+                ) {$this->slplus->database->collate}";
 
-        $create .=
-           "KEY sl_id (sl_id),
-            KEY id (id),
-            KEY slid_id (sl_id,id)
-            ) {$this->slplus->database->collate}";
+            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+            dbDelta($create);
+            global $EZSQL_ERROR;
+            $EZSQL_ERROR=array();
 
-        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($create);
-        global $EZSQL_ERROR;
-        $EZSQL_ERROR=array();
-
-        // Set the plugin "has extended data" property.
-        // TODO: Make this smarter and check for an actual record count in the extended data table name.
+            // Set the plugin "has extended data" property.
+            // TODO: Make this smarter and check for an actual record count in the extended data table name.
+            //
+            if ( empty ($this->slplus->options_nojs['has_extended_data']) ) {
+                $this->slplus->options_nojs['has_extended_data'] = '1';
+                update_option(SLPLUS_PREFIX.'-options_nojs', $this->slplus->options_nojs);
+            }
+            
+        // No extended data fields
         //
-        if ( empty ($this->slplus->options_nojs['has_extended_data']) ) {
-            $this->slplus->options_nojs['has_extended_data'] = '1';
-            update_option(SLPLUS_PREFIX.'-options_nojs', $this->slplus->options_nojs);
+        }  else {
+            $this->slplus->options_nojs['has_extended_data'] = '0';
+            update_option(SLPLUS_PREFIX.'-options_nojs', $this->slplus->options_nojs);           
         }
     }
 

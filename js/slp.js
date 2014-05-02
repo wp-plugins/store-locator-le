@@ -6,11 +6,11 @@
 var slp = {
 
    /***************************
-  	* Animation enum technically
-  	* usage:
-  	* 		Animation enumeration
-  	*/
-  	Animation: { Bounce: 1, Drop: 2, None: 0 },
+    * Animation enum technically
+    * usage:
+    * 		Animation enumeration
+    */
+    Animation: { Bounce: 1, Drop: 2, None: 0 },
 
     /***************************************************************************
      *
@@ -75,8 +75,8 @@ var slp = {
      *
      * AJAX SUBCLASS
      *
-  	 */
-	Ajax: function() {
+     */
+    Ajax: function() {
         /**
          * Send a request to the ajax listener.
          *
@@ -102,7 +102,7 @@ var slp = {
                 }
              );
 		};
-	},
+    },
 
     /***************************************************************************
      *
@@ -321,75 +321,75 @@ var slp = {
      *
      * MAP SUBCLASS
      *
-  	 ***************************
-  	 * Map Object
-  	 * usage:
-  	 * create a google maps object linked to a map/canvas id
-  	 * parameters:
-  	 * 	aMapNumber: the id/canvas of the map object to load from php side
-  	 */
-  	Map: function(aMapCanvas) {
-		//private: map number to look up at init
-  	  	this.__mapCanvas = aMapCanvas;
+     ***************************
+     * Map Object
+     * usage:
+     * create a google maps object linked to a map/canvas id
+     * parameters:
+     * 	aMapNumber: the id/canvas of the map object to load from php side
+     */
+   Map: function(aMapCanvas) {
+        //private: map number to look up at init
+        this.__mapCanvas = aMapCanvas;
 
-		//function callbacks
-		this.tilesLoaded = null;
+        //function callbacks
+        this.tilesLoaded = null;
 
-  	  	//php passed vars set in init
-  	  	this.address = null;
-  	  	this.canvasID = null;
-  	  	this.draggable = true;
-  	  	this.tilt = 45; //n
-  	  	this.zoomStyle = 0; // 0 = default, 1 = small, 2 = large
-		this.markers = null;
+        //php passed vars set in init
+        this.address = null;
+        this.canvasID = null;
+        this.draggable = true;
+        this.tilt = 45; //n
+        this.zoomStyle = 0; // 0 = default, 1 = small, 2 = large
+        this.markers = null;
 
-		//slplus options
+        //slplus options
         this.usingSensor = false;
-		this.disableScroll = null;
-		this.disableDir = null;
-		this.distanceUnit = null;
-		this.map3dControl = null;
-		this.mapDomain = null;
-		this.mapHomeIconUrl = null;
-		this.mapHomeIconWidth = null;
-		this.mapHomeIconHeight = null;
-		this.mapEndIconUrl = null;
-		this.mapEndIconWidth = null;
-		this.mapEndIconHeight = null;
-		this.mapScaleControl = null;
-		this.mapType = null;
-		this.mapTypeControl = null;
-		this.showTags = null;
-		this.overviewControl = null;
-		this.useEmailForm = null;
-		this.websiteLabel = null;
+        this.disableScroll = null;
+        this.disableDir = null;
+        this.distanceUnit = null;
+        this.map3dControl = null;
+        this.mapDomain = null;
+        this.mapHomeIconUrl = null;
+        this.mapHomeIconWidth = null;
+        this.mapHomeIconHeight = null;
+        this.mapEndIconUrl = null;
+        this.mapEndIconWidth = null;
+        this.mapEndIconHeight = null;
+        this.mapScaleControl = null;
+        this.mapType = null;
+        this.mapTypeControl = null;
+        this.showTags = null;
+        this.overviewControl = null;
+        this.useEmailForm = null;
+        this.websiteLabel = null;
 
-  	  	//gmap set variables
-  	  	this.options = null;
-  	  	this.gmap = null;
-  	  	this.centerMarker = null;
-		this.marker = null;
-		this.infowindow = new google.maps.InfoWindow();
-		this.bounds = null;
-		this.homeAddress = null;
-		this.homePoint = null;
-		this.lastCenter = null;
-		this.lastRadius = null;
-		this.loadedOnce = false;
+        //gmap set variables
+        this.options = null;
+        this.gmap = null;
+        this.centerMarker = null;
+        this.marker = null;
+        this.infowindow = new google.maps.InfoWindow();
+        this.bounds = null;
+        this.homeAddress = null;
+        this.homePoint = null;
+        this.lastCenter = null;
+        this.lastRadius = null;
+        this.loadedOnce = false;
         this.centerLoad = false;
 
         // missing shadows
         //
         this.shadows = new Object;
 
-		/***************************
-  	  	 * function: __init()
-  	  	 * usage:
-  	  	 * Called at the end of the 'class' due to some browser's quirks
-  	  	 * parameters: none
-  	  	 * returns: none
-  	  	 */
-  	  	this.__init = function() {
+        /***************************
+         * function: __init()
+         * usage:
+         * Called at the end of the 'class' due to some browser's quirks
+         * parameters: none
+         * returns: none
+         */
+        this.__init = function() {
 
             if (typeof slplus !== 'undefined') {
                 this.mapType = slplus.map_type;
@@ -407,10 +407,7 @@ var slp = {
                 this.overviewControl = !!(parseInt(slplus.overview_ctrl));
                 this.useEmailForm = !!slplus.use_email_form;
                 this.disableDefaultUI = false;
-
-                if (!slplus.disable_dir) {
-                    this.loadedOnce = true;
-                }
+                if (!slplus.disable_dir) { this.loadedOnce = true; }
 
                 // Setup address
                 // Use the entry form value if set, otherwise use the country
@@ -425,20 +422,19 @@ var slp = {
             } else {
                 alert('Store Locator Plus script not loaded properly.');
             }
-  	  	};
+  	};
 
         /***************************
-  	  	 * function: __buildMap
-  	  	 * usage:
-  	  	 * 		Builds the map with the specified center
-  	  	 * parameters:
-  	  	 * 		center:
-		 *			the specified center or homepoint
-  	  	 * returns: none
-  	  	 */
+        * function: __buildMap
+        * usage:
+        * 		Builds the map with the specified center
+        * parameters:
+        * 		center:
+        *			the specified center or homepoint
+        * returns: none
+        */
         this.__buildMap = function(center) {
-            if (this.gmap === null)
-            {
+            if (this.gmap === null) {
                 this.options = {
                     mapTypeControl: this.mapTypeControl,
                     mapTypeId: this.mapType,
@@ -449,8 +445,10 @@ var slp = {
                     scaleControl: this.mapScaleControl,
                     overviewMapControlOptions: { opened: this.overviewControl }
                 };
+                
                 slpMapDiv = document.getElementById('map');
                 this.gmap = new google.maps.Map(slpMapDiv, this.options);
+                
                 //this forces any bad css from themes to fix the "gray bar" issue by setting the css max-width to none
                 var _this = this;
                 google.maps.event.addListener(this.gmap, 'bounds_changed', function() {
@@ -464,7 +462,7 @@ var slp = {
 
                 // If immediately show locations is enabled.
                 //
-                if (slplus.load_locations === '1') {
+                if ( slplus.options.immediately_show_locations === '1' ) {
                         if (slplus.options.no_homeicon_at_start !== '1') {
                             this.homePoint = center;
                             this.addMarkerAtCenter();
@@ -1055,16 +1053,16 @@ var slp = {
 			return name;
 		};
 
-		/***************************
-  	  	 * function: loadMarkers
-  	  	 * usage:
-  	  	 * 		Sends an ajax request and drops the markers on the map
-  	  	 * parameters:
-  	  	 * 		center:
-		 *			the center of the map (where to center to)
-  	  	 * returns: none
-  	  	 */
-		this.loadMarkers = function(center, radius, tags) {
+        /***************************
+         * function: loadMarkers
+         * usage:
+         * 		Sends an ajax request and drops the markers on the map
+         * parameters:
+         * 		center:
+         *			the center of the map (where to center to)
+         * returns: none
+         */
+        this.loadMarkers = function(center, radius, tags) {
 
             //determines if we need to invent real variables (usually only done at the beginning)
             if (center === null) { center = this.gmap.getCenter(); }
@@ -1090,9 +1088,9 @@ var slp = {
              };
 
             // On Load
-            if (slplus.load_locations === '1') {
+            if ( slplus.options.immediately_show_locations === '1' ) {
                 action.action = 'csl_ajax_onload';
-                slplus.load_locations = '0';
+                slplus.options.immediately_show_locations = '0';
 
             // Search
             } else {
@@ -1219,28 +1217,6 @@ var slp = {
             var address = this.__createAddress(aMarker);
 
          /** Create the results table
-          *
-          * use {0} to {17} to place in the output
-          *
-          *              {0} aMarker.name,
-          *              {1} parseFloat(aMarker.distance).toFixed(1),
-          *              {2} slplus.distance_unit,
-          *              {3} street,
-          *              {4} street2,
-          *              {5} city_state_zip,
-          *              {6} thePhone,
-          *              {7} theFax,
-          *              {8} link,
-          *              {9} elink,
-          *              {10} slplus.map_domain,
-          *              {11} encodeURIComponent(this.address),
-          *              {12} encodeURIComponent(address),
-          *              {13} slplus.options['label_directions'],
-          *              {14} tagInfo,
-          *              {15} aMarker.id
-          *              {16} aMarker.country
-          *              {17} aMarker.hours
-          *              {18} aMarker
           */
          var decodedHours = jQuery("<div/>").html(aMarker.hours).text();
  		 div.innerHTML = slplus.results_string.format(
@@ -1341,7 +1317,7 @@ function setup_Map() {
 
     // Initialize Utilities
     //
-	cslutils = new slp.Utils();
+    cslutils = new slp.Utils();
 
     // Initialize the map based on sensor activity
     //
@@ -1361,7 +1337,7 @@ function setup_Map() {
                 // 1) Success on Location
                 //
                 function(loc) {
-                	cslmap = new slp.Map();
+                    cslmap = new slp.Map();
                     cslmap.usingSensor = true;
                     clearTimeout(sensor.location_timeout);
                     sensor.lat = loc.coords.latitude;
@@ -1372,8 +1348,10 @@ function setup_Map() {
                 // 2) Failed on location
                 //
                 function(error) {
+                    slplus.use_sensor = false;
                     clearTimeout(sensor.location_timeout);
-                	cslmap = new slp.Map();
+                    cslmap = new slp.Map();
+                    cslmap.usingSensor = false;
                     cslmap.doGeocode();
                 }
             );
@@ -1382,14 +1360,17 @@ function setup_Map() {
         //
         } else {
             slplus.use_sensor = false;
-        	cslmap = new slp.Map();
+            cslmap = new slp.Map();
+            cslmap.usingSensor = false;
             cslmap.doGeocode();            
         }
 
     // 4) No Sensor
     //
     } else {
+        slplus.use_sensor = false;
     	cslmap = new slp.Map();
+        cslmap.usingSensor = false;
         cslmap.doGeocode();
     }
 }
@@ -1400,100 +1381,110 @@ function setup_Map() {
  */
 jQuery(document).ready(
     function() {
-                /*---------------------------------
-                 * formparams minified js
-                 */
-                var radioCheck = /radio|checkbox/i,
-                    keyBreaker = /[^\[\]]+/g,
-                    numberMatcher = /^[\-+]?[0-9]*\.?[0-9]+([eE][\-+]?[0-9]+)?$/;
+        
+        // Regular Expression Test Patterns
+        //
+        var radioCheck = /radio|checkbox/i,
+            keyBreaker = /[^\[\]]+/g,
+            numberMatcher = /^[\-+]?[0-9]*\.?[0-9]+([eE][\-+]?[0-9]+)?$/;
 
-                var isNumber = function( value ) {
-                    if ( typeof value === 'number' ) {
-                        return true;
-                    }
+        // isNumber Test
+        //
+        var isNumber = function( value ) {
+            if ( typeof value === 'number' ) {
+                return true;
+            }
 
-                    if ( typeof value !== 'string' ) {
-                        return false;
-                    }
+            if ( typeof value !== 'string' ) {
+                return false;
+            }
 
-                    return value.match(numberMatcher);
-                };
-                jQuery.fn.extend({
-                        formParams: function( convert ) {
-                            if ( this[0].nodeName.toLowerCase() == 'form' && this[0].elements ) {
+            return value.match(numberMatcher);
+        };
+        
+        // Form Parameters Processor
+        //
+        jQuery.fn.extend({
+            
+            // Get the form parameters
+            //
+            formParams: function( convert ) {
+                if ( this[0].nodeName.toLowerCase() == 'form' && this[0].elements ) {
 
-                                return jQuery(jQuery.makeArray(this[0].elements)).getParams(convert);
-                            }
-                            return jQuery("input[name], textarea[name], select[name]", this[0]).getParams(convert);
-                        },
-                        getParams: function( convert ) {
-                            var data = {},
-                                current;
-
-                            convert = convert === undefined ? true : convert;
-
-                            this.each(function() {
-                                var el = this,
-                                    type = el.type && el.type.toLowerCase();
-                                //if we are submit, ignore
-                                if ((type == 'submit') || !el.name ) {
-                                    return;
-                                }
-
-                                var key = el.name,
-                                    value = jQuery.data(el, "value") || jQuery.fn.val.call([el]),
-                                    isRadioCheck = radioCheck.test(el.type),
-                                    parts = key.match(keyBreaker),
-                                    write = !isRadioCheck || !! el.checked,
-                                    //make an array of values
-                                    lastPart;
-
-                                if ( convert ) {
-                                    if ( isNumber(value) ) {
-                                        value = parseFloat(value);
-                                    } else if ( value === 'true' || value === 'false' ) {
-                                        value = Boolean(value);
-                                    }
-
-                                }
-
-                                // go through and create nested objects
-                                current = data;
-                                for ( var i = 0; i < parts.length - 1; i++ ) {
-                                    if (!current[parts[i]] ) {
-                                        current[parts[i]] = {};
-                                    }
-                                    current = current[parts[i]];
-                                }
-                                lastPart = parts[parts.length - 1];
-
-                                //now we are on the last part, set the value
-                                if ( lastPart in current && type === "checkbox" ) {
-                                    if (!jQuery.isArray(current[lastPart]) ) {
-                                        current[lastPart] = current[lastPart] === undefined ? [] : [current[lastPart]];
-                                    }
-                                    if ( write ) {
-                                        current[lastPart].push(value);
-                                    }
-                                } else if ( write || !current[lastPart] ) {
-                                    current[lastPart] = write ? value : undefined;
-                                }
-
-                            });
-                            return data;
-                        }
-                    }
-                );
-
-                // Our map initialization
-                //
-                if (jQuery('div#sl_div').is(":visible")) {
-                    if (typeof slplus !== 'undefined') {
-                        setup_Helpers();
-                        setup_Map();
-                    } else {
-                        jQuery('#sl_div').html('Store Locator Plus did not initialize properly.');
-                    }
+                    return jQuery(jQuery.makeArray(this[0].elements)).getParams(convert);
                 }
+                return jQuery("input[name], textarea[name], select[name]", this[0]).getParams(convert);
+            },
+            
+            // Get a specific form element
+            //
+            getParams: function( convert ) {
+                var data = {},
+                    current;
+
+                convert = convert === undefined ? true : convert;
+
+                this.each(function() {
+                    var el = this,
+                        type = el.type && el.type.toLowerCase();
+                    //if we are submit, ignore
+                    if ((type == 'submit') || !el.name ) {
+                        return;
+                    }
+
+                    var key = el.name,
+                        value = jQuery.data(el, "value") || jQuery.fn.val.call([el]),
+                        isRadioCheck = radioCheck.test(el.type),
+                        parts = key.match(keyBreaker),
+                        write = !isRadioCheck || !! el.checked,
+                        //make an array of values
+                        lastPart;
+
+                    if ( convert ) {
+                        if ( isNumber(value) ) {
+                            value = parseFloat(value);
+                        } else if ( value === 'true' || value === 'false' ) {
+                            value = Boolean(value);
+                        }
+
+                    }
+
+                    // go through and create nested objects
+                    current = data;
+                    for ( var i = 0; i < parts.length - 1; i++ ) {
+                        if (!current[parts[i]] ) {
+                            current[parts[i]] = {};
+                        }
+                        current = current[parts[i]];
+                    }
+                    lastPart = parts[parts.length - 1];
+
+                    //now we are on the last part, set the value
+                    if ( lastPart in current && type === "checkbox" ) {
+                        if (!jQuery.isArray(current[lastPart]) ) {
+                            current[lastPart] = current[lastPart] === undefined ? [] : [current[lastPart]];
+                        }
+                        if ( write ) {
+                            current[lastPart].push(value);
+                        }
+                    } else if ( write || !current[lastPart] ) {
+                        current[lastPart] = write ? value : undefined;
+                    }
+
+                });
+                return data;
+            }
+        });
+
+        // Our map initialization
+        //
+        if (jQuery('div#sl_div').is(":visible")) {            
+            if (typeof slplus !== 'undefined') {
+                setup_Helpers();
+                setup_Map();
+            } else {
+                jQuery('#sl_div').html('Store Locator Plus did not initialize properly.');
+            }
+        }
     }
 );

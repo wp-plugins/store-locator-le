@@ -5,7 +5,7 @@
  *
  * @package StoreLocatorPlus\UI
  * @author Lance Cleveland <lance@charlestonsw.com>
- * @copyright 2012-2013 Charleston Software Associates, LLC
+ * @copyright 2012-2014 Charleston Software Associates, LLC
  */
 class SLPlus_UI {
 
@@ -113,25 +113,36 @@ class SLPlus_UI {
      *    The shortcode attribute = true.
      *    OR
      *    attribute is not set (null)
-     *       AND the setting is checked
+     *       AND the setting is checked in the global options tabs for SLP
      *
      *
      * @param string $attribute - the key for the shortcode attribute
-     * @param string $setting - the key for the admin panel setting
+     * @param string $setting - the key for the admin panel setting (defaults to attribute)
      * @return boolean
      */
-    function ShortcodeOrSettingEnabled($attribute,$setting) {
+    function ShortcodeOrSettingEnabled($attribute,$setting = null ) {
         if (!$this->setPlugin()) { return false; }
+        if ( $setting === null ) { $setting = $attribute; }        
+        
+        $this->plugin->debugMP('slp.main','msg','SLPlusUI::'.__FUNCTION__);
 
        // If the data attribute is set
        //
        // return TRUE if the value is 'true' (this is for shortcode atts)
-       if (isset($this->plugin->data[$attribute])) {
+       if ( isset( $this->plugin->data[$attribute] ) ) {
+            $this->plugin->debugMP('slp.main','msg','',"attribute {$attribute} set");
             return $this->plugin->is_CheckTrue($this->plugin->data[$attribute]);
 
        // If the data attribute is NOT set or it is set and is null (isset = false if value is null)
-       // return the value of the database setting
+       // 
+       // return the value of the database setting in this order of precedence:
+       // o the serialized options property of the SLPlus class
+       // o the serialized options_nojs property of the SLPlus class
+       // o the wp_options table option_name via get_option
+       //
        } else {
+            if ( isset( $this->plugin->options[$setting]      ) ) { return $this->plugin->is_CheckTrue( $this->plugin->options[$setting]      ); }
+            if ( isset( $this->plugin->options_nojs[$setting] ) ) { return $this->plugin->is_CheckTrue( $this->plugin->options_nojs[$setting] ); }           
             return ($this->plugin->settings->get_item($setting,0) == 1);
        }
     }
@@ -531,27 +542,32 @@ class SLPlus_UI {
         $attributes =
             shortcode_atts(
                 apply_filters('slp_shortcode_atts',array(),$attributes,$content),
-                $attributes
+                $attributes ,
+                'slplus'
                );
-
-        // Set the base plugin data elements to match the allowed
-        // shortcode attributes.
+        
+        // Set plugin data and options to include the attributes.
+        // TODO: data needs to go away and become part of options.
         //
         $this->plugin->data =
             array_merge(
                 $this->plugin->data,
                 (array) $attributes
             );
+        $this->plugin->options = 
+            array_merge(
+                $this->plugin->options, 
+                (array) $attributes
+            );
 
-        // Now set options to attributes
+        // Localize the CSL Script - modifies the CSLScript with any shortcode attributes.
+        // Setup the style sheets
         //
-        $this->plugin->options = array_merge($this->plugin->options, (array) $attributes);
-
-        // Localize the CSL Script
-        //  This localize modifies the CSLScript with any shortcode attributes.
-        //
-        $this->plugin->debugMP('slp.main','pr','',$this->plugin->data);
-        $this->localizeSLPScript();
+        if ( ! $this->plugin->is_CheckTrue( $this->plugin->options_nojs['force_load_js'] ) ) {
+            $this->localizeSLPScript( );
+            wp_enqueue_script( 'csl_script' );
+            $this->setup_stylesheet_for_slplus();
+        }
         $this->set_RadiusOptions();
 
         // Set our flag for later processing
@@ -561,10 +577,6 @@ class SLPlus_UI {
             define('SLPLUS_SHORTCODE_RENDERED',true);
         }
         $this->plugin->shortcode_was_rendered = true;
-
-        // Setup the style sheets
-        //
-        $this->setup_stylesheet_for_slplus();
 
         // Map Actions
         //
@@ -592,11 +604,12 @@ class SLPlus_UI {
 
     /**
      * Localize the CSL Script
-     *
      */
-    function localizeSLPScript() {
+    function localizeSLPScript( ) {
         if (!$this->setPlugin()) { return false; }
         $this->plugin->debugMP('slp.main','msg','SLPlus_UI:'.__FUNCTION__);
+        
+        
         $this->plugin->loadPluginData();
 
         $slplus_home_icon_file = str_replace(SLPLUS_ICONURL,SLPLUS_ICONDIR,$this->plugin->data['sl_map_home_icon']);
@@ -627,7 +640,6 @@ class SLPlus_UI {
             'core_url'          => SLPLUS_COREURL,
             'disable_scroll'    => (get_option(SLPLUS_PREFIX.'_disable_scrollwheel')==1),
             'distance_unit'     => esc_attr(get_option('sl_distance_unit'),__('miles', 'csa-slplus')),
-            'load_locations'    => (get_option('sl_load_locations_default','1')==1),
             'map_3dcontrol'     => (get_option(SLPLUS_PREFIX.'_disable_largemapcontrol3d')==0),
             'map_country'       => $this->set_MapCenter(),
             'map_domain'        => get_option('sl_google_map_domain','maps.google.com'),
@@ -651,6 +663,7 @@ class SLPlus_UI {
             // FILTER: slp_js_options
             'options'           => apply_filters('slp_js_options',$this->plugin->options)
             );
+        $this->plugin->debugMP('slp.main','pr','Script Data', $scriptData);
 
         remove_shortcode('slp_location');
 
@@ -661,9 +674,9 @@ class SLPlus_UI {
 
         // FILTER: slp_script_data
         //
-        $scriptData = apply_filters('slp_script_data',$scriptData);
+        $scriptData = apply_filters('slp_script_data',$scriptData);        
+        wp_localize_script('csl_script' ,'slplus'   , $scriptData);            
 
-        wp_localize_script('csl_script' ,'slplus'   , $scriptData);
     }
 
     /**
@@ -734,7 +747,6 @@ class SLPlus_UI {
      * @param array[] $atts
      */
     function process_slp_location_Shortcode($atts) {
-        $this->plugin->debugMP('slp.main','msg','SLPlus_UI:'.__FUNCTION__);
 
         // Set prefix/suffix based on modifiers
         $content = '';

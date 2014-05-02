@@ -286,8 +286,6 @@ class SLPlus_AdminUI_MapSettings {
                     SLPLUS_PREFIX.'_use_email_form'             ,
                     SLPLUS_PREFIX.'_email_form'                 ,
                     SLPLUS_PREFIX.'_disable_find_image'         ,
-                    //SLPLUS_PREFIX.'-force_load_js'              ,
-                    'sl_load_locations_default'                 ,
                     'sl_remove_credits'                         ,
                     )
                 );
@@ -295,6 +293,17 @@ class SLPlus_AdminUI_MapSettings {
         foreach ($BoxesToHit as $JustAnotherBox) {
             $this->plugin->helper->SaveCheckBoxToDB($JustAnotherBox, '','');
         }
+        
+        // Serialized Checkboxes, Need To Blank If Not Received
+        //
+        $BoxesToHit = array(
+            'immediately_show_locations' ,
+            );
+        foreach ($BoxesToHit as $BoxName) {
+            if (!isset($_REQUEST[$BoxName])) {
+                $_REQUEST[$BoxName] = '0';
+            }
+        }        
 
         // Serialized Options Setting
         // This should be used for ALL new options.
@@ -789,12 +798,12 @@ class SLPlus_AdminUI_MapSettings {
                         $this->plugin->options_nojs['max_results_returned']
                         ).
             $this->plugin->helper->CreateCheckboxDiv(
-                    'sl_load_locations_default',
+                    'immediately_show_locations',
                     __('Immediately Show Locations', 'csa-slplus'),
                     __('Display locations as soon as map loads, based on map center and default radius. ','csa-slplus'),
                     '',
                     false,
-                    1
+                    $this->plugin->options['immediately_show_locations']
                     ).
             $this->CreateInputDiv(
                     'initial_results_returned',

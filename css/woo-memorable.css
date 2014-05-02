@@ -23,6 +23,12 @@ div#map .gm-style-cc > div {
 div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
   display: none; }
 
+#map_box_image {
+  display: block; }
+
+#map_box_map {
+  display: none; }
+
 #sl_info_bubble .location_detail_hours {
   white-space: pre-wrap; }
 
@@ -37,6 +43,21 @@ div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
   width: 1em;
   vertical-align: sub; }
 
+/*#tagalong_legend {
+    border: none;
+    padding: 12px;
+}
+#tagalong_legend .legend_text {
+    display: inline-block;
+    margin-left: 6px;
+    margin-right: 20px;
+    vertical-align: middle;
+}
+#tagalong_legend .tagalong_legend_icon {
+    display: inline-block;
+    margin-bottom: 12px;
+    min-width: 190px;
+}*/
 #tagalong_category_selector .category_selector.parent {
   display: block;
   float: left; }

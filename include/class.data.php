@@ -192,6 +192,19 @@ class SLPlus_Data {
                     $sqlStatement .= 'SELECT sl_id FROM '   .$this->info['table'].' ';
                     break;
 
+                // select_country_list
+                // Fetch a list of all countries in the location table where state is not empty.
+                //
+                case 'select_country_list':
+                    $sqlStatement .=
+                        'SELECT trim(sl_country) as country ' .
+                        ' FROM ' . $this->info['table'] . ' ' .
+                        "WHERE sl_country<>'' " .
+                        'GROUP BY sl_country ' .
+                        'ORDER BY sl_country ASC '
+                        ;
+                    break;
+
                 // select_state_list
                 // Fetch a list of all states in the location table where state is not empty.
                 //
