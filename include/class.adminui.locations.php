@@ -998,6 +998,14 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                     '', false, 'input',
                     __('Leave blank to have Google look up the longitude.', 'csa-slplus')
                     ).
+            '<p class="text_info">' .
+                sprintf('<a href="%s" target="csa" alt="%s" title="%s">%s</a>',
+                        'http://www.latlong.net',
+                        __('Latitude/Longitude lookup.','csa-slplus') ,
+                        __('Latitude/Longitude lookup.','csa-slplus') ,
+                        __('The LatLong.net website can help you locate an exact latitude/longitude.','csa-slplus') 
+                    ) .
+            '</p>' .                
             $HTML
             ;
     }
@@ -1569,16 +1577,30 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         //
         $dropdownItems = apply_filters('slp_locations_manage_filters',$dropdownItems);
 
+        // Loop through the action boxes content array
+        //
+        $baExtras = '';
+        foreach ($dropdownItems as $item) {
+            if (isset($item['extras']) && !empty($item['extras'])) {
+                $baExtras .= $item['extras'];
+            }
+        }
+
+        // Create the box div string.
+        //
         return
             $this->slplus->helper->createstring_DropDownMenuWithButton(
                 array(
                         'id'            => 'filterType'             ,
                         'name'          => 'filter'                 ,
                         'items'         => $dropdownItems           ,
+                        'onchange'      =>
+                            'jQuery(\'.filter_extras\').hide();jQuery(\'#extra_\'+jQuery(\'#filterType\').val()).show();',
                         'buttonlabel'   => __('Filter','csa-slplus') ,
                         'onclick'       => 'AdminUI.doAction(jQuery(\'#filterType\').val(),\'\');'
                     )
-                )
+                ).
+                $baExtras 
             ;
     }
 

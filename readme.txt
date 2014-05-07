@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-4/
 Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.4
 Tested up to: 3.9
-Stable tag: 4.1.16
+Stable tag: 4.1.18
 License: GLPv2 or later
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
@@ -327,6 +327,14 @@ Please read the *description page* for this plugin for an important note about p
 I update about once per month or more frequently as needed.
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 4.1.18 =
+
+* Change: Added location management JavaScript and CSS for [User Managed Locations](http://www.storelocatorplus.com/product/slp4-user-managed-locations/) support.
+* Change: admin.css file is now Sass-driven to build a framework for consistent CSS rule declarations.
+* Change: Make location add/edit form input label width match rest of admin interface.
+* Enhancement: Added two new P (parking) icons.
+* Enhancement: Add link to LatLong.net for lookup up specific lat/long addresss.
 
 = 4.1.16 =
 
