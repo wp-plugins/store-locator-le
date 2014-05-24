@@ -155,6 +155,7 @@ class SLPlus_AdminUI {
      * Enqueue the admin stylesheet when needed.
      */
     function enqueue_admin_stylesheet($hook) {
+        $this->slplus->debugMP('slp.main','msg','SLPlus_AdminUI::'.__FUNCTION__);
         if ($this->slplus->check_isOurAdminPage()) {wp_enqueue_style($this->styleHandle);}
     }
 

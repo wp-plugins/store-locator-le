@@ -121,6 +121,16 @@ class PluginThemeAdmin {
         } else {
             $HTML .= $this->themeDetails[$this->current_slug]['description'];
         }
+        
+        $HTML .= 
+            '<p>' .
+            __('Learn more about changing the Store Locator Plus interface via the ' , 'wpcsl') .
+            sprintf(
+                '<a href="%s" target="csa">%s</a>',
+                $this->support_url . 'user-experience/',            
+                __('User Experience documentation.','wpcsl')
+            ) .
+            '</p>';
 
         // Add On Packs
         //

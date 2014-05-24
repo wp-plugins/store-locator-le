@@ -151,6 +151,17 @@ div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
 #map_box_map {
   display: none; }
 
+div#slp_tagline {
+  background-color: #AABBDD;
+  font-size: 11px;
+  font-family: Arial, sans-serif;
+  opacity: 0.45;
+  filter: alpha(opacity=45);
+  margin-bottom: 3px;
+  padding-right: 3px;
+  text-align: right;
+  width: 100%; }
+
 #search_by_tag span {
   margin-right: 0.4em; }
 
@@ -354,17 +365,6 @@ div#sl_div .gm-style-iw {
 
 #sl_info_bubble .location_detail_hours {
   white-space: pre-wrap; }
-
-div#slp_tagline {
-  background-color: #AABBDD;
-  font-size: 11px;
-  font-family: Arial, sans-serif;
-  opacity: 0.45;
-  filter: alpha(opacity=45);
-  margin-bottom: 3px;
-  padding-right: 3px;
-  text-align: right;
-  width: 100%; }
 
 /*---------------------
  * Results

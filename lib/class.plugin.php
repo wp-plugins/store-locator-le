@@ -1,29 +1,30 @@
 <?php
+
 /**
  * A collection of classes that help us provide a consistent plugin experience for WordPress.
  * 
  * This class does most of the heavy lifting for creating a plugin.
-* It takes a hash as its one constructor argument, which can have the
-* following keys and values:
-*
-*     * 'basefile' :: Path and filename of main plugin file. Needed so wordpress
-*               can tell which plugin is calling some of it's generic hooks.
-*
-*     * 'css_prefix' :: The prefix to add to CSS classes, use 'csl_theme' to
-*               enable generic themes.
-*
-*     * 'name' :: The name of the plugin.
-*
-*     * 'prefix' :: A string used to prefix all of the Wordpress
-*       settings for the plugin.
-*
-*     * 'support_url' :; The URL for the support page at WordPress
-*
-*     * 'purchase_url' :: The URL for purchasing the plugin
-*
-*     * 'url' :: The URL for the product page for purchases.
-*
-**/
+ * It takes a hash as its one constructor argument, which can have the
+ * following keys and values:
+ *
+ *     * 'basefile' :: Path and filename of main plugin file. Needed so wordpress
+ *               can tell which plugin is calling some of it's generic hooks.
+ *
+ *     * 'css_prefix' :: The prefix to add to CSS classes, use 'csl_theme' to
+ *               enable generic themes.
+ *
+ *     * 'name' :: The name of the plugin.
+ *
+ *     * 'prefix' :: A string used to prefix all of the Wordpress
+ *       settings for the plugin.
+ *
+ *     * 'support_url' :; The URL for the support page at WordPress
+ *
+ *     * 'purchase_url' :: The URL for purchasing the plugin
+ *
+ *     * 'url' :: The URL for the product page for purchases.
+ *
+ * */
 
 /**
  * The base WPCSL class, to which all the other WPCSL objects get attached.
@@ -35,7 +36,6 @@
  *
  */
 class wpCSL_plugin__slplus {
-
     //---------------------------------------------
     // Properties
     //---------------------------------------------
@@ -52,7 +52,7 @@ class wpCSL_plugin__slplus {
      * 
      * @var string[] $admin_slugs
      */
-     private $admin_slugs = array();
+    private $admin_slugs = array();
 
     /**
      * Debug My Plugin stack
@@ -139,22 +139,22 @@ class wpCSL_plugin__slplus {
 
         // These settings can be overridden
         //
-        $this->broadcast_url                = 'http://www.charlestonsw.com/signage/index.php';
-        $this->css_prefix                   = '';
-        $this->current_admin_page           = '';
-        $this->prefix                       = '';
-        $this->shortcode_was_rendered       = false;
-        $this->themes_enabled               = false;
-        $this->use_obj_defaults             = true;
-        
+        $this->broadcast_url = 'http://www.charlestonsw.com/signage/index.php';
+        $this->css_prefix = '';
+        $this->current_admin_page = '';
+        $this->prefix = '';
+        $this->shortcode_was_rendered = false;
+        $this->themes_enabled = false;
+        $this->use_obj_defaults = true;
+
         // Set current admin page
         //
-        if ( isset($_GET['page']) ) {
+        if (isset($_GET['page'])) {
             $plugin_page = stripslashes($_GET['page']);
             $plugin_page = plugin_basename($plugin_page);
             $this->current_admin_page = $plugin_page;
         }
-                
+
         // Do the setting override or initial settings.
         //
         foreach ($params as $name => $value) {
@@ -164,18 +164,18 @@ class wpCSL_plugin__slplus {
         // Check to see if we are doing an update
         //
         if (isset($this->version)) {
-            if ($this->version != get_option($this->prefix."-installed_base_version")) {
+            if ($this->version != get_option($this->prefix . "-installed_base_version")) {
                 if (isset($this->on_update)) {
-                    call_user_func_array($this->on_update, array($this, get_option($this->prefix."-installed_base_version")));
+                    call_user_func_array($this->on_update, array($this, get_option($this->prefix . "-installed_base_version")));
                 }
-                update_option($this->prefix.'-installed_base_version', $this->version);
+                update_option($this->prefix . '-installed_base_version', $this->version);
 
-                $destruct_time = get_option($this->prefix."-notice-countdown");
+                $destruct_time = get_option($this->prefix . "-notice-countdown");
 
                 // We're doing an update, so check to see if they didn't check the check box,
                 // and if they didn't... well, show it to them again
                 if ($destruct_time) {
-                    delete_option($this->prefix."-notice-countdown");
+                    delete_option($this->prefix . "-notice-countdown");
                 }
             }
         }
@@ -189,17 +189,17 @@ class wpCSL_plugin__slplus {
         // then instatiate it here in the http_handler property
         // of this class.
         //
-        if( !class_exists( 'WP_Http' ) ) {
-            include_once( ABSPATH . WPINC. '/class-http.php' );
+        if (!class_exists('WP_Http')) {
+            include_once( ABSPATH . WPINC . '/class-http.php' );
         }
-        if ( class_exists( 'WP_Http' ) ) {
+        if (class_exists('WP_Http')) {
             $this->http_handler = new WP_Http;
         }
 
         // Plugin Author URL
         //
-        $this->url         = (isset($this->url          ) ? $this->url          : 'http://www.charlestonsw.com/');
-        $this->support_url = (isset($this->support_url  ) ? $this->support_url  : $this->url                    );
+        $this->url = (isset($this->url) ? $this->url : 'http://www.charlestonsw.com/');
+        $this->support_url = (isset($this->support_url) ? $this->support_url : $this->url );
 
         // Initialize
         $this->create_objects();
@@ -210,31 +210,39 @@ class wpCSL_plugin__slplus {
     /**
      * Sets $this->isOurAdminPage true if we are on a SLP managed admin page.  Returns true/false accordingly.
      */
-	function check_IsOurAdminPage() {
-		$this->admin_slugs = apply_filters('wpcsl_admin_slugs',$this->admin_slugs);
+    function check_IsOurAdminPage() {
+        $this->admin_slugs = apply_filters('wpcsl_admin_slugs', $this->admin_slugs);
 
-        if ( ! is_admin() )          { $this->isOurAdminPage = false; return false; }
-        if ( $this->isOurAdminPage ) { return true; }
-        
+        if (!is_admin()) {
+            $this->isOurAdminPage = false;
+            return false;
+        }
+        if ($this->isOurAdminPage) {
+            return true;
+        }
+
         // Our Admin Page : true if we are on the admin page for this plugin
         // or we are processing the update action sent from this page
         //
         $this->isOurAdminPage = (
-                ($this->current_admin_page == $this->prefix.'-options') ||
-                ($this->current_admin_page == $this->admin_main_slug  )
+                ($this->current_admin_page == $this->prefix . '-options') ||
+                ($this->current_admin_page == $this->admin_main_slug )
                 );
-        if ($this->isOurAdminPage) { return true; }
+        if ($this->isOurAdminPage) {
+            return true;
+        }
 
 
         // Request Action is "update" on option page
         //
-        $this->isOurAdminPage =
-             isset($_REQUEST['action']) &&
-             ($_REQUEST['action'] === 'update') &&
-             isset($_REQUEST['option_page']) &&
-             (substr($_REQUEST['option_page'], 0, strlen($this->prefix)) === $this->prefix)
-             ;
-        if ($this->isOurAdminPage) { return true; }
+        $this->isOurAdminPage = isset($_REQUEST['action']) &&
+                ($_REQUEST['action'] === 'update') &&
+                isset($_REQUEST['option_page']) &&
+                (substr($_REQUEST['option_page'], 0, strlen($this->prefix)) === $this->prefix)
+        ;
+        if ($this->isOurAdminPage) {
+            return true;
+        }
 
         // This test allows for direct calling of the options page from an
         // admin page call direct from the sidebar using a class/method
@@ -250,7 +258,9 @@ class wpCSL_plugin__slplus {
             }
             foreach ($this->admin_slugs as $admin_slug) {
                 $this->isOurAdminPage = ($this->current_admin_page === $admin_slug);
-                if ($this->isOurAdminPage) { break; }
+                if ($this->isOurAdminPage) {
+                    break;
+                }
             }
         }
         return $this->isOurAdminPage;
@@ -262,14 +272,15 @@ class wpCSL_plugin__slplus {
      * @return null
      */
     function create_DMPPanels() {
-        if (!isset($GLOBALS['DebugMyPlugin'])) { return; }
-        if (class_exists('DMPPanelSLPMain') == false) {
-            require_once($this->plugin_path.'/lib/class.dmppanels.php');
+        if (!isset($GLOBALS['DebugMyPlugin'])) {
+            return;
         }
-        $GLOBALS['DebugMyPlugin']->panels['wpcsl.main']        = new DMPPanelWPCSLMain();
-        $GLOBALS['DebugMyPlugin']->panels['wpcsl.settings']    = new DMPPanelWPCSLSettings();
+        if (class_exists('DMPPanelSLPMain') == false) {
+            require_once($this->plugin_path . '/lib/class.dmppanels.php');
+        }
+        $GLOBALS['DebugMyPlugin']->panels['wpcsl.main'] = new DMPPanelWPCSLMain();
+        $GLOBALS['DebugMyPlugin']->panels['wpcsl.settings'] = new DMPPanelWPCSLSettings();
     }
-
 
     /**
      * Create and attach helper object if needed.
@@ -277,14 +288,16 @@ class wpCSL_plugin__slplus {
      * @param string $class
      */
     function create_helper($class = 'none') {
-        if ($class === 'none') { return; }
+        if ($class === 'none') {
+            return;
+        }
         require_once('class.helper.php');
         $this->helper = new wpCSL_helper__slplus(
-            array(
-                'parent'            => $this
-            )
+                array(
+            'parent' => $this
+                )
         );
-    }    
+    }
 
     /**
      * Setup the WPCSL Notifications Object.
@@ -292,18 +305,18 @@ class wpCSL_plugin__slplus {
      * @param string $class - 'none' to disable notifications
      */
     function create_notifications($class = 'none') {
-        if ($class==='none') { return; }
+        if ($class === 'none') {
+            return;
+        }
         require_once('class.notifications.php');
-        $this->notifications = 
-            new wpCSL_notifications__slplus(
-                    array(
-                                'prefix' => $this->prefix,
-                                'name' => $this->name,
-                                'url' => 'options-general.php?page='.$this->prefix.'-options',
-                    )
-                    );
+        $this->notifications = new wpCSL_notifications__slplus(
+                array(
+            'prefix' => $this->prefix,
+            'name' => $this->name,
+            'url' => 'options-general.php?page=' . $this->prefix . '-options',
+                )
+        );
     }
-
 
     /**
      * Attach the settings object to this plugin.
@@ -311,20 +324,22 @@ class wpCSL_plugin__slplus {
      * @param string $class
      */
     function create_settings($class = 'none') {
-        if ($class === 'none') { return; }
+        if ($class === 'none') {
+            return;
+        }
         require_once('class.settings.php');
         $this->settings = new wpCSL_settings__slplus(
-            array(            
-                    'http_handler'      => $this->http_handler,
-                    'broadcast_url'     => $this->broadcast_url,
-                    'prefix'            => $this->prefix,
-                    'css_prefix'        => $this->css_prefix,
-                    'plugin_url'        => $this->plugin_url,
-                    'name'              => $this->name,
-                    'url'               => (isset($this->url)?$this->url:null),
-                    'parent'            => $this            
+                array(
+            'http_handler' => $this->http_handler,
+            'broadcast_url' => $this->broadcast_url,
+            'prefix' => $this->prefix,
+            'css_prefix' => $this->css_prefix,
+            'plugin_url' => $this->plugin_url,
+            'name' => $this->name,
+            'url' => (isset($this->url) ? $this->url : null),
+            'parent' => $this
                 )
-            );
+        );
     }
 
     /**
@@ -334,41 +349,41 @@ class wpCSL_plugin__slplus {
      * @return null
      */
     function create_themes($class = 'none') {
-        if ($class === 'none') { return; }
+        if ($class === 'none') {
+            return;
+        }
         require_once('class.themes.php');
         $this->themes = new PluginTheme(
-            array(
-                'notifications' => $this->notifications,
-                'parent'        => $this,
-                'plugin_path'   => $this->plugin_path,
-                'plugin_url'    => $this->plugin_url,
-                'prefix'        => $this->prefix,
-                'support_url'   => $this->support_url,
-            )
-        );
-    }    
-
-    /**-------------------------------------
-     ** method: create_options_page
-     **/
-    function create_options_page() {
-        add_options_page(
-            $this->name . ' Options',
-            $this->name,
-            'administrator',
-            $this->prefix . '-options',
-            array(
-                $this->settings,
-                'render_settings_page'
-            )
+                array(
+            'notifications' => $this->notifications,
+            'parent' => $this,
+            'plugin_path' => $this->plugin_path,
+            'plugin_url' => $this->plugin_url,
+            'prefix' => $this->prefix,
+            'support_url' => $this->support_url,
+                )
         );
     }
 
-    /**-------------------------------------
-     ** method: create_objects
-     **/
+    /*     * -------------------------------------
+     * * method: create_options_page
+     * */
+
+    function create_options_page() {
+        add_options_page(
+                $this->name . ' Options', $this->name, 'administrator', $this->prefix . '-options', array(
+            $this->settings,
+            'render_settings_page'
+                )
+        );
+    }
+
+    /*     * -------------------------------------
+     * * method: create_objects
+     * */
+
     function create_objects() {
-        
+
         // use_obj_defaults is set, use the invoke the default 
         // set of wpCSL objects
         //
@@ -377,34 +392,38 @@ class wpCSL_plugin__slplus {
             $this->create_notifications('default');
             $this->create_settings('default');
             $this->create_themes('default');
-            
-        // Custom objects are in place
+
+            // Custom objects are in place
         //
         } else {
-            if (isset($this->helper_obj_name        ))  $this->create_helper($this->helper_obj_name                 );
-            if (isset($this->notifications_obj_name ))  $this->create_notifications($this->notifications_obj_name   );
-            if (isset($this->settings_obj_name      ))  $this->create_settings($this->settings_obj_name             );
-            if (isset($this->themes_obj_name        ))  $this->create_themes($this->themes_obj_name                 );
+            if (isset($this->helper_obj_name))
+                $this->create_helper($this->helper_obj_name);
+            if (isset($this->notifications_obj_name))
+                $this->create_notifications($this->notifications_obj_name);
+            if (isset($this->settings_obj_name))
+                $this->create_settings($this->settings_obj_name);
+            if (isset($this->themes_obj_name))
+                $this->create_themes($this->themes_obj_name);
         }
     }
 
-    /***********************************************
-     ** method: add_refs
-     ** What did you say? Refactoring what now? I don't know what that is
-     **
-     ** This connects the instantiated objects of other classes that are
-     ** properties of the main CSL-plugin class to each other.  For example
-     ** it ensures each of the other classes can access the notification
-     ** object for the main plugin.
-     **
-     ** settings    <= notifications, themes
-     ** themes      <= settings, notifications
-     ** helper      <= notifications
-     **
-     **/
+    /*     * *********************************************
+     * * method: add_refs
+     * * What did you say? Refactoring what now? I don't know what that is
+     * *
+     * * This connects the instantiated objects of other classes that are
+     * * properties of the main CSL-plugin class to each other.  For example
+     * * it ensures each of the other classes can access the notification
+     * * object for the main plugin.
+     * *
+     * * settings    <= notifications, themes
+     * * themes      <= settings, notifications
+     * * helper      <= notifications
+     * *
+     * */
+
     function add_refs() {
         // Notifications doesn't require any other objects yet
-
         // Settings
         if (isset($this->settings)) {
             if (isset($this->notifications) && !isset($this->settings->notifications))
@@ -418,12 +437,12 @@ class wpCSL_plugin__slplus {
             if (isset($this->helper) && !isset($this->helper->notifications))
                 $this->helper->notifications = &$this->notifications;
         }
-        
+
         // Themes
         if (isset($this->themes)) {
             if (isset($this->themes) && !isset($this->themes->notifications))
                 $this->themes->notifications = &$this->notifications;
-            if (isset($this->settings) && !isset($this->themes->settings))            
+            if (isset($this->settings) && !isset($this->themes->settings))
                 $this->themes->settings = &$this->settings;
         }
     }
@@ -435,12 +454,12 @@ class wpCSL_plugin__slplus {
      * Reference: http://codex.wordpress.org/Plugin_API/Action_Reference
      */
     function add_wp_actions() {
-        if ( is_admin() ) {
-            add_action('admin_menu'             ,array($this,'create_options_page'      )   );
-            add_action('admin_init'             ,array($this,'admin_init'               ),50);
-            add_action('admin_enqueue_scripts'  ,array($this,'enqueue_admin_stylesheet' )   );
-            add_action('admin_notices'          ,array($this->notifications, 'display'  )   );
-            add_action('dmp_addpanel'           ,array($this,'create_DMPPanels'         )   );
+        if (is_admin()) {
+            add_action('admin_menu', array($this, 'create_options_page'));
+            add_action('admin_init', array($this, 'admin_init'), 50);
+            add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_stylesheet'));
+            add_action('admin_notices', array($this->notifications, 'display'));
+            add_action('dmp_addpanel', array($this, 'create_DMPPanels'));
         } else {
             if (!$this->themes_enabled && !$this->no_default_css) {
                 // non-admin enqueues, actions, and filters
@@ -452,22 +471,23 @@ class wpCSL_plugin__slplus {
         add_filter('plugin_row_meta', array($this, 'add_meta_links'), 10, 2);
     }
 
-    /**-------------------------------------
-     ** method: add_meta_links
-     **/
+    /*     * -------------------------------------
+     * * method: add_meta_links
+     * */
+
     function add_meta_links($links, $file) {
 
         if ($file == $this->basefile) {
             if (isset($this->support_url)) {
-                $links[] = '<a href="'.$this->support_url.'" title="'.__('Support','wpcsl') . '">'.
-                            __('Support','wpcsl') . '</a>';
+                $links[] = '<a href="' . $this->support_url . '" title="' . __('Support', 'wpcsl') . '">' .
+                        __('Support', 'wpcsl') . '</a>';
             }
             if (isset($this->purchase_url)) {
-                $links[] = '<a href="'.$this->purchase_url.'" title="'.__('Purchase','wpcsl') . '">'.
-                            __('Buy Now','wpcsl') . '</a>';
+                $links[] = '<a href="' . $this->purchase_url . '" title="' . __('Purchase', 'wpcsl') . '">' .
+                        __('Buy Now', 'wpcsl') . '</a>';
             }
-            $links[] = '<a href="options-general.php?page='.$this->prefix.'-options" title="'.
-                            __('Settings','wpcsl') . '">'.__('Settings','wpcsl') . '</a>';
+            $links[] = '<a href="options-general.php?page=' . $this->prefix . '-options" title="' .
+                    __('Settings', 'wpcsl') . '">' . __('Settings', 'wpcsl') . '</a>';
         }
         return $links;
     }
@@ -486,22 +506,17 @@ class wpCSL_plugin__slplus {
      */
     public function createstring_Deprecated($function_name) {
         return
-            sprintf(
-                    __('The %s method is no longer available. ','csa-slplus'),
-                    $function_name
-                    ).
-            '<br/>' .
-            __('It is likely that one of your add-on pack is out of date. ','csa-slplus').
-            '<br/>' .
-            sprintf(
-                    __('You need to <a href="%s" target="csa">upgrade</a> to the latest %s compatible version '.
-                       'or <a href="%s" target="csa">downgrade</a> the %s plugin.','csa-slplus'),
-                    $this->purchase_url,
-                    $this->name,
-                    $this->wp_downloads_url,
-                    $this->name
-                    )
-            ;
+                sprintf(
+                        __('The %s method is no longer available. ', 'csa-slplus'), $function_name
+                ) .
+                '<br/>' .
+                __('It is likely that one of your add-on pack is out of date. ', 'csa-slplus') .
+                '<br/>' .
+                sprintf(
+                        __('You need to <a href="%s" target="csa">upgrade</a> to the latest %s compatible version ' .
+                                'or <a href="%s" target="csa">downgrade</a> the %s plugin.', 'csa-slplus'), $this->purchase_url, $this->name, $this->wp_downloads_url, $this->name
+                )
+        ;
     }
 
     /**
@@ -516,22 +531,24 @@ class wpCSL_plugin__slplus {
      * @param boolean $notime - skipping showing the time? default = true
      * @return null
      */
-    function debugMP($panel='main', $type='msg', $header='wpCSL DMP',$message='',$file=null,$line=null,$notime=true,$clearingStack=false) {
+    function debugMP($panel = 'main', $type = 'msg', $header = 'wpCSL DMP', $message = '', $file = null, $line = null, $notime = true, $clearingStack = false) {
 
         // Escape HTML Messages
         //
-        if (($type === 'msg') && ($message!=='')) {
+        if (($type === 'msg') && ($message !== '')) {
             $message = esc_html($message);
         }
 
         // Panel not setup yet?  Push onto stack.
         //
         if (
-            !isset($GLOBALS['DebugMyPlugin']) ||
-            !isset($GLOBALS['DebugMyPlugin']->panels[$panel])
-           ) {
-            if (!isset($this->dmpStack[$panel])) { $this->dmpStack[$panel] = array(); }
-            array_push($this->dmpStack[$panel],array($type,$header,$message,$file,$line,$notime));
+                !isset($GLOBALS['DebugMyPlugin']) ||
+                !isset($GLOBALS['DebugMyPlugin']->panels[$panel])
+        ) {
+            if (!isset($this->dmpStack[$panel])) {
+                $this->dmpStack[$panel] = array();
+            }
+            array_push($this->dmpStack[$panel], array($type, $header, $message, $file, $line, $notime));
             return;
         }
 
@@ -539,7 +556,7 @@ class wpCSL_plugin__slplus {
         //
         if (!$clearingStack && isset($this->dmpStack[$panel]) && is_array($this->dmpStack[$panel])) {
             while ($dmpMessage = array_shift($this->dmpStack[$panel])) {
-                $this->debugMP($panel,$dmpMessage[0],$dmpMessage[1],$dmpMessage[2],$dmpMessage[3],$dmpMessage[4],$dmpMessage[5],true);
+                $this->debugMP($panel, $dmpMessage[0], $dmpMessage[1], $dmpMessage[2], $dmpMessage[3], $dmpMessage[4], $dmpMessage[5], true);
             }
         }
 
@@ -547,41 +564,42 @@ class wpCSL_plugin__slplus {
         //
         switch (strtolower($type)):
             case 'pr':
-                $GLOBALS['DebugMyPlugin']->panels[$panel]->addPR($header,$message,$file,$line,$notime);
+                $GLOBALS['DebugMyPlugin']->panels[$panel]->addPR($header, $message, $file, $line, $notime);
                 break;
             default:
-                $GLOBALS['DebugMyPlugin']->panels[$panel]->addMessage($header,$message,$file,$line,$notime);
+                $GLOBALS['DebugMyPlugin']->panels[$panel]->addMessage($header, $message, $file, $line, $notime);
         endswitch;
     }
 
-    /**-------------------------------------
-     ** method: user_header_js
-     **/
+    /*     * -------------------------------------
+     * * method: user_header_js
+     * */
+
     function user_header_js() {
         wp_enqueue_script('jquery');
         wp_enqueue_script('thickbox');
     }
 
-    /**-------------------------------------
-     ** method: user_header_css
-     **/
+    /*     * -------------------------------------
+     * * method: user_header_css
+     * */
+
     function user_header_css() {
 
         $cssPath = '';
-        if (isset($this->css_url)) {            
+        if (isset($this->css_url)) {
             $cssPath = $this->css_url;
         } else if (isset($this->plugin_url)) {
-            if ( file_exists($this->plugin_path.'/css/'.$this->prefix.'.css') ) {
-                $cssPath = $this->plugin_url . '/css/'.$this->prefix.'.css';
+            if (file_exists($this->plugin_path . '/css/' . $this->prefix . '.css')) {
+                $cssPath = $this->plugin_url . '/css/' . $this->prefix . '.css';
             }
         }
-        
+
         if ($cssPath != '') {
             wp_enqueue_style(
-                    $this->prefix.'css',
-                    $cssPath
-                    );
-        }            
+                    $this->prefix . 'css', $cssPath
+            );
+        }
         wp_enqueue_style('thickbox');
     }
 
@@ -604,39 +622,26 @@ class wpCSL_plugin__slplus {
         if (version_compare($this->version, $params['min_required_version'], '<')) {
             if (is_admin()) {
                 if (isset($this->notifications)) {
-                    $this->notifications->add_notice(4,
-                            '<strong>'  .
-                            sprintf(__('%s has been deactivated.'                                                           ,
-                                       'wpcsl'
-                                       ),
-                                    $params['addon_name']
-                                ) . '<br/> ' .
+                    $this->notifications->add_notice(4, '<strong>' .
+                            sprintf(__('%s has been deactivated.', 'wpcsl'
+                                    ), $params['addon_name']
+                            ) . '<br/> ' .
                             '</strong>' .
-                            sprintf(__('You have %s version %s.'                                                            ,
-                                       'wpcsl'
-                                       ),
-                                $this->name,
-                                $this->version
-                                ) . '<br/> ' .
-                            sprintf(__('You need version %s or greater for this version of %s.'                             ,
-                                       'wpcsl'
-                                       ),
-                                $params['min_required_version'],
-                                $params['addon_name']
-                                ) . '<br/> ' .
-                            sprintf(__('Please install an older version of %s or upgrade.'                                  ,
-                                       'wpcsl'
-                                       ),
-                                    $this->name
-                                ) . '<br/> ' .
-                            sprintf(__('Upgrading major versions of %s requires paid upgrades to all related add-on packs.'  ,
-                                       'wpcsl'
-                                       ),
-                                    $this->name
-                                    ) .
+                            sprintf(__('You have %s version %s.', 'wpcsl'
+                                    ), $this->name, $this->version
+                            ) . '<br/> ' .
+                            sprintf(__('You need version %s or greater for this version of %s.', 'wpcsl'
+                                    ), $params['min_required_version'], $params['addon_name']
+                            ) . '<br/> ' .
+                            sprintf(__('Please install an older version of %s or upgrade.', 'wpcsl'
+                                    ), $this->name
+                            ) . '<br/> ' .
+                            sprintf(__('Upgrading major versions of %s requires paid upgrades to all related add-on packs.', 'wpcsl'
+                                    ), $this->name
+                            ) .
                             '<br/><br/>'
-                            );
-                    }
+                    );
+                }
                 deactivate_plugins(array($params['addon_slug']));
             }
             return;
@@ -653,26 +658,22 @@ class wpCSL_plugin__slplus {
      * @var string $hook
      */
     function enqueue_admin_stylesheet($hook) {
-        $this->debugMP('main','msg','wpCSL.enqueue_admin_stylesheet('.$hook.')','',NULL,NULL,true);
+        $this->debugMP('main', 'msg', 'wpCSL.enqueue_admin_stylesheet(' . $hook . ')', '', NULL, NULL, true);
         $this->check_IsOurAdminPage();
 
         // The CSS file must exists where we expect it and
         // The admin page being rendered must be in "our family" of admin pages
         //
-        if (    file_exists($this->plugin_path.'/lib/admin.css') &&
+        if (file_exists($this->plugin_path . '/lib/admin.css') &&
                 array_search($hook, $this->admin_slugs)
-           ) {
-            wp_register_style($this->styleHandle, $this->plugin_url .'/lib/admin.css');
+        ) {
+            wp_register_style($this->styleHandle, $this->plugin_url . '/lib/admin.css');
             wp_enqueue_style($this->styleHandle);
 
-            if (file_exists($this->plugin_path.'/lib/admin-interface.js')) {
+            if (file_exists($this->plugin_path . '/lib/admin-interface.js')) {
                 wp_enqueue_script(
-                        $this->styleHandle,
-                        $this->plugin_url .'/lib/admin-interface.js',
-                        'jquery',
-                        $this->version,
-                        true
-                        );
+                        $this->styleHandle, $this->plugin_url . '/lib/admin-interface.js', 'jquery', $this->version, true
+                );
             }
         }
     }
@@ -690,11 +691,17 @@ class wpCSL_plugin__slplus {
         // test cases. This is marginally less efficient but
         // easy to read and extend.
         //
-        if ( is_a($result,'WP_Error') ) { return false; }
-        if ( !isset($result['body'])  ) { return false; }
-        if ( $result['body'] == ''    ) { return false; }
+        if (is_a($result, 'WP_Error')) {
+            return false;
+        }
+        if (!isset($result['body'])) {
+            return false;
+        }
+        if ($result['body'] == '') {
+            return false;
+        }
 
         return true;
     }
-}
 
+}

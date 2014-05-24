@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The extended data interface helper.  Managed the extended data columns when needed.
  *
@@ -8,14 +9,13 @@
  *
  */
 class SLPlus_Data_Extension {
-
     //-------------------------------------------------
     // Properties
     //-------------------------------------------------
-    
+
     /**
      * The properties of the meta table.
-     * 
+     *
      * metatable['name']
      *
      * metatable['records'][<slug>][id|field_id|label|slug|type|options]
@@ -55,8 +55,8 @@ class SLPlus_Data_Extension {
 
     //-------------------------------------------------
     // Methods
-    //-------------------------------------------------    
-    
+    //-------------------------------------------------
+
     /**
      * Invoke a new \SLPlus_Data_Extended object.
      */
@@ -66,28 +66,30 @@ class SLPlus_Data_Extension {
         // if the property named in the params array is well defined.
         //
         if ($params !== null) {
-            foreach ($params as $property=>$value) {
-                if (property_exists($this,$property)) { $this->$property = $value; }
+            foreach ($params as $property => $value) {
+                if (property_exists($this, $property)) {
+                    $this->$property = $value;
+                }
             }
         }
 
         // Set the plugin details table properties
         //
-        $this->metatable['name'     ] = $this->slplus->db->prefix . 'slp_extendo_meta';
-        $this->metatable['records'  ] = array();
-        $this->plugintable['name'   ] = $this->slplus->db->prefix . 'slp_extendo';
-        $this->plugintable['fields' ] = array(
-            'id'        => '%u',
-            'sl_id'     => '%u',
-            'value'     => '%s'
+        $this->metatable['name'] = $this->slplus->db->prefix . 'slp_extendo_meta';
+        $this->metatable['records'] = array();
+        $this->plugintable['name'] = $this->slplus->db->prefix . 'slp_extendo';
+        $this->plugintable['fields'] = array(
+            'id' => '%u',
+            'sl_id' => '%u',
+            'value' => '%s'
         );
 
 
         // Filters To Extend Data Queries
         //
-        if ( $this->has_ExtendedData() ) {
-            add_filter('slp_extend_get_SQL', array($this,'filter_ExtendedDataQueries'));
-            add_filter('slp_extend_get_SQL_selectall', array($this,'filter_ExtendSelectAll'));
+        if ($this->has_ExtendedData()) {
+            add_filter('slp_extend_get_SQL', array($this, 'filter_ExtendedDataQueries'));
+            add_filter('slp_extend_get_SQL_selectall', array($this, 'filter_ExtendSelectAll'));
         }
     }
 
@@ -104,78 +106,78 @@ class SLPlus_Data_Extension {
      * @param $mode string operating mode
      */
     function add_field($label, $type = 'text', $options = array(), $mode = 'immediate') {
-        $nextval = $this->slplus->options_nojs['next_field_id']++;
+        $nextval = $this->slplus->options_nojs['next_field_id'] ++;
         $nextval = str_pad($nextval, 3, "0", STR_PAD_LEFT);
-        update_option(SLPLUS_PREFIX.'-options_nojs', $this->slplus->options_nojs);
+        update_option(SLPLUS_PREFIX . '-options_nojs', $this->slplus->options_nojs);
 
 
-		// Check whether slug is provided in $options
-        add_filter('sanitize_title',array($this,'filter_SanitizeTitleForMySQLField'),10,3);
-		if (isset($options['slug']) && (trim($options['slug']) !== '')) {
-			$slug = $options['slug'];
-		} else {
-			$slug = sanitize_title($label,'','save');
-		}
-        remove_filter('sanitize_title',array($this,'filter_SanitizeTitleForMySQLField'));
+        // Check whether slug is provided in $options
+        //
+        add_filter('sanitize_title', array($this, 'filter_SanitizeTitleForMySQLField'), 10, 3);
+        if (isset($options['slug']) && (trim($options['slug']) !== '')) {
+            $slug = $options['slug'];
+        } else {
+            $slug = sanitize_title($label, '', 'save');
+        }
+        remove_filter('sanitize_title', array($this, 'filter_SanitizeTitleForMySQLField'));
 
         // Check if slug already exists before adding it.
         //
         if (!$this->has_field($slug)) {
             $this->slplus->db->insert(
-                    $this->metatable['name'],
-                    array(
-                        'field_id'  => 'field_' . $nextval          ,
-                        'label'     => $label                       ,
-                        'slug'      => $slug                        ,
-                        'options'   => maybe_serialize($options)    ,
-                        'type'      => $type
-                        )
-                );
-            if ($mode==='immediate') {
-                $this->update_data_table(array('mode'=>'force'));
+                    $this->metatable['name'], array(
+                'field_id' => 'field_' . $nextval,
+                'label' => $label,
+                'slug' => $slug,
+                'options' => maybe_serialize($options),
+                'type' => $type
+                    )
+            );
+            if ($mode === 'immediate') {
+                $this->update_data_table(array('mode' => 'force'));
             }
         }
 
         return $slug;
     }
 
-	/**
-	 * Removes a field from the data table
-	 *
-	 * mode parameter
-	 * - 'immediate' = default, run update table command when removing the field
-	 * - 'wait' = do not run the update table command when removing this field
-	 *
-	 * @param $label string The label to remove
-	 * @param $options mixed[] wpdb options
-	 * @param $mode string operating mode
-	 */
-	function remove_field($label, $options = array(), $mode = 'immediate') {
+    /**
+     * Removes a field from the data table
+     *
+     * mode parameter
+     * - 'immediate' = default, run update table command when removing the field
+     * - 'wait' = do not run the update table command when removing this field
+     *
+     * @param $label string The label to remove
+     * @param $options mixed[] wpdb options
+     * @param $mode string operating mode
+     */
+    function remove_field($label, $options = array(), $mode = 'immediate') {
 
-		// Check whether a slug is provided in $options
-		add_filter('sanitize_title',array($this,'filter_SanitizeTitleForMySQLField'),10,3);
-		if (isset($options['slug']) && (trim($options['slug']) !== '')) {
-			$slug = $options['slug'];
-		} else {
-			$slug = sanitize_title($label,'','save');
-		}
-		remove_filter('sanitize_title',array($this,'filter_SanitizeTitleForMySQLField'));
+        // Check whether a slug is provided in $options
+        add_filter('sanitize_title', array($this, 'filter_SanitizeTitleForMySQLField'), 10, 3);
+        if (isset($options['slug']) && (trim($options['slug']) !== '')) {
+            $slug = $options['slug'];
+        } else {
+            $slug = sanitize_title($label, '', 'save');
+        }
+        remove_filter('sanitize_title', array($this, 'filter_SanitizeTitleForMySQLField'));
 
-		// Check if slug exists before removing it.
-		//
-		if ($this->has_field($slug)) {
-			$this->slplus->db->delete($this->metatable['name'], array('slug' => $slug));
-			if ($mode==='immediate') {
-				$this->update_data_table(array('mode'=>'force'));
-			}
-		}
+        // Check if slug exists before removing it.
+        //
+            if ($this->has_field($slug)) {
+            $this->slplus->db->delete($this->metatable['name'], array('slug' => $slug));
+            if ($mode === 'immediate') {
+                $this->update_data_table(array('mode' => 'force'));
+            }
+        }
 
-		return $slug;
-	}
+        return $slug;
+    }
 
     /**
      * Extend the SQL query set for extended data queries.
-     * 
+     *
      * @param string $command
      * @return string
      */
@@ -210,7 +212,9 @@ class SLPlus_Data_Extension {
      * @return string
      */
     function filter_ExtendSelectAll($sqlStatement) {
-        if (false !== strpos('LEFT JOIN ' . $this->metatable['name'],$sqlStatement) )  { return $sqlStatement; }
+        if (false !== strpos('LEFT JOIN ' . $this->metatable['name'], $sqlStatement)) {
+            return $sqlStatement;
+        }
         return $sqlStatement . $this->filter_ExtendedDataQueries('join_extendo');
     }
 
@@ -223,7 +227,7 @@ class SLPlus_Data_Extension {
      * @return string sanitized title string with no hyphens in it
      */
     function filter_SanitizeTitleForMySQLField($title, $raw_title, $context) {
-        return str_replace('-','_',$title);
+        return str_replace('-', '_', $title);
     }
 
     /**
@@ -232,9 +236,9 @@ class SLPlus_Data_Extension {
      * @param boolean $force = set true to force reloading of data.
      */
     function set_cols($force = false) {
-        if ( ( count($this->metatable['records']) === 0 ) || $force ) {
-            $meta_data = $this->slplus->db->get_results("SELECT * FROM {$this->metatable['name']}",OBJECT);
-            foreach ( $meta_data as $field ) {
+        if (( count($this->metatable['records']) === 0 ) || $force) {
+            $meta_data = $this->slplus->db->get_results("SELECT * FROM {$this->metatable['name']}", OBJECT);
+            foreach ($meta_data as $field) {
                 $this->metatable['records'][$field->slug] = $field;
             }
         }
@@ -242,7 +246,7 @@ class SLPlus_Data_Extension {
 
     /**
      * Return an array of the meta data field properties.
-     * 
+     *
      * @param boolean $force force a re-read of the meta data from disk.
      * @return array an array of arrays containing the meta data field values.
      */
@@ -261,8 +265,12 @@ class SLPlus_Data_Extension {
         global $wpdb;
         $query = $wpdb->prepare("select * from {$this->plugintable['name']} where sl_id = %s", $sl_id);
         $cols = $wpdb->get_results($query, ARRAY_A);
-        if ($cols===null) { return; }
-        if (count($cols)<1) { return; }
+        if ($cols === null) {
+            return;
+        }
+        if (count($cols) < 1) {
+            return;
+        }
 
         if (isset($field_id)) {
             return $cols[0][$field_id];
@@ -277,7 +285,7 @@ class SLPlus_Data_Extension {
      * @return boolean
      */
     public function has_ExtendedData() {
-        return $this->slplus->is_CheckTrue( $this->slplus->options_nojs['has_extended_data'] );
+        return $this->slplus->is_CheckTrue($this->slplus->options_nojs['has_extended_data']);
     }
 
     /**
@@ -287,14 +295,14 @@ class SLPlus_Data_Extension {
      * @return boolean true if the field exists, false if not.
      */
     function has_field($slug) {
-        if ( ! isset( $this->metatable['records'][$slug] ) ) {
-            $slug_data = $this->slplus->database->get_Record(array('select_all_from_extendo','where_slugis'),$slug);
-            if ( is_array( $slug_data ) && ( $slug_data['slug'] == $slug ) ) {
+        if (!isset($this->metatable['records'][$slug])) {
+            $slug_data = $this->slplus->database->get_Record(array('select_all_from_extendo', 'where_slugis'), $slug);
+            if (is_array($slug_data) && ( $slug_data['slug'] == $slug )) {
                 $this->metatable['records'][$slug] = $slug_data;
             }
         }
-        $this->slplus->debugMP('slp.main','pr','SLPlus_Data_Extension::'.__FUNCTION__.' '.$slug,$this->metatable);
-        return ( isset( $this->metatable['records'][$slug] ) );
+        $this->slplus->debugMP('slp.main', 'pr', 'SLPlus_Data_Extension::' . __FUNCTION__ . ' ' . $slug, $this->metatable);
+        return ( isset($this->metatable['records'][$slug]) );
     }
 
     /**
@@ -313,8 +321,8 @@ class SLPlus_Data_Extension {
             $data['sl_id'] = $sl_id;
             $wpdb->insert($this->plugintable['name'], $data);
         } else {
-            $data = array_merge($currentData,$data);
-            $replacementCount = $wpdb->update($this->plugintable['name'], $data, array('sl_id'=>$data['sl_id']));
+            $data = array_merge($currentData, $data);
+            $replacementCount = $wpdb->update($this->plugintable['name'], $data, array('sl_id' => $data['sl_id']));
         }
     }
 
@@ -332,37 +340,39 @@ class SLPlus_Data_Extension {
      *  - null    = default, use in-memory cache of metadata to build create SQL string
      *
      * @global array $EZSQL_ERROR
-     * @param array $params 
-     * 
+     * @param array $params
+     *
      */
-    function update_data_table($params=array()) {
-        $extended_fields = $this->get_cols( isset($params['mode']) && ( $params['mode'] = 'force') );       
-        
+    function update_data_table($params = array()) {
+        $extended_fields = $this->get_cols(isset($params['mode']) && ( $params['mode'] = 'force'));
+
         // If we have some extended data fields...
         //
-        if ( count( $extended_fields ) > 0 ) {        
+        if (count($extended_fields) > 0) {
             $create = "CREATE TABLE {$this->plugintable['name']} (
             id mediumint(8) NOT NULL AUTO_INCREMENT,
             sl_id mediumint(8) UNSIGNED NOT NULL,
             ";
-            foreach($extended_fields as  $field) {
-                switch($field->type) {
-                    case 'text':
-                        $type = 'longtext';
-                        break;
-                    case 'varchar':
-                        $type = 'varchar(250)';
-                        break;
-                    default:
-                        $type = $field->type;
-                        break;
-                }
+            foreach ($extended_fields as $field) {
+                if ( is_object( $field ) ) {
+                    switch ($field->type) {
+                        case 'text':
+                            $type = 'longtext';
+                            break;
+                        case 'varchar':
+                            $type = 'varchar(250)';
+                            break;
+                        default:
+                            $type = $field->type;
+                            break;
+                    }
 
-                $create .= $field->slug . " $type" . ",\n";
+                    $create .= $field->slug . " $type" . ",\n";
+                }
             }
 
             $create .=
-               "KEY sl_id (sl_id),
+                    "KEY sl_id (sl_id),
                 KEY id (id),
                 KEY slid_id (sl_id,id)
                 ) {$this->slplus->database->collate}";
@@ -370,21 +380,21 @@ class SLPlus_Data_Extension {
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($create);
             global $EZSQL_ERROR;
-            $EZSQL_ERROR=array();
+            $EZSQL_ERROR = array();
 
             // Set the plugin "has extended data" property.
             // TODO: Make this smarter and check for an actual record count in the extended data table name.
             //
-            if ( empty ($this->slplus->options_nojs['has_extended_data']) ) {
+            if (empty($this->slplus->options_nojs['has_extended_data'])) {
                 $this->slplus->options_nojs['has_extended_data'] = '1';
-                update_option(SLPLUS_PREFIX.'-options_nojs', $this->slplus->options_nojs);
+                update_option(SLPLUS_PREFIX . '-options_nojs', $this->slplus->options_nojs);
             }
-            
-        // No extended data fields
+
+            // No extended data fields
         //
-        }  else {
+        } else {
             $this->slplus->options_nojs['has_extended_data'] = '0';
-            update_option(SLPLUS_PREFIX.'-options_nojs', $this->slplus->options_nojs);           
+            update_option(SLPLUS_PREFIX . '-options_nojs', $this->slplus->options_nojs);
         }
     }
 

@@ -1,0 +1,170 @@
+/**
+ ** file: bigmap_01.css
+ ** label: Big Map Rev 01
+ ** description: Map is the entire background with search from and results overlays. Results output has limited info. Works best with the upcoming SLP Big Map theme. Revision 01.
+ ** add-ons: slp-pro,slp-enhanced-map,slp-enhanced-results,slp-enhanced-search
+ ** Pro Pack Locator Layout: <div id="sl_div">[slp_search]<div id="sl_div_right_col">[tagalong legend][slp_map]</div>[slp_results]</div>
+ ** Enhanced Map Bubble Layout: <div id="sl_info_bubble" class="[slp_location featured]"><span id="slp_bubble_name"><strong>[slp_location name  suffix  br]</strong></span><span id="slp_bubble_address">[slp_location address       suffix  br]</span><span id="slp_bubble_address2">[slp_location address2      suffix  br]</span><span id="slp_bubble_city">[slp_location city          suffix  comma]</span><span id="slp_bubble_state">[slp_location state suffix    space]</span><span id="slp_bubble_zip">[slp_location zip suffix  br]</span><span id="slp_bubble_country"><span id="slp_bubble_country">[slp_location country       suffix  br]</span></span><span id="slp_bubble_directions">[html br ifset directions][slp_option label_directions wrap directions]</span><span id="slp_bubble_website">[html br ifset url][slp_location url           wrap    website][slp_option label_website ifset url][html closing_anchor ifset url][html br ifset url]</span><span id="slp_bubble_email">[slp_location email         wrap    mailto ][slp_option label_email ifset email][html closing_anchor ifset email][html br ifset email]</span><span id="slp_bubble_phone">[html br ifset phone]<span class="location_detail_label">[slp_option   label_phone   ifset   phone]</span>[slp_location phone         suffix    br]</span><span id="slp_bubble_fax"><span class="location_detail_label">[slp_option   label_fax     ifset   fax  ]</span>[slp_location fax           suffix    br]<span><span id="slp_bubble_description"><span id="slp_bubble_description">[html br ifset description][slp_location description raw]</span>[html br ifset description]</span><span id="slp_bubble_hours">[html br ifset hours]<span class="location_detail_label">[slp_option   label_hours   ifset   hours]</span><span class="location_detail_hours">[slp_location hours         suffix    br]</span></span><span id="slp_bubble_img">[html br ifset img][slp_location image         wrap    img]</span><span id="slp_tags">[slp_location tags]</span></div>
+ ** Enhanced Results Results Layout: <div id="slp_results_[slp_location id]" class="results_entry  [slp_location featured]"><span class="location_name">[slp_location name]</span><span class="location_distance">[slp_location distance_1] [slp_location distance_unit]</span><span class="slp_result_address slp_result_street">[slp_location address]</span><span class="slp_result_address slp_result_street2">[slp_location address2]</span><span class="slp_result_address slp_result_phone">[slp_location phone]</span><span class="slp_result_contact slp_result_website">[slp_location web_link]</span><span class="slp_result_contact slp_result_directions"><a href="http://[slp_location map_domain]/maps?saddr=[slp_location search_address]&daddr=[slp_location location_address]" target="_blank" class="storelocatorlink">[slp_location directions_text]</a></span>[slp_location iconarray wrap="fullspan"]</div>
+ ** Enhanced Search Search Layout: <div id="address_search">[slp_search_element input_with_label="name"][slp_search_element input_with_label="address"][slp_search_element dropdown_with_label="city"][slp_search_element dropdown_with_label="state"][slp_search_element dropdown_with_label="country"][slp_search_element selector_with_label="tag"][slp_search_element dropdown_with_label="category"]<div class="search_item" id="submitor">[slp_search_element dropdown_with_label="radius"][slp_search_element button="submit"]</div></div>
+ **
+ ** Sass Source: ./assets/stylesheets/bigmap.scss
+ **/
+div#map img {
+  background-color: transparent;
+  box-shadow: none;
+  border: none;
+  max-width: none;
+  opacity: 1.0;
+  visibility: visible; }
+
+/* Fix IE10 Rules */
+div#map .gm-style-cc > div {
+  word-wrap: normal; }
+
+/* Hide the default Google bubble shadow */
+div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
+  display: none; }
+
+#map_box_image {
+  display: block; }
+
+#map_box_map {
+  display: none; }
+
+div#slp_tagline {
+  background-color: #AABBDD;
+  font-size: 11px;
+  font-family: Arial, sans-serif;
+  opacity: 0.45;
+  filter: alpha(opacity=45);
+  margin-bottom: 3px;
+  padding-right: 3px;
+  text-align: right;
+  width: 100%; }
+
+/*---------------------
+ * SLP Div
+ *---------------------*/
+div#sl_div {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  z-index: 1; }
+
+/*---------------------
+ * Map
+ *---------------------*/
+div#sl_div div#map {
+  height: 100%;
+  width: 100%;
+  z-index: 10; }
+
+#sl_info_bubble span {
+  display: block;
+  min-width: 33vw;
+  max-width: 33vw; }
+
+/*---------------------
+ * Search
+ *---------------------*/
+#searchForm {
+  background: none repeat scroll 0 0 #000000;
+  left: 0;
+  opacity: 0.7;
+  position: absolute;
+  width: 100%;
+  z-index: 102; }
+
+#searchForm #address_search {
+  padding-top: 0.25em;
+  text-align: center; }
+
+#searchForm #addy_in_address {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  white-space: nowrap;
+  width: 60%; }
+
+#searchForm #submitor.search_item {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 30%;
+  margin-left: 1em; }
+
+#searchForm LABEL {
+  color: #FFFFFF;
+  display: inline-block;
+  min-width: 100px;
+  padding-right: 1%;
+  text-align: right;
+  vertical-align: middle; }
+
+#searchForm INPUT,
+#searchForm SELECT {
+  display: inline-block;
+  min-width: 1%; }
+
+#searchForm INPUT {
+  padding: 3px;
+  width: 78%; }
+
+#searchForm SELECT {
+  margin: 0 0 0 4px;
+  padding: 0px 0px 3px 0px; }
+
+#searchForm #addy_in_radius,
+#searchForm #search_by_tag {
+  display: inline-block;
+  margin-right: 0.5em;
+  white-space: nowrap; }
+
+#searchForm #addy_in_radius LABEL {
+  min-width: 48px; }
+
+#searchForm #radius_in_submit {
+  display: inline-block;
+  vertical-align: top; }
+
+#searchForm INPUT[type="submit"] {
+  height: 28px;
+  padding-left: 10px;
+  padding-right: 10px;
+  vertical-align: top;
+  min-width: 10em; }
+
+/*---------------------
+ * Results
+ *---------------------*/
+#map_sidebar {
+  background: none repeat scroll 0 0 #000000;
+  right: 0;
+  opacity: 0.7;
+  position: absolute;
+  bottom: 9.3%;
+  height: 84%;
+  width: 20%;
+  min-width: 150px;
+  z-index: 202;
+  overflow: auto; }
+
+#map_sidebar .results_wrapper {
+  color: #FFFFFF;
+  padding: 1em;
+  cursor: pointer; }
+
+#map_sidebar .results_wrapper:hover {
+  background-color: #151515; }
+
+#map_sidebar .results_entry span {
+  display: block; }
+
+#map_sidebar .results_line.location_iconarray {
+  display: block;
+  padding: 0.5em 0;
+  text-align: center; }
+
+#map_sidebar .location_name {
+  color: #DDDDFF; }

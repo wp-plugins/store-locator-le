@@ -28,6 +28,7 @@ var slp = {
         this.location_timeout = null;
         this.lat = 0.00;
         this.lng = 0.00;
+        this.errorCalled = false;
 
         this.__init = function() {
             this.Initialized = true;
@@ -46,6 +47,10 @@ var slp = {
             }
         };
 
+        // When setting currentLocation the callback and errorCallback functions must be defined.
+        // See the sensor.currentLocation call down below for the return-to place for 
+        // these two functions passed as variables (down around line 1350).
+        //
         this.currentLocation = function(callback, errorCallback) {
 
             // If location services are not setup, do it
@@ -58,7 +63,16 @@ var slp = {
             //
             if (this.LocationSupport) {
                 if (this.theService) {
+                    
+                        // In 5 seconds run errorCallback
+                        //
                         this.location_timeout = setTimeout(errorCallback, 5000);
+                        
+                        // Run the browser location service to get the current position
+                        // 
+                        // on success run callback
+                        // on failure run errorCallback
+                        //
                         this.theService.getCurrentPosition(callback, errorCallback, {maximumAge:60000, timeout:5000, enableHighAccuracy:true});
                 }
 
@@ -85,11 +99,11 @@ var slp = {
          * @argument {object} action
          * @argument {function} callback function with params "success: true, response: {marker list}"
          */
-	    this.send = function (action, callback) {
-	        if (window.location.protocol !== slplus.ajaxurl.substring(0, slplus.ajaxurl.indexOf(':') + 1)) {
+	this.send = function (action, callback) {
+	    if (window.location.protocol !== slplus.ajaxurl.substring(0, slplus.ajaxurl.indexOf(':') + 1)) {
 	            slplus.ajaxurl = slplus.ajaxurl.replace(slplus.ajaxurl.substring(0, slplus.ajaxurl.indexOf(':') + 1), window.location.protocol);
-	        }
-			jQuery.post(
+	    }
+            jQuery.post(
                 slplus.ajaxurl,
                 action,
                 function (response) {
@@ -101,7 +115,7 @@ var slp = {
                     callback(response);
                 }
              );
-		};
+        };
     },
 
     /***************************************************************************
@@ -1337,9 +1351,9 @@ function setup_Map() {
                 // 1) Success on Location
                 //
                 function(loc) {
+                    clearTimeout(sensor.location_timeout);
                     cslmap = new slp.Map();
                     cslmap.usingSensor = true;
-                    clearTimeout(sensor.location_timeout);
                     sensor.lat = loc.coords.latitude;
                     sensor.lng = loc.coords.longitude;
                     cslmap.__buildMap(new google.maps.LatLng(loc.coords.latitude, loc.coords.longitude));
@@ -1348,11 +1362,14 @@ function setup_Map() {
                 // 2) Failed on location
                 //
                 function(error) {
-                    slplus.use_sensor = false;
                     clearTimeout(sensor.location_timeout);
-                    cslmap = new slp.Map();
-                    cslmap.usingSensor = false;
-                    cslmap.doGeocode();
+                    if ( ! sensor.errorCalled ) {
+                        sensor.errorCalled = true;
+                        slplus.use_sensor = false;
+                        cslmap = new slp.Map();
+                        cslmap.usingSensor = false;
+                        cslmap.doGeocode();
+                    }
                 }
             );
             

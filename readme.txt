@@ -4,8 +4,8 @@ Contributors: charlestonsw
 Donate link: http://www.charlestonsw.com/product/store-locator-plus-4/
 Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.4
-Tested up to: 3.9
-Stable tag: 4.1.18
+Tested up to: 3.9.1
+Stable tag: 4.1.25
 License: GLPv2 or later
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
@@ -280,9 +280,7 @@ I am looking into working with the WPML plugin for added support for those of yo
 
 == Screenshots ==
 
-The website offers [more screen shots](http://www.storelocatorplus.com/product-category/slp4-products/) including those from the latest updates and premium add-on packages.
-
-1. Example Map with Enhanced Maps On/Off Slider
+1. Big Map SLP Theme (stylesheet) on Big Map WordPress Theme
 2. Manage Locations with Pro Pack and Store Pages
 3. Search Settings with Pro Pack and Enhanced Search
 4. Map Settings with Pro Pack and Enhanced Map
@@ -292,11 +290,9 @@ The website offers [more screen shots](http://www.storelocatorplus.com/product-c
 8. Add Locations with Pro Pack Bulk Import
 9. Directions from results link
 
-More screenshots are available via [the CSA website](http://www.storelocatorplus.com/product-category/slp4-products/).
-
 ==Upgrade Notice==
 
-*Upgrading From SLP 3.X to 4.0.Y*
+*Upgrading From SLP 3.X to 4.X*
 
 
 Store Locator Plus 4 is a MAJOR upgrade to the previous version.
@@ -307,7 +303,7 @@ You will need to purchase new [SLP4 compatible versions of the add-on packs](htt
 Discounts will be made available to users that purchased a premium add-on pack within 1 year of purchasing the SLP4 compatible upgrades.
 
 
-*Upgrading From SLP 4.0.Y to SLP 4.1*
+*Upgrading From SLP 4.0 to SLP 4.1*
 
 If you are using Enhanced Results or Contact Extender and activated Super Extendo at ANY TIME you must:
 
@@ -324,9 +320,18 @@ Please read the *description page* for this plugin for an important note about p
 
 *Version 4.x is a major upgrade that is not compatible with the version 3.x or earlier add-on packs.*
 
-I update about once per month or more frequently as needed.
-
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 4.1.25 =
+
+* Change: Blank Mapfix theme is now Sass based and has advanced theme settings.
+* Change: Beside The Point 2012 SLP Theme is now Sass based with standard Hours formatting, Pro Pack UI, and Tagalong UI support.
+* Enhancement: Added BigMap SLP Theme
+* Enhancement: Added Beside The Point 2012 Rev 02 Theme, adds higlighted featured locations for Enhanced Results
+* Enhancement: Added Beside The Point [NyloBoard](http://nyloboard.com/) Rev 01 Theme
+* Enhancement: Added a half-dozen new bulb map marker colors.
+* Fix: Admin CSS styling for some add-on packs such as Janitor.
+* Fix: Stop JavaScript location sensor from trying to build the map multiple times if the error timeout is too slow to catch it.
 
 = 4.1.18 =
 

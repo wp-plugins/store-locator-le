@@ -28,7 +28,7 @@ class SLPlus_Actions {
      *
      * @var SLPlus $plugin
      */
-    public $plugin = null;
+    private $slplus = null;
 
     /**
      * True if admin init already run.
@@ -55,11 +55,11 @@ class SLPlus_Actions {
      * @return type boolean true if plugin property is valid
      */
     function set_Plugin() {
-        if (!isset($this->plugin) || ($this->plugin == null)) {
+        if (!isset($this->slplus) || ($this->slplus == null)) {
             global $slplus_plugin;
-            $this->plugin = $slplus_plugin;
+            $this->slplus = $slplus_plugin;
         }
-        return (isset($this->plugin) && ($this->plugin != null));
+        return (isset($this->slplus) && ($this->slplus != null));
     }
 
     /**
@@ -69,9 +69,9 @@ class SLPlus_Actions {
      */
     function attachAdminUI() {
         if (!$this->set_Plugin()) { return false; }
-        if (!isset($this->plugin->AdminUI) || !is_object($this->plugin->AdminUI)) {
+        if (!isset($this->slplus->AdminUI) || !is_object($this->slplus->AdminUI)) {
             require_once(SLPLUS_PLUGINDIR . '/include/class.adminui.php');
-            $this->plugin->AdminUI = new SLPlus_AdminUI();     // Lets invoke this and make it an object
+            $this->slplus->AdminUI = new SLPlus_AdminUI();     // Lets invoke this and make it an object
         }
         return true;
     }
@@ -83,9 +83,9 @@ class SLPlus_Actions {
      */
     function attachAdminWPML() {
         if (!$this->set_Plugin()) { return false; }
-        if (!isset($this->plugin->AdminWPML) || !is_object($this->plugin->AdminWPML)) {
+        if (!isset($this->slplus->AdminWPML) || !is_object($this->slplus->AdminWPML)) {
             require_once(SLPLUS_PLUGINDIR . '/include/class.adminwpml.php');
-            $this->plugin->AdminWPML = new SLPlus_AdminWMPL();     // Lets invoke this and make it an object
+            $this->slplus->AdminWPML = new SLPlus_AdminWMPL();     // Lets invoke this and make it an object
         }
         return true;
 	}
@@ -114,30 +114,30 @@ class SLPlus_Actions {
         // Updates are handled via WPCSL via namespace style call
         //
         require_once(SLPLUS_PLUGINDIR . '/include/class.activation.php');
-        $this->plugin->Activate = new SLPlus_Activate();
-        register_activation_hook( __FILE__, array($this->plugin->Activate,'update')); // WP built-in activation call
+        $this->slplus->Activate = new SLPlus_Activate();
+        register_activation_hook( __FILE__, array($this->slplus->Activate,'update')); // WP built-in activation call
 
         // If we are on an SLP controlled admin page
         //
-        if ($this->plugin->check_isOurAdminPage()) {
+        if ($this->slplus->check_isOurAdminPage()) {
 
             // Update the broadcast URL with the registered plugins
             // registered plugins are expected to tell us they are here using
             // slp_init_complete
             //
-            $this->plugin->broadcast_url = $this->plugin->broadcast_url . '&' . $this->plugin->AdminUI->create_addon_query();
-            $this->plugin->settings->broadcast_url = $this->plugin->broadcast_url;
+            $this->slplus->broadcast_url = $this->slplus->broadcast_url . '&' . $this->slplus->AdminUI->create_addon_query();
+            $this->slplus->settings->broadcast_url = $this->slplus->broadcast_url;
 
             // Admin UI Helpers
             //
             $this->attachAdminUI();
-            add_action('admin_enqueue_scripts',array($this->plugin->AdminUI,'enqueue_admin_stylesheet'));
-            $this->plugin->AdminUI->build_basic_admin_settings();
+            add_action('admin_enqueue_scripts',array($this->slplus->AdminUI,'enqueue_admin_stylesheet'));
+            $this->slplus->AdminUI->build_basic_admin_settings();
 
             // Admin WPML Helper
             // 
             $this->attachAdminWPML();
-            $this->plugin->AdminWPML->setParent();
+            $this->slplus->AdminWPML->setParent();
 
             // Action hook for 3rd party plugins
             //
@@ -184,11 +184,11 @@ class SLPlus_Actions {
             // The main hook for the menu
             //
             add_menu_page(
-                $this->plugin->name,
-                $this->plugin->name,
+                $this->slplus->name,
+                $this->slplus->name,
                 'manage_slp',
-                $this->plugin->prefix,
-                array($this->plugin->AdminUI,'renderPage_GeneralSettings'),
+                $this->slplus->prefix,
+                array($this->slplus->AdminUI,'renderPage_GeneralSettings'),
                 SLPLUS_PLUGINURL . '/images/icon_from_jpg_16x16.png'
                 );
 
@@ -198,25 +198,25 @@ class SLPlus_Actions {
                 array(
                     'label'             => __('Info','csa-slplus'),
                     'slug'              => 'slp_info',
-                    'class'             => $this->plugin->AdminUI,
+                    'class'             => $this->slplus->AdminUI,
                     'function'          => 'renderPage_Info'
                 ),
                 array(
                     'label'             => __('Locations','csa-slplus'),
                     'slug'              => 'slp_manage_locations',
-                    'class'             => $this->plugin->AdminUI,
+                    'class'             => $this->slplus->AdminUI,
                     'function'          => 'renderPage_Locations'
                 ),
                 array(
                     'label'             => __('User Experience','csa-slplus'),
                     'slug'              => 'slp_map_settings',
-                    'class'             => $this->plugin->AdminUI,
+                    'class'             => $this->slplus->AdminUI,
                     'function'          => 'renderPage_MapSettings'
                 ),
                 array(
                     'label'             => __('General Settings','csa-slplus'),
                     'slug'              => 'slp_general_settings',
-                    'class'             => $this->plugin->AdminUI,
+                    'class'             => $this->slplus->AdminUI,
                     'function'          => 'renderPage_GeneralSettings'
                 ),
             );
@@ -242,7 +242,7 @@ class SLPlus_Actions {
                 //
                 if (isset($menuItem['class'])) {
                     add_submenu_page(
-                        $this->plugin->prefix,
+                        $this->slplus->prefix,
                         $menuItem['label'],
                         $menuItem['label'],
 						$slpCapability,
@@ -254,7 +254,7 @@ class SLPlus_Actions {
                 //
                 } else {
                     add_submenu_page(
-                        $this->plugin->prefix,
+                        $this->slplus->prefix,
                         $menuItem['label'],
                         $menuItem['label'],
 						$slpCapability,
@@ -265,9 +265,9 @@ class SLPlus_Actions {
 
             // Remove the duplicate menu entry
             //
-            remove_submenu_page($this->plugin->prefix, $this->plugin->prefix);
+            remove_submenu_page($this->slplus->prefix, $this->slplus->prefix);
 
-            $this->plugin->debugMP('slp.main','msg','SLP admin_menu() action complete.');
+            $this->slplus->debugMP('slp.main','msg','SLP admin_menu() action complete.');
         }
     }
 
@@ -406,19 +406,19 @@ class SLPlus_Actions {
      * This is called whenever the WordPress wp_enqueue_scripts action is called.
      */
     function wp_enqueue_scripts() {
-        $this->plugin->debugMP('slp.main','msg','SLPlus_Actions:'.__FUNCTION__);                
+        $this->slplus->debugMP('slp.main','msg','SLPlus_Actions:'.__FUNCTION__);                
         
-        $force_load = $this->plugin->is_CheckTrue( $this->plugin->options_nojs['force_load_js'] );
+        $force_load = $this->slplus->is_CheckTrue( $this->slplus->options_nojs['force_load_js'] );
         
-        $this->plugin->debugMP('slp.main','msg','', ( $force_load ? 'force load' : 'late loading' ) );
+        $this->slplus->debugMP('slp.main','msg','', ( $force_load ? 'force load' : 'late loading' ) );
 
         //------------------------
         // Register our scripts for later enqueue when needed
         //
-        if ( ! $this->plugin->is_CheckTrue( get_option(SLPLUS_PREFIX.'-no_google_js','0')  ) ) {
+        if ( ! $this->slplus->is_CheckTrue( get_option(SLPLUS_PREFIX.'-no_google_js','0')  ) ) {
             $dbAPIKey = trim(get_option(SLPLUS_PREFIX.'-api_key',''));
             $api_key  = (empty($dbAPIKey)?'':'&key='.$dbAPIKey);
-            $language = '&language='.$this->plugin->helper->getData('map_language','get_item',null,'en');
+            $language = '&language='.$this->slplus->helper->getData('map_language','get_item',null,'en');
             wp_enqueue_script(
                     'google_maps',
                     'http'.(is_ssl()?'s':'').'://'.get_option('sl_google_map_domain','maps.google.com').'/maps/api/js?sensor=false' . $api_key . $language,
@@ -445,8 +445,8 @@ class SLPlus_Actions {
                     SLPLUS_VERSION,
                     ! $force_load
             );
-            $this->plugin->UI->localizeSLPScript();        
-            $this->plugin->UI->setup_stylesheet_for_slplus();
+            $this->slplus->UI->localizeSLPScript();        
+            $this->slplus->UI->setup_stylesheet_for_slplus();
             
         // No force load?  Register only.
         // Localize happens when rendering a shortcode.
@@ -475,22 +475,22 @@ class SLPlus_Actions {
      * Called when the <head> tags are rendered.
      */
     function wp_head() {
-        if (!isset($this->plugin)               ) { return; }
-        if (!isset($this->plugin->settings)     ) { return; }
-        if (!is_object($this->plugin->settings) ) { return; }
-        $this->plugin->loadPluginData();
+        if (!isset($this->slplus)               ) { return; }
+        if (!isset($this->slplus->settings)     ) { return; }
+        if (!is_object($this->slplus->settings) ) { return; }
+        $this->slplus->loadPluginData();
 
         echo '<!-- SLP Custom CSS -->'."\n".'<style type="text/css">'."\n" .
 
                     // Map
                     "div#sl_div div#map {\n".
-                        "width:{$this->plugin->data['sl_map_width']}{$this->plugin->data['sl_map_width_units']};\n" .
-                        "height:{$this->plugin->data['sl_map_height']}{$this->plugin->data['sl_map_height_units']};\n" .
+                        "width:{$this->slplus->data['sl_map_width']}{$this->slplus->data['sl_map_width_units']};\n" .
+                        "height:{$this->slplus->data['sl_map_height']}{$this->slplus->data['sl_map_height_units']};\n" .
                     "}\n" .
 
                     // Tagline
                     "div#sl_div div#slp_tagline {\n".
-                        "width:{$this->plugin->data['sl_map_width']}{$this->plugin->data['sl_map_width_units']};\n" .
+                        "width:{$this->slplus->data['sl_map_width']}{$this->slplus->data['sl_map_width_units']};\n" .
                     "}\n" .
 
                     // FILTER: slp_ui_headers
@@ -538,8 +538,8 @@ class SLPlus_Actions {
       */
      function getCompoundOption() {
         if (!$this->depnotice_getCompoundOption) {
-            $this->plugin->notifications->add_notice(9,$this->plugin->createstring_Deprecated(__FUNCTION__));
-            $this->plugin->notifications->display();
+            $this->slplus->notifications->add_notice(9,$this->slplus->createstring_Deprecated(__FUNCTION__));
+            $this->slplus->notifications->display();
             $this->depnotice_getCompoundOption = true;
         }
      }
