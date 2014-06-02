@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-4/
 Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.4
 Tested up to: 3.9.1
-Stable tag: 4.1.25
+Stable tag: 4.1.28
 License: GLPv2 or later
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
@@ -20,7 +20,7 @@ The website offers more [screen shots](http://www.storelocatorplus.com/support/d
 Store Locator Plus is an advanced system for managing multiple physical locations via a fully integrated WordPress solution.
 Whether you have ten locations or ten-thousand, you manage them with ease right from within your WordPress admin panel.
 There is no special programming or extra setup required.
-Simply enter your locations, create a page or edit an existing page and put the [SLPLUS] short code on it.
+Simply enter your locations, create a page or edit an existing page and put the SLPLUS short code on it.
 The Store Locator Plus search form and map will "magically" appear.
 
 The base plugin, [available for free from the WordPress Plugin Directory](http://wordpress.org/extend/plugins/store-locator-le) has all the features you need
@@ -188,7 +188,7 @@ Any EASIER way to perform translations?  Load the [Codestyling Localization plug
 1. Search for "Store Locator Plus" via Plugins/Add New on your WordPress admin panel.
 2. Click install.
 3. Add your locations through the 'Add Locations' page in the Store Locator admin panel
-4. Create or edit a page and add the [SLPLUS] shortcode.
+4. Create or edit a page and add the SLPLUS shortcode.
 
 = Icons =
 
@@ -322,7 +322,17 @@ Please read the *description page* for this plugin for an important note about p
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
 
-= 4.1.25 =
+= 2014-May-30 (4.1.28) =
+
+* Enhancement: Update the JavaScript processor to support Enhanced Search "always append this to address"
+
+= 2014-May-23 (4.1.27) =
+
+* Enhancement: Simplify JavaScript processor to speed up location mapping.
+* Enhancement: Location map markers are dropped on the map so the first locations in results appear on the TOP of the marker stack on the interface.
+* Enhancement: New Above and Beyond NyloBoard [SLP Theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/).
+
+= 2014-May-22 (4.1.25) =
 
 * Change: Blank Mapfix theme is now Sass based and has advanced theme settings.
 * Change: Beside The Point 2012 SLP Theme is now Sass based with standard Hours formatting, Pro Pack UI, and Tagalong UI support.
