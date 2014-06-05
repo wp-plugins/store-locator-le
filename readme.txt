@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-4/
 Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.4
 Tested up to: 3.9.1
-Stable tag: 4.1.28
+Stable tag: 4.1.29
 License: GLPv2 or later
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
@@ -321,6 +321,11 @@ Please read the *description page* for this plugin for an important note about p
 *Version 4.x is a major upgrade that is not compatible with the version 3.x or earlier add-on packs.*
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 2014-Jun-03 (4.1.29+) =
+
+* Enhancement: Update the tab menu styling on admin interface to match WordPress built-in (appearance/menus) style.
+* Fix: Stop putting address searches in Spain or some other odd location.
 
 = 2014-May-30 (4.1.28) =
 

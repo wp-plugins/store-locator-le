@@ -1,5 +1,5 @@
 /** file: admin.css
- ** Sass Source: ./assets/stylesheets/admin.scss
+ ** Sass Source: ./assets/stylesheets/lib/admin.scss
  **/
 /*--------------------------
  * Everywhere
@@ -65,28 +65,15 @@ button, input, textarea {
   text-decoration: none; }
 
 /* Base WP Override */
+about
 #wpcsl-option-navbar_wrapper {
   white-space: nowrap; }
 
 #wpcsl-option-navbar_wrapper .about-wrap {
   margin: 3px 0px 0px 3px; }
 
-#wpcsl-option-navbar_wrapper h2.nav-tab-wrapper {
-  border-bottom-color: #CCCCCC;
-  white-space: nowrap;
-  width: 100%; }
-
 #wpcsl_container div.section_description h4:first-of-type {
   margin-top: 0px; }
-
-.about-wrap h2 .nav-tab {
-  font-size: 16px;
-  margin: 0 3px -1px 0;
-  padding: 4px 10px 6px;
-  vertical-align: top; }
-
-.about-wrap h2 .nav-tab-active {
-  background-color: #E0E0E0; }
 
 #wpfooter {
   position: relative; }

@@ -1141,7 +1141,12 @@ var slp = {
          * returns: none
          */
         this.searchLocations = function() {
-            var address = this.saneValue('addressInput', '') + slplus.options.append_to_search;
+            var append_this = 
+                typeof slplus.options.append_to_search !== 'undefined' ?
+                    slplus.options.append_to_search :
+                    ''                              ;
+                    
+            var address = this.saneValue('addressInput', '') + append_this;
             jQuery('#map_box_image').hide();
             jQuery('#map_box_map').show();
             google.maps.event.trigger(this.gmap, 'resize');
@@ -1379,6 +1384,11 @@ function setup_Map() {
                         slplus.use_sensor = false;
                         cslmap = new slp.Map();
                         cslmap.usingSensor = false;
+                        // If set id attr
+                        //
+                        if (slplus.options.id_addr != null) {
+                            cslmap.address = slplus.options.id_addr;
+                        }
                         cslmap.doGeocode();
                     }
                 }

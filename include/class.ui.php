@@ -534,7 +534,7 @@ class SLPlus_UI {
 
         // Setup the base plugin allowed attributes
         //
-        add_filter('slp_shortcode_atts',array($this,'filter_SetAllowedShortcodes'));
+        add_filter('slp_shortcode_atts',array($this,'filter_SetAllowedShortcodes'), 80, 3);
 
         // FILTER: slp_shortcode_atts
         // Apply the filter of allowed attributes.
@@ -592,14 +592,28 @@ class SLPlus_UI {
      * 
      * @param mixed[] $atts
      */
-    function filter_SetAllowedShortcodes($atts) {
-        return array_merge(
+    function filter_SetAllowedShortcodes($atts, $attributes, $content) {
+        $ret_atts =  array_merge(
                 array(
                     'initial_radius'     => $this->plugin->options['initial_radius'],
-                    'theme'              => null,                    
+                    'theme'              => null, 
+                    'id'                 => null,
+                    'hide_search_form'   => null,                   
                     ),
                 $atts
             );
+        if ( isset($attributes['id']) ) {
+            $locData =
+                $this->plugin->database->get_Record(
+                    array('selectall','whereslid'),
+                    $attributes['id']
+                );
+            if (is_array($locData)) {
+                $ret_atts['id_addr'] = $locData['sl_latitude'] . ', ' . $locData['sl_longitude'];
+            }
+        }
+
+        return $ret_atts;
     }
 
     /**

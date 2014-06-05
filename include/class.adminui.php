@@ -230,7 +230,7 @@ class SLPlus_AdminUI {
             $content =
                 ($addWrap?"<div id='wpcsl-option-navbar_wrapper'>":'').
                 '<div id="slplus_navbar">' .
-                    '<div class="about-wrap"><h2 class="nav-tab-wrapper">';
+                    '<div class="wrap"><h2 class="nav-tab-wrapper">';
 
             // Loop through all SLP sidebar menu items on admin page
             //
