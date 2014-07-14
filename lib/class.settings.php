@@ -574,8 +574,6 @@ class wpCSL_settings__slplus {
                 $firstOne = false;
 
                 print "<li class='top-level general {$firstClass}'>"       .
-                      '<div class="arrow"><div></div></div>'            .
-                      '<span class="icon"></span>'                      .
                       "<a href='#wpcsl-option-{$friendlyDiv}' "     .
                             "title='{$section->name}'>"                 .
                       $section->name                                    .

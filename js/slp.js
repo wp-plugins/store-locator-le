@@ -635,7 +635,6 @@ var slp = {
                 //
                 if (this.loadedOnce) {
                     var sidebarEntry = this.createSidebar(markerList[markerNumber]);
-                    // sidebar.appendChild(sidebarEntry);
                     sidebar.insertBefore(sidebarEntry, sidebar.firstChild);
                     jQuery('div#map_sidebar span:empty').hide();
 

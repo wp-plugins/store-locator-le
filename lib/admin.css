@@ -18,52 +18,6 @@ button, input, textarea {
 #wpbody-content {
   width: auto; }
 
-/*----------------------------------
- *
- * A div that looks like a button.
- */
-.like-a-button {
-  background: #FFF;
-  /* for non-css3 browsers */
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD');
-  /* for IE */
-  background: -webkit-gradient(linear, left top, left bottom, from(white), to(#dddddd));
-  /* for webkit browsers */
-  background: -moz-linear-gradient(top, white, #dddddd);
-  /* for firefox 3.6+ */
-  text-decoration: none;
-  border: 1px solid #BBBBBB;
-  border-radius: 3px 3px 3px 3px;
-  margin: 6px;
-  padding: 3px;
-  text-align: center;
-  width: 150px;
-  cursor: pointer;
-  color: #5F5E5E;
-  display: block;
-  /* Corners */
-  -webkit-border-radius: 6px;
-  -moz-border-radius: 6px;
-  border-radius: 6px;
-  -khtml-border-radius: 6px;
-  /* Shadow */
-  -moz-box-shadow: 0px 1px 3px #AAA;
-  -webkit-box-shadow: 0px 1px 3px #AAA;
-  box-shadow: 0px 1px 3px #AAA; }
-
-.like-a-button:hover {
-  background: #DDD;
-  /* for non-css3 browsers */
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF');
-  /* for IE */
-  background: -webkit-gradient(linear, left top, left bottom, from(#dddddd), to(white));
-  /* for webkit browsers */
-  background: -moz-linear-gradient(top, #dddddd, white);
-  /* for firefox 3.6+ */ }
-
-.like-a-button A {
-  text-decoration: none; }
-
 /* Base WP Override */
 about
 #wpcsl-option-navbar_wrapper {
@@ -91,7 +45,9 @@ about
   padding-bottom: 0;
   position: relative; }
 
-/* Navigation */
+/**
+ * Navigation Elements
+ */
 #wpcsl-option-navbar_wrapper h2.nav-tab-wrapper {
   margin-bottom: 0px;
   margin-left: -22px;
@@ -106,88 +62,39 @@ about
   text-align: center;
   width: 100%; }
 
+/**
+ * wpcsl-nav : sidebar panel navigation
+ */
 #wpcsl_container #wpcsl-nav {
   position: absolute;
-  width: 190px;
-  z-index: 9999;
+  min-width: 150px;
   border: solid 1px #DDD; }
-
-#wpcsl_container #wpcsl-nav ul {
-  margin: 0; }
-
-#wpcsl_container #wpcsl-nav li {
-  margin-bottom: 0;
-  position: relative; }
-
-#wpcsl-nav li .arrow {
-  cursor: auto;
-  display: none;
-  height: 32px;
-  left: -1000px;
-  margin: 0;
-  position: absolute;
-  top: 1px;
-  transform: translate(146px);
-  width: 6px; }
-
-#wpcsl-nav li .arrow div {
-  background: none repeat scroll 0 0 #E4E4E4;
-  border-color: #CCCCCC;
-  border-style: solid;
-  border-width: 0 0 1px 1px;
-  height: 17px;
-  left: -2px;
-  position: absolute;
-  top: 7px;
-  transform: matrix(-0.6, 1, 0.6, 1, 0, 0);
-  width: 17px; }
-
-#wpcsl_container #wpcsl-nav ul li span.icon {
-  background-position: 0 center;
-  background-repeat: no-repeat;
-  display: block;
-  float: left;
-  height: 16px;
-  margin-left: 10px;
-  padding: 16px 0 0 9px;
-  width: 16px; }
-
-#wpcsl_container #wpcsl-nav ul li a:link,
-#wpcsl-nav ul li a:visited {
-  border-bottom: 1px solid #D8D8D8;
-  border-top: 1px solid #FFFFFF;
-  color: #797979;
-  display: block;
-  font: bold 12px/18px sans-serif;
-  padding: 7px 10px;
-  text-decoration: none;
-  text-shadow: 0 1px 0 #FFFFFF; }
-
-#wpcsl_container #wpcsl-nav ul li.first a:link,
-#wpcsl-nav ul li.first a:visited {
-  border-top: none; }
-
-/* Navigation Current Selection */
-#wpcsl-nav li.current .arrow, #wpcsl-nav li.has-children.current .arrow {
-  background-color: #777777;
-  background-image: -moz-linear-gradient(center bottom, #6d6d6d, gray);
-  display: block;
-  transform: translate(1184px);
-  z-index: 9997; }
-
-#wpcsl_container #wpcsl-nav ul li.current .arrow div {
-  background-color: #777777;
-  background-image: -moz-linear-gradient(right bottom, #6d6d6d, gray);
-  border: medium none; }
-
-#wpcsl_container #wpcsl-nav ul li.current a:link, #wpcsl_container #wpcsl-nav ul li.current a:visited {
-  background-color: #777777;
-  background-image: -moz-linear-gradient(center bottom, #6d6d6d, gray);
-  border-bottom-color: #6D6D6D;
-  border-top-color: gray;
-  color: white;
-  margin-left: -1px;
-  text-shadow: 0 -1px 0 #333333; }
+  #wpcsl_container #wpcsl-nav ul {
+    margin: 0; }
+  #wpcsl_container #wpcsl-nav li {
+    margin-bottom: 0;
+    position: relative; }
+  #wpcsl_container #wpcsl-nav ul li a:link,
+  #wpcsl_container #wpcsl-nav ul li a:visited {
+    border-bottom: 1px solid #D8D8D8;
+    border-top: 1px solid #FFFFFF;
+    color: #797979;
+    display: block;
+    font: bold 12px/18px sans-serif;
+    padding: 7px 10px;
+    text-decoration: none;
+    text-shadow: 0 1px 0 #FFFFFF; }
+  #wpcsl_container #wpcsl-nav ul li.first a:link,
+  #wpcsl_container #wpcsl-nav ul li.first a:visited {
+    border-top: none; }
+  #wpcsl_container #wpcsl-nav ul li.current a:link, #wpcsl_container #wpcsl-nav #wpcsl_container #wpcsl-nav ul li.current a:visited {
+    background-color: #777777;
+    background-image: -moz-linear-gradient(center bottom, #6d6d6d, gray);
+    border-bottom-color: #6D6D6D;
+    border-top-color: gray;
+    color: white;
+    margin-left: -1px;
+    text-shadow: 0 -1px 0 #333333; }
 
 /* Content */
 #wpcsl_container div.icon32 {
@@ -203,7 +110,7 @@ about
   left: 188; }
 
 #wpcsl_container #main #content {
-  margin-left: 181px;
+  margin-left: 135px;
   position: relative;
   background-color: transparent; }
 
@@ -610,30 +517,6 @@ div.optionpack_name {
 div.optionpack_info {
   text-align: center; }
 
-/*----------------------------------
- *
- * jQuery Modal Dialogue 
- */
-div.ui-dialog {
-  border: solid 1px #BFBFBF;
-  background: white;
-  padding: 0px;
-  margin: 12px; }
-
-div.ui-dialog div.ui-dialog-titlebar {
-  padding: 3px;
-  background: #BFBFBF;
-  text-align: center;
-  font-weight: bold;
-  margin: 0px; }
-
-div.ui-dialog div.ui-dialog-titlebar a.ui-dialog-titlebar-close span.ui-icon {
-  float: right;
-  margin-left: 3px; }
-
-div.ui-dialog div.ui-dialog-content {
-  padding: 9px; }
-
 /***************************
  * The Navbar
  */
@@ -645,28 +528,26 @@ div#csa_admin_wrapper.metabox-holder {
   margin: 0px;
   padding: 0px; }
 
-/***************************
- * Action Bar Dropdowns
+/*
+ * .tablenav : Action / Filter Bar
  */
 div.tablenav {
+  height: auto;
   margin: 0px; }
+  div.tablenav INPUT[type="text"] {
+    padding: 2px;
+    height: 2em;
+    margin-right: 6px; }
+  div.tablenav .button.action {
+    width: auto; }
 
-div.tablenav INPUT[type="text"] {
-  padding: 2px;
-  height: 2em;
-  margin-right: 6px; }
-
-div.tablenav .button.action {
-  width: auto; }
-
-/*-- Bulk and Filter Actions */
+/*
+ * Bulk and Filter Actions 
+ */
 .bulk_extras, .filter_extras {
   background-color: #FAFAD2;
   border: 1px solid gray;
-  padding: 12px;
-  position: absolute;
-  top: 30px;
-  left: 60px;
+  padding: 6px;
   display: none; }
 
 div.bulkextras, div.filterextras {
@@ -861,38 +742,34 @@ td.slp_manage_locations_cell {
   word-wrap: break-word;
   word-break: keep-all; }
 
-/* Manage Locations Row : Hover */
+/* 
+ * Manage Locations Row 
+ */
 tr.slp_managelocations_row:hover {
-  background-color: #FFFF99; }
-
-/* Manage Locations Row : Invalid */
-tr.slp_managelocations_row.alternate.invalid {
-  background-color: #FFEEEE; }
-
+  background-color: #ffffdd; }
 tr.slp_managelocations_row.invalid {
-  background-color: #FFDDDD; }
-
-tr.slp_managelocations_row.invalid:hover {
-  background-color: #FFCCCC; }
-
-/* Manage Locations Row : ER Featured */
-tr.slp_managelocations_row.alternate.featured {
-  background-color: #EEFFEE; }
-
+  background-color: #ffdddd; }
+  tr.slp_managelocations_row.invalid:hover {
+    background-color: #ffcccc; }
 tr.slp_managelocations_row.featured {
-  background-color: #DDFFDD; }
-
-tr.slp_managelocations_row.featured:hover {
-  background-color: #CCFFCC; }
-
-tr.slp_managelocations_row.featured td.slp_manage_locations_cell.featured {
-  background-image: url("../images/star-open-2x.png");
-  background-position: 12% 70%;
-  background-repeat: no-repeat;
-  background-size: 16px auto; }
-
-tr.featured td {
-  font-size: 1.25em; }
+  background-color: #ddffdd; }
+  tr.slp_managelocations_row.featured:hover {
+    background-color: #ccffcc; }
+  tr.slp_managelocations_row.featured td.slp_manage_locations_cell.name {
+    font-size: 1.25em; }
+  tr.slp_managelocations_row.featured td.slp_manage_locations_cell.featured {
+    background-image: url("../images/star-open-2x.png");
+    background-position: 12% 70%;
+    background-repeat: no-repeat;
+    background-size: 16px auto; }
+tr.slp_managelocations_row.alternate.invalid {
+  background-color: #ffeeee; }
+  tr.slp_managelocations_row.alternate.invalid:hover {
+    background-color: #ffcccc; }
+tr.slp_managelocations_row.alternate.featured {
+  background-color: #eeffee; }
+  tr.slp_managelocations_row.alternate.featured:hover {
+    background-color: #ccffcc; }
 
 #manage_locations_table th {
   vertical-align: top; }
@@ -935,7 +812,7 @@ div.slp_icon_selector_box {
 
 div.slp_icon_selector_box:hover {
   border: solid 1px #AAA;
-  background-color: #FFFFDD; }
+  background-color: #ffffdd; }
 
 img.slp_icon_selector {
   cursor: pointer;
@@ -955,7 +832,7 @@ img.slp_icon_selector {
   font-weight: bold; }
 
 .highlight {
-  background-color: lightYellow;
+  background-color: lightyellow;
   border: 1px solid gold;
   color: #000000;
   left: auto;
@@ -1121,3 +998,39 @@ div#slp_edit_left_column small,
 div#slp_edit_right_column small {
   line-height: 2em;
   vertical-align: top; }
+
+/*----------------------------------
+ *
+ * A div that looks like a button.
+ */
+.like-a-button {
+  background: #FFF;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD');
+  background: -webkit-gradient(linear, left top, left bottom, from(white), to(#dddddd));
+  background: -moz-linear-gradient(top, white, #dddddd);
+  text-decoration: none;
+  border: 1px solid #BBBBBB;
+  border-radius: 3px 3px 3px 3px;
+  margin: 6px;
+  padding: 3px;
+  text-align: center;
+  width: 150px;
+  cursor: pointer;
+  color: #5F5E5E;
+  display: block;
+  /* Corners */
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+  -khtml-border-radius: 6px;
+  /* Shadow */
+  -moz-box-shadow: 0px 1px 3px #AAA;
+  -webkit-box-shadow: 0px 1px 3px #AAA;
+  box-shadow: 0px 1px 3px #AAA; }
+  .like-a-button A {
+    text-decoration: none; }
+  .like-a-button :hover {
+    background: #DDD;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF');
+    background: -webkit-gradient(linear, left top, left bottom, from(#dddddd), to(white));
+    background: -moz-linear-gradient(top, #dddddd, white); }

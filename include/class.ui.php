@@ -330,10 +330,11 @@ class SLPlus_UI {
                 $button_style = 'type="submit" class="slp_ui_button"';
             }
 
+            // TODO: find_button_label get_option should move to Enhanced Search
             return
                 "<div id='radius_in_submit'>".
                     "<input $button_style " .
-                        "value='".get_option(SLPLUS_PREFIX.'_find_button_label','Find Locations')."' ".
+                        "value='". $this->plugin->WPML->getWPMLText('find_button_label', get_option(SLPLUS_PREFIX.'_find_button_label','Find Locations') , 'csa-slplus') . "' ".
                         "id='addressSubmit'/>".
                 "</div>"
                 ;
@@ -411,7 +412,11 @@ class SLPlus_UI {
             $this->rawDeal(
                 '<div id="map_sidebar">'.
                     '<div class="text_below_map">'.
-                        get_option('sl_instruction_message',__('Enter Your Address or Zip Code Above.','csa-slplus')) .
+                        $this->plugin->WPML->getWPMLText(
+                            'sl_instruction_message', 
+                            get_option('sl_instruction_message',__('Enter Your Address or Zip Code Above.','csa-slplus') ) ,
+                            'csa-slplus'
+                        ) .
                     '</div>'.
                 '</div>'
             );

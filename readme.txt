@@ -4,8 +4,8 @@ Contributors: charlestonsw
 Donate link: http://www.charlestonsw.com/product/store-locator-plus-4/
 Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.4
-Tested up to: 3.9.1
-Stable tag: 4.1.29
+Tested up to: 4.0
+Stable tag: 4.1.31
 License: GLPv2 or later
 
 A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
@@ -210,8 +210,11 @@ new theme or any of the built-in defaults by selecting it from the auto-generate
 *Translations*
 
 * Chinese (zh_CN) by iSurge
+* Chinese (zh_TW) by iSurge
 * Dutch (nl_NL) by [Jan de Baat](http://www.de-baat.nl/)
 * French (fr_FR) by François Serrault
+* German (de_DE)
+* Italian (it_IT) by matteo Colangeli
 * Japanese (ja) by [Karen Ellrick](http://l4jp.com)
 * Latvian (lt_LT) by Paulius Bakutis
 * Portuguese (pt_BR) by Carlos Utiama
@@ -321,6 +324,18 @@ Please read the *description page* for this plugin for an important note about p
 *Version 4.x is a major upgrade that is not compatible with the version 3.x or earlier add-on packs.*
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 2014-Jul-09 (4.1.31+) =
+
+* Enhancement: Locations Management UI updates to better handle new Pro Pack filters and general bulk actions.
+* Enhancement: Improved WMPL support for Find Locations button text, results instructions text.
+* Enhancement: jQuery Dialog is active on SLP admin pages to support add-on pack manage locations features.
+* Enhancement: Added Italian (it_IT) translations.
+* Enhancement: Updated Dutch (nl_NL) translations.
+* Enhancement: Add current page length to the display drop down on manage locations.
+* Fix: non-geocoded locations are highlighted on manage locations again.
+* Notice: Tested with the upcoming WordPress 4.0 release.
+
 
 = 2014-Jun-03 (4.1.29+) =
 

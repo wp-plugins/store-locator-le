@@ -365,10 +365,9 @@ class wpCSL_plugin__slplus {
         );
     }
 
-    /*     * -------------------------------------
-     * * method: create_options_page
-     * */
-
+    /**
+     * Create the options page.
+     */
     function create_options_page() {
         add_options_page(
                 $this->name . ' Options', $this->name, 'administrator', $this->prefix . '-options', array(
@@ -378,10 +377,9 @@ class wpCSL_plugin__slplus {
         );
     }
 
-    /*     * -------------------------------------
-     * * method: create_objects
-     * */
-
+    /**
+     * Create some objects.
+     */
     function create_objects() {
 
         // use_obj_defaults is set, use the invoke the default 
@@ -471,10 +469,13 @@ class wpCSL_plugin__slplus {
         add_filter('plugin_row_meta', array($this, 'add_meta_links'), 10, 2);
     }
 
-    /*     * -------------------------------------
-     * * method: add_meta_links
-     * */
-
+    /**
+     * Add meta links.
+     * 
+     * @param type $links
+     * @param type $file
+     * @return string
+     */
     function add_meta_links($links, $file) {
 
         if ($file == $this->basefile) {
@@ -670,12 +671,22 @@ class wpCSL_plugin__slplus {
             wp_register_style($this->styleHandle, $this->plugin_url . '/lib/admin.css');
             wp_enqueue_style($this->styleHandle);
 
+            // jQuery Smoothness Theme
+            //
+            if (file_exists($this->plugin_path . '/lib/jquery-ui-smoothness.css')) {
+                wp_enqueue_style(
+                        'jquery-ui-smoothness', $this->plugin_url . '/lib/jquery-ui-smoothness.css'
+                );
+            }
+
             if (file_exists($this->plugin_path . '/lib/admin-interface.js')) {
                 wp_enqueue_script(
                         $this->styleHandle, $this->plugin_url . '/lib/admin-interface.js', 'jquery', $this->version, true
                 );
             }
         }
+        
+        wp_enqueue_script('jquery-ui-dialog');
     }
 
     /**

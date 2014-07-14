@@ -127,8 +127,8 @@ class PluginThemeAdmin {
             __('Learn more about changing the Store Locator Plus interface via the ' , 'wpcsl') .
             sprintf(
                 '<a href="%s" target="csa">%s</a>',
-                $this->support_url . 'user-experience/',            
-                __('User Experience documentation.','wpcsl')
+                $this->support_url . 'user-experience/view/themes-custom-css/',            
+                __('Custom Themes documentation.','wpcsl')
             ) .
             '</p>';
 

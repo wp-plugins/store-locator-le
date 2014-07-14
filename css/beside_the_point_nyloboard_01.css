@@ -441,7 +441,6 @@ span.slp_result_hours {
 div#map_sidebar .results_entry.featured {
   background-color: #EEF7DC; }
 
-/* Tagalong result icons */
 .results_line.location_iconarray > a {
   display: inline-block;
   height: auto;
@@ -462,6 +461,5 @@ div#map_sidebar .results_entry.featured {
   margin-bottom: 12px;
   min-width: 100px; }
 
-/* Make the icon array appear on its own line */
 .results_line.location_iconarray {
   display: block; }

@@ -612,7 +612,6 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
     function create_SubTab($label,$moreclass='') {
         $cleanLabel = strtolower(str_replace(' ','_',$label));
         return "<li class='top-level general {$moreclass}'>".
-               '<div class="arrow"><div></div></div>'            .
                 "<a title='$label' href='#wpcsl-option-{$cleanLabel}'>{$label}</a>".
                '</li>';
     }
@@ -665,6 +664,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
             (empty($fldLabel)?'':"<label  for='{$fldName}-{$this->slplus->currentLocation->id}{$subFldName}'>{$fldLabel}</label>").
             "<{$inType} "                                                                   .
                 "id='edit-{$fldName}-{$this->slplus->currentLocation->id}{$subFldName}' "   .
+                "data-field='{$fldName}' ".
                 "name='{$fldName}-{$this->slplus->currentLocation->id}{$subFldName}' "      .
                 ( empty ( $placeholder ) ? '' : " placeholder='{$placeholder}' " )          .
                 (($inType==='input')?
@@ -1123,7 +1123,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         if (($this->slplus->currentLocation->latitude == '') ||
             ($this->slplus->currentLocation->longitude == '')
             ) {
-            return 'invalid';
+            return $class . ' invalid ';
         }
         return $class;
     }
@@ -1524,18 +1524,31 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                 $baExtras .= $item['extras'];
             }
         }
-
+        
         // Create the box div string.
         //
+        $morebox = "'#extra_'+jQuery('#actionType').val()"        ;
+        $filter_dialog_title=__('Options','csa-slplus');
+        $dialog_options = 
+            "appendTo: '#locationForm'      , " .
+            "minHeight: 50                  , " .
+            "minWidth: 450                  , " .
+            "title: jQuery('#actionType option:selected').text()+' $filter_dialog_title'  , " .
+            "position: { my: 'left top', at: 'left bottom', of: '#actionType' } "
+            ;
+        
+        // Action confirmation.
+        //
         $confirmPretext = __('Are you sure you want to ','csa-slplus');
+        
+        
         return
             $this->slplus->helper->createstring_DropDownMenuWithButton(
                 array(
                         'id'            => 'actionType'             ,
                         'name'          => 'action'                 ,
                         'items'         => $dropdownItems           ,
-                        'onchange'      =>
-                            'jQuery(\'.bulk_extras\').hide();jQuery(\'#extra_\'+jQuery(\'#actionType\').val()).show();',
+                        'onchange'      => "jQuery({$morebox}).dialog({ $dialog_options });",
                         'buttonlabel'   => __('Apply','csa-slplus') ,
                         'onclick'       => 
                             'AdminUI.doAction(jQuery(\'#actionType\').val(),\''.
@@ -1588,14 +1601,23 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
 
         // Create the box div string.
         //
+        $morebox = "'#extra_'+jQuery('#filterType').val()"        ;
+        $filter_dialog_title = __('Filter Locations By','csa-slplus');
+        $dialog_options = 
+            "appendTo: '#locationForm'      , " .
+            "minWidth: 450                  , " .
+            "title: '$filter_dialog_title'  , " .
+            "position: { my: 'left top', at: 'left bottom', of: '#filterType' } "
+            ;
+            
+        
         return
             $this->slplus->helper->createstring_DropDownMenuWithButton(
                 array(
                         'id'            => 'filterType'             ,
                         'name'          => 'filter'                 ,
                         'items'         => $dropdownItems           ,
-                        'onchange'      =>
-                            'jQuery(\'.filter_extras\').hide();jQuery(\'#extra_\'+jQuery(\'#filterType\').val()).show();',
+                        'onchange'      => "jQuery({$morebox}).dialog({ $dialog_options });" ,                 
                         'buttonlabel'   => __('Filter','csa-slplus') ,
                         'onclick'       => 'AdminUI.doAction(jQuery(\'#filterType\').val(),\'\');'
                     )
@@ -1648,18 +1670,31 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
      *
      */
     function createstring_DisplayBlock() {
-         $currentDisplayMode    = get_option('sl_location_table_view','Normal');
+         $currentDisplayMode    = get_option('sl_location_table_view'       , 'Normal'  );
+         $current_page_size     = get_option('sl_admin_locations_per_page'  , '10'      );
 
         // Setup the properties array for our drop down.
         //
         $dropdownItems = array(
                 array(
-                    'label'     =>  __('Normal','csa-slplus')           ,
+                    'label'     =>  
+                        sprintf(
+                             '%s (%d %s)',
+                             __('Normal','csa-slplus'),
+                             $current_page_size,
+                             __('locations', 'csa-slplus')
+                            ), 
                     'value'     => 'displaynormal'                      ,
                     'selected'  => ($currentDisplayMode == 'Normal')
                 ),
                 array(
-                    'label'     =>  __('Expanded','csa-slplus')         ,
+                    'label'     => 
+                        sprintf(
+                             '%s (%d %s)',
+                             __('Expanded','csa-slplus'),
+                             $current_page_size,
+                             __('locations', 'csa-slplus')
+                            ),                     
                     'value'     => 'displayexpanded'                    ,
                     'selected'  => ($currentDisplayMode == 'Expanded')
                 ),
@@ -1805,8 +1840,8 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         return
                 '<div id="slp_pagination_pages" class="tablenav-pages">'    .
                     '<span class="displaying-num">'                         .
-                            $totalLocations                                 .
-                            ' '.__('locations','csa-slplus')               .
+                            "<span id='total_locations'>{$totalLocations}</span>" .
+                            ' '.__('locations','csa-slplus')                .
                         '</span>'                                           .
                         '<span class="pagination-links">'                   .
                         $pagesString                                        .
@@ -2106,14 +2141,17 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
      * @return string
      */
     private function createstring_PanelManageTableTopActions() {
-        return
-            '<div class="tablenav top">'                     .
+        $HTML = 
             $this->createstring_BulkActionsBlock()           .
             $this->createstring_FiltersBlock()               .
             $this->createstring_DisplayBlock()               .
             $this->createstring_SearchBlock()                .
-            $this->createstring_PanelManageTablePagination() .
-            '</div>'                                         ;
+            $this->createstring_PanelManageTablePagination() ;
+            
+        return 
+            '<div class="tablenav top">'                            .                            
+            apply_filters( 'slp_manage_locations_actionbar_ui', $HTML ) .
+            '</div>'                                                ;
     }
 
     /**
