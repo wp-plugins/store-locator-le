@@ -115,20 +115,20 @@ class PluginThemeAdmin {
 
         // Description
         //
-        $HTML .= $this->parent->helper->create_SubheadingLabel(__('About This Theme','wpcsl'));
+        $HTML .= $this->parent->helper->create_SubheadingLabel(__('About This Theme','csa-slplus'));
         if ( empty ( $this->themeDetails[$this->current_slug]['description'] ) ) {
-            $HTML .= __('No description has been set for this theme.','wpcsl');
+            $HTML .= __('No description has been set for this theme.','csa-slplus');
         } else {
             $HTML .= $this->themeDetails[$this->current_slug]['description'];
         }
         
         $HTML .= 
             '<p>' .
-            __('Learn more about changing the Store Locator Plus interface via the ' , 'wpcsl') .
+            __('Learn more about changing the Store Locator Plus interface via the ' , 'csa-slplus') .
             sprintf(
                 '<a href="%s" target="csa">%s</a>',
                 $this->support_url . 'user-experience/view/themes-custom-css/',            
-                __('Custom Themes documentation.','wpcsl')
+                __('Custom Themes documentation.','csa-slplus')
             ) .
             '</p>';
 
@@ -138,32 +138,60 @@ class PluginThemeAdmin {
 
             // List The Add On Packs Wanted
             //
-            $HTML.=
-                $this->parent->helper->create_SubheadingLabel(__('Add On Packs','wpcsl')) .
-                __('Works best with the following add-on packs enabled: ','wpcsl') .
-                '<ul>'
-                ;
-            $this->parent->set_AvailableAddons();
+            $HTML.= $this->parent->helper->create_SubheadingLabel(__('Add On Packs','csa-slplus'));
+            
+            $active_HTML   = '';
+            $inactive_HTML = '';
+            $this->parent->createobject_AddOnManager();
+            
             $addon_list = explode(',',$this->themeDetails[$this->current_slug]['add-ons']);
             foreach ($addon_list as $slug) {
                 $slug = trim(strtolower($slug));
-                if ( isset( $this->parent->available_addons[$slug] ) ) {
-
-                    // Active - show name
+                if ( isset( $this->parent->add_ons->available[$slug] ) ) {
+                    
+                    // Show Active Add Ons
                     //
-                    if ( $this->parent->available_addons[$slug]['active'] ) {
-                        $HTML.= '<li>' . $this->parent->available_addons[$slug]['name'].'</li>';
-
-                    // Not Active - show link
+                    if ( $this->parent->add_ons->available[$slug]['active'] ) {
+                        $active_HTML.= 
+                            "<li class='product active'>" . 
+                                $this->parent->add_ons->available[$slug]['link'] .
+                            '</li>'
+                            ;                    
+                        
+                    // Add to inactive HTML string
                     //
                     } else {
-                        $HTML.= '<li><strong>' .
-                                $this->parent->available_addons[$slug]['link'].
-                                '</strong></li>';
+                        $inactive_HTML .= 
+                            "<li class='product inactive'>" . 
+                                $this->parent->add_ons->available[$slug]['link'] .
+                            '</li>'
+                            ;                                                    
                     }
                 }
-            }
+            }            
             $HTML .= '</ul>';
+            
+            // Add active add on pack list
+            //
+            if ( ! empty ( $active_HTML ) ) {
+                $HTML .= 
+                    __( 'This theme will make use of these add-on packs:', 'csa-slsplus' ) .               
+                    '<ul>' .
+                    $active_HTML .
+                    '</ul>'
+                    ;
+            }
+            
+            // Add inactive add on pack list
+            //
+            if ( ! empty( $inactive_HTML ) ) { 
+                $HTML .= 
+                    __( 'This theme works best if you activate the following add-on packs:', 'csa-slsplus' ) .
+                    '<ul>' .
+                    $inactive_HTML .
+                    '</ul>'
+                    ;
+            }
 
             // Add the options section
             //
@@ -181,17 +209,34 @@ class PluginThemeAdmin {
      * @return string
      */
     private function createstring_ThemeOptions() {
+        // Add An Apply Settings Button
+        //
+        $save_message = __('Settings have been made. Click Save Settings to activate or the User Exprience tab to cancel.','csa-slplus');
         $HTML =
-            $this->parent->helper->create_SubheadingLabel(__('Preferred Settings','wpcsl')) .
-            __('The following settings will make the most of this theme: ','wpcsl') .
+            $this->parent->helper->create_SubheadingLabel(__('Preferred Settings','csa-slplus')) .
+                
+            '<a href="#" '.
+                'class="like-a-button" ' .
+                "onClick='AdminUI.set_ThemeOptions(\"$save_message\"); return false;' ".
+                '>'.
+                __('Change Layout','csa-slplus').
+            '</a>' .
+                
+            __('Click the button above to change your layout options and make the most of this theme: ','csa-slplus') .
             '<br/>'
             ;
 
         $this->setup_ThemeOptionFields();
         foreach ( $this->theme_option_fields as $option_slug => $option_settings ) {
             if ( ! empty ( $this->themeDetails[$this->current_slug][$option_slug] ) ) {
+                $activity_class = 
+                    ( isset( $this->parent->add_ons->available[$option_settings['slug']] )   &&
+                      $this->parent->add_ons->available[$option_settings['slug']]['active']      ) ?
+                    'active'   :
+                    'inactive' ;
+                        
                 $HTML .=
-                    '<div class="theme_option"> ' .
+                    "<div class='theme_option {$option_settings['slug']} $activity_class'> " .
                     "<span class='theme_option_label'>{$option_settings['name']}</span>" .
                     "<pre class='theme_option_value' settings_field='{$option_settings['field']}'>" .
                     esc_textarea($this->themeDetails[$this->current_slug][$option_slug]) .
@@ -201,18 +246,6 @@ class PluginThemeAdmin {
             }
         }
         $HTML .= '</ul>';
-
-        // Add An Apply Settings Button
-        //
-        $save_message = __('Settings have been made. Click Save Settings to activate or the User Exprience tab to cancel.','wpcsl');
-        $HTML .=
-            '<a href="#" '.
-                'class="like-a-button" ' .
-                "onClick='AdminUI.set_ThemeOptions(\"$save_message\"); return false;' ".
-                '>'.
-                __('Set Options','wpcsl').
-            '</a>'
-            ;
 
         return $HTML;
     }
@@ -258,8 +291,8 @@ class PluginThemeAdmin {
             if (isset($this->notifications)) {
                 $this->notifications->add_notice(
                     2,
-                    sprintf( __('The theme directory:<br/>%s<br/>is missing. ', 'wpcsl'), $this->css_dir ) .
-                    __( 'Create it to enable themes and get rid of this message.', 'wpcsl' )
+                    sprintf( __('The theme directory:<br/>%s<br/>is missing. ', 'csa-slplus'), $this->css_dir ) .
+                    __( 'Create it to enable themes and get rid of this message.', 'csa-slplus' )
                 );
             }
             return;
@@ -323,15 +356,15 @@ class PluginThemeAdmin {
                 array(
                     'section'       => $section                                     ,
                     'group'         => $group                                       ,
-                    'label'         => __('Select A Theme','wpcsl')                 ,
+                    'label'         => __('Select A Theme','csa-slplus')                 ,
                     'setting'       => 'theme'                                      ,
                     'type'          => 'list'                                       ,
                     'custom'        => $themeArray                                  ,
                     'value'         => 'default'                                    ,
                     'description'   =>
-                        __('How should the plugin UI elements look?  ','wpcsl') .
+                        __('How should the plugin UI elements look?  ','csa-slplus') .
                         sprintf(
-                            __('Learn more in the <a href="%s" target="csa">online documentation</a>.','wpcsl'),
+                            __('Learn more in the <a href="%s" target="csa">online documentation</a>.','csa-slplus'),
                             $this->support_url . 'user-experience/view/themes-custom-css/'
                             ),
                     'onChange'      => "AdminUI.show_ThemeDetails(this);"
@@ -375,18 +408,22 @@ class PluginThemeAdmin {
         $this->theme_option_fields =
             array(
                 'PRO.layout'    => array(
+                    'slug'  => 'slp-pro',
                     'name'  => 'Pro Pack Locator Layout',
                     'field' => 'csl-slplus-layout'
                 ),
                 'EM.layout'    => array(
+                    'slug'  => 'slp-enhanced-map',
                     'name'  => 'Enhanced Map Bubble Layout',
                     'field' => 'bubblelayout'
                 ),
                 'ER.layout'    => array(
+                    'slug'  => 'slp-enhanced-results',
                     'name'  => 'Enhanced Results Results Layout',
                     'field' => 'csl-slplus-ER-options[resultslayout]'
                 ),
                 'ES.layout'    => array(
+                    'slug'  => 'slp-enhanced-search',
                     'name'  => 'Enhanced Search Search Layout',
                     'field' => 'csl-slplus-ES-options[searchlayout]'
                 ),

@@ -1,0 +1,1947 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Store Locator Plus v4.1.06\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/store-locator-le\n"
+"POT-Creation-Date: 2013-08-23 14:48+0100\n"
+"PO-Revision-Date: 2014-07-16 11:39+0100\n"
+"Last-Translator: Borisa Djuraskovic <borisad@webhostinghub.com>\n"
+"Language-Team: De B.A.A.T. <de_baat@de-baat.nl>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Poedit 1.5.7\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
+"_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
+"X-Poedit-Basepath: ..\n"
+"X-Textdomain-Support: yes\n"
+"X-Poedit-SearchPath-0: .\n"
+
+# @ csa-slplus
+#: include/class.actions.php:199
+msgid "Info"
+msgstr "Informacije"
+
+# @ csa-slplus
+#: include/class.actions.php:205 include/class.actions.php:235
+msgid "Locations"
+msgstr "Lokacije"
+
+# @ csa-slplus
+#: include/class.actions.php:211
+msgid "User Experience"
+msgstr "Korisničko iskustvo"
+
+# @ csa-slplus
+#: include/class.actions.php:217 include/class.adminui.generalsettings.php:297
+msgid "General Settings"
+msgstr "Opšte postavke"
+
+# @ csa-slplus
+#: include/class.actions.php:320
+msgid "Store Pages"
+msgstr "Stranice prodavnice"
+
+# @ csa-slplus
+#: include/class.actions.php:321
+msgid "Store Page"
+msgstr "Stranica prodavnice"
+
+# @ csa-slplus
+#: include/class.actions.php:322
+msgid "Add New Store Page"
+msgstr "Dodaj novu stranicu prodavnice"
+
+# @ csa-slplus
+#: include/class.actions.php:351
+msgid "Store Locator Plus location pages."
+msgstr "Store Locator Plus stranice lokacije"
+
+# @ csa-slplus
+#: include/class.actions.php:370
+msgid "Categories"
+msgstr "Kategorije"
+
+# @ csa-slplus
+#: include/class.actions.php:371
+msgid "Store Categories"
+msgstr "Kategorije prodavnice"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:132
+msgid "Admin"
+msgstr "Administrator"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:139
+msgid "Turn off rate notification"
+msgstr "Isključi anketu"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:143
+msgid "This will disable the notification asking you to rate our product."
+msgstr "Na ovaj način deaktiviraćete anketu koja traži da ocenite naš proizvod"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:169
+msgid "Google"
+msgstr "Google"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:177
+msgid "Geocode Retries"
+msgstr "Geocode ponovo pokušava"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:223
+msgid "Google API Key"
+msgstr "Ključ za Google API"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:235
+msgid "Turn Off SLP Maps"
+msgstr "Isključi SLP mape"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:240
+msgid ""
+"Check this box if your Theme or another plugin is providing Google Maps and "
+"generating warning messages. THIS MAY BREAK THIS PLUGIN."
+msgstr ""
+"Štiklirajte ovo polje ako vaša tema ili neki drugi plugin obezbeđuju Google "
+"mape i generišu poruke upozorenja. OVO MOŽE PREKINUTI RAD PLUGIN-a."
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:254
+msgid "User Interface"
+msgstr "Korisnički interfejs"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:262
+msgid "Force Load JavaScript"
+msgstr "Nasilno učitaj JavaScript"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:303
+#: include/class.adminui.locations.php:931
+msgid "Name"
+msgstr "Ime"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:2128
+msgid "City"
+msgstr "Grad"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:2132
+msgid "State"
+msgstr "Zemlja"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:2136
+msgid "Zip"
+msgstr "Poštanski broj"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:966
+#: include/class.adminui.locations.php:2140
+msgid "Country"
+msgstr "Država"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:316
+#: include/class.adminui.locations.php:1043
+msgid "Description"
+msgstr "Opis"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:318
+#: include/class.adminui.locations.php:1056
+#: include/class.adminui.locations.php:1929
+msgid "Email"
+msgstr "Mail"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:517
+msgid " at "
+msgstr "na"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:304
+#: include/class.adminui.locations.php:928
+#: include/class.adminui.locations.php:2124
+#: include/class.adminui.mapsettings.php:956 include/class.ui.php:257
+msgid "Address"
+msgstr "Adresi"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:936
+msgid "Street - Line 1"
+msgstr "Ulica - 1. red"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:941
+msgid "Street - Line 2"
+msgstr "Ulica - 2. red"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:946
+msgid "City, State, ZIP"
+msgstr "Grad, država, poštanski kod"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:971
+msgid "Latitude (N/S)"
+msgstr "Geografska širina (S/J)"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:976
+msgid "Longitude (E/W)"
+msgstr "Geografska dužina (I/Z)"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:998
+msgid "Add Location"
+msgstr "Dodaj lokaciju"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:999
+msgid "Update Location"
+msgstr "Ažuriraj lokaciju"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1004
+#: include/class.adminui.locations.php:1783
+#: include/class.adminui.locations.php:2294
+msgid "Add"
+msgstr "Dodaj"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1005
+msgid "Update"
+msgstr "Ažuriraj"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1023
+msgid "Cancel"
+msgstr "Otkaži"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1040
+msgid "Additional Information"
+msgstr "Dodatne informacije"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1227
+msgid "Added Successfully"
+msgstr "Uspešno dodate"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1475
+msgid "Bulk Actions"
+msgstr "Skup aktivnosti"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1480
+msgid "Delete Permanently"
+msgstr "Obriši trajno"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1500
+msgid "Are you sure you want to "
+msgstr "Jeste li sigurni da želite"
+
+# @ wpcsl
+# @ csa-slplus
+#: WPCSL-generic/classes/CSL-helper_class.php:153
+#: include/class.adminui.locations.php:1509 lib/class.helper.php:153
+msgid "Apply"
+msgstr "Primeni"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1540
+msgid "Show All"
+msgstr "Prikaži sve"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1556
+msgid "Filter"
+msgstr "Filtriraj"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1613
+msgid "Normal"
+msgstr "Normalan"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1618
+msgid "Expanded"
+msgstr "Proširen"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1623
+#: include/class.adminui.locations.php:1628
+#: include/class.adminui.locations.php:1633
+#: include/class.adminui.locations.php:1638
+#: include/class.adminui.locations.php:1643
+#: include/class.adminui.locations.php:1648
+#, php-format
+msgid "%d locations"
+msgstr "%d  lokacije"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1664
+msgid "Display"
+msgstr "Prikaži"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1691
+msgid "for your search of"
+msgstr "za vašu pretragu o"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1693
+msgid "Clear&nbsp;Results"
+msgstr "Clear&nbsp, Rezultati "
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1765
+msgid "locations"
+msgstr "lokacije"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:2087
+msgid "Search"
+msgstr "Traži"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1808
+#: include/class.adminui.locations.php:2293
+msgid "Manage"
+msgstr "Upravljaj"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1923
+#: include/class.adminui.locations.php:1933
+#: include/class.adminui.mapsettings.php:93
+msgid "View"
+msgstr "Izgled"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1938
+msgid "edit"
+msgstr "uredi"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1941
+msgid "delete"
+msgstr "obriši"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1943
+#, php-format
+msgid "Delete %s?"
+msgstr "Obriši %s?"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:2032
+msgid "Search Locations returned no matches."
+msgstr "Pretragom lokacija nisu nađene podudarnosti."
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:2031
+msgid "No locations have been created yet."
+msgstr "Još nisu kreirane lokacije"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:67
+msgid "Save Settings"
+msgstr "Sačuvaj postavke"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:324
+msgid "Look and Feel"
+msgstr "Pogledaj i oseti"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:328
+msgid "Map Height"
+msgstr "Visina mape"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:339
+msgid "Height Units"
+msgstr "Jedinice mape"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:360
+msgid "Is the width a percentage of page width or absolute pixel size?"
+msgstr ""
+"Da li je širina u procentima stranice ili je apsolutna, izražena u pikselima?"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:349
+msgid "Map Width"
+msgstr "Širina mape"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:350
+msgid ""
+"The initial map width in pixels or percent of page width. Also sets results "
+"width."
+msgstr ""
+"Širina početne karte u pikselima ili u procentima širine stranice. Takođe, "
+"podešava širinu rezultata."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:359
+msgid "Width Units"
+msgstr "Jedinice širine"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:369
+msgid "Default Map Type"
+msgstr "Podrazumevana vrsta mape"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:370
+msgid "What style Google Map should we use?"
+msgstr "Koji stil Google mape treba da koristimo?"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:376
+msgid "Remove Credits"
+msgstr "Ukloni kredite"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:377
+msgid "Remove the search provided by tagline under the map."
+msgstr "Ukloni pretragu sa oznakom ispod mape."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:398
+msgid "Behavior"
+msgstr "Ponašanje"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:403
+msgid "Map Domain"
+msgstr "Domen mape"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:417
+msgid "Map Language"
+msgstr "Jezik mape"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:431
+msgid "Zoom Level"
+msgstr "Nivo uvećanja"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:432
+msgid ""
+"Initial zoom level of the map if \"immediately show locations\" is NOT "
+"selected or if only a single location is found.  0 = world view, 19 = house "
+"view."
+msgstr ""
+"Početni nivo uvećanja ako nije označena opcija \"immediately show locations"
+"\" ili ako je pronađena samo jedna lokacija. 0 = pogled na svet 19 = pogled "
+"na kuću"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:440
+msgid "Zoom Adjustment"
+msgstr "Podešavanje uvećanja"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:441
+msgid ""
+"Changes how tight auto-zoom bounds the locations shown.  Lower numbers are "
+"closer to the locations."
+msgstr ""
+"Menja odnos uvećanja i prikazanih lokacija. Niži brojevi su bliže lokacijama."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:460
+msgid "Home Marker"
+msgstr "Početni marker"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:468
+msgid "Destination Marker"
+msgstr "Marker destinacije"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:484
+msgid "Map Features"
+msgstr "Funkcije mape"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:490
+msgid "Map Settings"
+msgstr "Postavke mape"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:496
+msgid "Map Markers"
+msgstr "Markeri mape"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:504
+msgid "Map"
+msgstr "Mapa"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:522
+msgid "United States"
+msgstr "SAD"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:523
+msgid "Argentina"
+msgstr "Argentina"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:524
+msgid "Australia"
+msgstr "Australija"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:525
+msgid "Austria"
+msgstr "Austrija"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:526
+msgid "Bahamas"
+msgstr "Bahami"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:527
+msgid "Belgium"
+msgstr "Belgija"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:528
+msgid "Brazil"
+msgstr "Brazil"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:529
+msgid "Canada"
+msgstr "Kanada"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:530
+msgid "Chile"
+msgstr "Čile"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:531
+msgid "China"
+msgstr "Kina"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:532
+msgid "Czech Republic"
+msgstr "Češka Republika"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:533
+msgid "Denmark"
+msgstr "Danska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:534
+msgid "Estonia"
+msgstr "Estonija"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:535
+msgid "Finland"
+msgstr "Finska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:536
+msgid "France"
+msgstr "Francuska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:537
+msgid "Germany"
+msgstr "Nemačka"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:538
+msgid "Greece"
+msgstr "Grčka"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:539
+msgid "Hong Kong"
+msgstr "Hong Kong"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:540
+msgid "Hungary"
+msgstr "Mađarska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:541
+msgid "India"
+msgstr "Indija"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:543
+msgid "Republic of Ireland"
+msgstr "Republika Irska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:544
+msgid "Israel"
+msgstr "Izrael"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:545
+msgid "Italy"
+msgstr "Italija"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:546
+msgid "Japan"
+msgstr "Japan"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:547
+msgid "Liechtenstein"
+msgstr "Lihtenštajn"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:548
+msgid "Lithuania"
+msgstr "Litvanija"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:549
+msgid "Mexico"
+msgstr "Meksiko"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:550
+msgid "Netherlands"
+msgstr "Holandija"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:551
+msgid "New Zealand"
+msgstr "Novi Zeland"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:552
+msgid "Norway"
+msgstr "Norveška"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:553
+msgid "Poland"
+msgstr "Poljska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:554
+msgid "Portugal"
+msgstr "Portugal"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:555
+msgid "Russia"
+msgstr "Rusija"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:556
+msgid "Singapore"
+msgstr "Singapur"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:557
+msgid "South Africa"
+msgstr "Južnoafrička Republika"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:558
+msgid "South Korea"
+msgstr "Južna Koreja"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:559
+msgid "Spain"
+msgstr "Španija"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:560
+msgid "Sweden"
+msgstr "Švedska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:561
+msgid "Switzerland"
+msgstr "Švajcarska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:562
+msgid "Taiwan"
+msgstr "Tajvan"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:563
+msgid "United Arab Emirates"
+msgstr "Ujedinjeni Arapski Emirati"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:564
+msgid "United Kingdom"
+msgstr "Ujedinjeno Kraljevstvo"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:579
+msgid "English"
+msgstr "Engleski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:580
+msgid "Arabic"
+msgstr "Arapski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:581
+msgid "Basque"
+msgstr "Baskijski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:582
+msgid "Bulgarian"
+msgstr "Bugarski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:583
+msgid "Bengali"
+msgstr "Bengalski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:584
+msgid "Catalan"
+msgstr "Katalonski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:585
+msgid "Czech"
+msgstr "Češki"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:586
+msgid "Danish"
+msgstr "Danski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:587
+msgid "German"
+msgstr "Nemački"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:588
+msgid "Greek"
+msgstr "Grčki"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:589
+msgid "English (Australian)"
+msgstr "Engleski (australijski)"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:590
+msgid "English (Great Britain)"
+msgstr "Engleski (Velika Britanija)"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:591
+msgid "Spanish"
+msgstr "Španski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:592
+msgid "Farsi"
+msgstr "Persijski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:593
+msgid "Finnish"
+msgstr "Finski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:594
+msgid "Filipino"
+msgstr "Filipinski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:595
+msgid "French"
+msgstr "Francuski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:596
+msgid "Galician"
+msgstr "Galicijski    "
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:598
+msgid "Hindi"
+msgstr "Hindi"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:599
+msgid "Croatian"
+msgstr "Hrvatski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:600
+msgid "Hungarian"
+msgstr "Mađarski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:601
+msgid "Indonesian"
+msgstr "Indonežanski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:602
+msgid "Italian"
+msgstr "Italijanski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:603
+msgid "Hebrew"
+msgstr "Hebrejski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:604
+msgid "Japanese"
+msgstr "Japanski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:605
+msgid "Kannada"
+msgstr "Kanadski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:606
+msgid "Korean"
+msgstr "Korejski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:607
+msgid "Lithuanian"
+msgstr "Litvanski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:608
+msgid "Latvian"
+msgstr "Letonski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:609
+msgid "Malayalam"
+msgstr "Malajalam"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:611
+msgid "Dutch"
+msgstr "Holandski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:612
+msgid "Norwegian"
+msgstr "Norveški"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:613
+msgid "Polish"
+msgstr "Poljski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:614
+msgid "Portuguese"
+msgstr "Portugalski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:615
+msgid "Portuguese (Brazil)"
+msgstr "Portugalski (Brazil)"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:616
+msgid "Portuguese (Portugal)"
+msgstr "Portugalski (Portugal)"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:617
+msgid "Romanian"
+msgstr "Rumunski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:618
+msgid "Russian"
+msgstr "Ruski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:619
+msgid "Slovak"
+msgstr "Slovački"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:620
+msgid "Slovenian"
+msgstr "Slovenački"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:621
+msgid "Serbian"
+msgstr "Srpski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:622
+msgid "Swedish"
+msgstr "Švedski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:624
+msgid "Tamil"
+msgstr "Tamil"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:625
+msgid "Telugu"
+msgstr "Telugu"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:626
+msgid "Thai"
+msgstr "Tajlandski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:627
+msgid "Turkish"
+msgstr "Turski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:628
+msgid "Ukrainian"
+msgstr "Ukrajinski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:629
+msgid "Vietnamese"
+msgstr "Vijetnamski"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:630
+msgid "Chinese (Simplified)"
+msgstr "Kineski (pojednostavljeni)"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:631
+msgid "Chinese (Traditional)"
+msgstr "Kineski (tradicionalni)"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:681
+msgid "Successful Update"
+msgstr "Ažuriranje uspešno"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:720
+#, php-format
+msgid "Your home marker %s cannot be located, please select a new one."
+msgstr "Vaš početni marker %s  ne može da se locira, odaberite drugi. "
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:730
+#, php-format
+msgid "Your destination marker %s cannot be located, please select a new one."
+msgstr "Vaš marker destinacije %s ne može da se locira, odaberite drugi."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:783
+msgid "Search Results"
+msgstr "Rezultati pretrage"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:787
+msgid "How many locations does a search return? Default is 25."
+msgstr "Koliko lokacija se pojavilo u pretrazi? Standardni broj je 25."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:793
+msgid "Immediately Show Locations"
+msgstr "Odmah prikaži lokacije"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:794
+msgid ""
+"Display locations as soon as map loads, based on map center and default "
+"radius. "
+msgstr ""
+"Prikaži lokacije čim se mapa učita, na osnovu središta mape i podrazumevanog "
+"radijusa."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:801
+msgid "Number To Show Initially"
+msgstr "Broj za početno prikazivanje"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:802
+msgid ""
+"How many locations should be shown when Immediately Show Locations is "
+"checked.  Recommended maximum is 50."
+msgstr ""
+"Koliko lokacija treba prikazati kad se štiklira opcija: “Odmah prikaži "
+"lokacije”. Preporučeni maksimum je 50."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:808
+msgid "Radius To Search Initially"
+msgstr "Radijus za početnu pretragu"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:809
+msgid ""
+"What should immediately show locations use as the default search radius? "
+"Leave empty to use map radius default or set to a large number like 25000 to "
+"search everywhere."
+msgstr ""
+"Šta treba odmah da prikaže upotrebu lokacija kao podrazumevani radijus "
+"pretrage? Ostavite prazno da biste koristili podrazumevani radijus mape ili "
+"podesite veliki broj, kao što je 25.000, da biste pretražili svuda. "
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:811
+#, php-format
+msgid ""
+"Can be set with <a href=\"%s\" target=\"csa\">shortcode attribute "
+"initial_radius</a> if Force Load JavaScript is turned off."
+msgstr ""
+"Može se podesiti sa atributa <a href=\"%s\" target=\"csa\">shortcode "
+"attribute initial_radius</a> ako je nasilno učitavanje JavaScript-a "
+"isključeno."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:827
+#: include/class.adminui.mapsettings.php:886
+msgid "Results Labels"
+msgstr "Oznake rezultata"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:830
+msgid "Website URL"
+msgstr "URL web site-a"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:831
+msgid "Search results text for the website link."
+msgstr "Pretraži tekst rezultata za link web site-a"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:319
+#: include/class.adminui.locations.php:1061
+#: include/class.adminui.mapsettings.php:837
+#: include/class.adminui.mapsettings.php:840
+msgid "Hours"
+msgstr "Sati"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:838
+msgid "Hours label."
+msgstr "Oznaka sati"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:320
+#: include/class.adminui.locations.php:1069
+#: include/class.adminui.mapsettings.php:844
+#: include/class.adminui.mapsettings.php:847
+msgid "Phone"
+msgstr "Telefon"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:845
+msgid "Phone label."
+msgstr "Oznaka telefona"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:321
+#: include/class.adminui.locations.php:1074
+#: include/class.adminui.mapsettings.php:851
+#: include/class.adminui.mapsettings.php:854
+msgid "Fax"
+msgstr "Fax"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:852
+msgid "Fax label."
+msgstr "Oznaka faksa"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:858
+#: include/class.adminui.mapsettings.php:861
+msgid "Directions"
+msgstr "Pravci"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:859
+msgid "Directions label."
+msgstr "Oznaka pravaca"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:865
+msgid "Instructions"
+msgstr "Instrukcije"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:866
+msgid ""
+"Search results instructions shown if immediately show locations is not "
+"selected."
+msgstr ""
+"Instrukcije rezultata pretrage prikazuju se ako opcija “odmah prikaži "
+"lokacije” nije odabrana."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:868
+msgid "Enter an address or zip code and click the find locations button."
+msgstr "Unesite adresu ili poštanski kod i kliknite na taster “nađi lokacije”."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:880
+msgid "Results Features"
+msgstr "Funkcije rezultata"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:896
+msgid "Results"
+msgstr "Rezultati"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:913
+msgid "Search Features"
+msgstr "Funkcije pretrage"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:918
+msgid "Radii Options"
+msgstr "Opcije radijusa"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:919
+msgid ""
+"Separate each number with a comma \",\". Put parenthesis \"( )\" around the "
+"default."
+msgstr ""
+"Brojeve odvojite zarezima \",\". Stavite zagrade \"( )\" oko podrazumevanih "
+"vrednosti."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:925
+msgid "Distance Unit"
+msgstr "Jedinica razdaljine"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:929
+msgid "Kilometers"
+msgstr "Kilometri"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:930
+msgid "Miles"
+msgstr "Milje"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:940
+msgid "Use Find Location Text Button"
+msgstr "Upotrebite tekstualni taster “Nađi lokaciju”"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:941
+msgid ""
+"Use a standard text button for \"Find Locations\" instead of the provided "
+"button images."
+msgstr ""
+"Upotrebite standardni tekstualni taster za \"Nađi Lokacije\" umesto datih "
+"slika tastera.  "
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:957
+msgid "Search form address label."
+msgstr "Formular pretrage adrese"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:963
+msgid "Radius"
+msgstr "Radijus"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:964
+msgid "Search form radius label."
+msgstr "Oznaka za pretragu preko radijusa"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:974
+msgid "Search Labels"
+msgstr "Oznake pretrage"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:981
+msgid "Search Form"
+msgstr "Obrazac pretrage"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:795
+#, php-format
+msgid "Received status %s."
+msgstr "Primljeni status %s."
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:782
+#, php-format
+msgid "Unknown Address! Received status %s."
+msgstr "Nepoznata adresa! Primljeni status %s."
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:798
+#, php-format
+msgid "Received data %s."
+msgstr "Primljeni podaci %s."
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:823
+#, php-format
+msgid "Read <a href=\"%s\">this</a> if you are having geocoding issues."
+msgstr "Pročitajte <a href=\"%s\">ovo</a> ako imate problema sa geokodiranjem."
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:839
+#, php-format
+msgid ""
+"Google thinks %s is at <a href=\"%s\" target=\"_blank\">lat: %s long %s</a>"
+msgstr ""
+"Google misli da je %s na <a href=\"%s\" target=\"_blank\">lat: %s long %s</"
+"a>."
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:2113
+msgid "Actions"
+msgstr "Akcije"
+
+# @ csa-slplus
+#: include/class.adminui.php:314
+#, php-format
+msgid "Could not read icon directory %s"
+msgstr "Ikonica direktorijuma %s nije mogla da se pročita."
+
+# @ csa-slplus
+#: include/class.ajaxhandler.php:335
+msgid "renderJSON_Response did not get an array()"
+msgstr "renderJSON_Response nije dobio niz()."
+
+# @ csa-slplus
+#: include/class.location.php:482
+#, php-format
+msgid "Could not add %s as a new location"
+msgstr "Nije mogao dodati %s kao novu lokaciju."
+
+# @ csa-slplus
+#: include/class.ui.php:403
+msgid "Enter Your Address or Zip Code Above."
+msgstr "Gore unesite adresu ili poštanski kod."
+
+# @ csa-slplus
+#: include/class.ui.php:510
+#, php-format
+msgid "%s is not ready"
+msgstr "%s  nije spreman"
+
+# @ csa-slplus
+#. translators: plugin header field 'Name'
+#: include/class.ui.php:510 store-locator-le.php:0 store-locator-le.php:169
+msgid "Store Locator Plus"
+msgstr "Store Locator Plus"
+
+# @ wpcsl
+#: WPCSL-generic/classes/CSL-notifications_class.php:89
+#: lib/class.notifications.php:89
+msgid "needs attention"
+msgstr "zahteva pažnju"
+
+# @ wpcsl
+#: WPCSL-generic/classes/CSL-notifications_class.php:128
+#: lib/class.notifications.php:128
+msgid "wants you to know"
+msgstr "želi da znate"
+
+# @ wpcsl
+#: WPCSL-generic/classes/CSL-notifications_class.php:140
+#: lib/class.notifications.php:140
+#, php-format
+msgid "<p><strong><a href=\"%s\">%s</a> %s: </strong>"
+msgstr "<p><strong><a href=\"%s\">%s</a> %s: </strong>"
+
+# @ wpcsl
+#: WPCSL-generic/classes/CSL-plugin.php:503
+#: WPCSL-generic/classes/CSL-plugin.php:504 lib/class.plugin.php:462
+#: lib/class.plugin.php:463
+msgid "Support"
+msgstr "Podrška"
+
+# @ wpcsl
+#: WPCSL-generic/classes/CSL-plugin.php:507 lib/class.plugin.php:466
+msgid "Purchase"
+msgstr "Nabavka"
+
+# @ wpcsl
+#: WPCSL-generic/classes/CSL-plugin.php:508 lib/class.plugin.php:467
+msgid "Buy Now"
+msgstr "Kupi sada"
+
+# @ wpcsl
+# @ csa-slplus
+#: WPCSL-generic/classes/CSL-plugin.php:511
+#: include/class.adminui.generalsettings.php:133 lib/class.plugin.php:470
+msgid "Settings"
+msgstr "Postavke"
+
+# @ wpcsl
+#: WPCSL-generic/classes/CSL-settings_class.php:75 lib/class.settings.php:75
+msgid "Save Changes"
+msgstr "Sačuvaj izmene"
+
+# @ wpcsl
+#: WPCSL-generic/classes/CSL-settings_class.php:371 lib/class.settings.php:368
+#, php-format
+msgid "Program Error: section <em>%s</em> not defined."
+msgstr "Programska greška deo <em>%s</em> nije definisan."
+
+# @ csa-slplus
+#: WPCSL-generic/classes/CSL-themes_class.php:83
+#, php-format
+msgid ""
+"The theme directory:<br/>%s<br/>is missing. Create it to enable themes and "
+"get rid of this message."
+msgstr ""
+"Nedostaje <br/>%s<br/> tema direktorijuma. Kreirajte je da biste aktivirali "
+"teme i da biste se oslobodili ove poruke. "
+
+# @ wpcsl
+#: WPCSL-generic/classes/CSL-themes_class.php:150
+#: lib/class.themes.admin.php:316
+msgid "Select A Theme"
+msgstr "Odaberi temu"
+
+# @ csa-slplus
+#. translators: plugin header field 'Description'
+#: store-locator-le.php:0
+msgid ""
+"Manage multiple locations with ease. Map stores or other points of interest "
+"with ease via Google Maps.  This is a highly customizable, easily "
+"expandable, enterprise-class location management system."
+msgstr ""
+"Upravljajte s lakoćom višestrukim lokacijama. Lako nađite na mapi prodavnice "
+"ili druge tačke koje tražite. Ovaj sistem ima široke mogućnosti "
+"prilagođavanja, lako se proširuje, zgodan je za upravljanje lokacijama."
+
+# @ csa-slplus
+#. translators: plugin header field 'Author'
+#: store-locator-le.php:0
+msgid "Charleston Software Associates"
+msgstr "Charleston Software Associates"
+
+# @ wpcsl
+#: WPCSL-generic/classes/CSL-themes_class.php:212
+#: lib/class.themes.admin.php:120
+msgid "No description has been set for this theme."
+msgstr "Za ovu temu nije podešen opis."
+
+# @ wpcsl
+#: WPCSL-generic/classes/CSL-themes_class.php:216
+#: lib/class.themes.admin.php:133
+msgid "Works best with the following add-on packs enabled: "
+msgstr "Najbolje radi sa sledećim paketom dodataka:"
+
+# @ wpcsl
+#: WPCSL-generic/classes/CSL-plugin.php:661 lib/class.plugin.php:609
+#, php-format
+msgid "%s has been deactivated."
+msgstr "%s je deaktiviran"
+
+# @ wpcsl
+#: WPCSL-generic/classes/CSL-plugin.php:667 lib/class.plugin.php:615
+#, php-format
+msgid "You have %s version %s."
+msgstr "Imate %s verziju %s."
+
+# @ wpcsl
+#: WPCSL-generic/classes/CSL-plugin.php:673 lib/class.plugin.php:621
+#, php-format
+msgid "You need version %s or greater for this version of %s."
+msgstr "Potrebna vam je verzija %s ili novija, za ovu verziju %s."
+
+# @ wpcsl
+#: WPCSL-generic/classes/CSL-plugin.php:679 lib/class.plugin.php:627
+#, php-format
+msgid "Please install an older version of %s or upgrade."
+msgstr ""
+"Molimo vas da instalirate stariju verziju %s ili da ažurirate postojeću."
+
+# @ wpcsl
+#: WPCSL-generic/classes/CSL-plugin.php:684 lib/class.plugin.php:632
+#, php-format
+msgid ""
+"Upgrading major versions of %s requires paid upgrades to all related add-on "
+"packs."
+msgstr ""
+"Za ažuriranje novijih verzija %s potrebne su vam plaćene nadgradnje za sve "
+"date pakete dodataka. "
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:810
+msgid "Geocode service non-responsive"
+msgstr "Geocode ne odgovara."
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:778
+#: include/class.adminui.locations.php:791
+#, php-format
+msgid "Address #%d : %s <font color=red>failed to geocode</font>."
+msgstr ""
+"Geocode nije našao adresu za  #%d :%s <font color=red>failed to geocode</"
+"font>. "
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1079
+msgid "Image URL"
+msgstr "URL slike"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:476
+msgid "Saved markers live here: "
+msgstr "Sačuvani markeri nalaze se ovde:"
+
+# @ csa-slplus
+#: include/class.adminui.php:84
+msgid "Navigation"
+msgstr "Navigacija"
+
+# @ csa-slplus
+#: include/class.adminui.php:101
+msgid "How to Use"
+msgstr "Kako se koristi"
+
+# @ csa-slplus
+#: include/class.ajax.mobilelistener.php:106
+msgid "no latitude passed"
+msgstr "nije prosleđena širina"
+
+# @ csa-slplus
+#: include/class.ajax.mobilelistener.php:110
+msgid "no longitude passed"
+msgstr "nije prosleđena dužina"
+
+# @ csa-slplus
+#: include/class.location.php:268
+msgid "Could not create or update the custom page for this location."
+msgstr ""
+"Prilagođena stranica za ovu lokaciju nije mogla biti kreirana ili ažurirana."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:966 include/class.ui.php:274
+msgid "Within"
+msgstr "Unutar"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:172
+msgid "Geocoding"
+msgstr "Geokodiranje"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:196
+msgid ""
+"How many times should we try to set the latitude/longitude for a new "
+"address? "
+msgstr ""
+"Koliko puta treba da pokušamo da podesimo dužinu/širinu za novu adresu?"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:197
+msgid "Higher numbers mean slower bulk uploads. "
+msgstr "Viši brojevi znače da će se grupa sporije učitavati."
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:198
+msgid ""
+"Lower numbers make it more likely the location will not be set during bulk "
+"uploads. "
+msgstr ""
+"Niži brojevi smanjuju verovatnoću podešavanja lokacije tokom učitavanja "
+"grupe."
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:199
+#: include/class.adminui.generalsettings.php:215
+#, php-format
+msgid "Bulk import or re-geocoding is a %s feature."
+msgstr "Uvoz grupe ili ponavljanje geokodiranja je %s  funkcija."
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:207
+msgid "Maximum Retry Delay"
+msgstr "Maksimalno odlaganje drugog pokušaja"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:212
+msgid "Maximum time to wait between retries, in seconds. "
+msgstr "Maksimalno vreme čekanja između ponavljanja pokušaja u sekundama."
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:213
+msgid "Use multiples of 1. "
+msgstr "Koristite množenje brojem 1."
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:214
+msgid "Recommended value is 5. "
+msgstr "Preporučena vrednost je 5."
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:226
+msgid ""
+"This setting helps with query limits for businesses with a Google Business "
+"Account only."
+msgstr ""
+"Ovo podešavanje pomaže sa ograničenjima pretrage za posao isključivo preko "
+"Google Business naloga."
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:227
+msgid "The free Google API keys do not have an impact on query limits."
+msgstr "Besplatni ključevi za Google API ne utiču na ograničenja pretrage."
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:257
+msgid "JavaScript"
+msgstr "JavaScript"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:267
+msgid ""
+"Force the JavaScript for Store Locator Plus to load on every page with early "
+"loading. "
+msgstr ""
+"Naterajte JavaScript da se na svakoj Store Locator Plus stranici otpremi "
+"ranim učitavanjem."
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:268
+msgid ""
+"This can slow down your site, but is compatible with more themes and plugins."
+msgstr ""
+"Mogao bi da vam uspori site, ali kompatibilan je sa velikim brojem tema i "
+"plugin-a."
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:317
+#: include/class.adminui.locations.php:1051
+#: include/class.adminui.mapsettings.php:833
+msgid "Website"
+msgstr "Website"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:733
+#, php-format
+msgid "Address %s (%d in current series) hit the Google query limit.\n"
+msgstr ""
+"Adresa %s (%d id u trenutnim serijama) dostižu ograničenje Google pretrage.\n"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:762
+#, php-format
+msgid ""
+"Waited up to %4.2f seconds between request, total wait for this location was "
+"%4.2f seconds."
+msgstr ""
+"Vreme čekanja između zahteva iznosilo je do %4.2f sekunde; ukupno vreme "
+"čekanja za ovu lokaciju bilo je %4.2f sekunde. "
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:768
+#, php-format
+msgid "%d total attempts for this location."
+msgstr "%d  ukupni pokušaji za ovu lokaciju "
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:63
+msgid " - User Experience"
+msgstr "Korisničko iskustvo"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:786
+msgid "Max Search Results"
+msgstr "Maksimalni rezultati pretrage"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:929
+#: include/class.ajax.mobilelistener.php:162 include/class.ajaxhandler.php:229
+msgid "km"
+msgstr "km"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:930
+#: include/class.ajax.mobilelistener.php:162
+#: include/class.ajax.mobilelistener.php:217 include/class.ajaxhandler.php:229
+#: include/class.ui.php:629 include/class.ui.php:709
+msgid "miles"
+msgstr "miles"
+
+# @ csa-slplus
+#: WPCSL-generic/classes/CSL-plugin.php:542 lib/class.plugin.php:490
+#, php-format
+msgid "The %s method is no longer available. "
+msgstr "%s metod više nije raspoloživ."
+
+# @ csa-slplus
+#: WPCSL-generic/classes/CSL-plugin.php:546 lib/class.plugin.php:494
+msgid "It is likely that one of your add-on pack is out of date. "
+msgstr "Najverovatnije nijedan vaš paket dodataka nije zastareo."
+
+# @ csa-slplus
+#: WPCSL-generic/classes/CSL-plugin.php:550 lib/class.plugin.php:498
+#, php-format
+msgid ""
+"You need to <a href=\"%s\" target=\"csa\">upgrade</a> to the latest %s "
+"compatible version or <a href=\"%s\" target=\"csa\">downgrade</a> the %s "
+"plugin."
+msgstr ""
+"Morate da <a href=\"%s\" target=\"csa\">ažurirate plugin</a> na najnoviju  "
+"%s  kompatibilnu verziju ili <a href=\"%s\" target=\"csa\">da spustite  %s "
+"plugin na niži rang</a>."
+
+# @ wpcsl
+#: WPCSL-generic/classes/CSL-settings_class.php:1176
+#: lib/class.settings.php:1169
+msgid "ON"
+msgstr "UKLJUČEN"
+
+# @ wpcsl
+#: WPCSL-generic/classes/CSL-settings_class.php:1177
+#: lib/class.settings.php:1170
+msgid "OFF"
+msgstr "ISKLJUČEN"
+
+# @ wpcsl
+#: WPCSL-generic/classes/CSL-themes_class.php:156
+#: lib/class.themes.admin.php:322
+msgid "How should the plugin UI elements look?  "
+msgstr "Kako treba da izgleda plugin elemenata korisničkog interfejsa?"
+
+# @ wpcsl
+#: WPCSL-generic/classes/CSL-themes_class.php:158
+#: lib/class.themes.admin.php:324
+#, php-format
+msgid ""
+"Learn more in the <a href=\"%s\" target=\"csa\">online documentation</a>."
+msgstr ""
+"Saznajte više na <a href=\"%s\" target=\"csa\">online documentation</a>."
+
+# @ csa-slplus
+#: include/class.actions.php:155
+msgid "SLP Hints"
+msgstr "SLP saveti"
+
+# @ csa-slplus
+#: include/class.actions.php:159
+#, php-format
+msgid ""
+"Store Locator Plus documentation can be found online at <a href=\"%s\" "
+"target=\"csa\">%s</a>.<br/>"
+msgstr ""
+"Dokumentaciju za Store Locator Plus možete naći online na <a href=\"%s\" "
+"target=\"csa\">%s</a>.<br/>."
+
+# @ csa-slplus
+#: include/class.actions.php:164
+#, php-format
+msgid ""
+"View the <a href=\"%s\" target=\"csa\">[slplus] shortcode documentation</a>."
+msgstr ""
+"Pogledajte shortcode dokumentaciju na <a href=\"%s\" target=\"csa\">[slplus] "
+"shortcode documentation</a>."
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:284
+msgid " - Locations"
+msgstr "Lokacije"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1231
+msgid "Location not added."
+msgstr "Lokacija nije dodata"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1232
+msgid "The add location form on your server is not rendering properly."
+msgstr ""
+"Obrazac za dodavanje lokacije ne učitava se ispravno na vašem serveru. "
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1802
+msgid "Edit"
+msgstr "Uredi"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:2152
+msgid "Lat, Lon"
+msgstr "Lat, Lon"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:329
+msgid "The initial map height in pixels or percent of initial page height. "
+msgstr ""
+"Početna visina mape u pikselima ili procentima ili inicijalna visina "
+"stranice."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:330
+msgid ""
+"Can also use rules like auto and inherit if Height Units is set to blank "
+msgstr ""
+"Može koristiti pravila, kao što su automatska, a može ih i naslediti ako su "
+"jedinice visine podešene na prazno. "
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:340
+msgid "Is the width a percentage of page width or absolute pixel size? "
+msgstr ""
+"Da li je širina izražena u procentima širine  stranice ili u pikselima?"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:341
+msgid ""
+"Select blank to use CSS rules like auto or inherit in the Map Height setting."
+msgstr ""
+"Odaberite prazno da biste koristili CSS pravila, kao što je automatsko ili "
+"da biste nasledili podešavanje visine mape."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:351
+msgid ""
+"Can also use rules like auto and inherit if Width Units is set to blank "
+msgstr ""
+"Takođe, može koristiti pravila, kao što su automatska ili ih naslediti, ako "
+"su jedinice širine podešene na prazno. "
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:361
+msgid ""
+"Select blank to use CSS rules like auto or inherit in the Map Width setting."
+msgstr ""
+"Odaberite prazno da biste koristili CSS pravila kao automatska ili da biste "
+"nasledili podešavanja širine mape."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:384
+msgid "Center Map At"
+msgstr "Centriraj mapu na"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:385
+msgid "Enter an address to serve as the initial focus for the map. "
+msgstr "Unesite adresu koja će služiti kao početni fokus na mapi."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:386
+msgid "Default is the center of the country."
+msgstr "Podrazumevana vrednost je centar države."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:387
+msgid ""
+"Enhanced Map add-on must be installed to set per-page with center_map_at="
+"\"address\" shortcode. "
+msgstr ""
+"Poboljšani dodatak mape mora biti instaliran da bi se podesila svaka "
+"stranica pomoću center_map_at=\"address\" shortcode."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:388
+msgid ""
+"Force JavaScript setting must be off when using the shortcode attribute. "
+msgstr ""
+"Podešavanje za nasilni JavaScript mora biti isključeno kad koristite "
+"shortcode atribut."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:542
+msgid "Philippines"
+msgstr "Filipini  "
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:597
+msgid "Gujarati"
+msgstr "Gudžarati"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:610
+msgid "Marathi"
+msgstr " Marati"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:623
+msgid "Tagalog"
+msgstr "Tagalog"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:959
+msgid "Address / Zip"
+msgstr "Adresa/Poštanski kod"
+
+# @ csa-slplus
+#: include/class.csvimport.php:159
+msgid "Import file name not set."
+msgstr "Uvezi naziv datoteke, a ne skup."
+
+# @ csa-slplus
+#: include/class.csvimport.php:166
+msgid "Import file was empty."
+msgstr "Uvoz datoteke bio je prazan."
+
+# @ csa-slplus
+#: include/class.csvimport.php:175
+msgid "Uploaded file needs to be in CSV format."
+msgstr "Otpremljena datoteka mora biti u CSV formatu. "
+
+# @ csa-slplus
+#: include/class.csvimport.php:176
+#, php-format
+msgid "Type was %s."
+msgstr "Bila je %s vrstas."
+
+# @ csa-slplus
+#: include/class.csvimport.php:199
+msgid "Could not open CSV file for processing."
+msgstr "CSV datoteka nije mogla biti otvorena za obradu"
+
+# @ csa-slplus
+#: include/class.csvimport.php:274
+msgid " processed."
+msgstr "obrađen"
+
+# @ csa-slplus
+#: include/class.location.php:203
+msgid "draft"
+msgstr "skica"
+
+# @ csa-slplus
+#: include/class.ui.php:390
+#, php-format
+msgid "search provided by %s"
+msgstr "pretragu obezbedio %s"
+
+# @ csa-slplus
+#. translators: plugin header field 'AuthorURI'
+#: store-locator-le.php:0
+msgid "http://www.storelocatorplus.com"
+msgstr "http://www.storelocatorplus.com"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:212
+msgid "Auto set height unit to blank when height is 'auto !important'"
+msgstr ""
+"Automatski podesi jedinicu visine na prazno kad je visina podešena na  "
+"'auto !important'"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:217
+msgid "Auto set width unit to blank when width is 'auto !important'"
+msgstr ""
+"Automatski podesi jedinicu širine na prazno kad je širina podešena na 'auto !"
+"important'"
+
+# @ wpcsl
+#: lib/class.themes.admin.php:118
+msgid "About This Theme"
+msgstr "O ovoj temi"
+
+# @ wpcsl
+#: lib/class.themes.admin.php:132
+msgid "Add On Packs"
+msgstr "Paketi dodataka"
+
+# @ wpcsl
+#: lib/class.themes.admin.php:175
+msgid "Preferred Settings"
+msgstr "Poželjna podešavanja"
+
+# @ wpcsl
+#: lib/class.themes.admin.php:176
+msgid "The following settings will make the most of this theme: "
+msgstr "Sledeća podešavanja pomoći će vam da najbolje iskoristite ovu temu:"
+
+# @ wpcsl
+#: lib/class.themes.admin.php:197
+msgid ""
+"Settings have been made. Click Save Settings to activate or the User "
+"Exprience tab to cancel."
+msgstr ""
+"Podešavanja su završena. Kliknite na tab “Sačuvaj podešavanja” da biste ih "
+"aktivirali ili “Korisničko iskustvo” da biste ih poništili. "
+
+# @ wpcsl
+#: lib/class.themes.admin.php:203
+msgid "Set Options"
+msgstr "Podesi opcije"
+
+# @ wpcsl
+#: lib/class.themes.admin.php:251
+#, php-format
+msgid "The theme directory:<br/>%s<br/>is missing. "
+msgstr "Nema <br/>%s<br/> teme direktorijuma."
+
+# @ wpcsl
+#: lib/class.themes.admin.php:252
+msgid "Create it to enable themes and get rid of this message."
+msgstr ""
+"Kreirajte ih da biste aktivirali teme i da biste se oslobodili ove poruke."
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:152
+msgid "Extended Admin Messages"
+msgstr "Proširene poruke administratora"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:156
+msgid "Show extended messages on the admin panel."
+msgstr "Prikaži proširene poruke na panelu administratora."
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:2034
+msgid "Where: "
+msgstr "Gde:"
+
+# @ csa-slplus
+#. translators: plugin header field 'PluginURI'
+#: store-locator-le.php:0
+msgid "http://www.storelocatorplus.com/"
+msgstr "http://www.storelocatorplus.com/"
+
+# @ csa-slplus
+#. translators: plugin header field 'Version'
+#: store-locator-le.php:0
+msgid "4.1.06"
+msgstr "4.1.06"

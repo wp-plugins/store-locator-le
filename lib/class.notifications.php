@@ -86,7 +86,7 @@ class wpCSL_notifications__slplus {
         $difference = max(array_keys($levels));
 
         $notice_output = '';
-        $actionMessage = __('needs attention','wpcsl');
+        $actionMessage = __('needs attention','csa-slplus');
         foreach ($levels as $key => $value) {
             if (!$simple) {
                 switch ($difference) {
@@ -125,7 +125,7 @@ class wpCSL_notifications__slplus {
                 case 9:
                     $notice_output .= "<div id='{$this->prefix}_notice' class='updated fade'
                     style='background-color: rgb(250, 250, 210);'>\n";
-                    $actionMessage = __('wants you to know','wpcsl');
+                    $actionMessage = __('wants you to know','csa-slplus');
                     break;
                 case 8:
                     $notice_output .= "<div id='{$this->prefix}_notice' class='updated fade'
@@ -137,7 +137,7 @@ class wpCSL_notifications__slplus {
                     break;
                 }
                 $notice_output .= sprintf(
-                    __('<p><strong><a href="%s">%s</a> %s: </strong>','wpcsl'),
+                    '<p><strong><a href="%s">%s</a> %s: </strong>',
                     $this->url,
                     $this->name,
                     $actionMessage

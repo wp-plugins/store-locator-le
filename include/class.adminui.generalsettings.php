@@ -15,9 +15,9 @@ class SLPlus_AdminUI_GeneralSettings {
     /**
      * The SLPlus plugin object.
      *
-     * @var \SLPlus $plugin
+     * @var \SLPlus
      */
-    private $plugin;
+    private $slplus;
 
     /**
      * Our wpCSL settings object.
@@ -58,11 +58,11 @@ class SLPlus_AdminUI_GeneralSettings {
      * @return boolean true if plugin property is valid
      */
     function set_Plugin() {
-        if (!isset($this->plugin) || ($this->plugin == null)) {
+        if (!isset($this->slplus) || ($this->slplus == null)) {
             global $slplus_plugin;
-            $this->plugin = $slplus_plugin;
+            $this->slplus = $slplus_plugin;
         }
-        return (isset($this->plugin) && ($this->plugin != null));
+        return (isset($this->slplus) && ($this->slplus != null));
     }
 
     /**
@@ -83,7 +83,7 @@ class SLPlus_AdminUI_GeneralSettings {
                 )
             );
         foreach ($BoxesToHit as $JustAnotherBox) {
-            $this->plugin->helper->SavePostToOptionsTable($JustAnotherBox);
+            $this->slplus->helper->SavePostToOptionsTable($JustAnotherBox);
         }
 
         // Checkboxes
@@ -97,7 +97,7 @@ class SLPlus_AdminUI_GeneralSettings {
                     )
                 );
         foreach ($BoxesToHit as $JustAnotherBox) {
-            $this->plugin->helper->SaveCheckBoxToDB($JustAnotherBox, '','');
+            $this->slplus->helper->SaveCheckBoxToDB($JustAnotherBox, '','');
         }
 
         // Serialized Checkboxes, Need To Blank If Not Received
@@ -115,14 +115,14 @@ class SLPlus_AdminUI_GeneralSettings {
         // Serialized Options Setting for stuff going into slp.js.
         // This should be used for ALL new JavaScript options.
         //
-        array_walk($_REQUEST,array($this->plugin,'set_ValidOptions'));
-        update_option(SLPLUS_PREFIX.'-options', $this->plugin->options);
+        array_walk($_REQUEST,array($this->slplus,'set_ValidOptions'));
+        update_option(SLPLUS_PREFIX.'-options', $this->slplus->options);
 
         // Serialized Options Setting for stuff NOT going to slp.js.
         // This should be used for ALL new options not going to slp.js.
         //
-        array_walk($_REQUEST,array($this->plugin,'set_ValidOptionsNoJS'));
-        update_option(SLPLUS_PREFIX.'-options_nojs', $this->plugin->options_nojs);
+        array_walk($_REQUEST,array($this->slplus,'set_ValidOptionsNoJS'));
+        update_option(SLPLUS_PREFIX.'-options_nojs', $this->slplus->options_nojs);
     }
 
     /**
@@ -151,7 +151,7 @@ class SLPlus_AdminUI_GeneralSettings {
                     'use_prefix'    => false,
                     'label'         => __('Extended Admin Messages'   ,'csa-slplus'),
                     'setting'       => 'extended_admin_messages'                    ,
-                    'value'         => $this->plugin->is_CheckTrue($this->plugin->options_nojs['extended_admin_messages']),
+                    'value'         => $this->slplus->is_CheckTrue($this->slplus->options_nojs['extended_admin_messages']),
                     'description'   =>
                         __('Show extended messages on the admin panel.','csa-slplus')
                 )
@@ -166,6 +166,8 @@ class SLPlus_AdminUI_GeneralSettings {
       * Build the Google settings panel.
       */
      function build_GoogleSettingsPanel() {
+         $this->slplus->createobject_AddOnManager();
+         
         $sectName = __('Google','csa-slplus');
         $this->settings->add_section(array('name' => $sectName));
 
@@ -196,7 +198,7 @@ class SLPlus_AdminUI_GeneralSettings {
                             __('How many times should we try to set the latitude/longitude for a new address? '         ,'csa-slplus').
                             __('Higher numbers mean slower bulk uploads. '                                              ,'csa-slplus').
                             __('Lower numbers make it more likely the location will not be set during bulk uploads. '   ,'csa-slplus').
-                            sprintf(__('Bulk import or re-geocoding is a %s feature.','csa-slplus'),SLPLUS::linkToPRO)
+                            sprintf(__('Bulk import or re-geocoding is a %s feature.','csa-slplus'),$this->slplus->add_ons->available['slp-pro']['link'])
                 )
             );
 
@@ -207,12 +209,12 @@ class SLPlus_AdminUI_GeneralSettings {
                 'label'         => __('Maximum Retry Delay','csa-slplus')               ,
                 'setting'       => 'retry_maximum_delay'                                ,
                 'use_prefix'    => false                                                ,
-                'value'         => $this->plugin->options_nojs['retry_maximum_delay']   ,
+                'value'         => $this->slplus->options_nojs['retry_maximum_delay']   ,
                 'description'   =>
                     __('Maximum time to wait between retries, in seconds. ','csa-slplus')   .
                     __('Use multiples of 1. ','csa-slplus')                                .
                     __('Recommended value is 5. ','csa-slplus')                            .
-                    sprintf(__('Bulk import or re-geocoding is a %s feature.','csa-slplus'),SLPLUS::linkToPRO)
+                    sprintf(__('Bulk import or re-geocoding is a %s feature.','csa-slplus'),$this->slplus->add_ons->available['slp-pro']['link'])
             )
         );
 
@@ -253,8 +255,30 @@ class SLPlus_AdminUI_GeneralSettings {
      function build_UserSettingsPanel() {
         $sectName   = __('User Interface','csa-slplus');
         $this->settings->add_section(array('name' => $sectName));
-
+        
         $groupName  = __('JavaScript','csa-slplus');
+        $this->settings->add_ItemToGroup(
+                array(
+                    'section' => $sectName,
+                    'group' => $groupName,
+                    'label' => '',
+                    'type' => 'subheader',
+                    'show_label' => false,
+                    'description' =>
+                    __('These settings change how JavaScript behaves on your site. ', 'csa-slplus') .
+                      ( $this->slplus->javascript_is_forced ? 
+                        '<br/><em>*' .
+                        sprintf(
+                                __('You have <a href="%s" target="csa">Force Load JavaScript</a> ON. ', 'csa-slplus') ,
+                                $this->slplus->support_url . 'general-settings/user-interface/javascript/'
+                            ) .
+                        __('Themes that follow WordPress best practices and employ wp_footer() properly do not need this. ', 'csa-slplus') .
+                        __('Leaving it on slows down your site and disables a lot of extra features with the plugin and add-on packs. ', 'csa-slplus') .
+                        '</em>' : 
+                        '' 
+                        )
+                )
+        );             
         $this->settings->add_ItemToGroup(
                 array(
                     'section'       => $sectName,
@@ -263,7 +287,7 @@ class SLPlus_AdminUI_GeneralSettings {
                     'use_prefix'    => false,
                     'label'         => __('Force Load JavaScript','csa-slplus'),
                     'setting'       => 'force_load_js',
-                    'value'         => $this->plugin->is_CheckTrue($this->plugin->options_nojs['force_load_js']),
+                    'value'         => $this->slplus->is_CheckTrue($this->slplus->options_nojs['force_load_js']),
                     'description'   =>
                         __('Force the JavaScript for Store Locator Plus to load on every page with early loading. ' , 'csa-slplus') .
                         __('This can slow down your site, but is compatible with more themes and plugins. '         , 'csa-slplus') . 
@@ -293,11 +317,11 @@ class SLPlus_AdminUI_GeneralSettings {
         //
         $this->settings = new wpCSL_settings__slplus(
             array(
-                    'prefix'            => $this->plugin->prefix,
-                    'css_prefix'        => $this->plugin->prefix,
-                    'url'               => $this->plugin->url,
-                    'name'              => $this->plugin->name . ' - ' . __('General Settings','csa-slplus'),
-                    'plugin_url'        => $this->plugin->plugin_url,
+                    'prefix'            => $this->slplus->prefix,
+                    'css_prefix'        => $this->slplus->prefix,
+                    'url'               => $this->slplus->url,
+                    'name'              => $this->slplus->name . ' - ' . __('General Settings','csa-slplus'),
+                    'plugin_url'        => $this->slplus->plugin_url,
                     'render_csl_blocks' => false,
                     'form_action'       => admin_url().'admin.php?page='.$this->slug
                 )
@@ -307,7 +331,7 @@ class SLPlus_AdminUI_GeneralSettings {
             array(
                 'name'          => 'Navigation',
                 'div_id'        => 'navbar_wrapper',
-                'description'   => $this->plugin->AdminUI->create_Navbar(),
+                'description'   => $this->slplus->AdminUI->create_Navbar(),
                 'innerdiv'      => false,
                 'is_topmenu'    => true,
                 'auto'          => false,
@@ -329,4 +353,4 @@ class SLPlus_AdminUI_GeneralSettings {
     }
 }
 
-// Dad. Husband. Rum Lover. Code Geek. Not necessarily in that order.
+// Dad. Explorer. Rum Lover. Code Geek. Not necessarily in that order.

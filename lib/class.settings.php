@@ -72,7 +72,7 @@ class wpCSL_settings__slplus {
         //
         $this->render_csl_blocks = true;        // Display the CSL info blocks
         $this->form_action = 'options.php';     // The form action for this page
-        $this->save_text =__('Save Changes','wpcsl');
+        $this->save_text =__('Save Changes','csa-slplus');
         $this->css_prefix = '';
         
         // Passed Params
@@ -365,7 +365,7 @@ class wpCSL_settings__slplus {
                 $this->notifications->add_notice(
                     3,
                     sprintf(
-                       __('Program Error: section <em>%s</em> not defined.','wpcsl'),
+                       __('Program Error: section <em>%s</em> not defined.','csa-slplus'),
                        $section
                        )
                 );
@@ -573,13 +573,14 @@ class wpCSL_settings__slplus {
                                 '';
                 $firstOne = false;
 
-                print "<li class='top-level general {$firstClass}'>"       .
-                      "<a href='#wpcsl-option-{$friendlyDiv}' "     .
-                            "title='{$section->name}'>"                 .
-                      $section->name                                    .
-                      '</a>'                                            .
+                $link_id = "wpcsl-option-{$friendlyDiv}";
+                print "<li class='top-level general {$firstClass}'>"                .
+                      "<a id='{$link_id}_sidemenu' name='{$link_id}_sidemenu' href='#{$link_id}' "    .
+                            "title='{$section->name}'>"                             .
+                      $section->name                                                .
+                      '</a>'                                                        .
                       '</li>'
-                    ;
+                    ;                
             }
         }
         print '</ul>';
@@ -1164,8 +1165,8 @@ class wpCSL_settings_item__slplus {
                         $this->parent->slider_rendered=true;
                         echo
                             "<style type='text/css'>" .
-                                "    .onoffswitch-inner:before { content: '".__('ON','wpcsl') ."'; } " .
-                                "    .onoffswitch-inner:after  { content: '".__('OFF','wpcsl')."'; } " .
+                                "    .onoffswitch-inner:before { content: '".__('ON','csa-slplus') ."'; } " .
+                                "    .onoffswitch-inner:after  { content: '".__('OFF','csa-slplus')."'; } " .
                             "</style>"
                             ;
                     }

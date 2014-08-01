@@ -148,11 +148,11 @@ class wpCSL_helper__slplus {
     function createstring_DropDownMenuWithButton($params) {
         if (!isset($params['items'      ]) || !is_array($params['items'])) { return; }
 
-        if (!isset($params['id'         ])) { $params['id'          ] = 'actionType'                ; }
-        if (!isset($params['name'       ])) { $params['name'        ] = 'action'                    ; }
-        if (!isset($params['buttonlabel'])) { $params['buttonlabel' ] = __('Apply'      ,'wpcsl')   ; }
-        if (!isset($params['onchange'   ])) { $params['onchange'    ] = ''                          ; }
-        if (!isset($params['onclick'    ])) { $params['onclick'     ] = ''                          ; }
+        if (!isset($params['id'         ])) { $params['id'          ] = 'actionType'                    ; }
+        if (!isset($params['name'       ])) { $params['name'        ] = 'action'                        ; }
+        if (!isset($params['buttonlabel'])) { $params['buttonlabel' ] = __('Apply'      ,'csa-slplus')  ; }
+        if (!isset($params['onchange'   ])) { $params['onchange'    ] = ''                              ; }
+        if (!isset($params['onclick'    ])) { $params['onclick'     ] = ''                              ; }
 
         // Drop down menu
         //

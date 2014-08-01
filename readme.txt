@@ -5,20 +5,21 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-4/
 Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.4
 Tested up to: 4.0
-Stable tag: 4.1.31
+Stable tag: 4.1.32
 License: GLPv2 or later
 
-A full featured location management system. Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
+Add a location finder or directory to your site in minutes. A Google Business Maps API licensed product. Extensive premium add-on library available!
 
 == Description ==
 
-Over 30,000 active installations. Learn more at the [Store Locator Plus website](http://www.storelocatorplus.com/).
+Store Locator Plus is a Google Business Maps API licensed location mapping and directory system with  over 40,000 active installations. 
+Learn more at the [Store Locator Plus website](http://www.storelocatorplus.com/).
 The website offers more [screen shots](http://www.storelocatorplus.com/support/documentation/store-locator-plus/store-locator-plus-screen-shots/), [technical documentation](http://www.storelocatorplus.com/support/documentation/technical-documentation/), and [full release notes](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/release-notes-4-0/), and a very active [user forum](http://www.charlestonsw.com/forums/).
 
 = Details =
 
 Store Locator Plus is an advanced system for managing multiple physical locations via a fully integrated WordPress solution.
-Whether you have ten locations or ten-thousand, you manage them with ease right from within your WordPress admin panel.
+Whether you have ten locations or ten-thousand, you manage them right from within your WordPress admin panel.
 There is no special programming or extra setup required.
 Simply enter your locations, create a page or edit an existing page and put the SLPLUS short code on it.
 The Store Locator Plus search form and map will "magically" appear.
@@ -198,10 +199,8 @@ To prevent custom icons from being over-written they will be copies to the '/wp-
 
 = Custom Styling =
 
-Users that want to customize the look and feel of the search form, map, and search results can do so
-with ease using the built-in Theme System.   Copy an existing CSS file,
-change the file name and update the CSS header, upload to the server and you can now activate your
-new theme or any of the built-in defaults by selecting it from the auto-generated pulldown menu.
+Users that want to customize the look and feel of the search form, map, and search results can do so using the built-in Theme System.   
+Copy an existing CSS file, change the file name and update the CSS header, upload to the server and you can activate your new theme or any of the built-in defaults by selecting it from the auto-generated pulldown menu.
 
 [Pro Pack](http://www.storelocatorplus.com/product/slp4-pro/) users can also add CSS rules via the Pro Pack CSS Rules entry on the admin panel.
 
@@ -218,6 +217,8 @@ new theme or any of the built-in defaults by selecting it from the auto-generate
 * Japanese (ja) by [Karen Ellrick](http://l4jp.com)
 * Latvian (lt_LT) by Paulius Bakutis
 * Portuguese (pt_BR) by Carlos Utiama
+* Serbian (sr_RS) by [Ogi Djuraskovic](http://firstsiteguide.com)
+* Spanish (es_ES) by [Ogi Djuraskovic](http://firstsiteguide.com)
 
 *Graphics*
 
@@ -324,6 +325,21 @@ Please read the *description page* for this plugin for an important note about p
 *Version 4.x is a major upgrade that is not compatible with the version 3.x or earlier add-on packs.*
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 2014-Jul-16 (4.1.32+) = 
+
+* Change: Lat/Long column on manage locations has been moved to display under the store name.
+* Change: Editing a location now replaces the Add Location panel instead of the Manage Location panel.
+* Change: The SLP theme "set options" button under User Experience / View has changed to "Change Layout" and has been moved up higher on the page.
+* Enhancement: Add a link to manage locations lat/long to an external Google Map display of the location.
+* Enhancement: Add Above and Beyond Nyloboard Rev 02 Theme moving Tagalong legend below map.
+* Enhancement: Add new Above All Theme with Tagalong, Pro Pack, and Enhanced Results feature support.   Search above map.   Results to left of map.
+* Enhancement: Manage Locations: Location edit and delete action buttons now use form posts to assist in retaining filters and other attributes between location updates.
+* Enhancement: Edit locations now remembers filters and the original page you were on before editing a location.
+* Enhancement: Add Serbian (sr_RS) translation.
+* Enhancement: Add Spanish (es_ES) translation.
+* Fix: Make hide search form shortcode attribute stop all excess UI search form processing.
+* Fix: Tagalong legend placeholders are hidden on map  UI if Tagalong add-on pack is not installed.
 
 = 2014-Jul-09 (4.1.31+) =
 

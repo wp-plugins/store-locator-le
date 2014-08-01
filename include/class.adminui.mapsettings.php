@@ -800,7 +800,7 @@ class SLPlus_AdminUI_MapSettings {
             $this->plugin->helper->CreateCheckboxDiv(
                     'immediately_show_locations',
                     __('Immediately Show Locations', 'csa-slplus'),
-                    __('Display locations as soon as map loads, based on map center and default radius. ','csa-slplus'),
+                    __('Display locations as soon as map loads, based on map center and default radius. Enhanced Search provides [slplus immediately_show_locations="true|false"] attribute option.','csa-slplus'),
                     '',
                     false,
                     $this->plugin->options['immediately_show_locations']

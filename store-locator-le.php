@@ -2,9 +2,9 @@
 /*
 Plugin Name: Store Locator Plus
 Plugin URI: http://www.storelocatorplus.com/
-Description: Manage multiple locations with ease. Map stores or other points of interest with ease via Google Maps.  This is a highly customizable, easily expandable, enterprise-class location management system.
-Version: 4.1.31
-Tested up to: 3.9.1
+Description: Add a location finder or directory to your site in minutes. A Google Business Maps API licensed product. Extensive premium add-on library available!
+Version: 4.1.32
+Tested up to: 4.0
 Author: Charleston Software Associates
 Author URI: http://www.storelocatorplus.com
 License: GPL3
@@ -33,7 +33,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 if (!defined( 'ABSPATH'     )) { exit;   } // Exit if accessed directly, dang hackers
 
 if (defined('SLPLUS_VERSION') === false) {
-    define('SLPLUS_VERSION', '4.1.31');
+    define('SLPLUS_VERSION', '4.1.32');
 }
 
 // Drive Path Defines
@@ -281,9 +281,3 @@ add_action('wp_ajax_nopriv_csl_ajax_onload'     , array($slplus_plugin->AjaxHand
 add_shortcode('STORE-LOCATOR', array($slplus_plugin->UI,'render_shortcode'));
 add_shortcode('SLPLUS',array($slplus_plugin->UI,'render_shortcode'));
 add_shortcode('slplus',array($slplus_plugin->UI,'render_shortcode'));
-
-add_shortcode('slp_search'      ,array($slplus_plugin->UI,'createstring_SearchForm' ));
-add_shortcode('slp_map'         ,array($slplus_plugin->UI,'create_Map'              ));
-add_shortcode('slp_mapcontent'  ,array($slplus_plugin->UI,'create_MapContent'       ));
-add_shortcode('slp_maptagline'  ,array($slplus_plugin->UI,'create_MapTagline'       ));
-add_shortcode('slp_results'     ,array($slplus_plugin->UI,'create_Results'          ));

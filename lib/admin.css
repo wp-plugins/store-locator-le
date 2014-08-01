@@ -229,34 +229,45 @@ span.label {
   width: 180px;
   margin-right: 6px; }
 
-/* Theme Setting */
+/* 
+ * UX : View : Theme Settings
+ */
 div.theme_details {
-  display: none; }
-
-div.theme_details {
-  padding-left: 24px; }
-
-div.theme_details p.slp_admin_info {
-  margin-left: -10px;
-  padding-left: 0px; }
-
-div.theme_details UL {
-  list-style: disc;
-  margin-left: 48px; }
-
-div.theme_details PRE {
-  background-color: #F0F0F0;
-  border: 1px solid #CCCCCC;
-  display: block;
-  margin: 0px 0px 0px 24px;
-  padding: 6px;
-  white-space: pre-wrap;
-  width: 80%; }
-
-div.theme_details span.theme_option_label {
-  display: block;
-  font-size: 1.1em;
-  margin: 8px 0 0 24px; }
+  display: none;
+  padding-left: 7em; }
+  div.theme_details .theme_option SPAN.theme_option_label {
+    display: block;
+    font-size: 1.1em;
+    margin: 0.5em 0 0 2em; }
+  div.theme_details .theme_option.active {
+    color: black; }
+  div.theme_details .theme_option.inactive {
+    color: lightgray; }
+  div.theme_details .theme_option_value {
+    height: 4em;
+    overflow: auto; }
+  div.theme_details P.slp_admin_info {
+    margin-left: -1em;
+    padding-left: 0px; }
+  div.theme_details UL {
+    list-style: disc;
+    margin-left: 3em; }
+  div.theme_details PRE {
+    background-color: #F0F0F0;
+    border: 1px solid #CCCCCC;
+    display: block;
+    margin: 0px 0px 0px 3em;
+    padding: 0.5em;
+    white-space: pre-wrap;
+    width: 80%; }
+  div.theme_details li.product.inactive {
+    list-style: circle outside none; }
+    div.theme_details li.product.inactive A {
+      text-decoration: underline; }
+  div.theme_details li.product.active {
+    list-style: disc outside none; }
+    div.theme_details li.product.active A {
+      text-decoration: none; }
 
 /**
  * Settings Panel
@@ -770,6 +781,10 @@ tr.slp_managelocations_row.alternate.featured {
   background-color: #eeffee; }
   tr.slp_managelocations_row.alternate.featured:hover {
     background-color: #ccffcc; }
+tr.slp_managelocations_row .store_latlong {
+  display: block;
+  font-size: 0.75em;
+  font-style: italic; }
 
 #manage_locations_table th {
   vertical-align: top; }

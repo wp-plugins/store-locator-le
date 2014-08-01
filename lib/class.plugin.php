@@ -480,15 +480,15 @@ class wpCSL_plugin__slplus {
 
         if ($file == $this->basefile) {
             if (isset($this->support_url)) {
-                $links[] = '<a href="' . $this->support_url . '" title="' . __('Support', 'wpcsl') . '">' .
-                        __('Support', 'wpcsl') . '</a>';
+                $links[] = '<a href="' . $this->support_url . '" title="' . __('Support', 'csa-slplus') . '">' .
+                        __('Support', 'csa-slplus') . '</a>';
             }
             if (isset($this->purchase_url)) {
-                $links[] = '<a href="' . $this->purchase_url . '" title="' . __('Purchase', 'wpcsl') . '">' .
-                        __('Buy Now', 'wpcsl') . '</a>';
+                $links[] = '<a href="' . $this->purchase_url . '" title="' . __('Purchase', 'csa-slplus') . '">' .
+                        __('Buy Now', 'csa-slplus') . '</a>';
             }
             $links[] = '<a href="options-general.php?page=' . $this->prefix . '-options" title="' .
-                    __('Settings', 'wpcsl') . '">' . __('Settings', 'wpcsl') . '</a>';
+                    __('Settings', 'csa-slplus') . '">' . __('Settings', 'csa-slplus') . '</a>';
         }
         return $links;
     }
@@ -624,20 +624,20 @@ class wpCSL_plugin__slplus {
             if (is_admin()) {
                 if (isset($this->notifications)) {
                     $this->notifications->add_notice(4, '<strong>' .
-                            sprintf(__('%s has been deactivated.', 'wpcsl'
+                            sprintf(__('%s has been deactivated.', 'csa-slplus'
                                     ), $params['addon_name']
                             ) . '<br/> ' .
                             '</strong>' .
-                            sprintf(__('You have %s version %s.', 'wpcsl'
+                            sprintf(__('You have %s version %s.', 'csa-slplus'
                                     ), $this->name, $this->version
                             ) . '<br/> ' .
-                            sprintf(__('You need version %s or greater for this version of %s.', 'wpcsl'
+                            sprintf(__('You need version %s or greater for this version of %s.', 'csa-slplus'
                                     ), $params['min_required_version'], $params['addon_name']
                             ) . '<br/> ' .
-                            sprintf(__('Please install an older version of %s or upgrade.', 'wpcsl'
+                            sprintf(__('Please install an older version of %s or upgrade.', 'csa-slplus'
                                     ), $this->name
                             ) . '<br/> ' .
-                            sprintf(__('Upgrading major versions of %s requires paid upgrades to all related add-on packs.', 'wpcsl'
+                            sprintf(__('Upgrading major versions of %s requires paid upgrades to all related add-on packs.', 'csa-slplus'
                                     ), $this->name
                             ) .
                             '<br/><br/>'

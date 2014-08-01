@@ -194,6 +194,7 @@ class SLPlus_Actions {
 
             // Default menu items
             //
+            $force_load_indicator = $this->slplus->javascript_is_forced ? '*' : '';            
             $menuItems = array(
                 array(
                     'label'             => __('Info','csa-slplus'),
@@ -214,7 +215,7 @@ class SLPlus_Actions {
                     'function'          => 'renderPage_MapSettings'
                 ),
                 array(
-                    'label'             => __('General Settings','csa-slplus'),
+                    'label'             => __('General Settings','csa-slplus') . $force_load_indicator,
                     'slug'              => 'slp_general_settings',
                     'class'             => $this->slplus->AdminUI,
                     'function'          => 'renderPage_GeneralSettings'
@@ -408,9 +409,7 @@ class SLPlus_Actions {
     function wp_enqueue_scripts() {
         $this->slplus->debugMP('slp.main','msg','SLPlus_Actions:'.__FUNCTION__);                
         
-        $force_load = $this->slplus->is_CheckTrue( $this->slplus->options_nojs['force_load_js'] );
-        
-        $this->slplus->debugMP('slp.main','msg','', ( $force_load ? 'force load' : 'late loading' ) );
+        $this->slplus->debugMP('slp.main','msg','', ( $this->slplus->javascript_is_forced ? 'force load' : 'late loading' ) );
 
         //------------------------
         // Register our scripts for later enqueue when needed
@@ -424,7 +423,7 @@ class SLPlus_Actions {
                     'http'.(is_ssl()?'s':'').'://'.get_option('sl_google_map_domain','maps.google.com').'/maps/api/js?sensor=false' . $api_key . $language,
                     array(),
                     SLPLUS_VERSION,
-                    ! $force_load
+                    ! $this->slplus->javascript_is_forced
                     );
         }
 
@@ -437,13 +436,13 @@ class SLPlus_Actions {
         
         // Force load?  Enqueue and localize.
         //
-        if ( $force_load ) {
+        if ( $this->slplus->javascript_is_forced ) {
             wp_enqueue_script(
                     'csl_script',
                     $sslURL.'/js/slp.js',
                     array('jquery'),
                     SLPLUS_VERSION,
-                    ! $force_load
+                    ! $this->slplus->javascript_is_forced
             );
             $this->slplus->UI->localizeSLPScript();        
             $this->slplus->UI->setup_stylesheet_for_slplus();
@@ -457,7 +456,7 @@ class SLPlus_Actions {
                     $sslURL.'/js/slp.js',
                     array('jquery'),
                     SLPLUS_VERSION,
-                    ! $force_load
+                    ! $this->slplus->javascript_is_forced
             );           
         }
     }     

@@ -11,11 +11,10 @@
  *
  */
 class SLPlus extends wpCSL_plugin__slplus {
-
     //-------------------------------------
     // Constants
     //-------------------------------------
-    
+
     /**
      * Define the location post type.
      */
@@ -25,56 +24,13 @@ class SLPlus extends wpCSL_plugin__slplus {
      * Define the location post taxonomy.
      */
     const locationTaxonomy = 'stores';
-
-    /**
-     * ER: Contact Extender web link.
-     */
-    const linkToCEX = '<a href="http://www.storelocatorplus.com/product/slp4-contact-extender/" target="csa">Contact Extender</a>';
-
-    /**
-     * ER: Enhanced Map web link.
-     */
-    const linkToEM = '<a href="http://www.storelocatorplus.com/product/slp4-enhanced-map/" target="csa">Enhanced Map</a>';
-
-    /**
-     * ER: Enhanced Results web link.
-     */
-    const linkToER = '<a href="http://www.storelocatorplus.com/product/slp4-enhanced-results/" target="csa">Enhanced Results</a>';
-
-    /**
-     * ES: Enhanced Search web link.
-     */
-    const linkToES = '<a href="http://www.storelocatorplus.com/product/slp4-enhanced-search/" target="csa">Enhanced Search</a>';
-
+    
     /**
      * PRO: Pro Pack web link.
+     * 
+     * Remove this when UML removes constant reference.
      */
     const linkToPRO = '<a href="http://www.storelocatorplus.com/product/slp4-pro/" target="csa">Pro Pack</a>';
-
-    /**
-     * SLP: Store Locator Plus web link.
-     */
-    const linkToSLP = '<a href="http://www.storelocatorplus.com/product/store-locator-plus-4/" target="csa">Store Locator Plus</a>';
-
-    /**
-     * TAG: Tagalong web link.
-     */
-    const linkToTAG = '<a href="http://www.storelocatorplus.com/product/slp4-tagalong/" target="csa">Tagalong</a>';
-
-    /**
-     * UML: User Managed Locations web link.
-     */
-    const linkToUML = '<a href="http://www.storelocatorplus.com/product/slp4-user-managed-locations/" target="csa">User Managed Locations</a>';
-
-    /**
-     * Major Version Definition, SLP3
-     */
-    const SLP3 = '3';
-
-    /**
-     * Major Version Definition, SLP4
-     */
-    const SLP4 = '4';
 
     //-------------------------------------
     // Properties
@@ -104,30 +60,28 @@ class SLPlus extends wpCSL_plugin__slplus {
      *
      * The values will be null if there is no pointer to the object,
      * or the object pointer to an instantiated version of the add-on.
-     * 
+     *
      * @var objects[] $addons active add-ons
      */
     public $addons = array();
 
     /**
-     * An array of all the available add-on packs we know about.
-     *
-     * Set by a remote service calls.
-     *
-     * @var mixed[] all available add-ons.
+     * The add on manager handles add on connections and data.
+     * 
+     * @var \SLPlus_AddOn_Manager
      */
-    public $available_addons = array();
+    public $add_ons;
 
     /**
      * The Admin UI object.
-     * 
+     *
      * @var SLPlus_AdminUI $AdminUI
      */
-	public $AdminUI;
+    public $AdminUI;
 
-	/**
+    /**
      * The Admin WPML object.
-     * 
+     *
      * @var SLPlus_AdminWPML $AdminWPML
      */
     public $AdminWPML;
@@ -137,18 +91,18 @@ class SLPlus extends wpCSL_plugin__slplus {
      *
      * @var SLPlus_UI $UI
      */
-	public $UI;
+    public $UI;
 
-	/**
+    /**
      * The WPML Interface object.
      *
      * @var SLPlus_WPML $WPML
      */
-	public $WPML;
+    public $WPML;
 
     /**
      * The current location.
-     * 
+     *
      * @var SLPlus_Location $currentLocation
      */
     public $currentLocation;
@@ -167,8 +121,7 @@ class SLPlus extends wpCSL_plugin__slplus {
      *
      * @var mixed[] $defaults
      */
-    public  $defaults            = array(
-
+    public $defaults = array(
         // Bubble Layout shortcodes have the following format:
         // [<shortcode> <attribute> <optional modifier> <optional modifier argument>]
         //
@@ -195,8 +148,8 @@ class SLPlus extends wpCSL_plugin__slplus {
         //        modifier  = one of the following :
         //            ifset = output only if the noted location attribute is empty, the location attribute is specified in the modifier argument:
         //                for example [slp_option label_phone ifset phone] outputs the label_phone option only if the location phone is not empty.
-        'bubblelayout'   => 
-'<div id="sl_info_bubble" class="[slp_location featured]">
+        'bubblelayout' =>
+        '<div id="sl_info_bubble" class="[slp_location featured]">
 <span id="slp_bubble_name"><strong>[slp_location name  suffix  br]</strong></span>
 <span id="slp_bubble_address">[slp_location address       suffix  br]</span>
 <span id="slp_bubble_address2">[slp_location address2      suffix  br]</span>
@@ -221,22 +174,17 @@ class SLPlus extends wpCSL_plugin__slplus {
 [slp_location image         wrap    img]</span>
 <span id="slp_tags">[slp_location tags]</span>
 </div>'
-                                                                            ,
-
-        'label_email'    => 'Email'                                         ,
-
+        ,
+        'label_email' => 'Email',
         // If you change this change default.css theme as well.
-        'layout'         =>
-            '<div id="sl_div">[slp_search][slp_map][slp_results]</div>'     ,
-
+        'layout' =>
+        '<div id="sl_div">[slp_search][slp_map][slp_results]</div>',
         // If you change this change default.css theme as well.
-        'maplayout'      =>
-            '[slp_mapcontent][slp_maptagline]'                              ,
-
-
+        'maplayout' =>
+        '[slp_mapcontent][slp_maptagline]',
         // If you change this change default.css theme as well.
-        'resultslayout'  =>
-'<div id="slp_results_[slp_location id]" class="results_entry  [slp_location featured]">
+        'resultslayout' =>
+        '<div id="slp_results_[slp_location id]" class="results_entry  [slp_location featured]">
     <div class="results_row_left_column"   id="slp_left_cell_[slp_location id]"   >
         <span class="location_name">[slp_location name]</span>
         <span class="location_distance">[slp_location distance_1] [slp_location distance_unit]</span>
@@ -258,11 +206,10 @@ class SLPlus extends wpCSL_plugin__slplus {
         [slp_location socialiconarray wrap="fullspan"]
         </div>
 </div>'
-                                                                            ,
-
+        ,
         // If you change this change default.css theme as well.
-        'searchlayout'  => 
-'<div id="address_search">
+        'searchlayout' =>
+        '<div id="address_search">
     [slp_search_element input_with_label="name"]
     [slp_search_element input_with_label="address"]
     [slp_search_element dropdown_with_label="city"]
@@ -275,14 +222,12 @@ class SLPlus extends wpCSL_plugin__slplus {
         [slp_search_element button="submit"]
     </div>
 </div>'
-                                                                            ,
-
-        );
-
+            ,
+    );
 
     /**
      * Array of slugs + booleans for plugins we've already fetched info for.
-     * 
+     *
      * @var array[] named array, key = slug, value = true
      */
     public $infoFetched = array();
@@ -291,7 +236,7 @@ class SLPlus extends wpCSL_plugin__slplus {
      * The options that the user has set for Store Locator Plus.
      *
      * Key is the name of a supported option, value is the default value.
-     * 
+     *
      * NOTE: Booleans must be set as a string '0' or '1'.
      * That is how serialize/deserialize stores and pulls them from the DB.
      *
@@ -302,18 +247,18 @@ class SLPlus extends wpCSL_plugin__slplus {
      *
      * @var mixed[] $options
      */
-    public  $options            = array(
-        'bubblelayout'              => ''               ,
-        'immediately_show_locations'=> '1'              ,
-        'initial_radius'            => '10000'          ,
-        'initial_results_returned'  => '25'             ,
-        'label_directions'          => ''               ,
-        'label_email'               => ''               ,
-        'label_fax'                 => ''               ,
-        'label_hours'               => ''               ,
-        'label_phone'               => ''               ,
-        'label_website'             => ''               ,
-        'slplus_version'            => SLPLUS_VERSION   ,
+    public $options = array(
+        'bubblelayout' => '',
+        'immediately_show_locations' => '1',
+        'initial_radius' => '10000',
+        'initial_results_returned' => '25',
+        'label_directions' => '',
+        'label_email' => '',
+        'label_fax' => '',
+        'label_hours' => '',
+        'label_phone' => '',
+        'label_website' => '',
+        'slplus_version' => SLPLUS_VERSION,
     );
 
     /**
@@ -321,19 +266,19 @@ class SLPlus extends wpCSL_plugin__slplus {
      *
      * @var mixed[]
      */
-    public $options_nojs    = array(
-        'extended_admin_messages'   => '0'      ,
-        'force_load_js'             => '0'      ,
-        'has_extended_data'         => ''       ,
-        'max_results_returned'      => '25'     ,
-        'next_field_id'             => 1        ,
-        'next_field_ported'         => ''       ,
-        'retry_maximum_delay'       => '5.0'    ,
+    public $options_nojs = array(
+        'extended_admin_messages'   => '0',
+        'force_load_js'             => '0',
+        'has_extended_data'         => '',
+        'max_results_returned'      => '25',
+        'next_field_id'             => 1,
+        'next_field_ported'         => '',
+        'retry_maximum_delay'       => '5.0',
     );
 
     /**
      * The settings that impact how the plugin renders.
-     * 
+     *
      * These elements are ONLY WHEN wpCSL.helper.loadPluginData() is called.
 
      * loadPluginData via 'getoption' always reads a single entry in the wp_options table
@@ -370,8 +315,15 @@ class SLPlus extends wpCSL_plugin__slplus {
      * wpCSL getitem() looks for variations in the option names based on an option "root" name.
      *
      * @var mixed $dataElements
-     */
+     */   
     public $dataElements;
+    
+    /**
+     * Quick reference for the Force Load JavaScript setting.
+     * 
+     * @var boolean
+     */
+    public $javascript_is_forced = true;
 
     /**
      * Set to true if the plugin data was already loaded.
@@ -404,19 +356,29 @@ class SLPlus extends wpCSL_plugin__slplus {
      * @param mixed[] $params - a named array of the plugin options for wpCSL.
      */
     public function __construct($params) {
-        $this->url  = plugins_url('',__FILE__);
-        $this->dir  = plugin_dir_path(__FILE__);
+        $this->url = plugins_url('', __FILE__);
+        $this->dir = plugin_dir_path(__FILE__);
         $this->slug = plugin_basename(__FILE__);
 
         parent::__construct($params);
         $this->initDB();
-        $this->currentLocation = new SLPlus_Location(array('plugin'=>$this));
+        $this->currentLocation = new SLPlus_Location(array('plugin' => $this));
         $this->themes->css_dir = SLPLUS_PLUGINDIR . 'css/';
         $this->initOptions();
         $this->initData();
 
         // HOOK: slp_invoation_complete
         do_action('slp_invocation_complete');
+    }
+    
+    /**
+     * Create and attach the add on manager object.
+     */
+    public function createobject_AddOnManager() {
+        if (!isset($this->Admin)) {
+            require_once(SLPLUS_PLUGINDIR . '/include/class.addon.manager.php');
+            $this->add_ons = new SLPlus_AddOn_Manager( array( 'slplus' => $this ) );
+        }
     }
 
     /**
@@ -440,44 +402,45 @@ class SLPlus extends wpCSL_plugin__slplus {
      * Initialize the options properties from the WordPress database.
      */
     function initOptions() {
-        $this->debugMP('slp.main','msg','SLPlus:'.__FUNCTION__);
+        $this->debugMP('slp.main', 'msg', 'SLPlus:' . __FUNCTION__);
 
         // Options from the database
         //
-        $dbOptions = get_option(SLPLUS_PREFIX.'-options');
+        $dbOptions = get_option(SLPLUS_PREFIX . '-options');
         if (is_array($dbOptions)) {
-            array_walk($dbOptions,array($this,'set_ValidOptions'));
+            array_walk($dbOptions, array($this, 'set_ValidOptions'));
         }
 
         // Load serialized options for noJS
         //
-        $dbOptions = get_option(SLPLUS_PREFIX.'-options_nojs');
+        $dbOptions = get_option(SLPLUS_PREFIX . '-options_nojs');
         if (is_array($dbOptions)) {
-            array_walk($dbOptions,array($this,'set_ValidOptionsNoJS'));
+            array_walk($dbOptions, array($this, 'set_ValidOptionsNoJS'));
         }
+        $this->javascript_is_forced = $this->is_CheckTrue( $this->options_nojs['force_load_js'] );
 
         // Legacy Items : Set Default from DB Entry
         //
-        $this->defaults['label_directions'] = esc_attr(get_option(SLPLUS_PREFIX.'_label_directions' , 'Directions'  ));
-        $this->defaults['label_fax'  ]      = esc_attr(get_option(SLPLUS_PREFIX.'_label_fax'        , 'Fax: '       ));
-        $this->defaults['label_hours']      = esc_attr(get_option(SLPLUS_PREFIX.'_label_hours'      , 'Hours: '     ));
-        $this->defaults['label_phone']      = esc_attr(get_option(SLPLUS_PREFIX.'_label_phone'      , 'Phone: '     ));
-        $this->defaults['label_website']    = esc_attr(get_option('sl_website_label'                , 'Website'     ));
+        $this->defaults['label_directions'] = esc_attr(get_option(SLPLUS_PREFIX . '_label_directions', 'Directions'));
+        $this->defaults['label_fax'] = esc_attr(get_option(SLPLUS_PREFIX . '_label_fax', 'Fax: '));
+        $this->defaults['label_hours'] = esc_attr(get_option(SLPLUS_PREFIX . '_label_hours', 'Hours: '));
+        $this->defaults['label_phone'] = esc_attr(get_option(SLPLUS_PREFIX . '_label_phone', 'Phone: '));
+        $this->defaults['label_website'] = esc_attr(get_option('sl_website_label', 'Website'));
 
         // Options that get passed to the JavaScript
         // loaded from properties
         //
-        foreach ($this->options as $name=>$value) {
+        foreach ($this->options as $name => $value) {
             if (!empty($this->defaults[$name])) {
                 $this->options[$name] = $this->defaults[$name];
             }
         }
-        
-        $this->debugMP('slp.main','msg','','Options passed to JavaScript:');
-        $this->debugMP('slp.main','pr' ,'',$this->options);
-        
-        $this->debugMP('slp.main','msg','','Non-JavaScript Options:');
-        $this->debugMP('slp.main','pr' ,'',$this->options_nojs);
+
+        $this->debugMP('slp.main', 'msg', '', 'Options passed to JavaScript:');
+        $this->debugMP('slp.main', 'pr', '', $this->options);
+
+        $this->debugMP('slp.main', 'msg', '', 'Non-JavaScript Options:');
+        $this->debugMP('slp.main', 'pr', '', $this->options_nojs);
     }
 
     /**
@@ -509,59 +472,56 @@ class SLPlus extends wpCSL_plugin__slplus {
      */
     function initData() {
         $this->data = array();
-        $this->dataElements =
-            apply_filters('slp_attribute_values',
-                array(
-                      array(
-                        'sl_admin_locations_per_page',
-                        'get_option',
-                        array('sl_admin_locations_per_page','25')
-                      ),
-                      array(
-                        'sl_map_end_icon'                   ,
-                        'get_option'                ,
-                        array('sl_map_end_icon'         ,SLPLUS_ICONURL.'bulb_azure.png'    )
-                      ),
-                      array('sl_map_home_icon'              ,
-                          'get_option'              ,
-                          array('sl_map_home_icon'      ,SLPLUS_ICONURL.'box_yellow_home.png'  )
-                      ),
-                      array('sl_map_height'         ,
-                          'get_option'              ,
-                          array('sl_map_height'         ,'480'                                  )
-                      ),
-                      array('sl_map_height_units'   ,
-                          'get_option'              ,
-                          array('sl_map_height_units'   ,'px'                                   )
-                      ),
-                      array('sl_map_width'          ,
-                          'get_option'              ,
-                          array('sl_map_width'          ,'100'                                  )
-                      ),
-                      array('sl_map_width_units'    ,
-                          'get_option'              ,
-                          array('sl_map_width_units'    ,'%'                                    )
-                      ),
-                      array('theme'                 ,
-                          'get_item'                ,
-                          array('theme'                 ,'default'                              )
-                      ),
+        $this->dataElements = apply_filters('slp_attribute_values', array(
+            array(
+                'sl_admin_locations_per_page',
+                'get_option',
+                array('sl_admin_locations_per_page', '25')
+            ),
+            array(
+                'sl_map_end_icon',
+                'get_option',
+                array('sl_map_end_icon', SLPLUS_ICONURL . 'bulb_azure.png')
+            ),
+            array('sl_map_home_icon',
+                'get_option',
+                array('sl_map_home_icon', SLPLUS_ICONURL . 'box_yellow_home.png')
+            ),
+            array('sl_map_height',
+                'get_option',
+                array('sl_map_height', '480')
+            ),
+            array('sl_map_height_units',
+                'get_option',
+                array('sl_map_height_units', 'px')
+            ),
+            array('sl_map_width',
+                'get_option',
+                array('sl_map_width', '100')
+            ),
+            array('sl_map_width_units',
+                'get_option',
+                array('sl_map_width_units', '%')
+            ),
+            array('theme',
+                'get_item',
+                array('theme', 'default')
+            ),
                 )
-           );
+        );
     }
 
     /**
      * Return true if the named add-on pack is active.
+     * 
+     * TODO: Legacy code, move to class.addon.manager when UML is updated.
      *
      * @param string $addon_slug
      * @return boolean
      */
-    public function is_AddonActive($addon_slug) {
-        return (
-          array_key_exists($addon_slug,$this->addons) &&
-          is_object($this->addons[$addon_slug]) &&
-          !empty($this->addons[$addon_slug]->options['installed_version'])
-          );
+    public function is_AddonActive( $slug ) {
+        $this->createobject_AddOnManager();
+        $this->add_ons->is_active( $slug );
     }
 
     /**
@@ -573,89 +533,31 @@ class SLPlus extends wpCSL_plugin__slplus {
      * @param string $attValue
      * @return boolean
      */
-    public function is_CheckTrue($value) {
-        if (strcasecmp($value,'true')==0)   { return true; }
-        if (strcasecmp($value,'on'  )==0)   { return true; }
-        if (strcasecmp($value,'1'   )==0)   { return true; }
-        if ($value === 1)                   { return true; }
-        if ($value === true)                { return true; }
-        return false;
-    }
-
-    /**
-     * Set the info array for the available add-on packs.
-     */
-    function set_AvailableAddons() {
-        if ( count($this->available_addons) > 0 ) { return; }
-
-        $this->available_addons['slp-contact-extender'] =
-            array(
-                'name'  => 'Contact Extender',
-                'link'  => SLPlus::linkToCEX,
-            );
-
-        $this->available_addons['slp-enhanced-map'] =
-            array(
-                'name'  => 'Enhanced Map',
-                'link'  => SLPlus::linkToEM,
-             );
-
-        $this->available_addons['slp-enhanced-results'] =
-            array(
-                'name' => 'Enhanced Results',
-                'link'  => SLPlus::linkToER,
-             );
-
-        $this->available_addons['slp-enhanced-search'] =
-            array(
-                'name' => 'Enhanced Search',
-                'link'  => SLPlus::linkToES,
-             );
-
-        $this->available_addons['slp-janitor'] =
-            array(
-                'name' => 'Janitor',
-                'link' => '<a href="http://www.storelocatorplus.com/product/store-locator-plus-janitor/" target="csa">Janitor</a>',
-             );
-
-        $this->available_addons['slp-pages'] =
-            array(
-                'name' => 'Store Pages',
-                'link' => '<a href="http://www.storelocatorplus.com/product/slp4-store-pages/" target="csa">Store Pages</a>',
-             );
-
-        $this->available_addons['slp-pro'] =
-            array(
-                'name' => 'Pro Pack',
-                'link'  => SLPlus::linkToPRO,
-             );
-
-        $this->available_addons['slp-user-managed-locations'] =
-            array(
-                'name' => 'User Managed Locations',
-                'link' => SLPlus::linkToUML,
-             );
-
-        $this->available_addons['slp-tagalong'] =
-            array(
-                'name' => 'Tagalong',
-                'link' => SLPlus::linkToTAG,
-             );
-
-        $this->available_addons['slp-widget'] =
-            array(
-                'name' => 'Widget',
-                'link' => '<a href="http://www.storelocatorplus.com/product/slp4-Widgets/" target="csa">Widgets</a>',
-             );
-
-
-        // Set add on active boolean flag
-        // If active set addon property to point to active addon object.
-        //
-        foreach ($this->available_addons as $slug=>$properties) {
-            $this->available_addons[$slug]['active'] =  $this->is_AddonActive($slug);
-            $this->available_addons[$slug]['addon'] = $this->available_addons[$slug]['active'] ? $this->addons[$slug] : null;
+    public function is_CheckTrue($value, $return_type = 'boolean') {
+        if ($return_type === 'string') {
+            $true_value = '1';
+            $false_value = '0';
+        } else {
+            $true_value = true;
+            $false_value = false;
         }
+
+        if (strcasecmp($value, 'true') == 0) {
+            return $true_value;
+        }
+        if (strcasecmp($value, 'on') == 0) {
+            return $true_value;
+        }
+        if (strcasecmp($value, '1') == 0) {
+            return $true_value;
+        }
+        if ($value === 1) {
+            return $true_value;
+        }
+        if ($value === true) {
+            return $true_value;
+        }
+        return $false_value;
     }
 
     /**
@@ -664,32 +566,32 @@ class SLPlus extends wpCSL_plugin__slplus {
      * @param mixed $val - the value of a form var
      * @param string $key - the key for that form var
      */
-    function set_ValidOptions($val,$key) {
+    function set_ValidOptions($val, $key) {
         if (
                 array_key_exists($key, $this->options) &&
-                ( is_numeric($val) ||  ! empty( $val )          )
-            ) {
+                ( is_numeric($val) || !empty($val) )
+        ) {
             $this->options[$key] = stripslashes_deep($val);
-            $this->debugMP('slp.main','msg','',"set options[{$key}]=".stripslashes_deep($val),NULL,NULL,true);
+            $this->debugMP('slp.main', 'msg', '', "set options[{$key}]=" . stripslashes_deep($val), NULL, NULL, true);
         }
-     }
+    }
 
     /**
      * Set valid options from the incoming REQUEST
-     * 
+     *
      * Set this if the incoming value is not an empty string.
      *
      * @param mixed $val - the value of a form var
      * @param string $key - the key for that form var
      */
-    function set_ValidOptionsNoJS($val,$key) {
+    function set_ValidOptionsNoJS($val, $key) {
         if (
                 array_key_exists($key, $this->options_nojs) &&
-                ( is_numeric($val) ||  ! empty( $val )          )
-            ) {
+                ( is_numeric($val) || !empty($val) )
+        ) {
             $this->options_nojs[$key] = stripslashes_deep($val);
         }
-     }
+    }
 
     /**
      * Load Plugin Data once.
@@ -708,17 +610,17 @@ class SLPlus extends wpCSL_plugin__slplus {
      *
      * Keys always contain registered add-ons.
      * Values may contain a pointer to an instantiation of an add-on if it exists.
-     * 
+     *
      * @param string $slug
      * @param object $object
      */
-    public function register_addon($slug,$object=null) {
+    public function register_addon($slug, $object = null) {
         $slugparts = explode('/', $slug);
-        $cleanslug = str_replace('.php','',$slugparts[count($slugparts)-1]);
+        $cleanslug = str_replace('.php', '', $slugparts[count($slugparts) - 1]);
         if (
-            !isset($this->addons[$cleanslug])    ||
-            (($this->addons[$cleanslug] == null)  && ($object != null))
-        ){
+                !isset($this->addons[$cleanslug]) ||
+                (($this->addons[$cleanslug] == null) && ($object != null))
+        ) {
             $this->addons[$cleanslug] = $object;
         }
     }
@@ -729,12 +631,13 @@ class SLPlus extends wpCSL_plugin__slplus {
      * @param string $name name of the module.
      * @param object $object pointer to the module.
      */
-    public function register_module($name,$object=null) {
-        $name = 'slp.'.$name;
-        if (!isset($this->$name)) { $this->$name = $object; }
-        $this->register_addon($name,$object);
+    public function register_module($name, $object = null) {
+        $name = 'slp.' . $name;
+        if (!isset($this->$name)) {
+            $this->$name = $object;
+        }
+        $this->register_addon($name, $object);
     }
-
 
     //----------------------------------------------------
     // DEPRECATED
@@ -751,4 +654,5 @@ class SLPlus extends wpCSL_plugin__slplus {
     public function is_Extended() {
         return false;
     }
+
 }

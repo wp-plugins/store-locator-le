@@ -270,7 +270,6 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
             $this->slplus->debugMP('slp.managelocs','msg',__FUNCTION__);
             $this->slplus->debugMP('slp.managelocs','msg','','cleanAdminURL: '.$this->cleanAdminURL);
             $this->slplus->debugMP('slp.managelocs','msg','','baseAdminURL:  '.$this->baseAdminURL);
-            $this->slplus->debugMP('slp.managelocs','msg','','hangoverURL:   '.$this->hangoverURL);
 
             // Create a standard wpCSL settings interface.
             // It has better UI management features than the custom versions prevelant in legacy code.
@@ -545,7 +544,9 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         //
         $content  =
            "<form id='manualAddForm' name='manualAddForm' method='post'>" .
-           ($addform?'<input type="hidden" name="act" value="add" />':'<input type="hidden" name="act" value="edit" />') .
+           ($addform?'<input type="hidden" id="act" name="act" value="add" />':'<input type="hidden" id="act" name="act" value="edit" />') .
+           "<input type='hidden' name='id' "                                                            .
+                "id='id' value='{$this->slplus->currentLocation->id}' />"                               .
            "<input type='hidden' name='locationID' "                                                    .
                 "id='locationID' value='{$this->slplus->currentLocation->id}' />"                       .
            "<input type='hidden' name='linked_postid-{$this->slplus->currentLocation->id}' "            .
@@ -934,6 +935,47 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         }
         return $current_cols;
     }
+
+    /**
+     * Add the lat/long under the store name.
+     * 
+     * @param string $field_value
+     * @param type $field
+     * @param type $label
+     * @return type
+     */
+    function filter_AddLatLongUnderName( $field_value, $field, $label) {
+        if ($field === 'sl_store') {
+            $commaOrSpace = ($this->slplus->currentLocation->latitude . $this->slplus->currentLocation->longitude!=='')? ',':' ';
+            
+            if ($commaOrSpace != ' ') {
+                $latlong_url = 
+                    sprintf('https://%s?saddr=%f,%f', 
+                        get_option('sl_google_map_domain','maps.google.com'),
+                        $this->slplus->currentLocation->latitude,
+                        $this->slplus->currentLocation->longitude
+                        );
+                $latlong_text = 
+                    sprintf('<a href="%s" target="csa_map">@ %f %s %f</a></span>',
+                        $latlong_url,
+                        $this->slplus->currentLocation->latitude,
+                        $commaOrSpace,
+                        $this->slplus->currentLocation->longitude
+                        );
+            } else {
+                $latlong_text = '';
+            }
+            
+            $field_value =
+                sprintf('<span class="store_name">%s</span>'.                        
+                        '<span class="store_latlong">%s</span>',
+                        $field_value,
+                        $latlong_text
+                        );
+        }
+        return $field_value;
+    }            
+    
 
     /**
      * Add the left column to the add/edit locations form.
@@ -1491,6 +1533,40 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         //
         $this->slplus->notifications->display();
     }
+    
+    /**
+     * Build the action buttons HTML string on the first column of the manage locations panel.
+     * 
+     * Applies the slp_manage_locations_actionbuttons filter.
+     * 
+     * @return string
+     */
+    function createstring_ActionButtons() {
+        $buttons_HTML =
+            sprintf(
+                '<a class="action_icon edit_icon" alt="%s" title="%s" href="%s" onclick="%s"></a>'   ,
+                __('edit','csa-slplus')                                                 ,
+                __('edit','csa-slplus')                                                 ,
+                '#'                                                                     ,
+                "jQuery('#id').val('{$this->slplus->currentLocation->id}');".
+                "AdminUI.doAction('edit','');"
+            ).
+            sprintf(
+                '<a class="action_icon delete_icon" alt="%s" title="%s" href="%s" onclick="%s"></a>'   ,
+                __('delete','csa-slplus')                                                              ,
+                __('delete','csa-slplus')                                                              ,
+                '#'                                                                                    ,
+                "jQuery('#id').val('{$this->slplus->currentLocation->id}');".
+                "AdminUI.doAction('delete','".sprintf(__('Delete %s?','csa-slplus'),$this->slplus->currentLocation->store)."'); "                    
+            )
+            ;
+
+        // FILTER: slp_manage_locations_actionbuttons
+        // Build the action buttons HTML string on the first column of the manage locations panel.
+        //
+        return apply_filters('slp_manage_locations_actionbuttons',$buttons_HTML, (array) $this->slplus->currentLocation->locationData);
+        
+    }
 
     /**
      * Create the bulk actions drop down for the top-of-table navigation.
@@ -1857,11 +1933,26 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
      * This will be rendered via the render_adminpage method via the standard wpCSL Settings object display method.
      */
     public function create_settings_section_Add() {
+        // Edit Mode
+        //
+        if ( $this->current_action === 'edit' ) {
+            $panel_name        =  __('Edit','csa-slplus');
+            $panel_description = $this->createstring_EditPanel();
+            $panel_div_id      = 'edit_location';
+            
+        // Add Mode
+        //
+        } else {    
+            $panel_name        =  __('Add','csa-slplus');
+            $panel_description = $this->create_LocationAddEditForm(true);            
+            $panel_div_id      = 'add_location';
+        }
+        
         $this->settings->add_section(
             array(
-                    'name'          => __('Add','csa-slplus'),
-                    'div_id'        => 'add_location',
-                    'description'   => $this->create_LocationAddEditForm(true),
+                    'name'          => $panel_name,
+                    'div_id'        => $panel_div_id,
+                    'description'   => $panel_description,
                     'auto'          => true,
                     'innerdiv'      => true
                 )
@@ -1874,26 +1965,11 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
      * This will be rendered via the render_adminpage method via the standard wpCSL Settings object display method.
      */
     public function create_settings_section_Manage() {
-
-        // Edit Mode
-        //
-        if ( $this->current_action === 'edit' ) {
-            $first_panel_name        =  __('Edit','csa-slplus');
-            $first_panel_description = $this->createstring_EditPanel();
-
-        // Default Mode : Manage
-        //
-        } else {
-            $first_panel_name        =  __('Manage','csa-slplus');
-            $first_panel_description =  $this->createstring_PanelManageTable();
-        }
-
-
         $this->settings->add_section(
             array(
-                    'name'          => $first_panel_name,
+                    'name'          => __('Manage','csa-slplus'),
                     'div_id'        => 'current_locations',
-                    'description'   => $first_panel_description,
+                    'description'   => $this->createstring_PanelManageTable(),
                     'auto'          => true,
                     'innerdiv'      => true
                 )
@@ -1907,7 +1983,6 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         $this->set_LocationQueryProperties();
 
         return
-                '<input name="act" type="hidden">'  .
                 '<input id="displaylimit" '         .
                     'name="displaylimit" '          .
                     'type="hidden" '                .
@@ -1966,9 +2041,13 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
 
             $colorClass = '';
 
-            // FILTER: slp_locations_manage_cssclass
+            // Highlight invalid locations
             //
             add_filter('slp_locations_manage_cssclass',array($this,'filter_InvalidHighlight'));
+            
+            // Add lat/long to the name field
+            //
+            add_filter('slp_column_data', array($this, 'filter_AddLatLongUnderName') , 10, 3 );
 
             // Loop through the locations list and render table rows.
             //
@@ -1988,7 +2067,6 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
 
                 // Clean Up Data with trim()
                 //
-                $locID = $this->slplus->currentLocation->id;
                 $sl_value=array_map("trim",$sl_value);
 
                 // Custom Filters to set the links on special data like URLs and Email
@@ -2012,31 +2090,19 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                     __("View", 'csa-slplus')."</a>" :
                     "" ;
 
-                // create Action Buttons
-                $actionButtonsHTML =
-                    "<a class='action_icon edit_icon' alt='".__('edit','csa-slplus')."' title='".__('edit','csa-slplus')."'
-                        href='".$this->hangoverURL."&act=edit&id=$locID'></a>".
-                    "&nbsp;" .
-                    "<a class='action_icon delete_icon' alt='".__('delete','csa-slplus')."' title='".__('delete','csa-slplus')."'
-                        href='".$this->hangoverURL."&act=delete&sl_id=$locID' " .
-                        "onclick=\"AdminUI.confirmClick('".sprintf(__('Delete %s?','csa-slplus'),$sl_value['sl_store'])."', this.href); return false;\"></a>"
-                        ;
-
-                $actionButtonsHTML = apply_filters('slp_manage_locations_actionbuttons',$actionButtonsHTML, $sl_value);
-
                 $cleanName = urlencode($this->slplus->currentLocation->store);
                 $content['locationstable'] .=
                     "<tr "                                                                                  .
                         "id='location-{$this->slplus->currentLocation->id}' "                               .
                         "name='{$cleanName}' "                                                              .
-                        "class='slp_managelocations_row $colorClass $extraCSSClasses' "                        .
+                        "class='slp_managelocations_row $colorClass $extraCSSClasses' "                     .
                         ">"                                                                                 .
                     "<th class='th_checkbox'>"                                                              .
-                        "<input type='checkbox' class='slp_checkbox' name='sl_id[]' value='$locID'>"        .
+                        "<input type='checkbox' class='slp_checkbox' name='sl_id[]' value='{$this->slplus->currentLocation->id}'>"        .
                         "<span class='infoid'>{$this->slplus->currentLocation->id}</span>"                  .
                     '</th>'                                                                                 .
                     "<th class='thnowrap'><div class='action_buttons'>"                                     .
-                        $actionButtonsHTML                                                                  .
+                        $this->createstring_ActionButtons()                                                 .
                     "</div></th>"
                     ;
 
@@ -2084,15 +2150,10 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                     $content['locationstable'] .=
                         "<td class='slp_manage_locations_cell {$labelAsClass}'>"                                           .
                             apply_filters('slp_column_data',stripslashes($sl_value[$slpField]), $slpField, $slpLabel)     .
-                         '</td>';
+                         '</td>';                       
                 }
 
-                // Lat/Long Columns
-                //
-                $commaOrSpace = ($sl_value['sl_latitude'] . $sl_value['sl_longitude']!=='')? ',':' ';
-                $content['locationstable'] .=
-                        "<td>{$sl_value['sl_latitude']}$commaOrSpace{$sl_value['sl_longitude']}</td>" .
-                    '</tr>';
+                $content['locationstable'] .= '</tr>';
             }
 
             // Close Out Table
@@ -2231,7 +2292,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                     break;
             }
         }
-        $tableHeaderString .= '<th>' . __('Lat, Lon','csa-slplus'). '</th></tr></thead>';
+        $tableHeaderString .= '</tr></thead>';
         return $tableHeaderString;
     }
 
@@ -2247,6 +2308,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
             // ADD
             //
             case 'add' :
+                
                 $this->location_Add();
                 break;
 
@@ -2256,16 +2318,22 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                 if ( $this->slplus->currentLocation->isvalid_ID( null, 'id' ) ) {
                     $this->location_save();
                 }
+               $_REQUEST['selected_nav_element'] = '#wpcsl-option-edit_location';
                 break;
 
             case 'save':
                $this->location_save();
+               $_REQUEST['selected_nav_element'] = '#wpcsl-option-current_locations';
                 break;
 
             // DELETE
             //
             case 'delete':
-                $locationList = is_array($_REQUEST['sl_id'])?$_REQUEST['sl_id']:array($_REQUEST['sl_id']);
+                if ( ! isset($_REQUEST['sl_id'] ) && isset( $_REQUEST['id'] ) ) { 
+                    $locationList = (array) $_REQUEST['id'];                     
+                } else {
+                    $locationList = is_array($_REQUEST['sl_id'])?$_REQUEST['sl_id']:array($_REQUEST['sl_id']);
+                }
                 foreach ($locationList as $locationID) {
                     $this->slplus->currentLocation->set_PropertiesViaDB($locationID);
                     $this->slplus->currentLocation->DeletePermanently();
@@ -2299,32 +2367,6 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                 }
                 break;
 
-            // Recode The Address
-            // TODO: Move To Pro Pack
-            //
-            case 'recode':
-                $this->slplus->notifications->delete_all_notices();
-                if (isset($_REQUEST['sl_id'])) {
-                    $theLocations =
-                        (!is_array($_REQUEST['sl_id']))         ?
-                            array($_REQUEST['sl_id'])           :
-                            $theLocations = $_REQUEST['sl_id']  ;
-
-                    // Process SL_ID Array
-                    //
-                    // TODO: use where clause in database property
-                    //
-                    //
-                    foreach ($theLocations as $locationID) {
-                        $this->slplus->currentLocation->set_PropertiesViaDB($locationID);
-                        $this->do_geocoding();
-                        if ($this->slplus->currentLocation->dataChanged) {
-                            $this->slplus->currentLocation->MakePersistent();
-                        }
-                    }
-                    $this->slplus->notifications->display();
-                }
-                break;
 
             // All other things do nothing here...
             // But they may be handled by an add-on pack via the
