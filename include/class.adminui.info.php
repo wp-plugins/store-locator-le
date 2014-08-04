@@ -38,7 +38,7 @@ class SLPlus_AdminUI_Info {
         <p style="padding-left: 30px;"><strong>'.
 
         sprintf(        
-            __('It is recommended that you start by going to <a href="%s">General Settings</a> and turning OFF "Force Load JavaScript".','slplus'),
+            __('It is recommended that you start by going to <a href="%s">General Settings</a> and turning OFF "Force Load JavaScript".','csa-slplus'),
             admin_url() . 'admin.php?page=slp_general_settings'
         ) .
                 

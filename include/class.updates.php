@@ -6,7 +6,7 @@
  *
  * @package StoreLocatorPlus\Updates
  * @author Lance Cleveland <lance@charlestonsw.com>
- * @copyright 2012-2013 Charleston Software Associates, LLC
+ * @copyright 2012-2014 Charleston Software Associates, LLC
  */
 class SLPlus_Updates {
 
@@ -128,16 +128,7 @@ class SLPlus_Updates {
      */
     public function getRemote_version()
     {
-        $request = wp_remote_post($this->update_path,
-                array(
-                    'body' =>
-                        array(
-                            'action'            => 'version',
-                            'slug'              => $this->slug,
-                            'current_version'   => $this->current_version
-                        )
-                )
-            );
+        $request = wp_remote_post($this->update_path . '&action=version' );
         if (!is_wp_error($request) || wp_remote_retrieve_response_code($request) === 200) {
             return $request['body'];
         }
@@ -154,7 +145,7 @@ class SLPlus_Updates {
             error_log('SLPlus_Updates.getRemote_information()');
         }
         
-        $request = wp_remote_post($this->update_path, array('body' => array('action' => 'info', 'slug' => $slug)));
+        $request = wp_remote_post($this->update_path . '&action=info' );
         if (!is_wp_error($request) || wp_remote_retrieve_response_code($request) === 200) {
             if (isset($GLOBALS['DebugMyPlugin'])) {
                 error_log('retrieved remote info for ' . $slug);
@@ -172,7 +163,7 @@ class SLPlus_Updates {
      */
     public function getRemote_list()
     {
-        $request = wp_remote_post($this->update_path, array('body' => array('action' => 'list', 'slug' => $this->slug)));
+        $request = wp_remote_post($this->update_path . '&action=list');
         if (!is_wp_error($request) || wp_remote_retrieve_response_code($request) === 200) {
             return unserialize($request['body']);
         }

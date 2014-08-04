@@ -175,7 +175,7 @@ class PluginThemeAdmin {
             //
             if ( ! empty ( $active_HTML ) ) {
                 $HTML .= 
-                    __( 'This theme will make use of these add-on packs:', 'csa-slsplus' ) .               
+                    __( 'This theme will make use of these add-on packs:', 'csa-slplus' ) .               
                     '<ul>' .
                     $active_HTML .
                     '</ul>'
@@ -186,7 +186,7 @@ class PluginThemeAdmin {
             //
             if ( ! empty( $inactive_HTML ) ) { 
                 $HTML .= 
-                    __( 'This theme works best if you activate the following add-on packs:', 'csa-slsplus' ) .
+                    __( 'This theme works best if you activate the following add-on packs:', 'csa-slplus' ) .
                     '<ul>' .
                     $inactive_HTML .
                     '</ul>'
