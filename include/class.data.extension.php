@@ -104,6 +104,8 @@ class SLPlus_Data_Extension {
      * @param $type string The type of the label to create
      * @param $options mixed[] wpdb insert options
      * @param $mode string operating mode
+     *
+     * @return string the slug of the field that was added.
      */
     function add_field($label, $type = 'text', $options = array(), $mode = 'immediate') {
         $nextval = $this->slplus->options_nojs['next_field_id'] ++;
@@ -124,18 +126,22 @@ class SLPlus_Data_Extension {
         // Check if slug already exists before adding it.
         //
         if (!$this->has_field($slug)) {
+
             $this->slplus->db->insert(
-                    $this->metatable['name'], array(
-                'field_id' => 'field_' . $nextval,
-                'label' => $label,
-                'slug' => $slug,
-                'options' => maybe_serialize($options),
-                'type' => $type
-                    )
+                $this->metatable['name'],
+                array(
+                    'field_id'  => 'field_' . $nextval,
+                    'label'     => $label,
+                    'slug'      => $slug,
+                    'options'   => maybe_serialize($options),
+                    'type'      => $type
+                )
             );
+
             if ($mode === 'immediate') {
                 $this->update_data_table(array('mode' => 'force'));
             }
+
         }
 
         return $slug;
@@ -151,6 +157,8 @@ class SLPlus_Data_Extension {
      * @param $label string The label to remove
      * @param $options mixed[] wpdb options
      * @param $mode string operating mode
+     *
+     * @return string slug of the removed field.
      */
     function remove_field($label, $options = array(), $mode = 'immediate') {
 
@@ -208,7 +216,7 @@ class SLPlus_Data_Extension {
     /**
      * Add the join clause to the base plugin select all clause.
      *
-     * @params string $sqlStatement the exisitng SQL command for Select All
+     * @param string $sqlStatement the existing SQL command for Select All
      * @return string
      */
     function filter_ExtendSelectAll($sqlStatement) {
@@ -296,8 +304,8 @@ class SLPlus_Data_Extension {
      */
     function has_field($slug) {
         if (!isset($this->metatable['records'][$slug])) {
-            $slug_data = $this->slplus->database->get_Record(array('select_all_from_extendo', 'where_slugis'), $slug);
-            if (is_array($slug_data) && ( $slug_data['slug'] == $slug )) {
+            $slug_data = $this->slplus->database->get_Record(array('select_all_from_extendo', 'where_slugis'), $slug, 0 , OBJECT);
+            if ( is_object( $slug_data ) && ( $slug_data->slug == $slug ) ) {
                 $this->metatable['records'][$slug] = $slug_data;
             }
         }

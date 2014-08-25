@@ -861,6 +861,9 @@ var slp = {
                             //
                             case 'slp_location':
 
+                                if ( attribute === 'latitude'  ) { attribute = 'lat'; }
+                                if ( attribute === 'longitude' ) { attribute = 'lng'; }
+
                                 // Output NOTHING if attribute is empty
                                 //
                                 if (!thisMarker[attribute]) {
@@ -1023,7 +1026,7 @@ var slp = {
         this.getSearchAddress = function(defaultAddress) {
             var searchAddress = jQuery('#addressInput').val();
             if (!searchAddress) {
-                if ((slplus.use_sensor) && (sensor.lat !== 0.00) && (sensor.lng !== 0.00)) {
+                if ((slplus.options.use_sensor) && (sensor.lat !== 0.00) && (sensor.lng !== 0.00)) {
                     searchAddress = sensor.lat + ',' + sensor.lng;
                 } else {
                     searchAddress = defaultAddress;
@@ -1340,7 +1343,7 @@ function setup_Map() {
     // 3) Sensor Active, But No Location Support
     // 4) Sensor Inactive
     //
-    if (slplus.use_sensor) {
+    if (slplus.options.use_sensor) {
         sensor = new slp.LocationServices();
         if (sensor.LocationSupport) {
             sensor.currentLocation(
@@ -1360,7 +1363,7 @@ function setup_Map() {
                                                         clearTimeout(sensor.location_timeout);
                                                         if (!sensor.errorCalled) {
                                                             sensor.errorCalled = true;
-                                                            slplus.use_sensor = false;
+                                                            slplus.options.use_sensor = false;
                                                             cslmap = new slp.Map();
                                                             cslmap.usingSensor = false;
                                                             cslmap.doGeocode();
@@ -1371,7 +1374,7 @@ function setup_Map() {
                                             // 3) GPS Sensor Not Working (like IE8)
                                             //
                                         } else {
-                                    slplus.use_sensor = false;
+                                    slplus.options.use_sensor = false;
                                     cslmap = new slp.Map();
                                     cslmap.usingSensor = false;
                                     cslmap.doGeocode();
@@ -1380,7 +1383,7 @@ function setup_Map() {
                                 // 4) No Sensor
                                 //
                             } else {
-                        slplus.use_sensor = false;
+                        slplus.options.use_sensor = false;
                         cslmap = new slp.Map();
                         cslmap.usingSensor = false;
                         // If set id attr

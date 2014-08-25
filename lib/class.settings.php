@@ -88,7 +88,10 @@ class wpCSL_settings__slplus {
                 $this->parent->helper                                   :
                 new wpCSL_helper__slplus(array('parent'=>$this)) ;
 
-        if (isset($this->parent) && $this->parent->check_isOurAdminPage()){
+        if (
+            isset( $this->parent     )   && $this->parent->check_isOurAdminPage() &&
+            isset( $_REQUEST['page'] )   && ( $_REQUEST['page'] === 'slp_info' )
+        ){
             add_action('admin_init',array($this,'create_InfoSection'),99);
         }
     }
@@ -815,6 +818,15 @@ class wpCSL_settings_section__slplus {
      */
     public $auto = true;
 
+
+    /**
+     * Closing HTML for the section.
+     *
+     * @var string
+     */
+    private $closing_html = '';
+
+
     /**
      * The ID to go in the div.
      * 
@@ -861,6 +873,13 @@ class wpCSL_settings_section__slplus {
      * @var string $name
      */
     public $name;
+
+    /**
+     * Opening HTML for the section.
+     *
+     * @var string
+     */
+    private $opening_html = '';
 
     /**
      * The main settings parent.
@@ -963,18 +982,25 @@ class wpCSL_settings_section__slplus {
         
         if ($this->headerbar) {
             echo "<h1 class='subtitle'>{$this->name}</h1>";
-        }             
+        }
+
+        print $this->opening_html;
 
         if ($this->innerdiv) {
             echo "<div class='inside section' " .
                     (isset($this->start_collapsed) && $this->start_collapsed ? 'style="display:none;"' : '') .
                     ">";
-            if (!empty($this->description)) { print "<div class='section_description'>"; }
-         }         
+            if ( ! empty( $this->description  ) ) { print "<div class='section_description'>";  }
+         }
+
          if (!empty($this->description)) { echo $this->description; }
-         if ($this->innerdiv) {         
+
+         if ($this->innerdiv) {
             if (!empty($this->description)) { echo '</div>'; }
          }
+
+        print $this->closing_html;
+
     }
 
     /**

@@ -115,6 +115,26 @@ class SLPlus_Data {
     }
 
     /**
+     * Extend the database WHERE clause with a <field_name>='value' clause.
+     *
+     * @param $where the current where clause
+     * @param $field the field name
+     * @param $value the value to compare against
+     * @return string the new where clause
+     */
+    function extend_WhereFieldMatches( $where , $field , $value ) {
+        if ( empty( $field ) ) { return $where; }
+        return
+            $this->extend_Where(
+                $where ,
+                $this->db->prepare(
+                    sprintf('%s=%%s',$field ) ,
+                    sanitize_text_field($value)
+                )
+            );
+    }
+
+    /**
      * Add the valid lat/long clause to the where statement.
      *
      * @param string $where the current where clause without WHERE command
@@ -274,8 +294,11 @@ class SLPlus_Data {
      * @param string[] $commandList
      * @param mixed[] $params
      * @param int $offset
+     * @param mixed $type the type of object/array/etc. to return see wpdb get_row.
+     * @return mixed the database array_a or object.
      */
-    function get_Record($commandList,$params=array(),$offset=0) {
+    function get_Record($commandList,$params=array(),$offset=0, $type = ARRAY_A ) {
+        $this->is_Extended();
         $query = $this->get_SQL($commandList);
 
         // No placeholders, just call direct with no prepare
@@ -284,7 +307,7 @@ class SLPlus_Data {
             $query = $this->db->prepare( $query , $params );
         }
 
-        return $this->db->get_row( $query , ARRAY_A ,$offset );
+        return $this->db->get_row( $query , $type ,$offset );
     }
 
     /**

@@ -33,6 +33,7 @@
  * @property boolean $pages_on
  * @property string $option_value
  * @property datetime $lastupdated
+ * @property mixed[] $exdata - the extended data fields
  * @property mixed[] $settings - the deserialized option_value field
  *
  * @property mixed[] $pageData - the related store_page custom post type properties.

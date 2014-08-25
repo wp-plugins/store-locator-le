@@ -1,10 +1,10 @@
 /**
- ** file: csl-slplus-nomap.css
- ** label: No Map Displayed
- ** description: Original default theme with map hidden.  Using Enhanced Map "hide map" works with more WordPress themes and is a better solution.
+ ** file: nomap-rev02.css
+ ** label: No Map Rev 02
+ ** description: Improved version of the No Map theme that hides the map display.  Using Enhanced Map "hide map" works with more WordPress themes and is a better solution.
  ** add-ons: slp-enhanced-map
  **
- ** Sass Source: ./assets/stylesheets/csl-slplus-nomap.scss
+ ** Sass Source: ./assets/stylesheets/nomap-rev02.scss
  **/
 /*---------------------
  * SLP Sass Imports
@@ -199,7 +199,9 @@ div#slp_tagline {
   float: left;
   margin-left: 0.2em; }
 
-/***** Area Above Map DIV. Contains Search Form Inputs *****/
+/**
+ ** Search Form
+ **/
 .sl_header img, .sl_header td {
   border: none;
   cursor: pointer; }
@@ -248,40 +250,25 @@ div#slp_tagline {
 .sl_header td, .sl_header th, .sl_header tr {
   padding: 4px; }
 
-/***** Search Form Inputs  *****/
 #address_search {
   width: 600px; }
-
-#address_search LABEL {
-  text-align: right;
-  min-width: 100px;
-  font-size: 14px;
-  display: block;
-  float: left;
-  padding-right: 8px; }
-
-#address_search SELECT {
-  margin: 0px 6px 0px 0px; }
-
-#address_search INPUT {
-  margin: 0px 6px 0px 0px; }
-
-#address_search .search_item {
-  display: block;
-  float: none;
-  clear: both; }
-
-#address_search .search_item INPUT {
-  border: solid 1px silver;
-  padding-left: 3px;
-  background: white url(../images/search-input.gif) repeat-x;
-  color: black;
-  margin: 0px 6px 0px 0px;
-  width: 256px;
-  padding-top: 0px; }
-
-#address_search .search_item SELECT {
-  margin: 0px 6px 0px 0px; }
+  #address_search LABEL {
+    text-align: right;
+    min-width: 100px;
+    font-size: 14px;
+    display: block;
+    float: left;
+    padding-right: 8px; }
+  #address_search SELECT {
+    margin: 0px 6px 0px 0px; }
+  #address_search INPUT {
+    margin: 0px 6px 0px 0px; }
+  #address_search .search_item {
+    display: block;
+    float: none;
+    clear: both; }
+    #address_search .search_item SELECT {
+      margin: 0px 6px 0px 0px; }
 
 #addy_in_city {
   clear: both;
@@ -384,6 +371,9 @@ div#sl_div div#slp_tagline {
   /*shown if no results found */
   padding: 10px; }
 
+/**
+ ** Results
+ **/
 #map_sidebar {
   background-color: transparent;
   clear: both;
@@ -392,49 +382,33 @@ div#sl_div div#slp_tagline {
   overflow: auto;
   height: 250px;
   font-size: 11px; }
-
-.results_entry {
-  cursor: pointer;
-  padding: 4px;
-  border-bottom: solid silver 1px;
-  background-color: transparent; }
-
-.results_entry:hover {
-  background-color: salmon; }
-
-.results_row_left_column {
-  width: 30%;
-  padding-right: 4px;
-  vertical-align: top; }
-
-.results_row_left_column .location_name {
-  font-weight: bold; }
-
-.results_row_center_column {
-  width: 40%;
-  vertical-align: top; }
-
-.results_row_right_column {
-  width: 30%;
-  vertical-align: top;
-  text-align: right; }
+  #map_sidebar .results_entry {
+    cursor: pointer;
+    padding: 4px;
+    border-bottom: solid silver 1px;
+    background-color: transparent; }
+    #map_sidebar .results_entry:hover {
+      background-color: #F4F4F4; }
+    #map_sidebar .results_entry .results_row_left_column,
+    #map_sidebar .results_entry .results_row_center_column,
+    #map_sidebar .results_entry .results_row_right_column {
+      display: block;
+      width: 100%; }
+      #map_sidebar .results_entry .results_row_left_column SPAN,
+      #map_sidebar .results_entry .results_row_center_column SPAN,
+      #map_sidebar .results_entry .results_row_right_column SPAN {
+        display: block;
+        padding: 0.1em 0; }
+        #map_sidebar .results_entry .results_row_left_column SPAN.location_name,
+        #map_sidebar .results_entry .results_row_center_column SPAN.location_name,
+        #map_sidebar .results_entry .results_row_right_column SPAN.location_name {
+          font-weight: bold; }
 
 span.slp_checkbox_entry {
   padding-right: 12px; }
 
 span.slp_checkbox_entry input[type="checkbox"] {
   vertical-align: text-bottom; }
-
-span.slp_result_address {
-  width: 100%;
-  display: inline-block; }
-
-span.slp_result_phone {
-  padding-top: 6px; }
-
-span.slp_result_contact {
-  width: 100%;
-  white-space: nowrap; }
 
 /* Tagalong result icons */
 .results_line.location_iconarray > a {

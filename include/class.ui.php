@@ -282,12 +282,11 @@ class SLPlus_UI {
      * FILTER: slp_search_default_address
      */
     function createstring_DefaultSearchDiv_Address($placeholder='') {
-        $this->slplus->debugMP('msg',__FUNCTION__);
         return $this->slplus->UI->createstring_InputDiv(
             'addressInput',
             $this->slplus->WPML->getWPMLText('sl_search_label', get_option('sl_search_label',__('Address','csa-slplus'))),
             $placeholder,
-            (get_option(SLPLUS_PREFIX.'_hide_address_entry',0) == 1),
+            false,
             'addy_in_address',
             apply_filters('slp_search_default_address','')
             );
@@ -700,7 +699,16 @@ class SLPlus_UI {
                     )
                 );
 
-        // Lets get some variables into our script
+        // Load up some basic options.
+        // This can probably be handled better.
+        //
+        $this->slplus->options['use_sensor'] = (get_option(SLPLUS_PREFIX.'_use_location_sensor',0 )==1);
+
+
+        // Lets get some variables into our script.
+        // "Higher Level" JS Options are those noted below.
+        //
+        // TODO: ALL of these options should go inside the options property other than plugin_url, core_url.
         //
         $scriptData = array(
             'plugin_url'        => SLPLUS_PLUGINURL,
@@ -716,7 +724,6 @@ class SLPlus_UI {
             'map_end_icon'      => $this->slplus->data['sl_map_end_icon'],
             'map_end_sizew'     => $this->slplus->data['end_size'][0],
             'map_end_sizeh'     => $this->slplus->data['end_size'][1],
-            'use_sensor'        => (get_option(SLPLUS_PREFIX.'_use_location_sensor',0 )==1),
             'map_scalectrl'     => (get_option(SLPLUS_PREFIX.'_disable_scalecontrol'  )==0),
             'map_type'          => get_option('sl_map_type','roadmap'),
             'map_typectrl'      => (get_option(SLPLUS_PREFIX.'_disable_maptypecontrol')==0),

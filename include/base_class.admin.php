@@ -2,7 +2,7 @@
 if (! class_exists('SLP_BaseClass_Admin')) {
 
     /**
-     * A base class that helps add-on packs separate admin functionalty.
+     * A base class that helps add-on packs separate admin functionality.
      *
      * Add on packs should include and extend this class.
      *
@@ -11,7 +11,7 @@ if (! class_exists('SLP_BaseClass_Admin')) {
      *
      * @package StoreLocatorPlus\BaseClass\Admin
      * @author Lance Cleveland <lance@charlestonsw.com>
-     * @copyright 2013 Charleston Software Associates, LLC
+     * @copyright 2013 - 2014 Charleston Software Associates, LLC
      */
     class SLP_BaseClass_Admin {
 
@@ -22,7 +22,7 @@ if (! class_exists('SLP_BaseClass_Admin')) {
         /**
          * This addon pack.
          *
-         * @var mixed $addon
+         * @var \SLP_BaseClass_Addon $addon
          */
         protected $addon;
 
@@ -41,7 +41,7 @@ if (! class_exists('SLP_BaseClass_Admin')) {
         protected $slplus;
 
         //-------------------------------------
-        // Methods
+        // Methods : activity
         //-------------------------------------
 
         /**
@@ -58,7 +58,9 @@ if (! class_exists('SLP_BaseClass_Admin')) {
                     if (property_exists($this,$property)) { $this->$property = $value; }
                 }
             }
+            
             $this->set_addon_properties();
+            $this->do_admin_startup();
             $this->add_hooks_and_filters();
         }
 
@@ -70,6 +72,32 @@ if (! class_exists('SLP_BaseClass_Admin')) {
         function add_hooks_and_filters() {
             // Add your hooks and filters in the class that extends this base class.
         }
+        
+        /**
+         * Check for updates of active add on packs.
+         */
+        function check_for_updates() {
+            if ( is_plugin_active( $this->addon->slug ) ) {
+                if ( class_exists('SLPlus_Updates') ) {
+                    $this->Updates = new SLPlus_Updates(
+                            $this->addon->metadata['Version'], 
+                            $this->slplus->updater_url, 
+                            $this->addon->slug
+                    );
+                }
+            }                        
+        }        
+        
+        /**
+         * Things we want our add on packs to do when they start.
+         */
+        function do_admin_startup() {
+            
+            // Add your startup methods you want the add on to run here.
+            // Some suggestions: 
+            // $this->check_for_updates();
+            // $this->update_install_info();
+        }
 
         /**
          * Set base class properties so we can have more cross-add-on methods.
@@ -79,7 +107,38 @@ if (! class_exists('SLP_BaseClass_Admin')) {
             //
             // $this->admin_page_slug = <class>::ADMIN_PAGE_SLUG
         }
+        
+        /**
+         * Update the install info for this add on.
+         */
+        function update_install_info() {            
+            if ( version_compare( $this->addon->options['installed_version'] , $this->addon->version , '<' ) ) {
+                $this->update_prior_installs();
+                $this->addon->options['installed_version'] = $this->addon->version;
+                update_option( $this->addon->option_name , $this->addon->options);
+            }                    
+        }
 
+        /**
+         * Update prior add-on pack installations.
+         */
+        function update_prior_installs() {
+                if ( ! empty ( $this->addon->activation_class_name ) ) {                
+                    if ( class_exists( $this->addon->activation_class_name ) == false) {
+                        if ( file_exists( $this->addon->dir.'include/class.activation.php' ) ) {
+                            require_once($this->addon->dir.'include/class.activation.php');
+                            $this->activation = new $this->addon->activation_class_name(array( 'addon' => $this->addon , 'slplus' => $this->slplus ));
+                            $this->activation->update();
+                        }
+                    }
+                }
+        }
+        
+
+        //-------------------------------------
+        // Methods : filters
+        //-------------------------------------
+        
         /**
          * Add our admin pages to the valid admin page slugs.
          *
@@ -94,5 +153,6 @@ if (! class_exists('SLP_BaseClass_Admin')) {
                         )
                     );
         }
+        
     }
 }

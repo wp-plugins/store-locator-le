@@ -60,7 +60,7 @@ class SLPlus_AjaxHandler {
     // Methods
     //----------------------------------
     
-    /*************************************
+    /**
      * The Constructor
      */
     function __construct($params=null) {
@@ -96,7 +96,7 @@ class SLPlus_AjaxHandler {
      *
      * We will later use this to build our JSONP response.
      *
-     * @param mixed[] $data the data from the SLP database
+     * @param null mixed[] $row
      * @return mixed[]
      */
     function slp_add_marker($row = null) {
@@ -245,7 +245,7 @@ class SLPlus_AjaxHandler {
         add_filter('slp_ajaxsql_orderby',array($this,'filter_SetDefaultOrderByDistance'),100);
 
         // Having clause filter
-        // Do filter after sl_distance has been caculated
+        // Do filter after sl_distance has been calculated
         //
         // FILTER: slp_location_having_filters_for_AJAX
         // append new having clause logic to the array and return the new array

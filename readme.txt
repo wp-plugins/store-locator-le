@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-4/
 Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.4
 Tested up to: 4.0
-Stable tag: 4.1.33
+Stable tag: 4.2.03
 License: GLPv2 or later
 
 Add a location finder or directory to your site in minutes. A Google Business Maps API licensed product. Extensive premium add-on library available!
@@ -59,10 +59,17 @@ Visit the [SLP Customers page](http://www.storelocatorplus.com/support/documenta
 = Premium Add-Ons =
 
 [Premium add-on packages](http://www.storelocatorplus.com/product-category/slp4-products/) are available to extend the capabilities of this plugin.
+All add-on packs are released under GPL.  Purchase once and own the add-on packs forever.  There is no ongoing maintenance or support fee required.
+Your add-on pack will always remain fully functional after purchase.
 
 **Contacts Data** via [Contact Extender](http://www.charlestonsw.com/product/slp4-contact-extender/)
 
 * Adds a dozen extra contact specific data fields for each location.
+
+**Instant Location Directories** via [Directory Builder](http://www.charlestonsw.com/product/directory-builder/)
+
+* Adds a shortcode for creating a dynamic list of location cities, states, countries, or other location property.
+* City/State/Country list can link directly to the locator page with automatic search results showing the locations.
 
 **Extended Map Interface Controls** via [Enhanced Map](http://www.storelocatorplus.com/product/slp4-enhanced-map/)
 
@@ -95,6 +102,11 @@ Visit the [SLP Customers page](http://www.storelocatorplus.com/support/documenta
 * Location search reporting.
 * Location tags.
 
+**Extended Location Data** via [Location Extender](http://www.charlestonsw.com/product/location-extender/)
+
+* Adds a half-dozen new fields to the basic location data.
+* Introduction text, Year Established, County, District, Region, Territory
+
 **SEO Friendly Location Pages** with [Store Pages](http://www.storelocatorplus.com/product/slp4-store-pages/)
 
 * Create pages for each location with the click of a button.
@@ -120,9 +132,18 @@ Visit the [SLP Customers page](http://www.storelocatorplus.com/support/documenta
 * Put location search in your widget-enabled areas.
 * Direct users to the default map page, or show results right in the widget area.
 
+**Get It All** with a [Premier Subscription](http://www.charlestonsw.com/product/premier-subscription/)
+
+ This optional subscription service is a great way to support the plugin.
+ The subscription is not required and  your base plugin as well as any add-on packs will always remain fully functional.
+ The Premier Subscription gives subscribers access to Premier-Member-only sections of the site including a "always first" support forum where questions are answered within 1 business day and follow on direct email is provided for more complex questions or issues.
+ Premier Members also have access to the "everything offered" downloads page which includes all production plugins and add-on packs as well as early access to pre-release products.
+ Subscription pricing is locked in at the original price when signing up even as the plugin and add-on pack collection grows.
+
 **Create Your Own Add-On**
 
 If you are a plugin developer you will be interested in the new "Roll Your Own" program where you can create SLP based add-ons of your own.
+SLP version 4.2 makes it even easier with a series of base classes which handle a majority of the base plugin integration and interface elements.
 Create something great and list it on the CSA site!   Revenue sharing offered for premium add-on packs.
 
 = Support =
@@ -213,7 +234,7 @@ Copy an existing CSS file, change the file name and update the CSS header, uploa
 * Dutch (nl_NL) by [Jan de Baat](http://www.de-baat.nl/)
 * French (fr_FR) by François Serrault
 * German (de_DE)
-* Italian (it_IT) by matteo Colangeli
+* Italian (it_IT) by Matteo Colangeli
 * Japanese (ja) by [Karen Ellrick](http://l4jp.com)
 * Latvian (lt_LT) by Paulius Bakutis
 * Portuguese (pt_BR) by Carlos Utiama
@@ -296,8 +317,7 @@ I am looking into working with the WPML plugin for added support for those of yo
 
 ==Upgrade Notice==
 
-*Upgrading From SLP 3.X to 4.X*
-
+*Upgrading From SLP 3.X to 4.0 or higher*
 
 Store Locator Plus 4 is a MAJOR upgrade to the previous version.
 
@@ -306,17 +326,22 @@ If you are using ANY of the [premium add-on packs](http://www.storelocatorplus.c
 You will need to purchase new [SLP4 compatible versions of the add-on packs](http://www.storelocatorplus.com/product-category/slp4-products/).
 Discounts will be made available to users that purchased a premium add-on pack within 1 year of purchasing the SLP4 compatible upgrades.
 
-
-*Upgrading From SLP 4.0 to SLP 4.1*
+*Upgrading From SLP 4.0 to SLP 4.1 or higher*
 
 If you are using Enhanced Results or Contact Extender and activated Super Extendo at ANY TIME you must:
 
 1. Deactivate Enhanced Results, Contact Extender, and Super Extendo.
 2. Upgrade to SLP 4.1+.
 3. Upgrade Enhanced Results and/or Contact Extender to 4.1+.
+4. Delete Super Extendo.
 
-Super Extendo can be deleted AFTER upgrading Enhanced Results and/or Contact Extender to 4.1+.
+*Upgrading From SLP 4.1 to SLP 4.2*
 
+If you are using the Janitor or Pro Pack add-on pack:
+
+1. Delete and deactivate your Janitor and/or Pro Pack add-on packs.
+2. If you were using Janitor, re-install and activate Janitor version 4.1.08 or higher.
+3. If you were using Pro Pack, re-install and activate Pro Pack version 4.1.06 or higher.
 
 == Changelog ==
 
@@ -326,172 +351,17 @@ Please read the *description page* for this plugin for an important note about p
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
 
-= 2014-Aug-04 (4.1.33+) =
+= 2014-Aug-05 (4.2.03) =
 
-* Fix: add-on pack updates system
-
-= 2014-Jul-16 (4.1.32+) = 
-
-* Change: Lat/Long column on manage locations has been moved to display under the store name.
-* Change: Editing a location now replaces the Add Location panel instead of the Manage Location panel.
-* Change: The SLP theme "set options" button under User Experience / View has changed to "Change Layout" and has been moved up higher on the page.
-* Enhancement: Add a link to manage locations lat/long to an external Google Map display of the location.
-* Enhancement: Add Above and Beyond Nyloboard Rev 02 Theme moving Tagalong legend below map.
-* Enhancement: Add new Above All Theme with Tagalong, Pro Pack, and Enhanced Results feature support.   Search above map.   Results to left of map.
-* Enhancement: Manage Locations: Location edit and delete action buttons now use form posts to assist in retaining filters and other attributes between location updates.
-* Enhancement: Edit locations now remembers filters and the original page you were on before editing a location.
-* Enhancement: Add Serbian (sr_RS) translation.
-* Enhancement: Add Spanish (es_ES) translation.
-* Fix: Make hide search form shortcode attribute stop all excess UI search form processing.
-* Fix: Tagalong legend placeholders are hidden on map  UI if Tagalong add-on pack is not installed.
-
-= 2014-Jul-09 (4.1.31+) =
-
-* Enhancement: Locations Management UI updates to better handle new Pro Pack filters and general bulk actions.
-* Enhancement: Improved WMPL support for Find Locations button text, results instructions text.
-* Enhancement: jQuery Dialog is active on SLP admin pages to support add-on pack manage locations features.
-* Enhancement: Added Italian (it_IT) translations.
-* Enhancement: Updated Dutch (nl_NL) translations.
-* Enhancement: Add current page length to the display drop down on manage locations.
-* Fix: non-geocoded locations are highlighted on manage locations again.
-* Notice: Tested with the upcoming WordPress 4.0 release.
-
-
-= 2014-Jun-03 (4.1.29+) =
-
-* Enhancement: Update the tab menu styling on admin interface to match WordPress built-in (appearance/menus) style.
-* Fix: Stop putting address searches in Spain or some other odd location.
-
-= 2014-May-30 (4.1.28) =
-
-* Enhancement: Update the JavaScript processor to support Enhanced Search "always append this to address"
-
-= 2014-May-23 (4.1.27) =
-
-* Enhancement: Simplify JavaScript processor to speed up location mapping.
-* Enhancement: Location map markers are dropped on the map so the first locations in results appear on the TOP of the marker stack on the interface.
-* Enhancement: New Above and Beyond NyloBoard [SLP Theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/).
-
-= 2014-May-22 (4.1.25) =
-
-* Change: Blank Mapfix theme is now Sass based and has advanced theme settings.
-* Change: Beside The Point 2012 SLP Theme is now Sass based with standard Hours formatting, Pro Pack UI, and Tagalong UI support.
-* Enhancement: Added BigMap SLP Theme
-* Enhancement: Added Beside The Point 2012 Rev 02 Theme, adds higlighted featured locations for Enhanced Results
-* Enhancement: Added Beside The Point [NyloBoard](http://nyloboard.com/) Rev 01 Theme
-* Enhancement: Added a half-dozen new bulb map marker colors.
-* Fix: Admin CSS styling for some add-on packs such as Janitor.
-* Fix: Stop JavaScript location sensor from trying to build the map multiple times if the error timeout is too slow to catch it.
-
-= 4.1.18 =
-
-* Change: Added location management JavaScript and CSS for [User Managed Locations](http://www.storelocatorplus.com/product/slp4-user-managed-locations/) support.
-* Change: admin.css file is now Sass-driven to build a framework for consistent CSS rule declarations.
-* Change: Make location add/edit form input label width match rest of admin interface.
-* Enhancement: Added two new P (parking) icons.
-* Enhancement: Add link to LatLong.net for lookup up specific lat/long addresss.
-
-= 4.1.16 =
-
-**Note: Upgrade Enhanced Results to version 4.1.04+  and Enhanced Search to version 4.1.01+.**
-
-* Fix: Stop showing database errors when updating SLP.  This happens because WP dbDelta does not handle index management well.
-* Fix: Force Load JavaScript on WordPress themes that have malformed/missing wp_footer() now loads the SLP theme styles.
-* Fix: Sensor failure hangs on Safari and IE8 browsers.
-* Enhancement: Add a couple of new map icons to the set.
-* Enhancement: SLP Default Theme fix Tagalong cascading categories, Pro Pack tag labels.
-* Enhancement: SLP Default Rev 02 Theme fixes the starting image width (remove max-width:none).
-* Enhancement: SLP Twenty Fourteen 01 Theme fix Enhanced Map hide map, starting image, and default map display.
-* Enhancement: SLP Woo Memorable Theme fix Enhanced Map hide map, starting image, and default map display.
-* Enhancement: SLP Basic Boxes Theme fix Enhanced Map hide map, starting image, and default map display.  Add Pro Pack tag search formatting. Add advanced attributes.
-* Enhancement: Support for Enhanced Results immediately_show_locations shortcode.
-* Enhancement: shortcode_atts_slplus filters are now supported for the SLPLUS shortcode.
-* Change: Force Load JavaScript mode does not process shortcode attributes, elminate unnecessary overhead when operating in this mode.
-* Change: Force Load JavaScript is TURNED OFF by default on all new installs.   
-* Change: Immediately Show Locations is TURNED ON by default on all new installs.
-
-= 4.1.12 =
-
-* Fix: Fix the help screen hyperlinks.
-* Fix: Update the select state list option to show states with no lat/long.
-* Fix: Force Load JavaScript now stays checked when changing other map options.
-* Fix: Force mime type to on files ending with .csv to text/csv.
-* Fix: Update WooMemorable theme to handle the Tagalong CSS cascade feature.
-* Fix: Pagination in Locations/Manage next page and page numbers retain search filters.
-* Enhancement: Update the data interface engine to work with WordPress 3.9 prepare statement updates.
-* Enhancement: New Twenty Fourteen Rev 01 Advanced Theme that better fits with the WP Twenty Fourteen theme.
-* Enhancement: Added Portuguese Brazil translation.
-
-= 4.1.10 =
-
-* Fix: patch deactivate_plugins call on Super Extendo
-
-= 4.1.09 =
-
-* Enhancement: Tagalong icon array on Beside The Point 2012 has been adjusted to appear on its own line.
-* Update: Setup Bellard-RT as an Advanced Theme.
-* Fix: Activation error $this when not in array context.
-
-= 4.1.08 =
-
-* Enhancement: Updated Dutch (nl_NL) [language files](http://www.storelocatorplus.com/support/documentation/store-locator-plus/user-experience/map/countries-and-languages/).
-* Enhancement: Add Latvian (lt_LT) [language files](http://www.storelocatorplus.com/support/documentation/store-locator-plus/user-experience/map/countries-and-languages/).
-* Enhancement: Add Traditional Chinese (zh_TW) [language files](http://www.storelocatorplus.com/support/documentation/store-locator-plus/user-experience/map/countries-and-languages/).
-* Enhancement: Add website, hours, phone, fax to WPML supported options fields.
-* Enhancement: Make csv import smarter about stripping special characters from field names row.
-* Fix: Fix data extensions mangling of SQL commands for add-on packs.
-* Fix: Default, Default Rev 02 SLP Theme find locations button on Chrome.
-* Change: Update the SLP Default theme to make the find button less horrific on Twenty Fourteen default setup.
-
-= 4.1.07 =
-
-* Fix: Add Locations / Import Locations / Export Locations panel display.  Typo in HTML caused panels to remain hidden.
-
-= 4.1.06 =
-
-* Enhancement: Store Locator Plus has been tested as [WPML Compatible](http://wpml.org/plugin/store-locator/).
-* Enhancement: Add a new General Setting to show extended admin messages that may be useful in debugging an install.
-* Fix: Admin page css styles when saving settings in add-on packs.
-* Change: Move Pro Pack bulk action add/remove tag operations into Pro Pack.
-* Change: Add a more graceful deprecated function notice for slp_render_search_form_tag_list.
-
-= 4.1.05 =
-
-* Fix: Manage Locations search box, pressing enter runs search by default.
-* Enhancement: Add new manage_slp_user and manage_slp_admin roles to the base plugin for better caps & roles processing for the new UML plugin support.
-* Enhancement: Make Beside Myself Results an advanced [theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/).
-* Enhancement: Add default name, state/city/country selectors, tag/category selectors positioning to the Beside Myself [theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/).
-
-= 4.1.04 =
-
-* Enhancement: Add Enhanced Map on/off toggle support and Bubble Layout updates to Beside And Below Genesis [theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/).
-* Enhancement: Add Enhanced Map on/off toggle support and Bubble/Search/Results updates to Beside The Point 2012 [theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/).
-* Enhancement: Add Enhanced Map on/off toggle support and Bubble Layout updates to Beside Myself [theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/).
-* Enhancement: Add Search Layout updates to Simple White 4 Column [theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/).
-
-= 4.1.03 =
-
-* NOTICE: Enhanced Map add-on pack users must upgrade to EM version 4.1+.
-* Enhancement: Make Beside The Point 2012 an [Advanced Theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/).
-* Enhancement: Create better default search form position for Enhanced Search country or city selector element.
-* Enhancement: Add base plugin option passing to Ajax Handler so the search form can control more interface elements.
-* Enhancement: Eliminate the now-defunct wpcsl_loadplugindata__slplus filter.  Enhanced Map users must upgrade to version 4.1.
-
-= 4.1.02 =
-
-* Enhancement: Update Default theme to use [Advanced Theme](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/) layout. Make it easy to reset layout options to the start-up defaults.
-* Enhancement: Update Beside-and-Below Genesis theme to [Advanced Themes](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/view/themes-custom-css/) layout.
-* Enhancement: Chinese language support.
-
-= 4.1.01 =
-
-* Fix: Disable extended data features until users update their Enhanced Results and/or Contact Extender to version 4.1.
-
-= 4.1.00 =
-
-* Enhancement: Replace wpCSL framework with built-in library for memory conservation and processing speed.
-* Enhancement: Added German (de_DE) [text translations](http://www.storelocatorplus.com/support/documentation/store-locator-plus/user-experience/map/countries-and-languages/).
-* Enhancement: Make some of the admin interface elements more responsive allowing for textarea inputs to grow without scrolling when screen real estate allows.
-* Enhancement: Improved info bubble layout processor, does not balk when using [slp_location name] instead of [slp_location name ].
-* Enhancement: WPML integration has been started.   The search form string have been added, but we need more from WPML to make this viable.
-* Enhancement: Add one-click SLP theme settings implementation for Advanced Themes.
+* Note: Delete Janitor and Pro Pack add-on packs before upgrading the base plugin.
+* Enhancement: Added Thailand to the list of supported Google Domain maps
+* Enhancement: Fix csl-slplus-nomap SLP Theme results to show under the search form.
+* Enhancement: Add New Improved "No Map Rev 02" theme.
+* Enhancement: A new base add-on class has been added to build a consistent base of functionality and user experience elements between SLP and the add-on packs.
+* Enhancement: Make the info bubble layout [slp_locaton latitude] and [slp_location longitude] work as aliases for [slp_location lat] and [slp_location lng].
+* Change: Hide address input feature was lost somewhere in the past, it has now been re-introduced in the Enhanced Search add-on.
+* Change: 4.2.02 - minor internal update for smarter settings forms.
+* Change: 4.2.03 - minor csv handler update to allow for new Pro Pack extensions.
+* Fix: Intermittent issue with extended field data that impacted Enhanced Results and Contact Extender extended data field.
+* Fix: Rendering of special characters in extended data field output.
+* Fix: Ensure extended data fields are loaded on all location record calls.  Fixes extended data inconsistencies in several add-on packs including Store Pages.

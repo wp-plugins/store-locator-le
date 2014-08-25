@@ -30,6 +30,13 @@ if (!class_exists('CSVImport')) {
         //----------------------------------------------------------------------------
 
         /**
+         * The add on.
+         *
+         * @var mixed $addon
+         */
+        protected $addon;
+
+        /**
          * The current CSV data array.
          *
          * @var string[] $data
@@ -74,7 +81,7 @@ if (!class_exists('CSVImport')) {
         /**
          * The main SLP Plugin object.
          *
-         * @var SLPlus $plugin
+         * @var \SLPlus $plugin
          */
         protected $plugin;
 
@@ -90,6 +97,11 @@ if (!class_exists('CSVImport')) {
          * @var boolean $skip_firstline
          */
         protected $skip_firstline = false;
+
+        /**
+         * @var \SLPlus $slplus
+         */
+        protected $slplus;
 
         /**
          * The prefix to strip from field name in header row.
@@ -115,13 +127,14 @@ if (!class_exists('CSVImport')) {
          * Example: 
          * $this->importer = new CSVImport(array('parent'=>$this,'plugin'=>$this->plugin));
          *
-         * @param object $parent
+         * @param mixed[] $params
          */
         function __construct($params) {
             foreach ($params as $property=>$value) {
                 if (property_exists($this,$property)) { $this->$property = $value; }
-                else { die("import property $property does not exist<br/>\n"); }
             }
+            if ( isset( $this->plugin ) && ! isset( $this->slplus ) ) { $this->slplus = $this->plugin; }
+            if ( isset( $this->parent ) && ! isset( $this->addon  ) ) { $this->addon  = $this->parent; }
             if ($this->firstline_has_fieldname) { $this->skip_firstline = true; }
         }
 
@@ -151,25 +164,38 @@ if (!class_exists('CSVImport')) {
          * This should be extended.
          *
          */
-        function process_File() {
+        function process_File( $file_meta = null ) {
+            if ( $file_meta === null ) { $file_meta = $_FILES; }
+            $this->process_FileDirect( $file_meta );
+        }
+
+
+        /**
+         * Process a CSV file breaking it into arrays and pass to filters for handling.
+         *
+         * Hook onto the slp_csv_processing action in your extended class to do something with the array of data.
+         *
+         * @param $file_meta a $_FILES-like structure.
+         */
+        function process_FileDirect( $file_meta ) {
 
             // Is the file name set?  If not, exit.
             //
-            if (!isset($_FILES['csvfile']['name']) || empty($_FILES['csvfile']['name'])) {
+            if (!isset($file_meta['csvfile']['name']) || empty($file_meta['csvfile']['name'])) {
                 print "<div class='updated fade'>".__('Import file name not set.','csa-slplus').'</div>';
                 return;
             }
 
             // Does the file have any content?  If not, exit.
             //
-            if ($_FILES['csvfile']['size'] <= 0)    {
+            if ($file_meta['csvfile']['size'] <= 0)    {
                 print "<div class='updated fade'>".__('Import file was empty.','csa-slplus').'</div>';
                 return;
             }
             
             // Is the file CSV?  If not, exit.
             //
-            $arr_file_type = wp_check_filetype( basename( $_FILES['csvfile']['name'] ) , array( 'csv' => 'text/csv' ) );
+            $arr_file_type = wp_check_filetype( basename( $file_meta['csvfile']['name'] ) , array( 'csv' => 'text/csv' ) );
             if ($arr_file_type['type'] != 'text/csv') {
                 print "<div class='updated fade'>".
                     __('Uploaded file needs to be in CSV format.','csa-slplus')        .
@@ -183,7 +209,7 @@ if (!class_exists('CSVImport')) {
             $updir = wp_upload_dir();
             $updir = $updir['basedir'].'/slplus_csv';
             if (!is_dir($updir)) {   mkdir($updir,0755); }
-            if (!move_uploaded_file($_FILES['csvfile']['tmp_name'],$updir.'/'.$_FILES['csvfile']['name'])) {
+            if (!move_uploaded_file($file_meta['csvfile']['tmp_name'],$updir.'/'.$file_meta['csvfile']['name'])) {
                 return;
             }
 
@@ -194,10 +220,10 @@ if (!class_exists('CSVImport')) {
 
             // Can the file be opened? If not, exit.
             //
-            if (($this->filehandle = fopen($updir.'/'.$_FILES['csvfile']['name'], "r")) === FALSE) {
+            if (($this->filehandle = fopen($updir.'/'.$file_meta['csvfile']['name'], "r")) === FALSE) {
                 print "<div class='updated fade'>".
                     __('Could not open CSV file for processing.','csa-slplus')         . '<br/>' .
-                    $updir.'/'.$_FILES['csvfile']['name']                               .
+                    $updir.'/'.$file_meta['csvfile']['name']                               .
                     '</div>';
                 ini_set('auto_detect_line_endings', $adle_setting);
                 return;
@@ -213,7 +239,7 @@ if (!class_exists('CSVImport')) {
 
             // Reset the notification message to get a clean message stack.
             //
-            $this->plugin->notifications->delete_all_notices();
+            $this->slplus->notifications->delete_all_notices();
 
             // Add CSV as a mime type
             //
@@ -237,8 +263,8 @@ if (!class_exists('CSVImport')) {
 
             // Turn off notifications for OK addresses.
             //
-            if ( is_object( $this->plugin->AdminUI->ManageLocations ) ) {
-                $this->plugin->AdminUI->ManageLocations->geocodeSkipOKNotices = true;
+            if ( is_object( $this->slplus->AdminUI->ManageLocations ) ) {
+                $this->slplus->AdminUI->ManageLocations->geocodeSkipOKNotices = true;
             }
 
             // Loop through all records
@@ -264,7 +290,7 @@ if (!class_exists('CSVImport')) {
 
             // Show Notices
             //
-            $this->plugin->notifications->display();
+            $this->slplus->notifications->display();
 
             // Tell them how many locations were added
             //

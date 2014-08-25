@@ -906,16 +906,31 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                             "/>";
                     break;
 
+
                 case 'int'      :
-                case 'text'     :
                 case 'varchar'  :
+                    $value=esc_html($value);
                     $theform .=
                         "<input type='text' "                                           .
-                            "id='edit-{$col->slug}' "                                   .
-                            "name='{$col->slug}-{$this->slplus->currentLocation->id}' " .
-                            "value='$value' "                                           .
-                            (($col->type ==='int')?'class="shortfield" ':'') .
-                            "/>";
+                        "id='edit-{$col->slug}' "                                   .
+                        "name='{$col->slug}-{$this->slplus->currentLocation->id}' " .
+                        "value='$value' "                                           .
+                        (($col->type ==='int')?'class="shortfield" ':'') .
+                        "/>";
+                    break;
+
+                case 'text'      :
+                    $value = esc_textarea($value);
+                    $theform .=
+                        '<textarea '                                                        .
+                        "cols='17' "                                                    .
+                        "rows='5' "                                                     .
+                        "id='edit-{$col->slug}' "                                     .
+                        "name='{$col->slug}-{$this->slplus->currentLocation->id}' "   .
+                        "data-field='{$col->slug}' "                                  .
+                        '>'                                                             .
+                        $value                                                          .
+                        '</textarea>'                                                       ;
                     break;
             }
             $theform .= "<br>";
