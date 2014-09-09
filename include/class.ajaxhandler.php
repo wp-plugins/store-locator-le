@@ -226,7 +226,7 @@ class SLPlus_AjaxHandler {
         // Distance Unit (KM or MI) Modifier
         // Since miles is default, if kilometers is selected, divide by 1.609344 in order to convert the kilometer value selection back in miles
         //
-        $multiplier=(get_option('sl_distance_unit',__('miles', 'csa-slplus'))==__('km', 'csa-slplus'))? 6371 : 3959;
+        $multiplier=($this->plugin->options['distance_unit']==__('km', 'csa-slplus'))? 6371 : 3959;
 
         //........
         // Post options that tweak the query

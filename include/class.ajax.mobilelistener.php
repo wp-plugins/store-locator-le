@@ -159,7 +159,7 @@ if (! class_exists('csl_mobile_listener')) {
 	            }
 
                 // Radian multiplier to get linear distance
-                $multiplier=(get_option('sl_distance_unit',__('miles', 'csa-slplus'))==__('km'    ,'csa-slplus'))? 6371 : 3959;
+                $multiplier=($this->slplus->options['distance_unit']==__('km'    ,'csa-slplus'))? 6371 : 3959;
 	            $max = $slplus_plugin->options_nojs['max_results_returned'];
                 if ($this->max < $max) {
                     $max = $this->max;
@@ -214,7 +214,7 @@ if (! class_exists('csl_mobile_listener')) {
 				            'hours' => esc_attr($row['sl_hours']),
 				            'phone' => esc_attr($row['sl_phone']),
 				            'fax' => esc_attr($row['sl_fax']),
-                            'units' => get_option('sl_distance_unit',__('miles', 'csa-slplus')),
+                            'units' =>$this->slplus->options['distance_unit'],
 				            'image' => esc_attr($row['sl_image']),
 				            'distance' => $row['sl_distance'],
 				            'tags' => esc_attr($row['sl_tags'])

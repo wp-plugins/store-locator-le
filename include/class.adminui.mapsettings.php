@@ -204,7 +204,7 @@ class SLPlus_AdminUI_MapSettings {
     function save_settings() {
         $sl_google_map_arr=explode(":", $_POST['google_map_domain']);
         update_option('sl_google_map_country', $sl_google_map_arr[0]);
-        update_option('sl_google_map_domain', $sl_google_map_arr[1]);
+        $this->plugin->options['map_domain'] = $sl_google_map_arr[1];
 
 		// Set height uint to blank, if height is "auto !important"
 		if ($_POST['sl_map_height'] === "auto !important" && $_POST['sl_map_height_units'] != "") {
@@ -250,7 +250,6 @@ class SLPlus_AdminUI_MapSettings {
                     'sl_map_home_icon'                      ,
                     'sl_map_end_icon'                       ,
                     'sl_map_type'                           ,
-                    'sl_distance_unit'                      ,
                     'sl_radius_label'                       ,
                     'sl_search_label'                       ,
                     'sl_website_label'                      ,
@@ -413,7 +412,7 @@ class SLPlus_AdminUI_MapSettings {
                 "<select name='google_map_domain'>"
                 ;
                 foreach ($this->get_map_domains() as $key=>$sl_value) {
-                    $selected=(get_option('sl_google_map_domain')==$sl_value)?" selected " : "";
+                    $selected = ( $this->plugin->options['map_domain'] == $sl_value ) ? ' selected ' : '';
                     $slpDescription .= "<option value='$key:$sl_value' $selected>$key ($sl_value)</option>\n";
                 }
             $slpDescription .=
@@ -789,6 +788,18 @@ class SLPlus_AdminUI_MapSettings {
       */
      function results_settings() {
 
+         // Add Results Section
+         //
+         $section_name = __('Results','csa-slplus');
+         $this->settings->add_section(
+             array(
+                 'name'          => $section_name,
+                 'div_id'        => 'results',
+             )
+         );
+
+         // Add Results Features Group
+         //
         $slpDescription =
             $this->plugin->helper->create_SubheadingLabel(__('Search Results','csa-slplus')) .
             $this->CreateInputDiv(
@@ -829,6 +840,17 @@ class SLPlus_AdminUI_MapSettings {
         // FILTER: slp_settings_results_locationinfo - add input fields to results locaiton info
         //
         $resultSettings['features'] = apply_filters('slp_settings_results_locationinfo',$slpDescription);
+
+         $this->settings->add_ItemToGroup(
+             array(
+                 'section'       => $section_name,
+                 'group'         => __('Results Features','csa-slplus'),
+                 'label'         => '',
+                 'type'          => 'subheader',
+                 'show_label'    => false,
+                 'description'   => $resultSettings['features']
+             )
+         );
 
 
         // ===== Labels
@@ -883,33 +905,21 @@ class SLPlus_AdminUI_MapSettings {
         //
         $resultSettings['labels'] = apply_filters('slp_settings_results_labels',$slpDescription);
 
-        // TODO: Convert to new panel builder with add_ItemToGroup() in wpCSL (see Tagalong admin panel)
-        $resultSections =
-            $this->plugin->settings->create_SettingsGroup(
-                'result_features',
-                __('Results Features','csa-slplus'),
-                '',
-                $resultSettings['features']
-                ).
-            $this->plugin->settings->create_SettingsGroup(
-                'result_labels',
-                __('Results Labels','csa-slplus'),
-                '',
-                $resultSettings['labels']
-                )
-                ;
-
-        // Render the results setting
-        //
-        $this->settings->add_section(
-            array(
-                    'name'          => __('Results','csa-slplus'),
-                    'div_id'        => 'results',
-                    'description'   => $resultSections,
-                    'auto'          => true,
-                    'innerdiv'      => true
-                )
+         $this->settings->add_ItemToGroup(
+             array(
+                 'section'       => $section_name,
+                 'group'         => __('Results Labels','csa-slplus'),
+                 'label'         => '',
+                 'type'          => 'subheader',
+                 'show_label'    => false,
+                 'description'   => $resultSettings['labels']
+             )
          );
+
+         // ACTION: slp_ux_modify_adminpanel_results
+         //    params: settings object, section name
+         //
+         do_action( 'slp_ux_modify_adminpanel_results' , $this->settings , $section_name );
      }
 
     /**
@@ -932,16 +942,18 @@ class SLPlus_AdminUI_MapSettings {
                 ) .
 
             "<div class='form_entry'>" .
-                "<label for='sl_distance_unit'>".__('Distance Unit', 'csa-slplus').':</label>' .
-                    "<select name='sl_distance_unit'>"
+                "<label for='distance_unit'>".__('Distance Unit', 'csa-slplus').':</label>' .
+                    "<select name='distance_unit'>"
             ;
+
         foreach (array(
                         __('Kilometers' , 'csa-slplus')=>__('km'    ,'csa-slplus'),
                         __('Miles'      , 'csa-slplus')=>__('miles' ,'csa-slplus'),
                     ) as $key=>$sl_value) {
-            $selected=(get_option('sl_distance_unit','miles')==$sl_value)?" selected " : "";
+            $selected=($this->plugin->options['distance_unit']==$sl_value)?" selected " : "";
             $slpDescription .= "<option value='$sl_value' $selected>$key</option>\n";
         }
+
         $slpDescription .=
                 '</select>'.
             '</div>'.

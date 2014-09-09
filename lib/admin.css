@@ -28,6 +28,9 @@ about
 
 #wpcsl_container div.section_description h4:first-of-type {
   margin-top: 0px; }
+#wpcsl_container select {
+  height: 1.5em;
+  padding: 0em; }
 
 #wpfooter {
   position: relative; }
@@ -152,8 +155,7 @@ div.section_column {
 /* Settings : wpcsl-input */
 .wpcsl-input {
   display: inline-block;
-  min-width: 30px;
-  max-width: 95%; }
+  min-width: 30px; }
 
 form#importForm input#bulk_file {
   border: none;
@@ -838,9 +840,6 @@ img.slp_icon_selector {
 /***************************
  * Settings: General
  **/
-#wpcontent .csl_select, #wpcontent .csl_option {
-  padding-right: 6px; }
-
 .tableRowHeader, .tableRowHeader td, .tableRowHeader th {
   background-color: black;
   color: white;

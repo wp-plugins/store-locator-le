@@ -23,7 +23,7 @@ class SLPlus_Activate {
     public  $db_version_on_start = '';
 
     /**
-     * Starting Pluging version.
+     * Starting Plugin version.
      *
      * @var string $plugin_version_on_start
      */
@@ -274,21 +274,6 @@ class SLPlus_Activate {
     }
 
     /**
-     * Drop an index only if it exists.
-     *
-     * @global object $wpdb
-     * @param string $idxName name of index to drop
-     */
-    function drop_index($idxName) {
-        global $wpdb;
-        if ($wpdb->get_var('SELECT count(*) FROM information_schema.statistics '.
-                "WHERE table_name='".$this->plugin->database->info['table']."' " .
-                    "AND index_name='{$idxName}'" ) > 0) {
-            $wpdb->query("DROP INDEX {$idxName} ON " . $this->plugin->database->info['table']);
-        }
-    }
-
-    /**
      * Delete all files in a directory, non-recursive.
      * 
      * @param string $dirname
@@ -405,12 +390,6 @@ class SLPlus_Activate {
                 update_option('sl_admin_locations_per_page','10');
             }
 
-            // Update incorrect google map domain
-            //
-            if (get_option('sl_google_map_domain','maps.google.com') === 'maps.googleapis.com') {
-                update_option('sl_google_map_domain','maps.google.com');
-            }
-            
             // Upgrading to version 4.0.033
             //
             if ( version_compare($updater->plugin_version_on_start,'4.0.033','<') ) {
@@ -452,9 +431,33 @@ class SLPlus_Activate {
                 $updater->plugin->options_nojs[$serial_key] = $option_value;
                 delete_option( $option_name );
                 $options_changed = $options_changed || ( $option_value !== $updater->plugin->options_nojs[$serial_key] );
-            }                     
-            
-            // Upgrading to version 4.1.XX
+            }
+
+            // Upgrading to version 4.2.04
+            //
+            if ( version_compare($updater->plugin_version_on_start,'4.2.04','<') ) {
+
+                // sl_distance_unit option => slplus->options['distance_unit']
+                //
+                $option_name  = 'sl_distance_unit';
+                $serial_key   = 'distance_unit';
+                $option_value = get_option( $option_name , false );
+                $updater->plugin->options[$serial_key] = $option_value;
+                delete_option( $option_name );
+                $options_changed = true; // new setting always write the options array to disk
+
+                // sl_google_map_domain => slplus->options['map_domain']
+                //
+                $option_name  = 'sl_google_map_domain';
+                $serial_key   = 'map_domain';
+                $option_value = get_option( $option_name , 'maps.google.com' );
+                if ($option_value === 'maps.googleapis.com') { $option_value = 'maps.google.com'; }
+                $updater->plugin->options[$serial_key] = $option_value;
+                delete_option( $option_name );
+                $options_changed = true; // new setting always write the options array to disk
+            }
+
+            // Upgrading to version 4.1.XX+
             // Always re-load theme details data.
             //
             if ( version_compare($updater->plugin_version_on_start,'4.99.99','<') ) {
@@ -474,7 +477,8 @@ class SLPlus_Activate {
             // Save Serialized Options
             //
             if ($options_changed) {
-                update_option(SLPLUS_PREFIX.'-options_nojs', $updater->plugin->options_nojs);
+                update_option(SLPLUS_PREFIX.'-options_nojs' , $updater->plugin->options_nojs);
+                update_option(SLPLUS_PREFIX.'-options'      , $updater->plugin->options     );
             }
 
             // Set DB Version
@@ -493,6 +497,7 @@ class SLPlus_Activate {
     /**
      * Updates specific to 3.8.6
      *
+     * @param string $iconFile
      * @return string icon file
      */
     function iconMapper($iconFile) {

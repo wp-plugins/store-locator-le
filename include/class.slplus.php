@@ -122,6 +122,17 @@ class SLPlus extends wpCSL_plugin__slplus {
      * @var mixed[] $defaults
      */
     public $defaults = array(
+        'label_email' => 'Email',
+
+        // Overall Layout
+        //
+        // If you change this change default.css theme as well.
+        //
+        'layout' =>
+            '<div id="sl_div">[slp_search][slp_map][slp_results]</div>',
+
+
+
         // Bubble Layout shortcodes have the following format:
         // [<shortcode> <attribute> <optional modifier> <optional modifier argument>]
         //
@@ -175,14 +186,20 @@ class SLPlus extends wpCSL_plugin__slplus {
 <span id="slp_tags">[slp_location tags]</span>
 </div>'
         ,
-        'label_email' => 'Email',
+
+
+
+        // Map Layout
         // If you change this change default.css theme as well.
-        'layout' =>
-        '<div id="sl_div">[slp_search][slp_map][slp_results]</div>',
-        // If you change this change default.css theme as well.
+        //
         'maplayout' =>
         '[slp_mapcontent][slp_maptagline]',
+
+
+
+        // Results Layout
         // If you change this change default.css theme as well.
+        //
         'resultslayout' =>
         '<div id="slp_results_[slp_location id]" class="results_entry  [slp_location featured]">
     <div class="results_row_left_column"   id="slp_left_cell_[slp_location id]"   >
@@ -200,14 +217,18 @@ class SLPlus extends wpCSL_plugin__slplus {
     <div class="results_row_right_column"  id="slp_right_cell_[slp_location id]"  >
         <span class="slp_result_contact slp_result_website">[slp_location web_link]</span>
         <span class="slp_result_contact slp_result_email">[slp_location email_link]</span>
-        <span class="slp_result_contact slp_result_directions"><a href="http://[slp_location map_domain]/maps?saddr=[slp_location search_address]&daddr=[slp_location location_address]" target="_blank" class="storelocatorlink">[slp_location directions_text]</a></span>
+        <span class="slp_result_contact slp_result_directions"><a href="http://[slp_option map_domain]/maps?saddr=[slp_location search_address]&daddr=[slp_location location_address]" target="_blank" class="storelocatorlink">[slp_location directions_text]</a></span>
         <span class="slp_result_contact slp_result_hours">[slp_location hours]</span>
+        [slp_location pro_tags]
         [slp_location iconarray wrap="fullspan"]
         [slp_location socialiconarray wrap="fullspan"]
         </div>
 </div>'
         ,
+
+        // Search Layout
         // If you change this change default.css theme as well.
+        //
         'searchlayout' =>
         '<div id="address_search">
     [slp_search_element input_with_label="name"]
@@ -248,17 +269,23 @@ class SLPlus extends wpCSL_plugin__slplus {
      * @var mixed[] $options
      */
     public $options = array(
-        'bubblelayout' => '',
+        'bubblelayout'               => '',
+        'distance_unit'              => 'miles',
         'immediately_show_locations' => '1',
-        'initial_radius' => '10000',
-        'initial_results_returned' => '25',
-        'label_directions' => '',
-        'label_email' => '',
-        'label_fax' => '',
-        'label_hours' => '',
-        'label_phone' => '',
-        'label_website' => '',
-        'slplus_version' => SLPLUS_VERSION,
+        'initial_radius'             => '10000',
+        'initial_results_returned'   => '25',
+        'label_directions'           => '',
+        'label_email'                => '',
+        'label_fax'                  => '',
+        'label_hours'                => '',
+        'label_phone'                => '',
+        'label_website'              => '',
+        'map_domain'                 => 'maps.google.com',
+        'slplus_version'             => SLPLUS_VERSION,
+
+        // AJAX Incoming Variables
+        //
+        'ignore_radius'              => '0',  // Passed in as form var from Enhanced Search
     );
 
     /**
@@ -270,6 +297,7 @@ class SLPlus extends wpCSL_plugin__slplus {
         'extended_admin_messages'   => '0',
         'force_load_js'             => '0',
         'has_extended_data'         => '',
+        'http_timeout'              => '10', // HTTP timeout for GeoCode Requests (s)
         'max_results_returned'      => '25',
         'next_field_id'             => 1,
         'next_field_ported'         => '',

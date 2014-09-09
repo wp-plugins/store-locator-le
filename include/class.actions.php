@@ -41,25 +41,18 @@ class SLPlus_Actions {
     // Methods
     //----------------------------------
 
-    function SLPlus_Actions() {
+    function __construct( $params = null ) {
+
+        // Do the setting override or initial settings.
+        //
+        if ($params != null) {
+            foreach ($params as $name => $sl_value) {
+                $this->$name = $sl_value;
+            }
+        }
+
         add_action( "load-post.php"     , array( $this, 'action_AddToPageHelp' ), 20 );
         add_action( "load-post-new.php" , array( $this, 'action_AddToPageHelp' ), 20 );
-    }
-
-    /**
-     * Set the plugin property to point to the primary plugin object.
-     *
-     * Returns false if we can't get to the main plugin object.
-     *
-     * @global wpCSL_plugin__slplus $slplus_plugin
-     * @return type boolean true if plugin property is valid
-     */
-    function set_Plugin() {
-        if (!isset($this->slplus) || ($this->slplus == null)) {
-            global $slplus_plugin;
-            $this->slplus = $slplus_plugin;
-        }
-        return (isset($this->slplus) && ($this->slplus != null));
     }
 
     /**
@@ -68,7 +61,6 @@ class SLPlus_Actions {
      * @return boolean - true unless the main plugin is not found
      */
     function attachAdminUI() {
-        if (!$this->set_Plugin()) { return false; }
         if (!isset($this->slplus->AdminUI) || !is_object($this->slplus->AdminUI)) {
             require_once(SLPLUS_PLUGINDIR . '/include/class.adminui.php');
             $this->slplus->AdminUI = new SLPlus_AdminUI();     // Lets invoke this and make it an object
@@ -82,7 +74,6 @@ class SLPlus_Actions {
      * @return boolean - true unless the main plugin is not found
      */
     function attachAdminWPML() {
-        if (!$this->set_Plugin()) { return false; }
         if (!isset($this->slplus->AdminWPML) || !is_object($this->slplus->AdminWPML)) {
             require_once(SLPLUS_PLUGINDIR . '/include/class.adminwpml.php');
             $this->slplus->AdminWPML = new SLPlus_AdminWMPL();     // Lets invoke this and make it an object
@@ -99,7 +90,6 @@ class SLPlus_Actions {
      *
      */
     function admin_init() {
-        if (!$this->set_Plugin()) { return; }
 
         // Already been here?  Get out.
         if ($this->initialized)  { return; }            
@@ -175,7 +165,6 @@ class SLPlus_Actions {
      *
      */
     function admin_menu() {
-        if (!$this->set_Plugin()) { return; }
 
         if (current_user_can('manage_slp')) {
             $this->attachAdminUI();
@@ -293,7 +282,6 @@ class SLPlus_Actions {
      * Called when the WordPress init action is processed.
      */
     function init() {
-        if (!$this->set_Plugin()) { return; }
         add_filter('codestyling_localization_excludedirs',array($this,'filter_CodeStylingSkipTheseDirs'));
         load_plugin_textdomain('csa-slplus', false, plugin_basename(dirname(SLPLUS_PLUGINDIR.'store-locator-le.php')) . '/languages');
 
@@ -420,7 +408,7 @@ class SLPlus_Actions {
             $language = '&language='.$this->slplus->helper->getData('map_language','get_item',null,'en');
             wp_enqueue_script(
                     'google_maps',
-                    'http'.(is_ssl()?'s':'').'://'.get_option('sl_google_map_domain','maps.google.com').'/maps/api/js?sensor=false' . $api_key . $language,
+                    'http'.(is_ssl()?'s':'').'://'.$this->slplus->options['map_domain'].'/maps/api/js?sensor=false' . $api_key . $language,
                     array(),
                     SLPLUS_VERSION,
                     ! $this->slplus->javascript_is_forced

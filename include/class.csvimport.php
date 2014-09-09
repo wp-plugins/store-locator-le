@@ -163,10 +163,13 @@ if (!class_exists('CSVImport')) {
          *
          * This should be extended.
          *
+         * HOOK: slp_csv_processing_complete
+         *
          */
         function process_File( $file_meta = null ) {
             if ( $file_meta === null ) { $file_meta = $_FILES; }
             $this->process_FileDirect( $file_meta );
+            do_action('slp_csv_processing_complete');
         }
 
 
@@ -209,8 +212,33 @@ if (!class_exists('CSVImport')) {
             $updir = wp_upload_dir();
             $updir = $updir['basedir'].'/slplus_csv';
             if (!is_dir($updir)) {   mkdir($updir,0755); }
-            if (!move_uploaded_file($file_meta['csvfile']['tmp_name'],$updir.'/'.$file_meta['csvfile']['name'])) {
-                return;
+
+            // Move File -
+            // If csvfile source is set to csv_file_url assume an http or ftp_get
+            // direct to disk,
+            //
+            // otherwise
+            //
+            // Assume HTTP POST (browser direct) use move_uploaded_file
+            //
+            if (
+                isset( $file_meta['csvfile']['source'] ) &&
+                ( $file_meta['csvfile']['source'] === 'direct_url' )
+            )  {
+                if ( ! rename( $file_meta['csvfile']['tmp_name'] , $updir.'/'.$file_meta['csvfile']['name'] ) ) {
+                    print "<div class='updated fade'>"                                  .
+                        __('Imported CSV file could not be renamed.','csa-slplus')      .
+                        '</div>';
+                    return;
+                }
+
+            } else {
+                if ( ! move_uploaded_file( $file_meta['csvfile']['tmp_name'] , $updir.'/'.$file_meta['csvfile']['name'] ) ) {
+                    print "<div class='updated fade'>"                                  .
+                        __('Uploaded CSV file could not be moved.','csa-slplus')        .
+                        '</div>';
+                    return;
+                }
             }
 
             // Line Endings

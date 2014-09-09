@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-4/
 Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.4
 Tested up to: 4.0
-Stable tag: 4.2.03
+Stable tag: 4.2.05
 License: GLPv2 or later
 
 Add a location finder or directory to your site in minutes. A Google Business Maps API licensed product. Extensive premium add-on library available!
@@ -350,6 +350,20 @@ Please read the *description page* for this plugin for an important note about p
 *Version 4.x is a major upgrade that is not compatible with the version 3.x or earlier add-on packs.*
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 2014-Aug-25 (4.2.05) =
+
+* Enhancement: Add new server-to-server speed setting.  Adjusts time the server will wait to hear back from Google during geocoding.
+* Enhancement: Increase default wait time for geocoding responses to increase positive hits on locations on slower networks.
+* Enhancement: CSV action 'slp_csv_processing_complete' added to allow add-on packs to execute functions after CSV files are imported.
+* Enhancement: Update Dutch (nl_NL) translation by [Jan de Baat](http://www.de-baat.nl/).
+* Enhancement: [Results layout strings](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/results/results-layout/) can now use the same field modifiers allowed in the maps bubble layout.
+* Enhancement: Added a new action hook slp_ux_modify_adminpanel_results for augmenting the UX/Results layout from add-on packs.
+* Change: sl_distance_unit option updated to serialized data to match newer options system.
+* Fix: Update administrative and UI class invocations to fix an incorrect property issue that can impact add-on packs.
+* Fix: Error when processing immediate results mode with Directory Builder add-on pack activated.
+* Change: more admin css tweaks (4.2.05)
+* Change: Fix distance error in results layout string (4.2.05)
 
 = 2014-Aug-05 (4.2.03) =
 

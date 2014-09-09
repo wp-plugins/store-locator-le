@@ -3,7 +3,7 @@
 Plugin Name: Store Locator Plus
 Plugin URI: http://www.storelocatorplus.com/
 Description: Add a location finder or directory to your site in minutes. A Google Business Maps API licensed product. Extensive premium add-on library available!
-Version: 4.2.03
+Version: 4.2.05
 Tested up to: 4.0
 Author: Charleston Software Associates
 Author URI: http://www.storelocatorplus.com
@@ -33,7 +33,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 if (!defined( 'ABSPATH'     )) { exit;   } // Exit if accessed directly, dang hackers
 
 if (defined('SLPLUS_VERSION') === false) {
-    define('SLPLUS_VERSION', '4.2.03');
+    define('SLPLUS_VERSION', '4.2.05');
 }
 
 // Drive Path Defines
@@ -216,12 +216,12 @@ if ($error != '') {
 // Activation class
 //
 require_once(SLPLUS_PLUGINDIR . 'include/class.actions.php');
-$slplus_plugin->Actions = new SLPlus_Actions(array('parent'=>$slplus_plugin));     // Lets invoke this and make it an object
+$slplus_plugin->Actions = new SLPlus_Actions(array('slplus'=>$slplus_plugin));
 
 require_once(SLPLUS_PLUGINDIR . 'include/class.activation.php');
 
 require_once(SLPLUS_PLUGINDIR . 'include/class.ui.php');
-$slplus_plugin->UI = new SLPlus_UI(array('parent'=>$slplus_plugin));
+$slplus_plugin->UI = new SLPlus_UI(array('slplus'=>$slplus_plugin));
 
 require_once(SLPLUS_PLUGINDIR . 'include/class.wpml.php');
 $slplus_plugin->WPML = new SLPlus_WPML(array('parent'=>$slplus_plugin));
@@ -229,7 +229,7 @@ $slplus_plugin->WPML = new SLPlus_WPML(array('parent'=>$slplus_plugin));
 require_once(SLPLUS_PLUGINDIR . 'include/class.ajax.mobilelistener.php');
 
 require_once(SLPLUS_PLUGINDIR . 'include/class.ajaxhandler.php');
-$slplus_plugin->AjaxHandler = new SLPlus_AjaxHandler(array('parent'=>$slplus_plugin));     // Lets invoke this and make it an object
+$slplus_plugin->AjaxHandler = new SLPlus_AjaxHandler(array('parent'=>$slplus_plugin));
 
 
 //====================================================================
@@ -278,6 +278,6 @@ add_action('wp_ajax_nopriv_csl_ajax_onload'     , array($slplus_plugin->AjaxHand
 
 // Short Codes
 //
-add_shortcode('STORE-LOCATOR', array($slplus_plugin->UI,'render_shortcode'));
-add_shortcode('SLPLUS',array($slplus_plugin->UI,'render_shortcode'));
-add_shortcode('slplus',array($slplus_plugin->UI,'render_shortcode'));
+add_shortcode( 'STORE-LOCATOR'  , array( $slplus_plugin->UI , 'render_shortcode' ) );
+add_shortcode( 'SLPLUS'         , array( $slplus_plugin->UI , 'render_shortcode' ) );
+add_shortcode( 'slplus'         , array( $slplus_plugin->UI , 'render_shortcode' ) );

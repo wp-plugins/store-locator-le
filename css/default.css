@@ -424,7 +424,6 @@ div.results_entry span.location_name {
   font-weight: bold; }
 
 div.results_entry a {
-  color: #444444;
   display: inline-block;
   text-decoration: none;
   width: 100%; }
@@ -449,6 +448,16 @@ span.slp_result_contact.slp_result_hours {
 
 div#map_sidebar {
   overflow: auto; }
+  div#map_sidebar div.results_entry a {
+    color: #444444; }
+
+div.slp_directory.landing_page div.results_row_left_column,
+div.slp_directory.landing_page div.results_row_center_column,
+div.slp_directory.landing_page div.results_row_right_column {
+  display: block;
+  width: 100%; }
+div.slp_directory.landing_page span {
+  text-align: left; }
 
 /* Tagalong result icons */
 .results_line.location_iconarray > a {

@@ -368,14 +368,33 @@ class SLPlus_AdminUI {
       * @return mixed[] the updated options
       */
      function save_SerializedOption($optionName,$currentOptions,$cbOptionArray=null) {
-        if (!isset($_POST[$optionName])) { return $currentOptions; }
-        $optionValue = $_POST[$optionName];
+
+        // If we did not send in a checkbox Array
+        // AND there are not post options
+        // get the heck out of here...
+        //
+        if (
+            ( $cbOptionArray === null ) &&
+            ! isset( $_POST[$optionName] )
+        ) {
+            return $currentOptions;
+        }
+
+
+        // Set a blank array if the post option name is not set
+        // We can only get here with a blank post[optionname] if
+        // we are given a cbOptionArray to process
+        //
+        $optionValue =
+            ( isset( $_POST[$optionName] ) ) ?
+                $_POST[$optionName]          :
+                array()                      ;
 
         // Checkbox Pre-processor
         //
-        if ($cbOptionArray !== null){
-            foreach ($cbOptionArray as $cbname) {
-                if (!isset($optionValue[$cbname])) {
+        if ( $cbOptionArray !== null ){
+            foreach ( $cbOptionArray as $cbname ) {
+                if ( ! isset( $optionValue[$cbname] ) ) {
                     $optionValue[$cbname] = '0';
                 }
             }

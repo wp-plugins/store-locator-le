@@ -165,13 +165,34 @@ class SLPlus_AdminUI_GeneralSettings {
      /**
       * Build the Google settings panel.
       */
-     function build_GoogleSettingsPanel() {
+     function build_ServerSection() {
          $this->slplus->createobject_AddOnManager();
          
-        $sectName = __('Google','csa-slplus');
+        $sectName = __('Server','csa-slplus');
         $this->settings->add_section(array('name' => $sectName));
 
         $groupName = __('Geocoding','csa-slplus');
+         $this->settings->add_ItemToGroup(
+             array(
+                 'section'       => $sectName                                   ,
+                 'group'         => $groupName                                  ,
+                 'label'         => __('Server-To-Server Speed','csa-slplus')   ,
+                 'setting'       => 'http_timeout'                              ,
+                 'use_prefix'    => false,
+                 'type'          => 'list'                                      ,
+                 'value'         => $this->slplus->options_nojs['http_timeout'] ,
+                 'custom'        =>
+                     array (
+                         'Slow'     => '30',
+                         'Normal'   => '10',
+                         'Fast'     => '3',
+                     ),
+                 'description'   =>
+                     __('How fast is your server when communicating with other servers like Google? '               ,'csa-slplus') .
+                     __('Set this to slow if you get frequent geocoding errors but geocoding works sometimes. '     , 'csa-slplus') .
+                     __('Set this to fast if you never have geocoding errors and are bulk loading more than 100 locations at a time. '     , 'csa-slplus')
+             )
+         );
         $this->settings->add_ItemToGroup(
                 array(
                     'section'       => $sectName                            ,
@@ -218,6 +239,9 @@ class SLPlus_AdminUI_GeneralSettings {
             )
         );
 
+        // Google License
+        //
+        $groupName = __('Google Business License','csa-slplus');
         $this->settings->add_ItemToGroup(
             array(
                 'section'      => $sectName                        ,
@@ -227,20 +251,6 @@ class SLPlus_AdminUI_GeneralSettings {
                 'description'  =>
                     __('This setting helps with query limits for businesses with a Google Business Account only.','csa-slplus').
                     __('The free Google API keys do not have an impact on query limits.','csa-slplus')
-            )
-        );
-
-        $this->settings->add_ItemToGroup(
-            array(
-                'section'       => $sectName                            ,
-                'group'        => $groupName                            ,
-                'label'         => __('Turn Off SLP Maps','csa-slplus') ,
-                'setting'       => 'no_google_js'                       ,
-                'type'          => 'checkbox'                           ,
-                'description'   =>
-                    __('Check this box if your Theme or another plugin is providing Google Maps and generating warning messages. '.
-                       'THIS MAY BREAK THIS PLUGIN.',
-                       'csa-slplus')
             )
         );
 
@@ -294,7 +304,24 @@ class SLPlus_AdminUI_GeneralSettings {
                         __('If you need to do this to make SLP work you should ask your theme author to add proper wp_footer() support to their code. '         , 'csa-slplus')
                    )
                );
-        
+
+         // Map Interface
+         //
+         $groupName = __('Map Interface','csa-slplus');
+         $this->settings->add_ItemToGroup(
+             array(
+                 'section'       => $sectName                            ,
+                 'group'        => $groupName                            ,
+                 'label'         => __('Turn Off SLP Maps','csa-slplus') ,
+                 'setting'       => 'no_google_js'                       ,
+                 'type'          => 'checkbox'                           ,
+                 'description'   =>
+                     __('Check this box if your Theme or another plugin is providing Google Maps and generating warning messages. '.
+                         'THIS MAY BREAK THIS PLUGIN.',
+                         'csa-slplus')
+             )
+         );
+
         // ACTION: slp_generalsettings_modify_userpanel
         //    params: settings object, section name
         do_action('slp_generalsettings_modify_userpanel',$this->settings,$sectName);
@@ -341,9 +368,9 @@ class SLPlus_AdminUI_GeneralSettings {
 
         // Panel building actions
         //
-        add_action('slp_build_general_settings_panels',array($this,'build_UserSettingsPanel'  ) ,10);
-        add_action('slp_build_general_settings_panels',array($this,'build_GoogleSettingsPanel') ,20);
-        add_action('slp_build_general_settings_panels',array($this,'build_AdminSettingsPanel' ) ,30);
+        add_action('slp_build_general_settings_panels',array($this,'build_UserSettingsPanel'    ) ,10);
+        add_action('slp_build_general_settings_panels',array($this,'build_AdminSettingsPanel'   ) ,20);
+        add_action('slp_build_general_settings_panels',array($this,'build_ServerSection'        ) ,30);
 
         //------------------------------------
         // Render It

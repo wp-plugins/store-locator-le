@@ -1,20 +1,47 @@
+/**
+ * Set via wp_localize_script in the SLPLus.UI class.
+ * @type {*}
+ */
+var slplus = slplus;
+
+/**
+ * Setup an SLP namespace to prevent JS conflicts.
+ *
+ * @type {
+ * {
+ * Animation: {Bounce: number, Drop: number, None: number},
+ * LocationServices: LocationServices,
+ * Ajax: Ajax,
+ * Marker: Marker,
+ * Utils: Utils,
+ * Info: Info,
+ * Map: Map
+ * }
+ * }
+ */
 var slp = {
-    /***************************
-     * Animation enum technically
-     * usage:
-     * 		Animation enumeration
-     */
-    Animation: {Bounce: 1, Drop: 2, None: 0},
+
     /***************************************************************************
      *
-     * LOCATION SERVICES SUBCLASS
+     * ANIMATION
      *
-     ***************************
-     * Location services
-     * usage:
-     * 		gets the users current location
+     */
+
+    Animation: {
+
+        // Properties
+        Bounce: 1, Drop: 2, None: 0
+    },
+
+
+    /***************************************************************************
+     *
+     * LOCATION SERVICES
+     *
      */
     LocationServices: function() {
+
+        // Properties
         this.theService = null;
         this.LocationSupport = true;
         this.Initialized = false;
@@ -23,6 +50,11 @@ var slp = {
         this.lng = 0.00;
         this.errorCalled = false;
 
+        /**
+         * Constructor
+         *
+         * @private
+         */
         this.__init = function() {
             this.Initialized = true;
             try {
@@ -40,10 +72,16 @@ var slp = {
             }
         };
 
-        // When setting currentLocation the callback and errorCallback functions must be defined.
-        // See the sensor.currentLocation call down below for the return-to place for
-        // these two functions passed as variables (down around line 1350).
-        //
+        /**
+         * Set the current location.
+         *
+         * When setting currentLocation the callback and errorCallback functions must be defined.
+         * See the sensor.currentLocation call down below for the return-to place for
+         * these two functions passed as variables (down around line 1350).
+         *
+         * @param callback
+         * @param errorCallback
+         */
         this.currentLocation = function(callback, errorCallback) {
 
             // If location services are not setup, do it
@@ -77,12 +115,15 @@ var slp = {
 
         };
     },
+
+
     /***************************************************************************
      *
-     * AJAX SUBCLASS
+     * AJAX
      *
      */
     Ajax: function() {
+
         /**
          * Send a request to the ajax listener.
          *
@@ -109,21 +150,25 @@ var slp = {
             );
         };
     },
+
     /***************************************************************************
      *
-     * MARKERS SUBCLASS
+     * MARKERS
      *
-     * Marker for google maps
-     * usage:
-     * create a google maps marker
-     * parameters:
+     * Creates a Google Maps marker.
+     *
+     * parameters (properties):
+     *
      * 	animationType: The Animation type to do the animation
-     *		map: the slp.Map type to put it on
-     *		title: the title of the marker for mouse over
-     *		markerImage: todo: load a custom icon, null for default
-     *		position: the lat/long to put the marker at
+     *	map: the slp.Map type to put it on
+     *	title: the title of the marker for mouse over
+     *	markerImage: todo: load a custom icon, null for default
+     *	position: the lat/long to put the marker at
+     *
      */
     Marker: function(animationType, map, title, position, markerImage) {
+
+        // Properties
         this.__animationType = animationType;
         this.__map = map;
         this.__title = title;
@@ -132,8 +177,11 @@ var slp = {
         this.__markerImage = markerImage;
         this.__shadowImage = null;
 
-        /*------------------------
-         * MARKERS Init
+
+        /**
+         * Constructor.
+         *
+         * @private
          */
         this.__init = function() {
 
@@ -191,9 +239,10 @@ var slp = {
 
         this.__init();
     },
+
     /***************************************************************************
      *
-     * UTILITIES SUBCLASS
+     * UTILITIES
      *
      */
     Utils: function() {
@@ -278,6 +327,7 @@ var slp = {
             return string;
         };
     },
+
     /***************************************************************************
      *
      * INFO SUBCLASS
@@ -322,18 +372,19 @@ var slp = {
 
         this.__init();
     },
+
     /***************************************************************************
      *
-     * MAP SUBCLASS
+     * MAP
      *
-     ***************************
-     * Map Object
-     * usage:
-     * create a google maps object linked to a map/canvas id
-     * parameters:
+     * Create a google maps object linked to a map/canvas id
+     *
+     *
+     * parameters (properties):
      * 	aMapNumber: the id/canvas of the map object to load from php side
      */
     Map: function(aMapCanvas) {
+
         //private: map number to look up at init
         this.__mapCanvas = aMapCanvas;
 
@@ -400,7 +451,7 @@ var slp = {
                 this.mapType = slplus.map_type;
                 this.disableScroll = !!slplus.disable_scroll;
                 this.distanceUnit = slplus.distance_unit;
-                this.mapDomain = slplus.map_domain;
+                this.mapDomain = slplus.options.map_domain;
                 this.mapHomeIconUrl = slplus.map_home_icon;
                 this.mapHomeIconWidth = slplus.map_home_icon_sizew;
                 this.mapHomeIconHeight = slplus.map_home_icon_sizeh;
@@ -795,6 +846,8 @@ var slp = {
                 }
             }
 
+            aMarker.web_link = url;
+
             return url;
         };
 
@@ -840,181 +893,12 @@ var slp = {
         /**
          * Create the info bubble for a map location.
          *
-         * Shortcode format:
-         *    [<shortcode> <attribute> <modifier> <modifier argument>]
-         *
          * @param {object} aMarker a map marker object.
          */
         this.createMarkerContent = function(thisMarker) {
-
-            // Set a special attribute 'url' for use in the bubble
-            //
             thisMarker['url'        ] = this.__getMarkerUrl(thisMarker);
             thisMarker['fullAddress'] = this.__createAddress(thisMarker);
-
-            nout = slplus.options.bubblelayout.replace(/\[(\w+)\s+(\w+)\s*(\w*)\s*(\w*)\s*\]/g,
-                    function(match, shortcode, attribute, modifier, modarg) {
-                        switch (shortcode) {
-
-                            // SHORTCODE: slp_location
-                            // processes the location data
-                            //
-                            case 'slp_location':
-
-                                if ( attribute === 'latitude'  ) { attribute = 'lat'; }
-                                if ( attribute === 'longitude' ) { attribute = 'lng'; }
-
-                                // Output NOTHING if attribute is empty
-                                //
-                                if (!thisMarker[attribute]) {
-                                    return '';
-                                }
-
-                                // Set prefix/suffix according to the modifier
-                                //
-                                prefix = '';
-                                suffix = '';
-                                switch (modifier) {
-
-                                    // MODIFIER: suffix
-                                    //
-                                    case 'suffix':
-                                        switch (modarg) {
-                                            case 'br':
-                                                suffix = '<br/>';
-                                                break;
-                                            case 'comma':
-                                                suffix = ',';
-                                                break;
-                                            case 'space':
-                                                suffix = ' ';
-                                                break;
-                                            default:
-                                                break;
-                                        }
-                                        break;
-
-                                        // MODIFIER: wrap
-                                        //
-                                    case 'wrap':
-                                        switch (modarg) {
-                                            case 'img':
-                                                prefix = '<img src="';
-                                                suffix = '" class="sl_info_bubble_main_image">';
-                                                break;
-                                            case 'mailto':
-                                                prefix = '<a href="mailto:';
-                                                suffix = '" target="_blank" id="slp_marker_email" class="storelocatorlink">';
-                                                break;
-                                            case 'website':
-                                                prefix = '<a href="';
-                                                suffix = '" ' +
-                                                        'target="' + ((slplus.options.use_same_window === "on") ? '_self' : '_blank') + '" ' +
-                                                        'id="slp_marker_website" ' +
-                                                        'class="storelocatorlink" ' +
-                                                        '>';
-                                                break;
-                                            default:
-                                                break;
-                                        }
-                                        break;
-
-                                        // MODIFIER: Unknown, do nothing
-                                        //
-                                    default:
-                                        break;
-                                }
-                                var newOutput = (modifier === 'raw') ?
-                                        thisMarker[attribute] :
-                                        jQuery("<div/>").html(thisMarker[attribute]).text();
-                                return prefix + newOutput + suffix;
-
-                                // SHORTCODE: slp_option
-                                // processes the option settings
-                                //
-                            case 'slp_option' :
-                                // Output NOTHING if attribute is empty
-                                //
-                                if (!slplus.options[attribute]) {
-                                    return '';
-                                }
-
-                                // Set prefix/suffix according to the modifier
-                                //
-                                prefix = '';
-                                suffix = '';
-                                switch (modifier) {
-
-                                    // MODIFIER: ifset
-                                    // if the marker attribute specified by modarg is empty, don't output anything.
-                                    //
-                                    case 'ifset':
-                                        if (!thisMarker[modarg]) {
-                                            return '';
-                                        }
-                                        break;
-
-                                    case 'wrap':
-                                        switch (modarg) {
-                                            case 'directions':
-                                                prefix = '<a href="http://' + slplus.map_domain +
-                                                        '/maps?saddr=' + encodeURIComponent(cslmap.getSearchAddress(cslmap.address)) +
-                                                        '&daddr=' + encodeURIComponent(thisMarker['fullAddress']) +
-                                                        '" target="_blank" class="storelocatorlink">';
-                                                suffix = '</a> ';
-                                                break;
-                                            default:
-                                                break;
-                                        }
-                                        break;
-
-                                    default:
-                                        break;
-                                }
-                                return prefix + jQuery('<div/>').html(slplus.options[attribute]).text() + suffix;
-
-                                // SHORTCODE: HTML
-                                //
-                            case 'html':
-
-                                // Doing something a little different, process the modifier FIRST
-                                // so a short circuit can happen.
-                                //
-                                switch (modifier) {
-
-                                    // MODIFIER: ifset
-                                    case 'ifset':
-                                        if (!thisMarker[modarg]) {
-                                            return '';
-                                        }
-                                        break;
-                                    default:
-                                        break;
-                                }
-
-                                switch (attribute) {
-
-                                    // ATTRIBUTE: br
-                                    case 'br':
-                                        return '<br/>';
-
-                                        // ATTRIBUTE: closing_anchor
-                                    case 'closing_anchor':
-                                        return '</a>';
-
-                                    default:
-                                        break;
-                                }
-                                break;
-
-                                // Unknown Shortcode
-                                //
-                            default:
-                                return match + ' not supported';
-                        }
-                    }
-            );
-            return nout;
+            return slplus.options.bubblelayout.replace_shortcodes(thisMarker);
         };
 
         /**
@@ -1174,86 +1058,94 @@ var slp = {
          * @returns {string} a html div with the data properly displayed
          */
         this.createSidebar = function(aMarker) {
-            var div = document.createElement('div');
-            var link = '';
-            var street = aMarker.address;
-            var street2 = aMarker.address2;
-            var city = aMarker.city;
-            var state = aMarker.state;
-            var zip = aMarker.zip;
 
+            // Web Link
+            // the anchor link to the website or store pages page if pages replaces websites is on
+            //
+            aMarker.web_link = '';
             var url = this.__getMarkerUrl(aMarker);
-
             if (url !== '') {
-                link = link = "<a href='" + url + "' target='" + ((slplus.options.use_same_window === "on") ? '_self' : '_blank') + "' class='storelocatorlink'><nobr>" + slplus.options['label_website'] + "</nobr></a><br/>";
+                aMarker.web_link = "<a href='" + url + "' target='" + ((slplus.options.use_same_window === "on") ? '_self' : '_blank') + "' class='storelocatorlink'><nobr>" + slplus.options['label_website'] + "</nobr></a><br/>";
             }
 
-            var elink = '';
+            // Email Link
+            // If the email is set link to the email with an anchor mailto or a JS popup form if Pro Pack use form is set.
+            //
+            aMarker.email_link  = '';
             if (aMarker.email.indexOf('@') !== -1 && aMarker.email.indexOf('.') !== -1) {
                 if (!slplus.use_email_form) {
-                    elink = "<a href='mailto:" + aMarker.email + "' target='_blank'  id='slp_marker_email' class='storelocatorlink'><nobr>" + aMarker.email + "</nobr></a>";
-                }
-                else {
-                    elink = "<a href='javascript:cslutils.show_email_form(" + '"' + aMarker.email + '"' + ");'  id='slp_marker_email' class='storelocatorlink'><nobr>" + aMarker.email + "</nobr></a>";
+                    aMarker.email_link = "<a href='mailto:" + aMarker.email + "' target='_blank'  id='slp_marker_email' class='storelocatorlink'><nobr>" + aMarker.email + "</nobr></a>";
+                } else {
+                    aMarker.email_link = "<a href='javascript:cslutils.show_email_form(" + '"' + aMarker.email + '"' + ");'  id='slp_marker_email' class='storelocatorlink'><nobr>" + aMarker.email + "</nobr></a>";
                 }
             }
 
             //if we are showing tags in the table
             //
-            var tagInfo = '';
+            aMarker.pro_tags = '';
             if (jQuery.trim(aMarker.tags) !== '') {
                 var tagclass = aMarker.tags.replace(/\W/g, '_');
-                tagInfo = '<br/><div class="' + tagclass + ' slp_result_table_tags"><span class="tagtext">' + aMarker.tags + '</span></div>';
+                aMarker.pro_tags = '<br/><div class="' + tagclass + ' slp_result_table_tags"><span class="tagtext">' + aMarker.tags + '</span></div>';
             }
 
-            //keep empty data lines out of the final result
+            // City, State, Zip
+            // Formatted US-style
             //
-            var city_state_zip = '';
-            if (jQuery.trim(city) !== '') {
-                city_state_zip += city;
-                if (jQuery.trim(state) !== '' || jQuery.trim(zip) !== '') {
-                    city_state_zip += ', ';
+            aMarker.city_state_zip = '';
+            if (jQuery.trim(aMarker.city) !== '') {
+                aMarker.city_state_zip += aMarker.city;
+                if (jQuery.trim(aMarker.state) !== '' || jQuery.trim(aMarker.zip) !== '') {
+                    aMarker.city_state_zip += ', ';
                 }
             }
-            if (jQuery.trim(state) !== '') {
-                city_state_zip += state;
-                if (jQuery.trim(zip) !== '') {
-                    city_state_zip += ', ';
+            if (jQuery.trim(aMarker.state) !== '') {
+                aMarker.city_state_zip += aMarker.state;
+                if (jQuery.trim(aMarker.zip) !== '') {
+                    aMarker.city_state_zip += ', ';
                 }
             }
-            if (jQuery.trim(zip) !== '') {
-                city_state_zip += zip;
+            if (jQuery.trim(aMarker.zip) !== '') {
+                aMarker.city_state_zip += aMarker.zip;
             }
 
-            thePhone = (jQuery.trim(aMarker.phone) !== '') ? slplus.options['label_phone'] + aMarker.phone : '';
-            theFax = (jQuery.trim(aMarker.fax) !== '') ? slplus.options['label_fax'  ] + aMarker.fax : '';
+            // Phone and Fax with Labels
+            //
+            aMarker.phone_with_label = (jQuery.trim(aMarker.phone) !== '') ? slplus.options['label_phone'] + aMarker.phone : '';
+            aMarker.fax_with_label = (jQuery.trim(aMarker.fax) !== '') ? slplus.options['label_fax'  ] + aMarker.fax : '';
 
+            // Search address and formatted location address
+            //
             var address = this.__createAddress(aMarker);
+            aMarker.location_address    = encodeURIComponent(address);
+            aMarker.search_address      = encodeURIComponent(this.getSearchAddress(this.address));
+            aMarker.hours_sanitized     = jQuery("<div/>").html(aMarker.hours).text();
 
-            /** Create the results table
+            /**
+             * Create and entry in the results table for this location.
              */
-            var decodedHours = jQuery("<div/>").html(aMarker.hours).text();
-            div.innerHTML = slplus.results_string.format(
+            var div = document.createElement('div');
+            div.innerHTML = slplus.results_string.replace_placeholders(
                     aMarker.name,
                     parseFloat(aMarker.distance).toFixed(1),
                     slplus.distance_unit,
-                    street,
-                    street2,
-                    city_state_zip,
-                    thePhone,
-                    theFax,
-                    link,
-                    elink,
-                    slplus.map_domain,
-                    encodeURIComponent(this.getSearchAddress(this.address)),
-                    encodeURIComponent(address),
+                    aMarker.address,
+                    aMarker.address2,
+                    aMarker.city_state_zip,
+                    aMarker.phone_with_label,
+                    aMarker.fax_with_label,
+                    aMarker.web_link,
+                    aMarker.email_link,
+                    slplus.options.map_domain,
+                    aMarker.search_address,
+                    aMarker.location_address,
                     slplus.options['label_directions'],
-                    tagInfo,
+                    aMarker.pro_tags,
                     aMarker.id,
                     aMarker.country,
-                    decodedHours,
+                    aMarker.hours_sanitized,
                     aMarker
-                    )
+                    ).
+                    replace_shortcodes(aMarker)
                     ;
             div.className = 'results_wrapper';
             div.id = 'slp_results_wrapper_' + aMarker.id;
@@ -1264,7 +1156,8 @@ var slp = {
         //dumb browser quirk trick ... wasted two hours on that one
         this.__init();
     }
-};
+
+}; // End slp namespace
 
 
 /***************************************************************************
@@ -1283,13 +1176,230 @@ var cslutils;
 function setup_Helpers() {
 
     /**
+     * Replace shortcodes in a string with current marker data as appropriate.
+     *
+     * The "new form" shortcode placeholders.
+     *
+     * Shortcode format:
+     *    [<shortcode> <attribute> <modifier> <modifier argument>]
+     *
+     *    [slp_location <field_slug> <modifier>]
+     *
+     * Marker data is expected to be passed in the first argument as an object.
+     *
+     * @returns {string}
+     */
+    String.prototype.replace_shortcodes = function() {
+        var args = arguments;
+        var thisMarker = args[0];
+        var shortcode_complex_regex = /\[(\w+)\s+(\w+)\s*(\w*)(?:[\s="]*)(\w*)(?:[\s"]*)\]/g;
+
+        return this.replace(
+            shortcode_complex_regex,
+            function(match, shortcode, attribute, modifier, modarg) {
+
+                switch (shortcode) {
+                    // SHORTCODE: slp_location
+                    // processes the location data
+                    //
+                    case 'slp_location':
+                        if ( attribute === 'latitude'  ) { attribute = 'lat'; }
+                        if ( attribute === 'longitude' ) { attribute = 'lng'; }
+
+                        // Output NOTHING if attribute is empty
+                        //
+                        if (!thisMarker[attribute]) {
+
+                            return '';
+                        }
+
+                        // Set prefix/suffix according to the modifier
+                        //
+                        var prefix = '';
+                        var suffix = '';
+                        var value  = thisMarker[attribute];
+                        switch (modifier) {
+
+                            // MODIFIER: suffix
+                            //
+                            case 'suffix':
+                                switch (modarg) {
+                                    case 'br':
+                                        suffix = '<br/>';
+                                        break;
+                                    case 'comma':
+                                        suffix = ',';
+                                        break;
+                                    case 'comma_space':
+                                        suffix = ', ';
+                                        break;
+                                    case 'space':
+                                        suffix = ' ';
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                break;
+
+                            // MODIFIER: wrap
+                            //
+                            case 'wrap':
+                                switch (modarg) {
+                                    case 'img':
+                                        prefix = '<img src="';
+                                        suffix = '" class="sl_info_bubble_main_image">';
+                                        break;
+                                    case 'mailto':
+                                        prefix = '<a href="mailto:';
+                                        suffix = '" target="_blank" id="slp_marker_email" class="storelocatorlink">';
+                                        break;
+                                    case 'website':
+                                        prefix = '<a href="';
+                                        suffix = '" ' +
+                                            'target="' + ((slplus.options.use_same_window === "on") ? '_self' : '_blank') + '" ' +
+                                            'id="slp_marker_website" ' +
+                                            'class="storelocatorlink" ' +
+                                            '>';
+                                        break;
+
+                                    case 'fullspan':
+                                        prefix = '<span class="results_line location_'+attribute+'">';
+                                        suffix = '</span>';
+                                        break;
+
+                                    default:
+                                        break;
+                                }
+                                break;
+
+                            // MODIFIER: format
+                            //
+                            case 'format':
+                                switch (modarg) {
+                                    case 'decimal1':
+                                        value = parseFloat(thisMarker[attribute]).toFixed(1);
+                                        break;
+                                    case 'sanitize':
+                                        value = thisMarker[attribute].replace(/\W/g, '_');
+                                        break;
+                                    case 'text':
+                                        value = jQuery("<div/>").html(thisMarker[attribute]).text();
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                break;
+
+                            // MODIFIER: Unknown, do nothing
+                            //
+                            default:
+                                break;
+                        }
+                        var newOutput =
+                            (modifier === 'raw')                                    ?
+                                value                               :
+                                jQuery("<div/>").html(value).text() ;
+                        return prefix + newOutput + suffix;
+
+                    // SHORTCODE: slp_option
+                    // processes the option settings
+                    //
+                    case 'slp_option' :
+                        // Output NOTHING if attribute is empty
+                        //
+                        if (!slplus.options[attribute]) {
+                            return '';
+                        }
+
+                        // Set prefix/suffix according to the modifier
+                        //
+                        prefix = '';
+                        suffix = '';
+                        switch (modifier) {
+
+                            // MODIFIER: ifset
+                            // if the marker attribute specified by modarg is empty, don't output anything.
+                            //
+                            case 'ifset':
+                                if (!thisMarker[modarg]) {
+                                    return '';
+                                }
+                                break;
+
+                            case 'wrap':
+                                switch (modarg) {
+                                    case 'directions':
+                                        prefix = '<a href="http://' + slplus.options.map_domain +
+                                            '/maps?saddr=' + encodeURIComponent(cslmap.getSearchAddress(cslmap.address)) +
+                                            '&daddr=' + encodeURIComponent(thisMarker['fullAddress']) +
+                                            '" target="_blank" class="storelocatorlink">';
+                                        suffix = '</a> ';
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                break;
+
+                            default:
+                                break;
+                        }
+                        return prefix + jQuery('<div/>').html(slplus.options[attribute]).text() + suffix;
+
+                    // SHORTCODE: HTML
+                    //
+                    case 'html':
+
+                        // Doing something a little different, process the modifier FIRST
+                        // so a short circuit can happen.
+                        //
+                        switch (modifier) {
+
+                            // MODIFIER: ifset
+                            case 'ifset':
+                                if (!thisMarker[modarg]) {
+                                    return '';
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+
+                        switch (attribute) {
+
+                            // ATTRIBUTE: br
+                            case 'br':
+                                return '<br/>';
+
+                            // ATTRIBUTE: closing_anchor
+                            case 'closing_anchor':
+                                return '</a>';
+
+                            default:
+                                break;
+                        }
+                        break;
+
+                    // Unknown Shortcode
+                    //
+                    default:
+                        return match + ' not supported';
+                }
+            }
+        );
+    }
+
+    /**
      * String Formatting, JavaScript sprintf
+     *
+     * The original shortcode replacement for results using {#} placeholders.
      *
      * @returns {String.prototype@call;replace}
      */
-    String.prototype.format = function() {
+    String.prototype.replace_placeholders = function() {
         var args = arguments;
-        return this.replace(/{(\d+)(\.(\w+)\.?(\w+)?)?}/g, function(match, number, dotsubname, subname, subsubname) {
+        return this.replace(
+            /{(\d+)(\.(\w+)\.?(\w+)?)?}/g,
+            function(match, number, dotsubname, subname, subsubname) {
 
             // aMarker[#] is defined
             return typeof args[number] !== 'undefined'
@@ -1320,6 +1430,10 @@ function setup_Helpers() {
                     ;
         });
     };
+
+
+
+
 }
 
 /**

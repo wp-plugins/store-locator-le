@@ -164,7 +164,7 @@ class wpCSL_plugin__slplus {
         // Check to see if we are doing an update
         //
         if (isset($this->version)) {
-            if ($this->version != get_option($this->prefix . "-installed_base_version")) {
+            if ($this->version != get_option($this->prefix . "-installed_base_version" , '')) {
                 if (isset($this->on_update)) {
                     call_user_func_array($this->on_update, array($this, get_option($this->prefix . "-installed_base_version")));
                 }

@@ -858,7 +858,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                              __('Google thinks %s is at <a href="%s" target="_blank">lat: %s long %s</a>','csa-slplus'),
                              $address,
                              sprintf('http://%s/?q=%s,%s',
-                                     $this->slplus->helper->getData('mapdomain','get_option',array('sl_google_map_domain','maps.google.com')),
+                                     $this->slplus->options['map_domain'],
                                      $this->slplus->currentLocation->latitude,
                                      $this->slplus->currentLocation->longitude),
                              $this->slplus->currentLocation->latitude, $this->slplus->currentLocation->longitude
@@ -966,7 +966,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
             if ($commaOrSpace != ' ') {
                 $latlong_url = 
                     sprintf('https://%s?saddr=%f,%f', 
-                        get_option('sl_google_map_domain','maps.google.com'),
+                        $this->slplus->options['map_domain'],
                         $this->slplus->currentLocation->latitude,
                         $this->slplus->currentLocation->longitude
                         );
@@ -1239,6 +1239,8 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
 
         // Set comType if not already determined.
         //
+        // TODO: use wp_remote_get() instead of custom method here
+        //
         if (!isset($this->comType)) {
             if (isset($this->slplus->http_handler)) {
                 $this->comType = 'http_handler';
@@ -1255,7 +1257,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         //
         switch ($this->comType) {
             case 'http_handler':
-                $result = $this->slplus->http_handler->request($fullURL,array('timeout' => 3));
+                $result = $this->slplus->http_handler->request($fullURL,array('timeout' => $this->slplus->options_nojs['http_timeout']));
                 if ($this->slplus->http_result_is_ok($result) ) {
                     $raw_json = $result['body'];
                 } else {
@@ -1263,16 +1265,21 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                 }
 
                 break;
+
             case 'curl':
                 $cURL = curl_init();
                 curl_setopt($cURL, CURLOPT_URL, $fullURL);
                 curl_setopt($cURL, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($cURL, CURLOPT_CONNECTTIMEOUT , $this->slplus->options_nojs['http_timeout'] );
                 $raw_json = curl_exec($cURL);
                 curl_close($cURL);
                 break;
+
             case 'file_get_contents':
-                 $raw_json = file_get_contents($fullURL);
+                ini_set('default_socket_timeout' , $this->slplus->options_nojs['http_timeout'] );
+                $raw_json = file_get_contents($fullURL);
                 break;
+
             default:
                 $raw_json = null;
                 return;
