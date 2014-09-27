@@ -1,18 +1,18 @@
 <?php
-if (! class_exists('SLP_BaseClass_AJAX')) {
+if (! class_exists('SLP_BaseClass_UI')) {
 
     /**
-     * A base class that helps add-on packs separate AJAX functionality.
+     * A base class that helps add-on packs separate UI functionality.
      *
      * Add on packs should include and extend this class.
      *
-     * This allows the main plugin to only include this file in AJAX mode.
+     * This allows the main plugin to only include this file when NOT in admin mode.
      *
-     * @package StoreLocatorPlus\BaseClass\AJAX
+     * @package StoreLocatorPlus\BaseClass\UI
      * @author Lance Cleveland <lance@charlestonsw.com>
-     * @copyright 2014 Charleston Software Associates, LLC
+     * @copyright 2013 - 2014 Charleston Software Associates, LLC
      */
-    class SLP_BaseClass_AJAX {
+    class SLP_BaseClass_UI {
 
         //-------------------------------------
         // Properties
@@ -31,20 +31,6 @@ if (! class_exists('SLP_BaseClass_AJAX')) {
          * @var \SLPlus $slplus
          */
         protected $slplus;
-
-	    /**
-	     * What AJAX actions are valid for this add on to process?
-	     *
-	     * Override in the extended class if not serving the default SLP actions:
-	     * * csl_ajax_onload
-	     * * csl_ajax_search
-	     *
-	     * @var array
-	     */
-	    protected $valid_actions = array(
-		    'csl_ajax_onload',
-		    'csl_ajax_search'
-	    );
 
         //-------------------------------------
         // Methods : activity
@@ -65,26 +51,24 @@ if (! class_exists('SLP_BaseClass_AJAX')) {
                 }
             }
             
-            $this->do_ajax_startup();
+            $this->do_ui_startup();
+            $this->add_hooks_and_filters();
         }
 
         /**
-         * Things we want our add on packs to do when they start in AJAX mode.
+         * Add the plugin specific hooks and filter configurations here.
+         *
+         * Should include WordPress and SLP specific hooks and filters.
          */
-        function do_ajax_startup() {
-            
+        function add_hooks_and_filters() {
+            // Add your hooks and filters in the class that extends this base class.
         }
-
-	    /**
-	     * Return true if the AJAX action is one we process.
-	     */
-	    function is_valid_ajax_action() {
-		    if ( ! isset( $_REQUEST['action'] ) ) { return false; }
-
-		    foreach ( $this->valid_actions as $valid_ajax_action ) {
-			    if ( $_REQUEST['action'] === $valid_ajax_action ) { return true; }
-		    }
-		    return false;
-	    }
+        
+        /**
+         * Things we want our add on packs to do when they start.
+         */
+        function do_ui_startup() {
+            // Add your startup methods you want the add on to run here.
+        }
     }
 }

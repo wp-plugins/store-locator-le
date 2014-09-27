@@ -227,18 +227,6 @@ class SLPlus_UI {
     }
 
     /**
-     * Wrap a string in a give prefix/suffix.
-     *
-     * @param string $content
-     * @param string $prefix
-     * @param string $suffix
-     * @return string
-     */
-    function createstring_WrapText($content,$prefix='',$suffix='') {
-        return $prefix.$content.$suffix;
-    }
-
-    /**
      * Render the SLP map
      *
      */
@@ -296,19 +284,29 @@ class SLPlus_UI {
      */
     function create_DefaultSearchDiv_Radius() {
         $this->slplus->debugMP('msg',__FUNCTION__);
-        if (get_option(SLPLUS_PREFIX.'_hide_radius_selections',0) == 0) {
-            $HTML =
-                "<div id='addy_in_radius'>".
-                "<label for='radiusSelect'>".
-                $this->slplus->WPML->getWPMLText('sl_radius_label', get_option('sl_radius_label',__('Within','csa-slplus'))).
-                '</label>'.
-                "<select id='radiusSelect'>".$this->slplus->data['radius_options'].'</select>'.
-                "</div>"
-                ;
-        } else {
-            $HTML =$this->slplus->data['radius_options'];
-        }
-        return $HTML;
+
+	    // This is the old-school/bad way of doing this,
+	    // this option is only set with the ES plugin... this should
+	    // never have lived here, but for legacy support needs to remain (for now)
+	    //
+	    // TODO: deprecate this which will break very old versions of SLP:ES (pre 4.2)
+	    //
+	    if (get_option(SLPLUS_PREFIX.'_hide_radius_selections',0) == 0) {
+		    $HTML =
+			    "<div id='addy_in_radius'>".
+			    "<label for='radiusSelect'>".
+			    $this->slplus->WPML->getWPMLText('sl_radius_label', get_option('sl_radius_label',__('Within','csa-slplus'))).
+			    '</label>'.
+			    "<select id='radiusSelect'>".$this->slplus->data['radius_options'].'</select>'.
+			    "</div>"
+		    ;
+	    } else {
+		    $HTML = $this->slplus->data['radius_options'];
+	    }
+
+	    // FILTER: slp_change_ui_radius_selector
+	    //
+	    return apply_filters( 'slp_change_ui_radius_selector' , $HTML ) ;
     }
 
     /**
@@ -841,11 +839,9 @@ class SLPlus_UI {
      */
     function process_slp_location_Shortcode($atts) {
 
-        // Set prefix/suffix based on modifiers
-        $content = '';
-        $prefix = '';
-        $suffix = '';
-        $fldName = '';
+		$shortcode_label    = 'slp_location';
+	    $fldName            = '';
+	    $attributes         = '';
 
         // Process the keys
         //
@@ -861,70 +857,63 @@ class SLPlus_UI {
                         $fldName = strtolower($value);
 
                         switch ($fldName):
-                            case 'distance_1'     :
-                                $content = '[slp_location distance format decimal1]';
-                                break;
 
-                            case 'distance_unit'  :
-                                $content =  '[slp_option distance_unit]';
+	                        // slp_location with more attributes
+	                        //
+	                        case 'web_link':
+	                        case 'pro_tags':
+		                        $attributes .= ' raw';
+		                        break;
+
+	                        case 'distance_1'     :
+		                        $fldName = 'distance';
+		                        $attributes .= ' format="decimal1"';
+		                        break;
+
+	                        case 'hours':
+		                        $attributes = ' format text';
+		                        break;
+
+
+	                        // convert to slp_option
+	                        //
+	                        case 'map_domain'     :
+	                        case 'distance_unit'  :
+		                        $shortcode_label = 'slp_option';
                                 break;
 
                             case 'email_link'     :
-                                $content = '[slp_location email_link raw]';
-                                break;
-
-                            case 'web_link'     :
-                                $content = '[slp_location web_link raw]';
-                                break;
-
-                            case 'map_domain'     :
-                                $content =  '[slp_option map_domain]';
+	                            $shortcode_label = 'slp_option';
+								$attributes .= ' raw';
                                 break;
 
                             case 'directions_text':
-                                $content =  '[slp_option label_directions]';
+	                            $shortcode_label = 'slp_option';
+								$fldName = 'label_directions';
                                 break;
 
-                            case 'pro_tags':
-                                $content = '[slp_location pro_tags raw]';
-                                break;
-
-                            case 'hours':
-                                $content =  '[slp_location hours format text]';
-                                break;
-
+	                        // Leave untouched
+	                        //
                             default:
-                                 $content = "[slp_location $fldName]";
                                 break;
 
                         endswitch;
                         break;
 
-                    // Wrapper attribute
-                    //
-                    case 'wrap':
-                        switch ($value) {
-                            case 'fullspan':
-                                $prefix = '<span class="results_line location_[fldName]">';
-                                $suffix = '</span>';
-                                break;
-                            default:
-                                break;
-                        }
-
                     default:
+						$attributes .=
+							' ' .
+							(
+								is_numeric($key)                        ?
+									$value                              :
+									$key . '="' . $value . '"'
+							)
+							;
                         break;
                 }
             }
         }
-        
-        // If prefix has [fldName] placeholder and $fldName is set,
-        // do the replacement.
-        //
-        if (!empty($fldName) && strpos($prefix,'[fldName]')) {
-            $prefix = str_replace('[fldName]',$fldName,$prefix);
-        }
-        return $this->createstring_WrapText($content,$prefix,$suffix);
+        return "[{$shortcode_label} {$fldName}{$attributes}]";
     }
 
     /**

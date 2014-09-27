@@ -446,6 +446,9 @@ span.slp_result_contact {
 span.slp_result_contact.slp_result_hours {
   white-space: pre-line; }
 
+span.slp_result_realestate {
+  display: block; }
+
 div#map_sidebar {
   overflow: auto; }
   div#map_sidebar div.results_entry a {

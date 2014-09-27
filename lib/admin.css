@@ -71,6 +71,7 @@ about
 #wpcsl_container #wpcsl-nav {
   position: absolute;
   min-width: 150px;
+  top: 5px;
   border: solid 1px #DDD; }
   #wpcsl_container #wpcsl-nav ul {
     margin: 0; }
@@ -109,8 +110,8 @@ about
   min-height: 650px;
   padding: 0 20px;
   position: absolute;
-  top: 6;
-  left: 188; }
+  top: 6px;
+/*  left: 188; */}
 
 #wpcsl_container #main #content {
   margin-left: 135px;

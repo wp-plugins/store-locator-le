@@ -232,6 +232,10 @@ if (! class_exists('SLP_BaseClass_Addon')) {
             //
             $this->init_options();
 
+	        // Add Hooks and Filters
+	        //
+	        $this->add_hooks_and_filters();
+
              // Admin Interface?
              //
              if ( ! empty( $this->admin_class_name ) ) {
@@ -262,7 +266,23 @@ if (! class_exists('SLP_BaseClass_Addon')) {
             if ( ! isset( $this->admin_menu_entries) ) { return $menuItems; }
             return array_merge( $menuItems, $this->admin_menu_entries );
         }
-        
+
+	    /**
+	     * Add the plugin specific hooks and filter configurations here.
+	     *
+	     * The hooks & filters that go here are cross-interface element hooks/filters needed in 2+ locations:
+	     * - AJAX
+	     * - Admin Interface
+	     * - User Interface
+	     *
+	     * For example, custom taxonomy hooks and filters.
+	     *
+	     * Should include WordPress and SLP specific hooks and filters.
+	     */
+	    function add_hooks_and_filters() {
+		    // Add your hooks and filters in the class that extends this base class.
+	    }
+
         /**
          * WordPress admin_init hook.
          */

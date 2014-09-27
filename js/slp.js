@@ -612,6 +612,14 @@ var slp = {
                     }
                 }
                 this.markers.length = 0;
+
+                // Clear the home marker if the address is blank
+                // only if we are not on the first map drawing
+                //
+                if ( ! this.saneValue('addressInput', '')  ) {
+                    this.centerMarker.__gmarker.setMap(null);
+                }
+
             }
         };
 
@@ -776,13 +784,18 @@ var slp = {
                     function(results, status) {
                         if (status === 'OK' && results.length > 0)
                         {
+
                             // if the map hasn't been created, then create one
+                            //
                             if (_this.gmap === null)
                             {
                                 _this.__buildMap(results[0].geometry.location);
                             }
-                            //the map has been created so shift the center of the map
+
+                            // the map has been created so shift the center of the map
+                            //
                             else {
+
                                 //move the center of the map
                                 _this.homePoint = results[0].geometry.location;
                                 _this.homeAdress = results[0].formatted_address;
@@ -1208,8 +1221,7 @@ function setup_Helpers() {
 
                         // Output NOTHING if attribute is empty
                         //
-                        if (!thisMarker[attribute]) {
-
+                        if ( ! thisMarker[attribute] ) {
                             return '';
                         }
 
@@ -1217,7 +1229,21 @@ function setup_Helpers() {
                         //
                         var prefix = '';
                         var suffix = '';
+                        var raw_output = true;
                         var value  = thisMarker[attribute];
+
+                        // Special Field Processing
+                        switch (attribute) {
+                            case 'hours':
+                                raw_output = false;
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                        // Modifier Processing
+                        //
                         switch (modifier) {
 
                             // MODIFIER: suffix
@@ -1279,6 +1305,9 @@ function setup_Helpers() {
                                     case 'decimal1':
                                         value = parseFloat(thisMarker[attribute]).toFixed(1);
                                         break;
+                                    case 'decimal2':
+                                        value = parseFloat(thisMarker[attribute]).toFixed(2);
+                                        break;
                                     case 'sanitize':
                                         value = thisMarker[attribute].replace(/\W/g, '_');
                                         break;
@@ -1290,13 +1319,17 @@ function setup_Helpers() {
                                 }
                                 break;
 
+                            case 'raw':
+                                raw_output = true;
+                                break;
+
                             // MODIFIER: Unknown, do nothing
                             //
                             default:
                                 break;
                         }
                         var newOutput =
-                            (modifier === 'raw')                                    ?
+                            (raw_output)                            ?
                                 value                               :
                                 jQuery("<div/>").html(value).text() ;
                         return prefix + newOutput + suffix;
@@ -1328,6 +1361,7 @@ function setup_Helpers() {
 
                             case 'wrap':
                                 switch (modarg) {
+
                                     case 'directions':
                                         prefix = '<a href="http://' + slplus.options.map_domain +
                                             '/maps?saddr=' + encodeURIComponent(cslmap.getSearchAddress(cslmap.address)) +
@@ -1335,6 +1369,12 @@ function setup_Helpers() {
                                             '" target="_blank" class="storelocatorlink">';
                                         suffix = '</a> ';
                                         break;
+
+                                    case 'fullspan':
+                                        prefix = '<span class="results_line location_' + attribute + '">';
+                                        suffix = '</span>';
+                                        break;
+
                                     default:
                                         break;
                                 }
@@ -1612,8 +1652,12 @@ jQuery(document).ready(
             //
             if (jQuery('div#sl_div').is(":visible")) {
                 if (typeof slplus !== 'undefined') {
-                    setup_Helpers();
-                    setup_Map();
+                    if (typeof google !== 'undefined' ) {
+                        setup_Helpers();
+                        setup_Map();
+                    } else {
+                        jQuery('#sl_div').html('Looks like you turned off SLP Maps under General Settings but need them here.');
+                    }
                 } else {
                     jQuery('#sl_div').html('Store Locator Plus did not initialize properly.');
                 }

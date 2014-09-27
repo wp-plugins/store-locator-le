@@ -295,6 +295,7 @@ class SLPlus extends wpCSL_plugin__slplus {
      */
     public $options_nojs = array(
         'extended_admin_messages'   => '0',
+	    'extended_data_tested'      => '0',
         'force_load_js'             => '0',
         'has_extended_data'         => '',
         'http_timeout'              => '10', // HTTP timeout for GeoCode Requests (s)

@@ -293,7 +293,32 @@ class SLPlus_Data_Extension {
      * @return boolean
      */
     public function has_ExtendedData() {
-        return $this->slplus->is_CheckTrue($this->slplus->options_nojs['has_extended_data']);
+	    if ( $this->slplus->is_CheckTrue( $this->slplus->options_nojs['extended_data_tested'] ) ) {
+		    return $this->slplus->is_CheckTrue( $this->slplus->options_nojs['has_extended_data'] );
+	    }
+
+	    return $this->set_extended_data_tested();
+    }
+
+
+	/**
+	 * Do a deeper test for extended data and return true if there is extended data.
+	 *
+	 * @return bool
+	 */
+	private function set_extended_data_tested() {
+	    global $wpdb;
+	    $extended_data_count = 0;
+	    if ( $wpdb->get_var("show tables like '{$this->plugintable['name']}'") === $this->plugintable['name'] ) {
+		    $extended_data_count = $wpdb->get_var( "select count(*) from {$this->plugintable['name']} limit 1" );
+	    }
+
+	    $really_has_extended_data = ( $extended_data_count > 0 );
+	    $this->slplus->options_nojs['has_extended_data']  =  $really_has_extended_data;
+		$this->slplus->options_nojs['extended_data_tested'] = '1';
+		update_option(SLPLUS_PREFIX . '-options_nojs', $this->slplus->options_nojs);
+
+        return $really_has_extended_data;
     }
 
     /**
@@ -391,12 +416,9 @@ class SLPlus_Data_Extension {
             $EZSQL_ERROR = array();
 
             // Set the plugin "has extended data" property.
-            // TODO: Make this smarter and check for an actual record count in the extended data table name.
             //
-            if (empty($this->slplus->options_nojs['has_extended_data'])) {
-                $this->slplus->options_nojs['has_extended_data'] = '1';
-                update_option(SLPLUS_PREFIX . '-options_nojs', $this->slplus->options_nojs);
-            }
+            $this->slplus->options_nojs['has_extended_data'] = '1';
+            update_option(SLPLUS_PREFIX . '-options_nojs', $this->slplus->options_nojs);
 
             // No extended data fields
         //

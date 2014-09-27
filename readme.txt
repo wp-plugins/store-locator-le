@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-4/
 Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.4
 Tested up to: 4.0
-Stable tag: 4.2.05
+Stable tag: 4.2.07
 License: GLPv2 or later
 
 Add a location finder or directory to your site in minutes. A Google Business Maps API licensed product. Extensive premium add-on library available!
@@ -15,6 +15,8 @@ Add a location finder or directory to your site in minutes. A Google Business Ma
 Store Locator Plus is a Google Business Maps API licensed location mapping and directory system with  over 40,000 active installations. 
 Learn more at the [Store Locator Plus website](http://www.storelocatorplus.com/).
 The website offers more [screen shots](http://www.storelocatorplus.com/support/documentation/store-locator-plus/store-locator-plus-screen-shots/), [technical documentation](http://www.storelocatorplus.com/support/documentation/technical-documentation/), and [full release notes](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/release-notes-4-0/), and a very active [user forum](http://www.charlestonsw.com/forums/).
+
+For the latest updates and news follow me on [Facebook](http://www.facebook.com/charlestonsoftwareassociates/) or [Twitter](https://twitter.com/lancecleveland).
 
 = Details =
 
@@ -350,6 +352,22 @@ Please read the *description page* for this plugin for an important note about p
 *Version 4.x is a major upgrade that is not compatible with the version 3.x or earlier add-on packs.*
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 2014-Sep-09 (4.2.06+) =
+
+* Enhancement: Manage locations shows text when a location is inactive due to missing lat/long.
+* Enhancement: Add a new filter 'slp_edit_location_change_extended_data_info' to allow add-on packs to change the extended data columns.
+* Enhancement: Add the UI base class to the addon-on framework for SLP 4.2.
+* Enhancement: Further refinements to the Results Layout processor.
+* Enhancement: Added Results string format="decimal2" attribute for results layout settings.
+* Enhancement: Check that google is defined in JavaScript before trying to talk to them about map stuff.  Warn user if it is off but needs to be on.
+* Enhancement: Add filter 'slp_change_ui_radius_selector' to control the radius selector on the UI.
+* Enhancement: Extend the AJAX add-on framework.
+* Change: do not show home marker if user does not enter an address during a search
+* Fix: Fix the HTML output on location search results (Tagalong and SME icons among others).
+* Fix: Fix the HOURS output for Enhanced Results.
+* Fix: Make the extended data system smarter with a fallback to detect extended data fields when the data options array has been corrupted.
+* Fix: Extended data fields are initialized to '0' and '' for consistency with update location method.
 
 = 2014-Aug-25 (4.2.05) =
 

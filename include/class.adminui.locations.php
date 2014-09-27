@@ -477,18 +477,17 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         foreach($this->extended_data_info as $extraColumn) {
             $slug = $extraColumn->slug;
 
-            // If field is setup, update it.
+            // Boolean force (off bools are not sent in request)
             //
-            if (isset($this->slplus->currentLocation->exdata[$slug])) {
-                // Boolean force (off bools are not sent in request)
-                //
-                if ( $extraColumn->type === 'boolean' ) {
-                    $boolREQField = $slug . '-' . (($_REQUEST['act']==='add')?'':$this->slplus->currentLocation->id);
-                    $newValues[$slug] = empty($_REQUEST[$boolREQField]) ? 0 : 1;
-                    $this->slplus->currentLocation->$slug = $newValues[$slug];
-                } else {
-                    $newValues[$slug] = $this->slplus->currentLocation->exdata[$slug];
-                }
+            if ( $extraColumn->type === 'boolean' ) {
+                $boolREQField = $slug . '-' . (($_REQUEST['act']==='add')?'':$this->slplus->currentLocation->id);
+                $newValues[$slug] = empty($_REQUEST[$boolREQField]) ? 0 : 1;
+                $this->slplus->currentLocation->$slug = $newValues[$slug];
+            } else {
+                $newValues[$slug] =
+                    isset($this->slplus->currentLocation->exdata[$slug]) ?
+	                    $this->slplus->currentLocation->exdata[$slug]    :
+                        ''                                               ;
             }
         }
 
@@ -878,6 +877,8 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         ";
         $this->get_ExtendedDataInfo();
 
+	    $this->extended_data_info = apply_filters( 'slp_edit_location_change_extended_data_info' , $this->extended_data_info );
+
         $data =
             ((int)$this->slplus->currentLocation->id > 0)               ?
             $this->slplus->database->extension->get_data($this->slplus->currentLocation->id)   :
@@ -970,7 +971,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                         $this->slplus->currentLocation->latitude,
                         $this->slplus->currentLocation->longitude
                         );
-                $latlong_text = 
+                $latlong_text =
                     sprintf('<a href="%s" target="csa_map">@ %f %s %f</a></span>',
                         $latlong_url,
                         $this->slplus->currentLocation->latitude,
@@ -978,7 +979,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                         $this->slplus->currentLocation->longitude
                         );
             } else {
-                $latlong_text = '';
+                $latlong_text = __('Inactive. Geocode to activate.','csa-slplus');
             }
             
             $field_value =
@@ -1177,12 +1178,16 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
      * @return string the new class name for invalid rows
      */
     function filter_InvalidHighlight($class) {
+
         if (($this->slplus->currentLocation->latitude == '') ||
             ($this->slplus->currentLocation->longitude == '')
             ) {
-            return $class . ' invalid ';
+            $class .= ' invalid ';
         }
-        return $class;
+
+        // FILTER: slp_invalid_highlight
+        //
+        return apply_filters('slp_invalid_highlight',$class);
     }
 
     /**
