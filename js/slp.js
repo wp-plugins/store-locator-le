@@ -617,7 +617,7 @@ var slp = {
                 // only if we are not on the first map drawing
                 //
                 if ( ! this.saneValue('addressInput', '')  ) {
-                    this.centerMarker.__gmarker.setMap(null);
+                    this.addMarkerAtCenter();
                 }
 
             }

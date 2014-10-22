@@ -26,7 +26,7 @@ class SLPlus_AdminUI_Info {
         <h4>'.__('Create A Page','csa-slplus').'</h4>
         <p style="padding-left: 30px;">
         Go to the sidebar and select "Add New" under the pages section.  You will be creating a standard WordPress page.
-        On that page add <a href="http://www.charlestonsw.com/support/documentation/store-locator-plus/shortcodes/" target="csa">the [SLPLUS] shortcode</a>.  When a visitor goes to that page it will show a default search form and a Google Map.
+        On that page add <a href="http://www.charlestonsw.com/support/documentation/store-locator-plus/getting-started/shortcodes/" target="csa">the [SLPLUS] shortcode</a>.  When a visitor goes to that page it will show a default search form and a Google Map.
         When someone searches for a zip code that is close enough to a location you entered it will show those locations on the map.
         </p>
 

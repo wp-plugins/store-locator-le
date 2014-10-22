@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-4/
 Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.4
 Tested up to: 4.0
-Stable tag: 4.2.07
+Stable tag: 4.2.08
 License: GLPv2 or later
 
 Add a location finder or directory to your site in minutes. A Google Business Maps API licensed product. Extensive premium add-on library available!
@@ -212,7 +212,7 @@ Any EASIER way to perform translations?  Load the [Codestyling Localization plug
 1. Search for "Store Locator Plus" via Plugins/Add New on your WordPress admin panel.
 2. Click install.
 3. Add your locations through the 'Add Locations' page in the Store Locator admin panel
-4. Create or edit a page and add the SLPLUS shortcode.
+4. Create or edit a page and add the [SLPLUS] shortcode.
 
 = Icons =
 
@@ -353,7 +353,12 @@ Please read the *description page* for this plugin for an important note about p
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
 
-= 2014-Sep-09 (4.2.06+) =
+= 2014-Oct (4.2.08+) =
+
+* Fix: Fix issue with subsequent searches not working when home marker is not set.
+* Fix: Help page text, link to proper shortcode URL on website.
+
+= 2014-Sep-27 (4.2.07+) =
 
 * Enhancement: Manage locations shows text when a location is inactive due to missing lat/long.
 * Enhancement: Add a new filter 'slp_edit_location_change_extended_data_info' to allow add-on packs to change the extended data columns.
