@@ -297,6 +297,8 @@ class SLPlus extends wpCSL_plugin__slplus {
         'extended_admin_messages'   => '0',
 	    'extended_data_tested'      => '0',
         'force_load_js'             => '0',
+        'google_client_id'          => '',
+        'google_private_key'        => '',
         'has_extended_data'         => '',
         'http_timeout'              => '10', // HTTP timeout for GeoCode Requests (s)
         'max_results_returned'      => '25',
@@ -404,7 +406,7 @@ class SLPlus extends wpCSL_plugin__slplus {
      * Create and attach the add on manager object.
      */
     public function createobject_AddOnManager() {
-        if (!isset($this->Admin)) {
+        if (!isset($this->add_ons)) {
             require_once(SLPLUS_PLUGINDIR . '/include/class.addon.manager.php');
             $this->add_ons = new SLPlus_AddOn_Manager( array( 'slplus' => $this ) );
         }

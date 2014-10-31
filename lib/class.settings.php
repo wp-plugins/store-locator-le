@@ -159,9 +159,50 @@ class wpCSL_settings__slplus {
         //
         $addonStr = '';
         if (isset($this->parent->addons)) {
-            foreach ($this->parent->addons as $addon => $object) {
-                $version  = ($object!=null)?$object->metadata['Version']:'active';
-                $addonStr .= $this->create_EnvDiv($addon,$version);
+            foreach ($this->parent->addons as $addon => $instantiated_addon) {
+
+                // Update hook for current version info
+                //
+                if ( isset( $instantiated_addon ) ) {
+
+                    // Plugins using old-school top-level updates object
+                    //
+                    if ( isset( $instantiated_addon->Updates ) ) {
+                        $updates = $instantiated_addon->Updates;
+                        $newest_version =
+                            isset( $updates->remote_version )   ?
+                                $updates->remote_version        :
+                                $updates->getRemote_version()   ;
+
+                    // Plugins using SLP 4.2-standard updates object under admin class
+                    //
+                    } elseif ( isset( $instantiated_addon->admin) && isset( $instantiated_addon->admin->Updates ) ) {
+                        $updates = $instantiated_addon->admin->Updates;
+                        $newest_version =
+                            isset( $updates->remote_version )   ?
+                                $updates->remote_version        :
+                                $updates->getRemote_version()   ;
+
+                    // Cannot find existing update object under main plugin or admin class
+                    //
+                    } else {
+                        $newest_version = '';
+
+                    }
+                }
+
+                $version  =
+                    ( $instantiated_addon != null )                ?
+                        $instantiated_addon->metadata['Version']   :
+                        'active'                                   ;
+
+                // If update is available, report it.
+                //
+                if ( ! empty( $newest_version ) && version_compare( $version , $newest_version , '<' ) ) {
+                    $version .=  ' , ' . $newest_version . __(' update available' , 'csa-slplus');
+                }
+
+                if ( ! empty( $version        ) ) { $addonStr .= $this->create_EnvDiv($addon,$version); }
             }
         }
 

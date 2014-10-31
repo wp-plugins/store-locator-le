@@ -71,7 +71,6 @@ about
 #wpcsl_container #wpcsl-nav {
   position: absolute;
   min-width: 150px;
-  top: 5px;
   border: solid 1px #DDD; }
   #wpcsl_container #wpcsl-nav ul {
     margin: 0; }
@@ -93,7 +92,7 @@ about
     border-top: none; }
   #wpcsl_container #wpcsl-nav ul li.current a:link, #wpcsl_container #wpcsl-nav #wpcsl_container #wpcsl-nav ul li.current a:visited {
     background-color: #777777;
-    background-image: -moz-linear-gradient(center bottom, #6d6d6d, gray);
+    background-image: -moz-linear-gradient(center bottom, #6D6D6D, #808080);
     border-bottom-color: #6D6D6D;
     border-top-color: gray;
     color: white;
@@ -110,8 +109,8 @@ about
   min-height: 650px;
   padding: 0 20px;
   position: absolute;
-  top: 6px;
-/*  left: 188; */}
+  top: 6;
+  left: 188; }
 
 #wpcsl_container #main #content {
   margin-left: 135px;
@@ -290,8 +289,8 @@ div.theme_details {
  */
 .form_entry {
   display: block;
-  margin: 0px 0px 0.5em 0px;
-  padding: 0px;
+  margin: 0 0 0.5em 0;
+  padding: 0 0.25em 0 0;
   position: relative; }
 
 /**
@@ -708,7 +707,7 @@ div#sl_div div#address_search input[type="submit"] {
 
 .menu-toggle, input[type="submit"], input[type="button"], input[type="reset"], article.post-password-required input[type="submit"], li.bypostauthor cite span {
   background-color: #E6E6E6;
-  background-image: -moz-linear-gradient(center top, #f4f4f4, #e6e6e6);
+  background-image: -moz-linear-gradient(center top, #F4F4F4, #E6E6E6);
   background-repeat: repeat-x;
   border: 1px solid #D2D2D2;
   border-radius: 3px 3px 3px 3px;
@@ -760,15 +759,15 @@ td.slp_manage_locations_cell {
  * Manage Locations Row 
  */
 tr.slp_managelocations_row:hover {
-  background-color: #ffffdd; }
+  background-color: #FFFFDD; }
 tr.slp_managelocations_row.invalid {
-  background-color: #ffdddd; }
+  background-color: #FFDDDD; }
   tr.slp_managelocations_row.invalid:hover {
-    background-color: #ffcccc; }
+    background-color: #FFCCCC; }
 tr.slp_managelocations_row.featured {
-  background-color: #ddffdd; }
+  background-color: #DDFFDD; }
   tr.slp_managelocations_row.featured:hover {
-    background-color: #ccffcc; }
+    background-color: #CCFFCC; }
   tr.slp_managelocations_row.featured td.slp_manage_locations_cell.name {
     font-size: 1.25em; }
   tr.slp_managelocations_row.featured td.slp_manage_locations_cell.featured {
@@ -777,13 +776,13 @@ tr.slp_managelocations_row.featured {
     background-repeat: no-repeat;
     background-size: 16px auto; }
 tr.slp_managelocations_row.alternate.invalid {
-  background-color: #ffeeee; }
+  background-color: #FFEEEE; }
   tr.slp_managelocations_row.alternate.invalid:hover {
-    background-color: #ffcccc; }
+    background-color: #FFCCCC; }
 tr.slp_managelocations_row.alternate.featured {
-  background-color: #eeffee; }
+  background-color: #EEFFEE; }
   tr.slp_managelocations_row.alternate.featured:hover {
-    background-color: #ccffcc; }
+    background-color: #CCFFCC; }
 tr.slp_managelocations_row .store_latlong {
   display: block;
   font-size: 0.75em;
@@ -830,7 +829,7 @@ div.slp_icon_selector_box {
 
 div.slp_icon_selector_box:hover {
   border: solid 1px #AAA;
-  background-color: #ffffdd; }
+  background-color: #FFFFDD; }
 
 img.slp_icon_selector {
   cursor: pointer;
@@ -847,8 +846,8 @@ img.slp_icon_selector {
   font-weight: bold; }
 
 .highlight {
-  background-color: lightyellow;
-  border: 1px solid gold;
+  background-color: #FFFFE0;
+  border: 1px solid #FFD700;
   color: #000000;
   left: auto;
   min-width: 180px;
@@ -1021,8 +1020,8 @@ div#slp_edit_right_column small {
 .like-a-button {
   background: #FFF;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD');
-  background: -webkit-gradient(linear, left top, left bottom, from(white), to(#dddddd));
-  background: -moz-linear-gradient(top, white, #dddddd);
+  background: -webkit-gradient(linear, left top, left bottom, from(#FFF), to(#DDD));
+  background: -moz-linear-gradient(top, #FFF, #DDD);
   text-decoration: none;
   border: 1px solid #BBBBBB;
   border-radius: 3px 3px 3px 3px;
@@ -1047,5 +1046,7 @@ div#slp_edit_right_column small {
   .like-a-button :hover {
     background: #DDD;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF');
-    background: -webkit-gradient(linear, left top, left bottom, from(#dddddd), to(white));
-    background: -moz-linear-gradient(top, #dddddd, white); }
+    background: -webkit-gradient(linear, left top, left bottom, from(#DDD), to(#FFF));
+    background: -moz-linear-gradient(top, #DDD, #FFF); }
+
+/*# sourceMappingURL=admin.css.map */

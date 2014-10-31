@@ -403,12 +403,40 @@ class SLPlus_Actions {
         // Register our scripts for later enqueue when needed
         //
         if ( ! $this->slplus->is_CheckTrue( get_option(SLPLUS_PREFIX.'-no_google_js','0')  ) ) {
-            $dbAPIKey = trim(get_option(SLPLUS_PREFIX.'-api_key',''));
-            $api_key  = (empty($dbAPIKey)?'':'&key='.$dbAPIKey);
+
+            // Google Maps API for Work client ID
+            //
+            $client_id =
+                ! empty ( $this->slplus->options_nojs['google_client_id'] )           ?
+                '&client=' . $this->slplus->options_nojs['google_client_id'] . '&v=3' :
+                ''                                                                    ;
+
+            // Google Maps API for Work (client_id above) CANNOT be used with a key.
+            //
+            $dbAPIKey  = trim( get_option(SLPLUS_PREFIX.'-api_key' , '' ) );
+            $api_key   =
+                ( ! empty( $dbAPIKey ) && empty( $client_id ) ) ?
+                    '&key=' . $dbAPIKey                         :
+                    ''                                          ;
+
+            // Set the map language
+            //
             $language = '&language='.$this->slplus->helper->getData('map_language','get_item',null,'en');
+
+            // Base Google API URL
+            //
+            $google_api_url =
+                'http' . ( is_ssl() ? 's' : '' ) . '://'    .
+                $this->slplus->options['map_domain']        .
+                '/maps/api/'                                .
+                'js'                                        .
+                '?sensor=false'                             ;
+
+            // Enqueue the script
+            //
             wp_enqueue_script(
                     'google_maps',
-                    'http'.(is_ssl()?'s':'').'://'.$this->slplus->options['map_domain'].'/maps/api/js?sensor=false' . $api_key . $language,
+                    $google_api_url . $client_id . $api_key . $language,
                     array(),
                     SLPLUS_VERSION,
                     ! $this->slplus->javascript_is_forced
