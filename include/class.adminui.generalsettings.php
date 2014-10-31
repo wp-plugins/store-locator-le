@@ -253,6 +253,34 @@ class SLPlus_AdminUI_GeneralSettings {
                     __('The free Google API keys do not have an impact on query limits.','csa-slplus')
             )
         );
+         $this->settings->add_ItemToGroup(
+             array(
+                 'section'       => $sectName                                            ,
+                 'group'         => $groupName                                           ,
+                 'label'         => __('Google Client ID','csa-slplus')                  ,
+                 'setting'       => 'google_client_id'                                   ,
+                 'use_prefix'    => false                                                ,
+                 'value'         => $this->slplus->options_nojs['google_client_id']      ,
+                 'description'   =>
+                     __('If you have a Google Maps for Work client ID, enter it here. ','csa-slplus') .
+                     __('All Google API requests will go through your account at Google. ','csa-slplus') .
+                     __('You will receive higher quotas and faster maps I/O performance. ','csa-slplus')
+             )
+         );
+         $this->settings->add_ItemToGroup(
+             array(
+                 'section'       => $sectName                                            ,
+                 'group'         => $groupName                                           ,
+                 'label'         => __('Google Private Key','csa-slplus')                  ,
+                 'setting'       => 'google_private_key'                                   ,
+                 'use_prefix'    => false                                                ,
+                 'value'         => $this->slplus->options_nojs['google_private_key']      ,
+                 'description'   =>
+                     __('Your Google private key (Crypto Key) for signing Geocoding requests. ','csa-slplus') .
+                     __('Do NOT share this with anyone and take extra measures to keep it private. ','csa-slplus')
+             )
+         );
+
 
         // ACTION: slp_generalsettings_modify_googlepanel
         //    params: settings object, section name

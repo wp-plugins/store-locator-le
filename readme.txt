@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-4/
 Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.4
 Tested up to: 4.0
-Stable tag: 4.2.08
+Stable tag: 4.2.10
 License: GLPv2 or later
 
 Add a location finder or directory to your site in minutes. A Google Business Maps API licensed product. Extensive premium add-on library available!
@@ -352,6 +352,15 @@ Please read the *description page* for this plugin for an important note about p
 *Version 4.x is a major upgrade that is not compatible with the version 3.x or earlier add-on packs.*
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 2014-Nov (4.2.10+) =
+
+* Enhancement: Added settings for Google Maps for Work client ID activation to pass requests through the Google Maps Enterprise server.
+* Enhancement: Google Maps for Work will load the main map rendering from the Google Enterprise server if you have purchased a Google Enterprise key.
+* Enhancement: Google Maps for Word geocoding while loading locations is now supported.  Requires your Google Enterprise Private/Crypto key.
+* Enhancement (4.2.10): Info Plugin Environment tab now reports available updates next to the installed version.
+* Fix: Location geocoding uses the Google Maps domain set in the User Experience tab to assist in non-USA based address encoding.
+* Fix: Clean up an add-on pack manager bug that consumes far more memory than necessary.
 
 = 2014-Oct (4.2.08+) =
 

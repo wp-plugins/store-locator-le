@@ -97,13 +97,6 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
     private $geocodeIssuesRendered = false;
 
     /**
-     * The language for geocoding services.
-     *
-     * @var string $geocodeLanguage
-     */
-    private $geocodeLanguage;
-
-    /**
      * The URL of the geocoding service.
      *
      * @var string $geocodeURL
@@ -369,6 +362,54 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         }
     }
 
+
+    /**
+     * Set the geocoding base URL.
+     */
+    private function set_geocoding_baseURL() {
+        if ( isset( $this->geocodeURL ) ) { return; }
+
+
+        // Google Maps API for Work client ID
+        //
+        $client_id =
+            ! empty ( $this->slplus->options_nojs['google_client_id'] )           ?
+                '&client=' . $this->slplus->options_nojs['google_client_id'] . '&v=3' :
+                ''                                                                    ;
+
+
+        // Google Maps API for Work (client_id above) CANNOT be used with a key.
+        //
+        $dbAPIKey  = trim( get_option(SLPLUS_PREFIX.'-api_key' , '' ) );
+        $api_key   =
+            ( ! empty( $dbAPIKey ) && empty( $client_id ) ) ?
+                '&key=' . $dbAPIKey                         :
+                ''                                          ;
+
+        // Set the map language
+        //
+        $language = '&language='.$this->slplus->helper->getData('map_language','get_item',null,'en');
+
+        // Base Google API URL
+        //
+        $google_api_url =
+            'http' . ( is_ssl() ? 's' : '' ) . '://'    .
+            $this->slplus->options['map_domain']        .
+            '/maps/api/'                                .
+            'geocode/json'                              .
+            '?sensor=false'                             ;
+
+        // Build the URL with all the params
+        //
+        $this->geocodeURL =
+            $google_api_url     .
+            $client_id          .
+            $api_key            .
+            $language           .
+            '&address='         ;
+    }
+
+
     /**
      * Set all the properties that manage the location query.
      * 
@@ -437,6 +478,52 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         }
     }
 
+    /**
+     * Encode a string to URL-safe base64
+     *
+     * @param $value
+     * @return mixed
+     */
+    private function encode_Base64UrlSafe($value) {
+        return str_replace(array('+', '/'), array('-', '_'), base64_encode($value));
+    }
+
+    /**
+     * Decode a string from URL-safe base64.
+     *
+     * @param $value
+     * @return string
+     */
+    private function decode_Base64UrlSafe( $value ) {
+        return base64_decode(str_replace(array('-', '_'), array('+', '/'), $value));
+    }
+
+    /**
+     * Sign a URL with a given crypto key.
+     *
+     * Note that this URL must be properly URL-encoded.
+     *
+     * @param $myUrlToSign
+     * @param $privateKey
+     * @return string
+     */
+    private function sign_url( $myUrlToSign, $privateKey ) {
+        // parse the url
+        $url = parse_url($myUrlToSign);
+
+        $urlPartToSign = $url['path'] . "?" . $url['query'];
+
+        // Decode the private key into its binary format
+        $decodedKey = $this->decode_Base64UrlSafe($privateKey);
+
+        // Create a signature using the private key and the URL-encoded
+        // string using HMAC SHA1. This signature will be binary.
+        $signature = hash_hmac("sha1",$urlPartToSign, $decodedKey,  true);
+
+        $encodedSignature = $this->encode_Base64UrlSafe($signature);
+
+        return $myUrlToSign."&signature=".$encodedSignature;
+    }
 
     /**
      * Escape a string to match WordPress display conventions.
@@ -1231,16 +1318,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
      * @return string $response the JSON response string
      */
     function get_LatLong($address) {
-        if (!isset($this->geocodeLanguage)) {
-            $this->geocodeLanguage = '&language='.$this->slplus->helper->getData('map_language','get_item',null,'en');
-        }
-        if (!isset($this->geocodeURL)) {
-            $this->geocodeURL =
-            'http://maps.googleapis.com/maps/api/geocode/json?sensor=false' .
-                $this->geocodeLanguage .
-                '&address='
-            ;
-        }
+        $this->set_geocoding_baseURL();
 
         // Set comType if not already determined.
         //
@@ -1257,6 +1335,12 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         }
 
         $fullURL = $this->geocodeURL . urlencode($address);
+
+        // Client ID in use?   Sign the request.
+        //
+        if ( ! empty ( $this->slplus->options_nojs['google_client_id'] ) ) {
+            $fullURL = $this->sign_url( $fullURL , $this->slplus->options_nojs['google_private_key'] );
+        }
 
         // Go fetch the data from the remote server.
         //
