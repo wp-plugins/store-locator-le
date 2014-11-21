@@ -35,19 +35,45 @@ class SLPlus_AjaxHandler {
     );
 
     /**
+     * Metadata placeholder for register_addon, never used.
+     *
+     * @var mixed $metadata
+     */
+    public $metadata;
+
+    /**
      * Name of this module.
      *
      * @var string $name
      */
     private $name;
+
+    /**
+     * Options needed for register_addon, never used.
+     *
+     * @var
+     */
+    public $options;
+
+    /**
+     * Needed for backwards compatibility with add-on packs. :/
+     * @var
+     */
+    public $plugin;
+
+    /**
+     * Set the query parameters received.
+     *
+     * @var array
+     */
+    private $query_params = array();
     
     /**
      * The plugin object.
      * 
-     * @var \SLPlus $plugin
+     * @var \SLPlus $slplus
      */
-    public $plugin;
-
+    public $slplus;
 
     /**
      * The database query string.
@@ -64,31 +90,49 @@ class SLPlus_AjaxHandler {
      * The Constructor
      */
     function __construct($params=null) {
+
         $this->name = 'AjaxHandler';
-        if (isset($_REQUEST['formdata'])) {
-            $this->formdata = wp_parse_args($_REQUEST['formdata'],$this->formdata_defaults);
+
+        // Set slplus property
+        //
+        if (!isset($this->slplus) || ($this->slplus == null)) {
+            global $slplus_plugin;
+            $this->slplus = $slplus_plugin;
+            $this->slplus->register_module($this->name,$this);
+            $this->plugin = $this->slplus;
         }
-        if (isset($_REQUEST['options'])) {
-            $this->setPlugin();
-            $this->plugin->options = wp_parse_args($_REQUEST['options'],$this->plugin->options);
-        }
+
+        // Set incoming params
+        //
+        $this->set_QueryParams();
     }
 
     /**
-     * Set the plugin property to point to the primary plugin object.
-     *
-     * Returns false if we can't get to the main plugin object.
-     *
-     * @global wpCSL_plugin__slplus $slplus_plugin
-     * @return boolean true if plugin property is valid
+     * Set incoming query and request parameters into object properties.
      */
-    function setPlugin() {
-        if (!isset($this->plugin) || ($this->plugin == null)) {
-            global $slplus_plugin;
-            $this->plugin = $slplus_plugin;
-            $this->plugin->register_module($this->name,$this);
+    function set_QueryParams() {
+        if (isset($_REQUEST['formdata'])) {
+            $this->formdata = wp_parse_args($_REQUEST['formdata'],$this->formdata_defaults);
         }
-        return (isset($this->plugin) && ($this->plugin != null));
+
+        if (isset($_REQUEST['options'])) {
+            $this->slplus->options = wp_parse_args($_REQUEST['options'],$this->slplus->options);
+        }
+
+        $this->query_params['QUERY_STRING'] = $_SERVER['QUERY_STRING'];
+
+        // Set the valid keys
+        //
+        $valid_keys = array(
+            'address',
+            'lat',
+            'lng',
+            'radius',
+            'tags',
+        );
+        foreach ( $valid_keys as $key ) {
+            $this->query_params[$key] = isset( $_POST[$key] ) ? $_POST[$key] : '';
+        }
     }
 
     /**
@@ -128,7 +172,7 @@ class SLPlus_AjaxHandler {
               'id'          => $row['sl_id'],
           );
 
-        $this->plugin->currentLocation->set_PropertiesViaArray($row);
+        $this->slplus->currentLocation->set_PropertiesViaArray($row);
 
         // FILTER: slp_results_marker_data
         // Modify the map marker object that is sent back to the UI in the JSONP response.
@@ -143,15 +187,11 @@ class SLPlus_AjaxHandler {
      *
      */
     function csl_ajax_onload() {
-        $this->setPlugin();
-
-        // Get Locations
-        //
 
         // Return How Many?
         //
         $response=array();
-        $locations = $this->execute_LocationQuery($this->plugin->options['initial_results_returned']);
+        $locations = $this->execute_LocationQuery($this->slplus->options['initial_results_returned']);
         foreach ($locations as $row){
             $response[] = $this->slp_add_marker($row);
         }
@@ -174,13 +214,12 @@ class SLPlus_AjaxHandler {
      */
     function csl_ajax_search() {
         global $wpdb;
-        $this->setPlugin();
 
         // Get Locations
         //
 		$response = array();
 		$resultRowids = array();
-        $locations = $this->execute_LocationQuery($this->plugin->options_nojs['max_results_returned']);
+        $locations = $this->execute_LocationQuery($this->slplus->options_nojs['max_results_returned']);
         foreach ($locations as $row){
             $thisLocation = $this->slp_add_marker($row);
             if (!empty($thisLocation)) {
@@ -191,20 +230,14 @@ class SLPlus_AjaxHandler {
 
 		// Do report work
 		//
-		$queryParams = array();
-		$queryParams['QUERY_STRING'] = $_SERVER['QUERY_STRING'];
-		$queryParams['tags'] = $_POST['tags'];
-		$queryParams['address'] = $_POST['address'];
-		$queryParams['radius'] = $_POST['radius'];
-
-		do_action('slp_report_query_result', $queryParams, $resultRowids);
+		do_action('slp_report_query_result', $this->query_params, $resultRowids);
 
         // Output the JSON and Exit
         //
         $this->renderJSON_Response(
                 array(  
                         'count'         => count($response),
-                        'option'        => $_POST['address'],
+                        'option'        => $this->query_params['address'],
                         'type'          => 'search',
                         'response'      => $response
                     )
@@ -218,15 +251,15 @@ class SLPlus_AjaxHandler {
      * @return object a MySQL result object
      */
     function execute_LocationQuery($maxReturned) {
-        //........
+
         // SLP options that tweak the query
-        //........
-        $this->plugin->database->createobject_DatabaseExtension();
+        //
+        $this->slplus->database->createobject_DatabaseExtension();
 
         // Distance Unit (KM or MI) Modifier
         // Since miles is default, if kilometers is selected, divide by 1.609344 in order to convert the kilometer value selection back in miles
         //
-        $multiplier=($this->plugin->options['distance_unit']==__('km', 'csa-slplus'))? 6371 : 3959;
+        $multiplier=($this->slplus->options['distance_unit']==__('km', 'csa-slplus'))? 6371 : 3959;
 
         //........
         // Post options that tweak the query
@@ -269,7 +302,7 @@ class SLPlus_AjaxHandler {
         $this->dbQuery =  
             apply_filters(
                 'slp_ajaxsql_fullquery',
-                $this->plugin->database->get_SQL(
+                $this->slplus->database->get_SQL(
                     array(
                         'selectall_with_distance',
                         'where_default_validlatlong',
@@ -277,7 +310,7 @@ class SLPlus_AjaxHandler {
                  )                                                      .
                 "{$filterClause} "                                      .
                 "{$havingClause} "                                      .
-                $this->plugin->database->get_SQL('orderby_default')     .
+                $this->slplus->database->get_SQL('orderby_default')     .
                 'LIMIT %d'
             );
 
@@ -288,10 +321,10 @@ class SLPlus_AjaxHandler {
                 'slp_ajaxsql_queryparams',
                 array(
                     $multiplier,
-                    $_POST['lat'],
-                    $_POST['lng'],
-                    $_POST['lat'],
-                    $_POST['radius'],
+                    $this->query_params['lat'],
+                    $this->query_params['lng'],
+                    $this->query_params['lat'],
+                    $this->query_params['radius'],
                     $maxReturned
                 )
             );
@@ -333,7 +366,7 @@ class SLPlus_AjaxHandler {
      * @return string
      */
     function filter_SetDefaultOrderByDistance($orderby) {
-        return $this->plugin->database->extend_OrderBy($orderby,' sl_distance ASC ');
+        return $this->slplus->database->extend_OrderBy($orderby,' sl_distance ASC ');
     }
 
     /**
@@ -361,7 +394,7 @@ class SLPlus_AjaxHandler {
         $data = array_merge(
                     array(
                         'success'       => true,
-                        'slp_version'   => $this->plugin->version,
+                        'slp_version'   => $this->slplus->version,
                         'dbQuery'       => $this->dbQuery
                     ),
                     $data

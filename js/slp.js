@@ -9,7 +9,6 @@ var slplus = slplus;
  *
  * @type {
  * {
- * Animation: {Bounce: number, Drop: number, None: number},
  * LocationServices: LocationServices,
  * Ajax: Ajax,
  * Marker: Marker,
@@ -23,23 +22,10 @@ var slp = {
 
     /***************************************************************************
      *
-     * ANIMATION
-     *
-     */
-
-    Animation: {
-
-        // Properties
-        Bounce: 1, Drop: 2, None: 0
-    },
-
-
-    /***************************************************************************
-     *
      * LOCATION SERVICES
      *
      */
-    LocationServices: function() {
+    LocationServices: function () {
 
         // Properties
         this.theService = null;
@@ -55,7 +41,7 @@ var slp = {
          *
          * @private
          */
-        this.__init = function() {
+        this.__init = function () {
             this.Initialized = true;
             try {
                 if (typeof navigator.geolocation === 'undefined') {
@@ -82,7 +68,7 @@ var slp = {
          * @param callback
          * @param errorCallback
          */
-        this.currentLocation = function(callback, errorCallback) {
+        this.currentLocation = function (callback, errorCallback) {
 
             // If location services are not setup, do it
             //
@@ -104,7 +90,11 @@ var slp = {
                     // on success run callback
                     // on failure run errorCallback
                     //
-                    this.theService.getCurrentPosition(callback, errorCallback, {maximumAge: 60000, timeout: 5000, enableHighAccuracy: true});
+                    this.theService.getCurrentPosition(callback, errorCallback, {
+                        maximumAge: 60000,
+                        timeout: 5000,
+                        enableHighAccuracy: true
+                    });
                 }
 
                 // Otherwise throw an exception
@@ -122,7 +112,7 @@ var slp = {
      * AJAX
      *
      */
-    Ajax: function() {
+    Ajax: function () {
 
         /**
          * Send a request to the ajax listener.
@@ -132,21 +122,21 @@ var slp = {
          * @argument {object} action
          * @argument {function} callback function with params "success: true, response: {marker list}"
          */
-        this.send = function(action, callback) {
+        this.send = function (action, callback) {
             if (window.location.protocol !== slplus.ajaxurl.substring(0, slplus.ajaxurl.indexOf(':') + 1)) {
                 slplus.ajaxurl = slplus.ajaxurl.replace(slplus.ajaxurl.substring(0, slplus.ajaxurl.indexOf(':') + 1), window.location.protocol);
             }
             jQuery.post(
-                    slplus.ajaxurl,
-                    action,
-                    function(response) {
-                        try {
-                            response = JSON.parse(response);
-                        }
-                        catch (ex) {
-                        }
-                        callback(response);
+                slplus.ajaxurl,
+                action,
+                function (response) {
+                    try {
+                        response = JSON.parse(response);
                     }
+                    catch (ex) {
+                    }
+                    callback(response);
+                }
             );
         };
     },
@@ -159,17 +149,15 @@ var slp = {
      *
      * parameters (properties):
      *
-     * 	animationType: The Animation type to do the animation
-     *	map: the slp.Map type to put it on
-     *	title: the title of the marker for mouse over
-     *	markerImage: todo: load a custom icon, null for default
-     *	position: the lat/long to put the marker at
+     *    map: the slp.Map type to put it on
+     *    title: the title of the marker for mouse over
+     *    markerImage: todo: load a custom icon, null for default
+     *    position: the lat/long to put the marker at
      *
      */
-    Marker: function(animationType, map, title, position, markerImage) {
+    Marker: function (map, title, position, markerImage) {
 
         // Properties
-        this.__animationType = animationType;
         this.__map = map;
         this.__title = title;
         this.__position = position;
@@ -183,18 +171,17 @@ var slp = {
          *
          * @private
          */
-        this.__init = function() {
+        this.__init = function () {
 
             // No icon image
             //
             if (this.__markerImage === null) {
                 this.__gmarker = new google.maps.Marker(
-                        {
-                            position: this.__position,
-                            map: this.__map.gmap,
-                            animation: this.__animationType,
-                            title: this.__title
-                        });
+                    {
+                        position: this.__position,
+                        map: this.__map.gmap,
+                        title: this.__title
+                    });
 
                 // Use specified icon
                 //
@@ -203,17 +190,17 @@ var slp = {
                 if (typeof cslmap.shadows[shadowKey] === 'undefined') {
                     var shadow = this.__markerImage.replace('/_(.*?)\.png/', '_shadow.png');
                     jQuery.ajax(
-                            {
-                                url: shadow,
-                                type: 'HEAD',
-                                async: false,
-                                error: function() {
-                                    cslmap.shadows[shadowKey] = slplus.plugin_url + '/images/icons/blank.png';
-                                },
-                                success: function() {
-                                    cslmap.shadows[shadowKey] = shadow;
-                                }
+                        {
+                            url: shadow,
+                            type: 'HEAD',
+                            async: false,
+                            error: function () {
+                                cslmap.shadows[shadowKey] = slplus.plugin_url + '/images/icons/blank.png';
+                            },
+                            success: function () {
+                                cslmap.shadows[shadowKey] = shadow;
                             }
+                        }
                     );
                 }
                 this.__shadowImage = cslmap.shadows[shadowKey];
@@ -224,17 +211,16 @@ var slp = {
         /*------------------------
          * MARKERS buildMarker
          */
-        this.buildMarker = function() {
+        this.buildMarker = function () {
             this.__gmarker = new google.maps.Marker(
-                    {
-                        position: this.__position,
-                        map: this.__map.gmap,
-                        animation: this.__animationType,
-                        shadow: this.__shadowImage,
-                        icon: this.__markerImage,
-                        zIndex: 0,
-                        title: this.__title
-                    });
+                {
+                    position: this.__position,
+                    map: this.__map.gmap,
+                    shadow: this.__shadowImage,
+                    icon: this.__markerImage,
+                    zIndex: 0,
+                    title: this.__title
+                });
         };
 
         this.__init();
@@ -245,16 +231,16 @@ var slp = {
      * UTILITIES
      *
      */
-    Utils: function() {
+    Utils: function () {
 
         /***********************************
          *
          * Create the lightbox email form.
          *
          */
-        this.show_email_form = function(to) {
+        this.show_email_form = function (to) {
             emailWin = window.open("about:blank", "",
-                    "height=220,width=310,scrollbars=no,top=50,left=50,status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=0");
+                "height=220,width=310,scrollbars=no,top=50,left=50,status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=0");
             with (emailWin.document) {
                 writeln("<html><head><title>Send Email To " + to + "</title></head>");
 
@@ -322,8 +308,7 @@ var slp = {
          * Standard US ASCII characters (< char #128) are unchanged
          *
          */
-        this.escapeExtended = function(string)
-        {
+        this.escapeExtended = function (string) {
             return string;
         };
     },
@@ -337,9 +322,9 @@ var slp = {
      * usage:
      * create a google info window
      * parameters:
-     * 	content: the content to show by default
+     *    content: the content to show by default
      */
-    Info: function(content) {
+    Info: function (content) {
         this.__content = content;
         this.__position = position;
 
@@ -347,27 +332,27 @@ var slp = {
         this.__gwindow = null;
         this.__gmap = null;
 
-        this.openWithNewContent = function(map, object, content) {
+        this.openWithNewContent = function (map, object, content) {
             this.__content = content;
             this.__gwindow = setContent = this.__content;
             this.open(map, object);
         };
 
-        this.open = function(map, object) {
+        this.open = function (map, object) {
             this.__gmap = map.gmap;
             this.__anchor = object;
             this.__gwindow.open(this.__gmap, this.__anchor);
         };
 
-        this.close = function() {
+        this.close = function () {
             this.__gwindow.close();
         };
 
-        this.__init = function() {
+        this.__init = function () {
             this.__gwindow = new google.maps.InfoWindow(
-                    {
-                        content: this.__content
-                    });
+                {
+                    content: this.__content
+                });
         };
 
         this.__init();
@@ -381,12 +366,18 @@ var slp = {
      *
      *
      * parameters (properties):
-     * 	aMapNumber: the id/canvas of the map object to load from php side
+     *    aMapNumber: the id/canvas of the map object to load from php side
      */
-    Map: function(aMapCanvas) {
+    Map: function (aMapCanvas) {
 
         //private: map number to look up at init
         this.__mapCanvas = aMapCanvas;
+
+        // other variables
+        //
+        this.shadows = new Object;   // map marker shadows
+        this.map_hidden = true;      // map div may be hidden at first, assume it was
+        this.default_radius = 40000; // default radius if not set
 
         //function callbacks
         this.tilesLoaded = null;
@@ -432,11 +423,6 @@ var slp = {
         this.lastCenter = null;
         this.lastRadius = null;
         this.loadedOnce = false;
-        this.centerLoad = false;
-
-        // missing shadows
-        //
-        this.shadows = new Object;
 
         /***************************
          * function: __init()
@@ -445,7 +431,7 @@ var slp = {
          * parameters: none
          * returns: none
          */
-        this.__init = function() {
+        this.__init = function () {
 
             if (typeof slplus !== 'undefined') {
                 this.mapType = slplus.map_type;
@@ -485,23 +471,28 @@ var slp = {
         /***************************
          * function: __buildMap
          * usage:
-         * 		Builds the map with the specified center
+         *        Builds the map with the specified center
          * parameters:
-         * 		center:
-         *			the specified center or homepoint
+         *        center:
+         *            the specified center or homepoint
          * returns: none
          */
-        this.__buildMap = function(center) {
+        this.__buildMap = function (center) {
             if (this.gmap === null) {
                 this.options = {
+                    center: center,
+
                     mapTypeControl: this.mapTypeControl,
                     mapTypeId: this.mapType,
+
                     overviewMapControl: this.overviewControl,
-                    scrollwheel: !this.disableScroll,
-                    center: center,
-                    zoom: parseInt(slplus.zoom_level),
+                    overviewMapControlOptions: {opened: this.overviewControl},
+
                     scaleControl: this.mapScaleControl,
-                    overviewMapControlOptions: {opened: this.overviewControl}
+                    scrollwheel: !this.disableScroll,
+
+                    minZoom: 1,
+                    zoom: parseInt(slplus.zoom_level),
                 };
 
                 slpMapDiv = document.getElementById('map');
@@ -509,22 +500,22 @@ var slp = {
 
                 //this forces any bad css from themes to fix the "gray bar" issue by setting the css max-width to none
                 var _this = this;
-                google.maps.event.addListener(this.gmap, 'bounds_changed', function() {
+                google.maps.event.addListener(this.gmap, 'bounds_changed', function () {
                     _this.__waitForTileLoad.call(_this);
                 });
 
-                if (this.usingSensor) {
-                    this.homePoint = center;
+
+                // Location Sensor Is Enabled
+                // Or immediate mode and home marker is enabled
+                //
+                if ( this.show_home_marker() ) {
+                    this.homePoint = center;    // Set the home marker location to center lat/long sent in to __buildMap
                     this.addMarkerAtCenter();
                 }
 
                 // If immediately show locations is enabled.
                 //
                 if (slplus.options.immediately_show_locations === '1') {
-                    if (slplus.options.no_homeicon_at_start !== '1') {
-                        this.homePoint = center;
-                        this.addMarkerAtCenter();
-                    }
                     var tag_to_search_for = this.saneValue('tag_to_search_for', '');
 
                     // Default radius for immediately show locations
@@ -532,12 +523,12 @@ var slp = {
                     // then the default from the drop down menu,
                     // then 10000 if neither are working.
                     //
-                    var radius = 10000;
+                    var radius = this.default_radius;
                     slplus.options.initial_radius = slplus.options.initial_radius.replace(/\D/g, '');
                     if (/^[0-9]+$/.test(slplus.options.initial_radius)) {
                         radius = slplus.options.initial_radius;
                     } else {
-                        radius = this.saneValue('radiusSelect');
+                        radius = this.saneValue('radiusSelect' , this.default_radius );
                     }
 
                     this.loadMarkers(center, radius, tag_to_search_for);
@@ -545,19 +536,30 @@ var slp = {
             }
         };
 
+        /**
+         * Should I show the home marker on the map or not?
+         *
+         * @returns {boolean|*}
+         */
+        this.show_home_marker = function () {
+            return (
+                this.usingSensor ||
+                ( (slplus.options.immediately_show_locations === '1') && (slplus.options.no_homeicon_at_start !== '1') )
+            );
+        };
+
         /***************************
          * function: __waitForTileLoad
          * usage:
          * Notifies as the map changes that we'd like to be nofified when the tiles are completely loaded
          * parameters:
-         * 	none
+         *    none
          * returns: none
          */
-        this.__waitForTileLoad = function() {
+        this.__waitForTileLoad = function () {
             var _this = this;
-            if (this.__tilesLoaded === null)
-            {
-                this.__tilesLoaded = google.maps.event.addListener(this.gmap, 'tilesloaded', function() {
+            if (this.__tilesLoaded === null) {
+                this.__tilesLoaded = google.maps.event.addListener(this.gmap, 'tilesloaded', function () {
                     _this.__tilesAreLoaded.call(_this);
                 });
             }
@@ -568,10 +570,10 @@ var slp = {
          * usage:
          * All the tiles are loaded, so fix their css
          * parameters:
-         * 	none
+         *    none
          * returns: none
          */
-        this.__tilesAreLoaded = function() {
+        this.__tilesAreLoaded = function () {
             jQuery('#map').find('img').css({'max-width': 'none'});
             google.maps.event.removeListener(this.__tilesLoaded);
             this.__tilesLoaded = null;
@@ -582,27 +584,27 @@ var slp = {
          * usage:
          * Puts a pretty marker right smack in the middle
          * parameters:
-         * 	none
+         *    none
          * returns: none
          */
-        this.addMarkerAtCenter = function() {
+        this.addMarkerAtCenter = function () {
             if (this.centerMarker) {
                 this.centerMarker.__gmarker.setMap(null);
             }
             if (this.homePoint) {
-                this.centerMarker = new slp.Marker(slp.Animation.None, this, "", this.homePoint, this.mapHomeIconUrl);
+                this.centerMarker = new slp.Marker(this, '', this.homePoint, this.mapHomeIconUrl);
             }
         };
 
         /***************************
          * function: clearMarkers
          * usage:
-         * 		Clears all the markers from the map and releases it for GC
+         *        Clears all the markers from the map and releases it for GC
          * parameters:
-         * 	none
+         *    none
          * returns: none
          */
-        this.clearMarkers = function() {
+        this.clearMarkers = function () {
             if (this.markers) {
                 for (markerNumber in this.markers) {
                     if (typeof this.markers[markerNumber] !== 'undefined') {
@@ -616,8 +618,9 @@ var slp = {
                 // Clear the home marker if the address is blank
                 // only if we are not on the first map drawing
                 //
-                if ( ! this.saneValue('addressInput', '')  ) {
-                    this.addMarkerAtCenter();
+                if ( ! this.saneValue( 'addressInput' , '' ) ) {
+                    this.centerMarker = null;
+                    this.homePoint = null;
                 }
 
             }
@@ -626,105 +629,85 @@ var slp = {
         /***************************
          * function: putMarkers
          * usage:
-         * 		Puts an array of markers on the map with the given animation set
+         *        Puts an array of markers on the map
          * parameters:
-         * 		markerList:
-         *			a list of slp.Markers
-         *		animation:
-         *			the slp.Animation type
+         *        markerList:
+         *            a list of slp.Markers
          * returns: none
          */
-        this.putMarkers = function(markerListNatural, animation) {
-            var markerList = markerListNatural.reverse();
+        this.putMarkers = function (markerListNatural) {
 
+            // Reset map marker list and the results output HTML
+            //
             this.markers = [];
             if (this.loadedOnce) {
                 var sidebar = document.getElementById('map_sidebar');
                 sidebar.innerHTML = '';
             }
 
-            //don't animate for a large set of results
-            var markerCount = (markerList) ? markerList.length : 0;
-            if (markerCount > 25)
-                animation = slp.Animation.None;
+            // No Results
+            //
+            var markerCount = (markerListNatural) ? markerListNatural.length : 0;
+            if (markerCount === 0) {
+                if ( this.homePoint ) { this.gmap.panTo(this.homePoint); }
+                document.getElementById('map_sidebar').innerHTML = '<div class="no_results_found"><h2>' + slplus.msg_noresults + '</h2></div>';
 
-            var bounds;
-            var locationIcon;
-            for (var markerNumber = 0; markerNumber < markerCount; ++markerNumber) {
-                var position = new google.maps.LatLng(markerList[markerNumber].lat, markerList[markerNumber].lng);
+            // Results Processing
+            //
+            } else {
 
-                if (markerNumber === 0) {
-                    bounds = new google.maps.LatLngBounds();
-                    if (this.homePoint) {
-                        bounds.extend(this.homePoint);
-                    } else {
-                        if (this.centerLoad) {
-                            bounds.extend(this.gmap.getCenter());
-                        }
-                        else {
-                            this.centerLoad = true;
-                        }
-                    }
+                // Set the initial bounds to default (1,180)/(-1,180), include home marker if shown.
+                //
+                var bounds = new google.maps.LatLngBounds();
+                if ( this.homePoint ) { bounds.extend(this.homePoint); }
+
+                var locationIcon;
+                var markerList = markerListNatural.reverse();
+
+                for (var markerNumber = 0; markerNumber < markerCount; ++markerNumber) {
+                    var position = new google.maps.LatLng(markerList[markerNumber].lat, markerList[markerNumber].lng);
                     bounds.extend(position);
-                } else {
-                    bounds.extend(position);
-                }
 
-                locationIcon =
+                    locationIcon =
                         (
-                                (markerList[markerNumber].icon !== null) &&
-                                (typeof markerList[markerNumber].icon !== 'undefined') &&
-                                (markerList[markerNumber].icon.length > 4) ?
+                            (markerList[markerNumber].icon !== null) &&
+                            (typeof markerList[markerNumber].icon !== 'undefined') &&
+                            (markerList[markerNumber].icon.length > 4) ?
                                 markerList[markerNumber].icon :
                                 this.mapEndIconUrl
-                                );
-                this.markers.push(new slp.Marker(animation, this, "", position, locationIcon));
-                _this = this;
+                        );
+                    this.markers.push(new slp.Marker(this, markerList[markerNumber].name, position, locationIcon));
+                    _this = this;
 
-                //create info windows
-                //
-                google.maps.event.addListener(this.markers[markerNumber].__gmarker, 'click',
-                        (function(infoData, marker) {
-                            return function() {
+                    //create info windows
+                    //
+                    google.maps.event.addListener(this.markers[markerNumber].__gmarker, 'click',
+                        (function (infoData, marker) {
+                            return function () {
                                 _this.__handleInfoClicks.call(_this, infoData, marker);
                             }
                         })(markerList[markerNumber], this.markers[markerNumber]));
 
-                //create a sidebar entry
-                //
-                if (this.loadedOnce) {
-                    var sidebarEntry = this.createSidebar(markerList[markerNumber]);
-                    sidebar.insertBefore(sidebarEntry, sidebar.firstChild);
-                    jQuery('div#map_sidebar span:empty').hide();
-
-                    // Whenever the location result entry is <clicked> do this...
+                    //create a sidebar entry
                     //
-                    google.maps.event.addDomListener(sidebarEntry, 'click',
-                            (function(infoData, marker) {
-                                return function() {
+                    if (this.loadedOnce) {
+                        var sidebarEntry = this.createSidebar(markerList[markerNumber]);
+                        sidebar.insertBefore(sidebarEntry, sidebar.firstChild);
+                        jQuery('div#map_sidebar span:empty').hide();
+
+                        // Whenever the location result entry is <clicked> do this...
+                        //
+                        google.maps.event.addDomListener(sidebarEntry, 'click',
+                            (function (infoData, marker) {
+                                return function () {
                                     _this.__handleInfoClicks.call(_this, infoData, marker);
                                 };
                             })(markerList[markerNumber], this.markers[markerNumber]));
+                    }
                 }
-            }
 
-            this.loadedOnce = true;
-
-            //check for results
-            if (markerCount === 0) {
-                if ((typeof this.homePoint !== 'undefined') &&
-                        (this.homePoint !== null)
-                        ) {
-                    this.gmap.panTo(this.homePoint);
-                }
-                var sidebar = document.getElementById('map_sidebar');
-                sidebar.innerHTML = '<div class="no_results_found"><h2>' + slplus.msg_noresults + '</h2></div>';
-                jQuery('#map_sidebar').trigger('contentchanged');
-            } else {
-                jQuery('#map_sidebar').trigger('contentchanged');
-            }
-
-            if ((bounds !== null) && (typeof bounds !== 'undefined')) {
+                // Set zoom
+                //
                 this.bounds = bounds;
                 this.gmap.fitBounds(this.bounds);
 
@@ -733,32 +716,36 @@ var slp = {
                 //
                 var newZoom =
                         Math.max(Math.min(
+                            (
                                 (
-                                        (
-                                                (slplus.options.no_autozoom !== "1") &&
-                                                (this.loadedOnce || (markerList.length > 1))
-                                                ) ?
-                                        this.gmap.getZoom() - parseInt(slplus.zoom_tweak) :
-                                        parseInt(slplus.zoom_level)
-                                        )
-                                , 20), 1)
-                        ;
+                                (slplus.options.no_autozoom !== "1") &&
+                                (this.loadedOnce || (markerList.length > 1))
+                                ) ?
+                                this.gmap.getZoom() - parseInt(slplus.zoom_tweak) :
+                                    parseInt(slplus.zoom_level)
+                            ), 20), 1)
+                    ;
                 this.gmap.setZoom(newZoom);
             }
+
+            // Fire results output changed trigger
+            //
+            this.loadedOnce = true;
+            jQuery('#map_sidebar').trigger('contentchanged');
         };
 
         /***************************
          * function: private handleInfoClicks
          * usage:
-         * 		Sets the content to the info window and builds the sidebar when a user clicks a marker
+         *        Sets the content to the info window and builds the sidebar when a user clicks a marker
          * parameters:
-         * 		infoData:
-         *			the information to build the info window from (ajax result)
-         *		marker:
-         *			the slp.Marker to add the information to
+         *        infoData:
+         *            the information to build the info window from (ajax result)
+         *        marker:
+         *            the slp.Marker to add the information to
          * returns: none
          */
-        this.__handleInfoClicks = function(infoData, marker) {
+        this.__handleInfoClicks = function (infoData, marker) {
             this.infowindow.setContent(this.createMarkerContent(infoData));
             this.infowindow.open(this.gmap, marker.__gmarker);
         };
@@ -768,7 +755,7 @@ var slp = {
          *
          * @return {undefined}
          */
-        this.doGeocode = function() {
+        this.doGeocode = function () {
             var geocoder = new google.maps.Geocoder();
             var _this = this;
             var geocodeParms = new Object();
@@ -780,67 +767,64 @@ var slp = {
             }
 
             geocoder.geocode(
-                    geocodeParms,
-                    function(results, status) {
-                        if (status === 'OK' && results.length > 0)
-                        {
+                geocodeParms,
+                function (results, status) {
+                    if (status === 'OK' && results.length > 0) {
 
-                            // if the map hasn't been created, then create one
-                            //
-                            if (_this.gmap === null)
-                            {
-                                _this.__buildMap(results[0].geometry.location);
-                            }
-
-                            // the map has been created so shift the center of the map
-                            //
-                            else {
-
-                                //move the center of the map
-                                _this.homePoint = results[0].geometry.location;
-                                _this.homeAdress = results[0].formatted_address;
-
-                                _this.addMarkerAtCenter();
-                                var tag_to_search_for = _this.saneValue('tag_to_search_for', '');
-                                //do a search based on settings
-                                var radius = _this.saneValue('radiusSelect');
-                                _this.loadMarkers(results[0].geometry.location, radius, tag_to_search_for);
-                            }
-                            //if the user entered an address, replace it with a formatted one
-                            var addressInput = _this.saneValue('addressInput', '');
-                            if (addressInput !== '') {
-                                addressInput = results[0].formatted_address;
-                            }
-                        } else {
-                            //check to see if the map exists, if it doesn't then set the location to nowhere ...
-                            //probably not the best, but this should (hopefully) be rare.
-                            if (_this.gmap === null) {
-                                _this.address = "0,0";
-                                _this.doGeocode();
-                                return;
-                            }
-
-                            //address couldn't be processed, so use the center of the map
-                            var tag_to_search_for = _this.saneValue('tag_to_search_for', '');
-                            var radius = _this.saneValue('radiusSelect');
-                            _this.loadMarkers(null, radius, tag_to_search_for);
+                        // if the map hasn't been created, then create one
+                        //
+                        if (_this.gmap === null) {
+                            _this.__buildMap(results[0].geometry.location);
                         }
 
+                        // the map has been created so shift the center of the map
+                        //
+                        else {
+
+                            //move the center of the map
+                            _this.homePoint = results[0].geometry.location;
+                            _this.homeAdress = results[0].formatted_address;
+
+                            _this.addMarkerAtCenter();
+                            var tag_to_search_for = _this.saneValue('tag_to_search_for', '');
+                            //do a search based on settings
+                            var radius = _this.saneValue('radiusSelect' , this.default_radius );
+                            _this.loadMarkers(results[0].geometry.location, radius, tag_to_search_for);
+                        }
+                        //if the user entered an address, replace it with a formatted one
+                        var addressInput = _this.saneValue('addressInput', '');
+                        if (addressInput !== '') {
+                            addressInput = results[0].formatted_address;
+                        }
+                    } else {
+                        //check to see if the map exists, if it doesn't then set the location to nowhere ...
+                        //probably not the best, but this should (hopefully) be rare.
+                        if (_this.gmap === null) {
+                            _this.address = "0,0";
+                            _this.doGeocode();
+                            return;
+                        }
+
+                        //address couldn't be processed, so use the center of the map
+                        var tag_to_search_for = _this.saneValue('tag_to_search_for', '');
+                        var radius = _this.saneValue('radiusSelect' , this.default_radius );
+                        _this.loadMarkers(null, radius, tag_to_search_for);
                     }
 
+                }
             );
         };
 
         /***************************
          * function: __getMarkerUrl
          * usage:
-         * 		Builds the url for store pages
+         *        Builds the url for store pages
          * parameters:
-         * 		aMarker:
-         *			the ajax result to build the information from
+         *        aMarker:
+         *            the ajax result to build the information from
          * returns: an url
          */
-        this.__getMarkerUrl = function(aMarker) {
+        this.__getMarkerUrl = function (aMarker) {
             var url = '';
 
             if (typeof aMarker === "object") {
@@ -849,8 +833,8 @@ var slp = {
                     url = aMarker.sl_pages_url;
                 } else if (aMarker.url !== '') {
                     if ((aMarker.url.indexOf("http://") === -1) &&
-                            (aMarker.url.indexOf("https://") === -1)
-                            ) {
+                        (aMarker.url.indexOf("https://") === -1)
+                    ) {
                         aMarker.url = "http://" + aMarker.url;
                     }
                     if (aMarker.url.indexOf(".") !== -1) {
@@ -867,13 +851,13 @@ var slp = {
         /***************************
          * function: __createAddress
          * usage:
-         * 		Build a formatted address string
+         *        Build a formatted address string
          * parameters:
-         * 		aMarker:
-         *			the ajax result to build the information from
+         *        aMarker:
+         *            the ajax result to build the information from
          * returns: a formatted address string
          */
-        this.__createAddress = function(aMarker) {
+        this.__createAddress = function (aMarker) {
 
             var address = '';
             if (aMarker.address !== '') {
@@ -908,8 +892,8 @@ var slp = {
          *
          * @param {object} aMarker a map marker object.
          */
-        this.createMarkerContent = function(thisMarker) {
-            thisMarker['url'        ] = this.__getMarkerUrl(thisMarker);
+        this.createMarkerContent = function (thisMarker) {
+            thisMarker['url'] = this.__getMarkerUrl(thisMarker);
             thisMarker['fullAddress'] = this.__createAddress(thisMarker);
             return slplus.options.bubblelayout.replace_shortcodes(thisMarker);
         };
@@ -920,7 +904,7 @@ var slp = {
          * Use the GPS coordinates if not and use location is on and coords available.
          * Otherwise use the center of the country.
          */
-        this.getSearchAddress = function(defaultAddress) {
+        this.getSearchAddress = function (defaultAddress) {
             var searchAddress = jQuery('#addressInput').val();
             if (!searchAddress) {
                 if ((slplus.options.use_sensor) && (sensor.lat !== 0.00) && (sensor.lng !== 0.00)) {
@@ -939,7 +923,7 @@ var slp = {
          * @param {string} default value to return
          * @return {undef}
          */
-        this.saneValue = function(id, defaultValue) {
+        this.saneValue = function (id, defaultValue) {
             var name = document.getElementById(id);
             if (name === null) {
                 name = defaultValue;
@@ -953,20 +937,21 @@ var slp = {
         /***************************
          * function: loadMarkers
          * usage:
-         * 		Sends an ajax request and drops the markers on the map
+         *        Sends an ajax request and drops the markers on the map
          * parameters:
-         * 		center:
-         *			the center of the map (where to center to)
+         *        center:
+         *            the center of the map (where to center to)
          * returns: none
          */
-        this.loadMarkers = function(center, radius, tags) {
+        this.loadMarkers = function (center, radius, tags) {
 
             //determines if we need to invent real variables (usually only done at the beginning)
+            //
             if (center === null) {
                 center = this.gmap.getCenter();
             }
             if (radius === null) {
-                radius = 40000;
+                radius = this.default_radius;
             }
             this.lastCenter = center;
             this.lastRadius = radius;
@@ -1002,10 +987,10 @@ var slp = {
 
             // Send AJAX call
             //
-            ajax.send(action, function(response) {
+            ajax.send(action, function (response) {
                 if (typeof response.response !== 'undefined') {
                     _this.clearMarkers();
-                    _this.putMarkers(response.response, slp.Animation.None);
+                    _this.putMarkers(response.response);
                 } else {
                     if (window.console) {
                         console.log('SLP server did not send back a valid JSONP response for ' + action.action + '.');
@@ -1017,12 +1002,12 @@ var slp = {
         /***************************
          * function: tagFilter
          * usage:
-         * 		Sends an ajax request to only get the tags in the current search results
+         *        Sends an ajax request to only get the tags in the current search results
          * parameters:
-         *		none
+         *        none
          * returns: none
          */
-        this.tagFilter = function() {
+        this.tagFilter = function () {
 
             //repeat last search passing tags
             var tag_to_search_for = this.saneValue('tag_to_search_for', '');
@@ -1034,20 +1019,21 @@ var slp = {
         /***************************
          * function: searchLocations
          * usage:
-         * 		begins the process of returning search results
+         *        begins the process of returning search results
          * parameters:
-         * 		none
+         *        none
          * returns: none
          */
-        this.searchLocations = function() {
-            var append_this = 
+        this.searchLocations = function () {
+            var append_this =
                 typeof slplus.options.append_to_search !== 'undefined' ?
                     slplus.options.append_to_search :
-                    ''                              ;
-                    
+                    '';
+
             var address = this.saneValue('addressInput', '') + append_this;
-            jQuery('#map_box_image').hide();
-            jQuery('#map_box_map').show();
+
+            this.unhide_map();
+
             google.maps.event.trigger(this.gmap, 'resize');
 
             // Address was given, use it...
@@ -1056,11 +1042,12 @@ var slp = {
                 this.address = cslutils.escapeExtended(address);
                 this.doGeocode();
 
-            }
-            else {
+            // Otherwise use the current map center as the center location
+            //
+            } else {
                 var tag_to_search_for = this.saneValue('tag_to_search_for', '');
-                var radius = this.saneValue('radiusSelect');
-                this.loadMarkers(this.gmap.getCenter(), radius, tag_to_search_for);
+                var radius = this.saneValue('radiusSelect', this.default_radius );
+                this.loadMarkers( null , radius, tag_to_search_for);
             }
         };
 
@@ -1070,7 +1057,7 @@ var slp = {
          * @param {object} aMarker marker data for a single location
          * @returns {string} a html div with the data properly displayed
          */
-        this.createSidebar = function(aMarker) {
+        this.createSidebar = function (aMarker) {
 
             // Web Link
             // the anchor link to the website or store pages page if pages replaces websites is on
@@ -1084,7 +1071,7 @@ var slp = {
             // Email Link
             // If the email is set link to the email with an anchor mailto or a JS popup form if Pro Pack use form is set.
             //
-            aMarker.email_link  = '';
+            aMarker.email_link = '';
             if (aMarker.email.indexOf('@') !== -1 && aMarker.email.indexOf('.') !== -1) {
                 if (!slplus.use_email_form) {
                     aMarker.email_link = "<a href='mailto:" + aMarker.email + "' target='_blank'  id='slp_marker_email' class='storelocatorlink'><nobr>" + aMarker.email + "</nobr></a>";
@@ -1114,7 +1101,7 @@ var slp = {
             if (jQuery.trim(aMarker.state) !== '') {
                 aMarker.city_state_zip += aMarker.state;
                 if (jQuery.trim(aMarker.zip) !== '') {
-                    aMarker.city_state_zip += ', ';
+                    aMarker.city_state_zip += ' ';
                 }
             }
             if (jQuery.trim(aMarker.zip) !== '') {
@@ -1124,47 +1111,58 @@ var slp = {
             // Phone and Fax with Labels
             //
             aMarker.phone_with_label = (jQuery.trim(aMarker.phone) !== '') ? slplus.options['label_phone'] + aMarker.phone : '';
-            aMarker.fax_with_label = (jQuery.trim(aMarker.fax) !== '') ? slplus.options['label_fax'  ] + aMarker.fax : '';
+            aMarker.fax_with_label = (jQuery.trim(aMarker.fax) !== '') ? slplus.options['label_fax'] + aMarker.fax : '';
 
             // Search address and formatted location address
             //
             var address = this.__createAddress(aMarker);
-            aMarker.location_address    = encodeURIComponent(address);
-            aMarker.search_address      = encodeURIComponent(this.getSearchAddress(this.address));
-            aMarker.hours_sanitized     = jQuery("<div/>").html(aMarker.hours).text();
+            aMarker.location_address = encodeURIComponent(address);
+            aMarker.search_address = encodeURIComponent(this.getSearchAddress(this.address));
+            aMarker.hours_sanitized = jQuery("<div/>").html(aMarker.hours).text();
 
             /**
              * Create and entry in the results table for this location.
              */
             var div = document.createElement('div');
             div.innerHTML = slplus.results_string.replace_placeholders(
-                    aMarker.name,
-                    parseFloat(aMarker.distance).toFixed(1),
-                    slplus.distance_unit,
-                    aMarker.address,
-                    aMarker.address2,
-                    aMarker.city_state_zip,
-                    aMarker.phone_with_label,
-                    aMarker.fax_with_label,
-                    aMarker.web_link,
-                    aMarker.email_link,
-                    slplus.options.map_domain,
-                    aMarker.search_address,
-                    aMarker.location_address,
-                    slplus.options['label_directions'],
-                    aMarker.pro_tags,
-                    aMarker.id,
-                    aMarker.country,
-                    aMarker.hours_sanitized,
-                    aMarker
-                    ).
-                    replace_shortcodes(aMarker)
-                    ;
+                aMarker.name,
+                parseFloat(aMarker.distance).toFixed(1),
+                slplus.distance_unit,
+                aMarker.address,
+                aMarker.address2,
+                aMarker.city_state_zip,
+                aMarker.phone_with_label,
+                aMarker.fax_with_label,
+                aMarker.web_link,
+                aMarker.email_link,
+                slplus.options.map_domain,
+                aMarker.search_address,
+                aMarker.location_address,
+                slplus.options['label_directions'],
+                aMarker.pro_tags,
+                aMarker.id,
+                aMarker.country,
+                aMarker.hours_sanitized,
+                aMarker
+            ).
+                replace_shortcodes(aMarker)
+            ;
             div.className = 'results_wrapper';
             div.id = 'slp_results_wrapper_' + aMarker.id;
 
             return div;
         };
+
+        /**
+         * Unhide the map div.
+         */
+        this.unhide_map = function() {
+            if ( this.map_hidden ) {
+                jQuery('#map_box_image').hide();
+                jQuery('#map_box_map').show();
+                this.map_hidden = false;
+            }
+        }
 
         //dumb browser quirk trick ... wasted two hours on that one
         this.__init();
@@ -1202,26 +1200,30 @@ function setup_Helpers() {
      *
      * @returns {string}
      */
-    String.prototype.replace_shortcodes = function() {
+    String.prototype.replace_shortcodes = function () {
         var args = arguments;
         var thisMarker = args[0];
         var shortcode_complex_regex = /\[(\w+)\s+(\w+)\s*(\w*)(?:[\s="]*)(\w*)(?:[\s"]*)\]/g;
 
         return this.replace(
             shortcode_complex_regex,
-            function(match, shortcode, attribute, modifier, modarg) {
+            function (match, shortcode, attribute, modifier, modarg) {
 
                 switch (shortcode) {
                     // SHORTCODE: slp_location
                     // processes the location data
                     //
                     case 'slp_location':
-                        if ( attribute === 'latitude'  ) { attribute = 'lat'; }
-                        if ( attribute === 'longitude' ) { attribute = 'lng'; }
+                        if (attribute === 'latitude') {
+                            attribute = 'lat';
+                        }
+                        if (attribute === 'longitude') {
+                            attribute = 'lng';
+                        }
 
                         // Output NOTHING if attribute is empty
                         //
-                        if ( ! thisMarker[attribute] ) {
+                        if (!thisMarker[attribute]) {
                             return '';
                         }
 
@@ -1230,7 +1232,7 @@ function setup_Helpers() {
                         var prefix = '';
                         var suffix = '';
                         var raw_output = true;
-                        var value  = thisMarker[attribute];
+                        var value = thisMarker[attribute];
 
                         // Special Field Processing
                         switch (attribute) {
@@ -1282,14 +1284,14 @@ function setup_Helpers() {
                                     case 'website':
                                         prefix = '<a href="';
                                         suffix = '" ' +
-                                            'target="' + ((slplus.options.use_same_window === "on") ? '_self' : '_blank') + '" ' +
-                                            'id="slp_marker_website" ' +
-                                            'class="storelocatorlink" ' +
-                                            '>';
+                                        'target="' + ((slplus.options.use_same_window === "on") ? '_self' : '_blank') + '" ' +
+                                        'id="slp_marker_website" ' +
+                                        'class="storelocatorlink" ' +
+                                        '>';
                                         break;
 
                                     case 'fullspan':
-                                        prefix = '<span class="results_line location_'+attribute+'">';
+                                        prefix = '<span class="results_line location_' + attribute + '">';
                                         suffix = '</span>';
                                         break;
 
@@ -1329,9 +1331,9 @@ function setup_Helpers() {
                                 break;
                         }
                         var newOutput =
-                            (raw_output)                            ?
-                                value                               :
-                                jQuery("<div/>").html(value).text() ;
+                            (raw_output) ?
+                                value :
+                                jQuery("<div/>").html(value).text();
                         return prefix + newOutput + suffix;
 
                     // SHORTCODE: slp_option
@@ -1364,9 +1366,9 @@ function setup_Helpers() {
 
                                     case 'directions':
                                         prefix = '<a href="http://' + slplus.options.map_domain +
-                                            '/maps?saddr=' + encodeURIComponent(cslmap.getSearchAddress(cslmap.address)) +
-                                            '&daddr=' + encodeURIComponent(thisMarker['fullAddress']) +
-                                            '" target="_blank" class="storelocatorlink">';
+                                        '/maps?saddr=' + encodeURIComponent(cslmap.getSearchAddress(cslmap.address)) +
+                                        '&daddr=' + encodeURIComponent(thisMarker['fullAddress']) +
+                                        '" target="_blank" class="storelocatorlink">';
                                         suffix = '</a> ';
                                         break;
 
@@ -1435,14 +1437,14 @@ function setup_Helpers() {
      *
      * @returns {String.prototype@call;replace}
      */
-    String.prototype.replace_placeholders = function() {
+    String.prototype.replace_placeholders = function () {
         var args = arguments;
         return this.replace(
             /{(\d+)(\.(\w+)\.?(\w+)?)?}/g,
-            function(match, number, dotsubname, subname, subsubname) {
+            function (match, number, dotsubname, subname, subsubname) {
 
-            // aMarker[#] is defined
-            return typeof args[number] !== 'undefined'
+                // aMarker[#] is defined
+                return typeof args[number] !== 'undefined'
 
                     // aMarker[#] is not a complex object - just return the value of that field number
                     //
@@ -1468,10 +1470,8 @@ function setup_Helpers() {
                     // aMarker[#] not defined, return blank
                     : ''
                     ;
-        });
+            });
     };
-
-
 
 
 }
@@ -1501,166 +1501,166 @@ function setup_Map() {
         sensor = new slp.LocationServices();
         if (sensor.LocationSupport) {
             sensor.currentLocation(
-                    // 1) Success on Location
-                            //
-                                    function(loc) {
-                                        clearTimeout(sensor.location_timeout);
-                                        cslmap = new slp.Map();
-                                        cslmap.usingSensor = true;
-                                        sensor.lat = loc.coords.latitude;
-                                        sensor.lng = loc.coords.longitude;
-                                        cslmap.__buildMap(new google.maps.LatLng(loc.coords.latitude, loc.coords.longitude));
-                                    },
-                                    // 2) Failed on location
-                                            //
-                                                    function(error) {
-                                                        clearTimeout(sensor.location_timeout);
-                                                        if (!sensor.errorCalled) {
-                                                            sensor.errorCalled = true;
-                                                            slplus.options.use_sensor = false;
-                                                            cslmap = new slp.Map();
-                                                            cslmap.usingSensor = false;
-                                                            cslmap.doGeocode();
-                                                        }
-                                                    }
-                                            );
-
-                                            // 3) GPS Sensor Not Working (like IE8)
-                                            //
-                                        } else {
-                                    slplus.options.use_sensor = false;
-                                    cslmap = new slp.Map();
-                                    cslmap.usingSensor = false;
-                                    cslmap.doGeocode();
-                                }
-
-                                // 4) No Sensor
-                                //
-                            } else {
+                // 1) Success on Location
+                //
+                function (loc) {
+                    clearTimeout(sensor.location_timeout);
+                    cslmap = new slp.Map();
+                    cslmap.usingSensor = true;
+                    sensor.lat = loc.coords.latitude;
+                    sensor.lng = loc.coords.longitude;
+                    cslmap.__buildMap(new google.maps.LatLng(loc.coords.latitude, loc.coords.longitude));
+                },
+                // 2) Failed on location
+                //
+                function (error) {
+                    clearTimeout(sensor.location_timeout);
+                    if (!sensor.errorCalled) {
+                        sensor.errorCalled = true;
                         slplus.options.use_sensor = false;
                         cslmap = new slp.Map();
                         cslmap.usingSensor = false;
-                        // If set id attr
-                        //
-                        if (slplus.options.id_addr != null) {
-                            cslmap.address = slplus.options.id_addr;
-                        }
                         cslmap.doGeocode();
                     }
                 }
+            );
+
+            // 3) GPS Sensor Not Working (like IE8)
+            //
+        } else {
+            slplus.options.use_sensor = false;
+            cslmap = new slp.Map();
+            cslmap.usingSensor = false;
+            cslmap.doGeocode();
+        }
+
+        // 4) No Sensor
+        //
+    } else {
+        slplus.options.use_sensor = false;
+        cslmap = new slp.Map();
+        cslmap.usingSensor = false;
+        // If set id attr
+        //
+        if (slplus.options.id_addr != null) {
+            cslmap.address = slplus.options.id_addr;
+        }
+        cslmap.doGeocode();
+    }
+}
 
 /*
  * When the document has been loaded...
  *
  */
 jQuery(document).ready(
-        function() {
+    function () {
 
-            // Regular Expression Test Patterns
-            //
-            var radioCheck = /radio|checkbox/i,
-                    keyBreaker = /[^\[\]]+/g,
-                    numberMatcher = /^[\-+]?[0-9]*\.?[0-9]+([eE][\-+]?[0-9]+)?$/;
+        // Regular Expression Test Patterns
+        //
+        var radioCheck = /radio|checkbox/i,
+            keyBreaker = /[^\[\]]+/g,
+            numberMatcher = /^[\-+]?[0-9]*\.?[0-9]+([eE][\-+]?[0-9]+)?$/;
 
-            // isNumber Test
+        // isNumber Test
+        //
+        var isNumber = function (value) {
+            if (typeof value === 'number') {
+                return true;
+            }
+
+            if (typeof value !== 'string') {
+                return false;
+            }
+
+            return value.match(numberMatcher);
+        };
+
+        // Form Parameters Processor
+        //
+        jQuery.fn.extend({
+            // Get the form parameters
             //
-            var isNumber = function(value) {
-                if (typeof value === 'number') {
-                    return true;
+            formParams: function (convert) {
+                if (this[0].nodeName.toLowerCase() == 'form' && this[0].elements) {
+
+                    return jQuery(jQuery.makeArray(this[0].elements)).getParams(convert);
                 }
-
-                if (typeof value !== 'string') {
-                    return false;
-                }
-
-                return value.match(numberMatcher);
-            };
-
-            // Form Parameters Processor
+                return jQuery("input[name], textarea[name], select[name]", this[0]).getParams(convert);
+            },
+            // Get a specific form element
             //
-            jQuery.fn.extend({
-                // Get the form parameters
-                //
-                formParams: function(convert) {
-                    if (this[0].nodeName.toLowerCase() == 'form' && this[0].elements) {
+            getParams: function (convert) {
+                var data = {},
+                    current;
 
-                        return jQuery(jQuery.makeArray(this[0].elements)).getParams(convert);
+                convert = convert === undefined ? true : convert;
+
+                this.each(function () {
+                    var el = this,
+                        type = el.type && el.type.toLowerCase();
+                    //if we are submit, ignore
+                    if ((type == 'submit') || !el.name) {
+                        return;
                     }
-                    return jQuery("input[name], textarea[name], select[name]", this[0]).getParams(convert);
-                },
-                // Get a specific form element
-                //
-                getParams: function(convert) {
-                    var data = {},
-                            current;
 
-                    convert = convert === undefined ? true : convert;
+                    var key = el.name,
+                        value = jQuery.data(el, "value") || jQuery.fn.val.call([el]),
+                        isRadioCheck = radioCheck.test(el.type),
+                        parts = key.match(keyBreaker),
+                        write = !isRadioCheck || !!el.checked,
+                    //make an array of values
+                        lastPart;
 
-                    this.each(function() {
-                        var el = this,
-                                type = el.type && el.type.toLowerCase();
-                        //if we are submit, ignore
-                        if ((type == 'submit') || !el.name) {
-                            return;
+                    if (convert) {
+                        if (isNumber(value)) {
+                            value = parseFloat(value);
+                        } else if (value === 'true' || value === 'false') {
+                            value = Boolean(value);
                         }
 
-                        var key = el.name,
-                                value = jQuery.data(el, "value") || jQuery.fn.val.call([el]),
-                                isRadioCheck = radioCheck.test(el.type),
-                                parts = key.match(keyBreaker),
-                                write = !isRadioCheck || !!el.checked,
-                                //make an array of values
-                                lastPart;
-
-                        if (convert) {
-                            if (isNumber(value)) {
-                                value = parseFloat(value);
-                            } else if (value === 'true' || value === 'false') {
-                                value = Boolean(value);
-                            }
-
-                        }
-
-                        // go through and create nested objects
-                        current = data;
-                        for (var i = 0; i < parts.length - 1; i++) {
-                            if (!current[parts[i]]) {
-                                current[parts[i]] = {};
-                            }
-                            current = current[parts[i]];
-                        }
-                        lastPart = parts[parts.length - 1];
-
-                        //now we are on the last part, set the value
-                        if (lastPart in current && type === "checkbox") {
-                            if (!jQuery.isArray(current[lastPart])) {
-                                current[lastPart] = current[lastPart] === undefined ? [] : [current[lastPart]];
-                            }
-                            if (write) {
-                                current[lastPart].push(value);
-                            }
-                        } else if (write || !current[lastPart]) {
-                            current[lastPart] = write ? value : undefined;
-                        }
-
-                    });
-                    return data;
-                }
-            });
-
-            // Our map initialization
-            //
-            if (jQuery('div#sl_div').is(":visible")) {
-                if (typeof slplus !== 'undefined') {
-                    if (typeof google !== 'undefined' ) {
-                        setup_Helpers();
-                        setup_Map();
-                    } else {
-                        jQuery('#sl_div').html('Looks like you turned off SLP Maps under General Settings but need them here.');
                     }
+
+                    // go through and create nested objects
+                    current = data;
+                    for (var i = 0; i < parts.length - 1; i++) {
+                        if (!current[parts[i]]) {
+                            current[parts[i]] = {};
+                        }
+                        current = current[parts[i]];
+                    }
+                    lastPart = parts[parts.length - 1];
+
+                    //now we are on the last part, set the value
+                    if (lastPart in current && type === "checkbox") {
+                        if (!jQuery.isArray(current[lastPart])) {
+                            current[lastPart] = current[lastPart] === undefined ? [] : [current[lastPart]];
+                        }
+                        if (write) {
+                            current[lastPart].push(value);
+                        }
+                    } else if (write || !current[lastPart]) {
+                        current[lastPart] = write ? value : undefined;
+                    }
+
+                });
+                return data;
+            }
+        });
+
+        // Our map initialization
+        //
+        if (jQuery('div#sl_div').is(":visible")) {
+            if (typeof slplus !== 'undefined') {
+                if (typeof google !== 'undefined') {
+                    setup_Helpers();
+                    setup_Map();
                 } else {
-                    jQuery('#sl_div').html('Store Locator Plus did not initialize properly.');
+                    jQuery('#sl_div').html('Looks like you turned off SLP Maps under General Settings but need them here.');
                 }
+            } else {
+                jQuery('#sl_div').html('Store Locator Plus did not initialize properly.');
             }
         }
+    }
 );

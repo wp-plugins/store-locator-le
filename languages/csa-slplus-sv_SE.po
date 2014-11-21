@@ -1,0 +1,2167 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Store Locator Plus v4.2.10\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2014-11-18 20:36+0100\n"
+"Last-Translator: Piani Sweden AB <info@piani.se>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Poedit 1.6.10\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
+"_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
+"X-Poedit-Basepath: ../\n"
+"X-Textdomain-Support: yes\n"
+"Language: sv_SE\n"
+"X-Poedit-SearchPath-0: .\n"
+
+# @ csa-slplus
+#: include/class.actions.php:145
+msgid "SLP Hints"
+msgstr "SLPLUS Tips"
+
+# @ csa-slplus
+#: include/class.actions.php:149
+#, php-format
+msgid ""
+"Store Locator Plus documentation can be found online at <a href=\"%s\" "
+"target=\"csa\">%s</a>.<br/>"
+msgstr ""
+"Store Locator Plus dokumentation hittar du online på <a href=\"%s\" target="
+"\"csa\">%s</a>.<br/>"
+
+# @ csa-slplus
+#: include/class.actions.php:154
+#, php-format
+msgid ""
+"View the <a href=\"%s\" target=\"csa\">[slplus] shortcode documentation</a>."
+msgstr ""
+"Läs mer i <a href=\"%s\" target=\"csa\">[slplus] kortkod dokumentationen</a>."
+
+# @ csa-slplus
+#: include/class.actions.php:189
+msgid "Info"
+msgstr "Info"
+
+# @ csa-slplus
+#: include/class.actions.php:195 include/class.actions.php:225
+msgid "Locations"
+msgstr "Platser"
+
+# @ csa-slplus
+#: include/class.actions.php:201
+msgid "User Experience"
+msgstr "Utseende"
+
+# @ csa-slplus
+#: include/class.actions.php:207 include/class.adminui.generalsettings.php:378
+msgid "General Settings"
+msgstr "Inställningar"
+
+# @ csa-slplus
+#: include/class.actions.php:309 include/class.addon.manager.php:140
+msgid "Store Pages"
+msgstr "Butikssidor"
+
+# @ csa-slplus
+#: include/class.actions.php:310
+msgid "Store Page"
+msgstr "Butikssida"
+
+# @ csa-slplus
+#: include/class.actions.php:311
+msgid "Add New Store Page"
+msgstr "Lägg till ny butikssida"
+
+# @ csa-slplus
+#: include/class.actions.php:340
+msgid "Store Locator Plus location pages."
+msgstr "Store Locator Plus platssidor."
+
+# @ csa-slplus
+#: include/class.actions.php:359
+msgid "Categories"
+msgstr "Kategorier"
+
+# @ csa-slplus
+#: include/class.actions.php:360
+msgid "Store Categories"
+msgstr "Butikskategorier"
+
+# @ csa-slplus
+#: include/class.addon.manager.php:135
+msgid "Contact Extender"
+msgstr ""
+
+# @ csa-slplus
+#: include/class.addon.manager.php:136
+msgid "Enhanced Map"
+msgstr ""
+
+# @ csa-slplus
+#: include/class.addon.manager.php:137
+msgid "Enhanced Results"
+msgstr ""
+
+# @ csa-slplus
+#: include/class.addon.manager.php:138
+msgid "Enhanced Search"
+msgstr ""
+
+# @ csa-slplus
+#: include/class.addon.manager.php:139
+msgid "Janitor"
+msgstr ""
+
+# @ csa-slplus
+#: include/class.addon.manager.php:141
+msgid "Pro Pack"
+msgstr ""
+
+# @ csa-slplus
+#: include/class.addon.manager.php:142
+msgid "Tagalong"
+msgstr ""
+
+# @ csa-slplus
+#: include/class.addon.manager.php:143
+msgid "User Managed Locations"
+msgstr ""
+
+# @ csa-slplus
+#: include/class.addon.manager.php:144
+msgid "Widget"
+msgstr ""
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:132
+msgid "Admin"
+msgstr "Admin"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:133 lib/class.plugin.php:491
+msgid "Settings"
+msgstr "Inställningar"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:139
+msgid "Turn off rate notification"
+msgstr "Stäng av betygsmeddelande"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:143
+msgid "This will disable the notification asking you to rate our product."
+msgstr ""
+"Detta kommer att stänga meddelandet där vi ber dig att betygsätta vår "
+"produkt."
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:152
+msgid "Extended Admin Messages"
+msgstr "Utökade Admin meddelanden"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:156
+msgid "Show extended messages on the admin panel."
+msgstr "Visa utökade meddelanden på admin panelen."
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:171
+msgid "Server"
+msgstr "Server"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:174
+msgid "Geocoding"
+msgstr "Geokondning"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:179
+msgid "Server-To-Server Speed"
+msgstr "Server-Till-Server Hastighet"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:191
+msgid ""
+"How fast is your server when communicating with other servers like Google? "
+msgstr ""
+"Hur snabb är din server när du kommunicerar med andra servrar som t.ex. "
+"Google? "
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:192
+msgid ""
+"Set this to slow if you get frequent geocoding errors but geocoding works "
+"sometimes. "
+msgstr ""
+"Ställ in detta för att skicka långsammare om du får ofta geokodningfel men "
+"geokodning fungerar ibland. "
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:193
+msgid ""
+"Set this to fast if you never have geocoding errors and are bulk loading "
+"more than 100 locations at a time. "
+msgstr ""
+"Ställ in den här till snabbt om du aldrig får geokodningsfel och du kör "
+"grupper med fler än 100 platser i taget. "
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:200
+msgid "Geocode Retries"
+msgstr "Geocode Försök"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:219
+msgid ""
+"How many times should we try to set the latitude/longitude for a new "
+"address? "
+msgstr ""
+"Hur många gånger ska vi försöka sätta latitud/longitud för en ny adress? "
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:220
+msgid "Higher numbers mean slower bulk uploads. "
+msgstr "Högre antal betyder långsammare grupp-uppladdningar. "
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:221
+msgid ""
+"Lower numbers make it more likely the location will not be set during bulk "
+"uploads. "
+msgstr ""
+"Lägre siffra gör det mer sannolikt att platsen inte sätts vid "
+"gruppuppladdningar. "
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:222
+#: include/class.adminui.generalsettings.php:238
+#, php-format
+msgid "Bulk import or re-geocoding is a %s feature."
+msgstr "Gruppimport eller re-geokoding är en %s funktion."
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:230
+msgid "Maximum Retry Delay"
+msgstr "Maximal försöksfördröjning"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:235
+msgid "Maximum time to wait between retries, in seconds. "
+msgstr "Maximal tid att vänta mellan försök, i sekunder. "
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:236
+msgid "Use multiples of 1. "
+msgstr "Använd multipel av 1. "
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:237
+msgid "Recommended value is 5. "
+msgstr "Rekommenderat värde är 5. "
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:244
+msgid "Google Business License"
+msgstr "Google Business Licens"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:249
+msgid "Google API Key"
+msgstr "Google API Nyckel"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:252
+msgid ""
+"This setting helps with query limits for businesses with a Google Business "
+"Account only."
+msgstr ""
+"Denna inställning hjälper till med frågegränser endast för företag med "
+"Google Business-konto. "
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:253
+msgid "The free Google API keys do not have an impact on query limits."
+msgstr "De fria Google API nycklarna påverkar inte frågegränser."
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:294
+msgid "User Interface"
+msgstr "Användargränssnitt"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:297
+msgid "JavaScript"
+msgstr "JavaScript"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:306
+msgid "These settings change how JavaScript behaves on your site. "
+msgstr "Dessa inställningar ändra hur JavaScript fungerar på din webbplats. "
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:310
+#, php-format
+msgid "You have <a href=\"%s\" target=\"csa\">Force Load JavaScript</a> ON. "
+msgstr ""
+"Du har <a href=\"%s\" target=\"csa\">Tvinga laddning av JavaScript</a> PÅ. "
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:313
+msgid ""
+"Themes that follow WordPress best practices and employ wp_footer() properly "
+"do not need this. "
+msgstr ""
+"Teman som följer Wordpress bästa praxis och utnyttjar wp_footer () korrekt "
+"behöver inte detta. "
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:314
+msgid ""
+"Leaving it on slows down your site and disables a lot of extra features with "
+"the plugin and add-on packs. "
+msgstr ""
+"Lämnas denna på så saktar det ner din webbplats och inaktiverar en massa "
+"extra funktioner med tillägget. "
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:326
+msgid "Force Load JavaScript"
+msgstr "Tvinga laddning av JavaScript"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:330
+msgid ""
+"Force the JavaScript for Store Locator Plus to load on every page with early "
+"loading. "
+msgstr ""
+"Tvinga laddning av JavaScript för Store Locator Plus att ladda på varje sida "
+"med tidig laddning. "
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:331
+msgid ""
+"This can slow down your site, but is compatible with more themes and "
+"plugins. "
+msgstr ""
+"Detta kan sakta ned din sida, men är kompatibel med fler teman och plugins. "
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:332
+msgid ""
+"If you need to do this to make SLP work you should ask your theme author to "
+"add proper wp_footer() support to their code. "
+msgstr ""
+"Om du behöver göra detta för att SLP ska fungera bör du fråga ditt temas "
+"skapare att lägga ordentligt wp_footer () stöd i sin kod."
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:338
+msgid "Map Interface"
+msgstr "Kartgränssnitt"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:343
+msgid "Turn Off SLP Maps"
+msgstr "Stäng av SLP kartor"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:348
+msgid ""
+"Check this box if your Theme or another plugin is providing Google Maps and "
+"generating warning messages. THIS MAY BREAK THIS PLUGIN."
+msgstr ""
+"Markera denna ruta om ditt tema eller annan plugin gör att Google Maps "
+"skapar egna varningsmeddelanden. DETTA KAN GÖRA ATT TILLÄGGET INTE FUNGERAR."
+
+# @ csa-slplus
+#: include/class.adminui.info.php:19
+msgid "Add A Location"
+msgstr "Lägg till en plats"
+
+# @ csa-slplus
+#: include/class.adminui.info.php:26
+msgid "Create A Page"
+msgstr "Skapa en sida"
+
+# @ csa-slplus
+#: include/class.adminui.info.php:33
+msgid "Tweak The Settings"
+msgstr "Ändra inställningar"
+
+# @ csa-slplus
+#: include/class.adminui.info.php:41
+#, php-format
+msgid ""
+"It is recommended that you start by going to <a href=\"%s\">General "
+"Settings</a> and turning OFF \"Force Load JavaScript\"."
+msgstr ""
+"Vi rekommenderar att du börjar med att gå till <a href=\"%s\">Inställningar</"
+"a> och stänger AV \"Force Load JavaScript\"."
+
+# @ csa-slplus
+#: include/class.adminui.info.php:55
+msgid "More Help?"
+msgstr "Mer hjälp?"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:276
+msgid " - Locations"
+msgstr " - Platser"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:295
+#: include/class.adminui.locations.php:1094
+msgid "Name"
+msgstr "Namn"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:296
+#: include/class.adminui.locations.php:1091
+#: include/class.adminui.locations.php:2378
+#: include/class.adminui.mapsettings.php:978 include/class.ui.php:280
+msgid "Address"
+msgstr "Adress"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:308
+#: include/class.adminui.locations.php:1218
+msgid "Description"
+msgstr "Beskrivning"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:309
+#: include/class.adminui.locations.php:1231
+#: include/class.adminui.locations.php:2197
+msgid "Email"
+msgstr "E-mail"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:313
+#: include/class.adminui.locations.php:1226
+#: include/class.adminui.mapsettings.php:865
+msgid "Website"
+msgstr "Webbsida"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:318
+#: include/class.adminui.locations.php:1236
+#: include/class.adminui.mapsettings.php:869
+#: include/class.adminui.mapsettings.php:872
+msgid "Hours"
+msgstr "Öppettider"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:323
+#: include/class.adminui.locations.php:1244
+#: include/class.adminui.mapsettings.php:876
+#: include/class.adminui.mapsettings.php:879
+msgid "Phone"
+msgstr "Telefon"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:328
+#: include/class.adminui.locations.php:1249
+#: include/class.adminui.mapsettings.php:883
+#: include/class.adminui.mapsettings.php:886
+msgid "Fax"
+msgstr "Telefax"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:618
+msgid " at "
+msgstr " at "
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:838
+#, php-format
+msgid "Address %s (%d in current series) hit the Google query limit.\n"
+msgstr "Adress %s (%d i aktuell serie) träffade Google-frågegräns.\n"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:867
+#, php-format
+msgid ""
+"Waited up to %4.2f seconds between request, total wait for this location was "
+"%4.2f seconds."
+msgstr ""
+"Väntade upp till %4.2f sekunder mellan förfrågningar, total väntetid för "
+"denna plats var %4.2f sekunder."
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:873
+#, php-format
+msgid "%d total attempts for this location."
+msgstr "%d total försök för denna plats."
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:883
+#: include/class.adminui.locations.php:896
+#, php-format
+msgid "Address #%d : %s <font color=red>failed to geocode</font>."
+msgstr "Adressen #%d : %s <font color=red>misslyckades att geokoda</font>."
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:887
+#, php-format
+msgid "Unknown Address! Received status %s."
+msgstr "Okänd adress! Mottaget svar %s."
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:900
+#, php-format
+msgid "Received status %s."
+msgstr "Mottaget svar %s."
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:903
+#, php-format
+msgid "Received data %s."
+msgstr "Mottagna data %s."
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:915
+msgid "Geocode service non-responsive"
+msgstr "Geokodningservice svarar inte"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:928
+#, php-format
+msgid "Read <a href=\"%s\">this</a> if you are having geocoding issues."
+msgstr "Läs <a href=\"%s\">detta</a> om du har problem att geokoda."
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:944
+#, php-format
+msgid ""
+"Google thinks %s is at <a href=\"%s\" target=\"_blank\">lat: %s long %s</a>"
+msgstr ""
+"Google tror %s är vid <a href=\"%s\" target=\"_blank\">lat: %s long %s</a>"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1069
+msgid "Inactive. Geocode to activate."
+msgstr "Inaktiv. Geokoda för att aktivera."
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1099
+msgid "Street - Line 1"
+msgstr "Gata - Rad 1"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1104
+msgid "Street - Line 2"
+msgstr "Gata - Rad 2"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1109
+msgid "City, State, ZIP"
+msgstr "Stad, Län, Postnr"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1129
+#: include/class.adminui.locations.php:2394
+msgid "Country"
+msgstr "Land"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1134
+msgid "Latitude (N/S)"
+msgstr "Latitud (N/S)"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1137
+msgid "Leave blank to have Google look up the latitude."
+msgstr "Lämna tomt för att få Google att söka upp latitud."
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1141
+msgid "Longitude (E/W)"
+msgstr "Longitud (Ö/V)"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1144
+msgid "Leave blank to have Google look up the longitude."
+msgstr "Lämna tomt för att få Google att söka longitud."
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1149
+#: include/class.adminui.locations.php:1150
+msgid "Latitude/Longitude lookup."
+msgstr "Latitud/Longitud sökning."
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1151
+msgid ""
+"The LatLong.net website can help you locate an exact latitude/longitude."
+msgstr ""
+"LatLong.net webbplatsen kan hjälpa dig att hitta exakt latitud/longitud."
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1173
+msgid "Add Location"
+msgstr "Lägg till plats"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1174
+msgid "Update Location"
+msgstr "Uppdatera plats"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1179
+#: include/class.adminui.locations.php:2057
+#: include/class.adminui.locations.php:2529
+msgid "Add"
+msgstr "Lägg till"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1180
+msgid "Update"
+msgstr "Uppdatera"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1198
+msgid "Cancel"
+msgstr "Avsluta"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1215
+msgid "Additional Information"
+msgstr "Extra information"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1254
+msgid "Image URL"
+msgstr "Bild URL"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1410
+msgid "Added Successfully"
+msgstr "Lyckad uppdatering"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1414
+msgid "Location not added."
+msgstr "Plats ej tillagd."
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1415
+msgid "The add location form on your server is not rendering properly."
+msgstr "Lägg till plats formuläret uppdateras inte riktigt på din server."
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1659
+#: include/class.adminui.locations.php:1660
+msgid "edit"
+msgstr "ändra"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1667
+#: include/class.adminui.locations.php:1668
+msgid "delete"
+msgstr "ta bort"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1671
+#, php-format
+msgid "Delete %s?"
+msgstr "Ta bort %s?"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1692
+msgid "Bulk Actions"
+msgstr "Gruppåtgärd"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1697
+msgid "Delete Permanently"
+msgstr "Ta helt bort"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1718
+msgid "Options"
+msgstr "Alternativ"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1729
+msgid "Are you sure you want to "
+msgstr "Är du säker du vill"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1739 lib/class.helper.php:153
+msgid "Apply"
+msgstr "Spara"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1770
+msgid "Show All"
+msgstr "Visa alla"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1792
+msgid "Filter Locations By"
+msgstr "Filterar platser enligt"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1808
+msgid "Filter"
+msgstr "Filtrera"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1870
+msgid "Normal"
+msgstr "Normal"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1872
+#: include/class.adminui.locations.php:1883
+#: include/class.adminui.locations.php:2031
+msgid "locations"
+msgstr "platser"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1881
+msgid "Expanded"
+msgstr "Utöka"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1889
+#: include/class.adminui.locations.php:1894
+#: include/class.adminui.locations.php:1899
+#: include/class.adminui.locations.php:1904
+#: include/class.adminui.locations.php:1909
+#: include/class.adminui.locations.php:1914
+#, php-format
+msgid "%d locations"
+msgstr "%d platser"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1930
+msgid "Display"
+msgstr "Visa"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1957
+msgid "for your search of"
+msgstr "för din sökning av"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:1959
+msgid "Clear&nbsp;Results"
+msgstr "Rensa&nbsp;resultat"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:2050
+msgid "Edit"
+msgstr "Ändra"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:2081
+#: include/class.adminui.locations.php:2528
+msgid "Manage"
+msgstr "Hantera"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:2191
+#: include/class.adminui.locations.php:2201
+#: include/class.adminui.mapsettings.php:93
+msgid "View"
+msgstr "Utseende"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:2282
+msgid "No locations have been created yet."
+msgstr "Ingen plats har skapats ännu."
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:2283
+msgid "Search Locations returned no matches."
+msgstr "Sökning av platser visar ingen träff"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:2285
+msgid "Where: "
+msgstr "Var: "
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:2341
+msgid "Search"
+msgstr "Sök"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:2367
+msgid "Actions"
+msgstr "Åtgärder"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:2382
+msgid "City"
+msgstr "Stad"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:2386
+msgid "State"
+msgstr "Län"
+
+# @ csa-slplus
+#: include/class.adminui.locations.php:2390
+msgid "Zip"
+msgstr "Postnr"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:63
+msgid " - User Experience"
+msgstr " - Gränssnitt"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:67
+msgid "Save Settings"
+msgstr "Spara inställningar"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:212
+msgid "Auto set height unit to blank when height is 'auto !important'"
+msgstr "Sätt automatisk blank höjd när höjden är 'auto !important'"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:217
+msgid "Auto set width unit to blank when width is 'auto !important'"
+msgstr "Sätt automatisk blank bredd när bredden är 'auto !important'"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:332
+msgid "Look and Feel"
+msgstr "Utseende"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:336
+msgid "Map Height"
+msgstr "Karthöjd"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:337
+msgid "The initial map height in pixels or percent of initial page height. "
+msgstr "Startkartans höjd i pixlar eller procent av kartsidans höjd. "
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:338
+msgid ""
+"Can also use rules like auto and inherit if Height Units is set to blank "
+msgstr ""
+"Kan också använda regler som -auto- och -inherit- om höjdenheten är sätt "
+"till blank "
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:347
+msgid "Height Units"
+msgstr "Höjdenhet"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:348
+msgid "Is the width a percentage of page width or absolute pixel size? "
+msgstr "Är bredden en procentandel av sidan bredd eller absolut pixelstorlek? "
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:349
+msgid ""
+"Select blank to use CSS rules like auto or inherit in the Map Height setting."
+msgstr ""
+"Välj blank för att använda CSS-regler som -auto- eller -inherit- i "
+"inställningen för karthöjd."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:357
+msgid "Map Width"
+msgstr "Kartbredd"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:358
+msgid ""
+"The initial map width in pixels or percent of page width. Also sets results "
+"width."
+msgstr ""
+"Startkartans bredd i pixlar eller procent av sidans bredd. Ställer även "
+"resultatens bredd."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:359
+msgid ""
+"Can also use rules like auto and inherit if Width Units is set to blank "
+msgstr ""
+"Kan också använda regler som -auto- och -inherit- om breddenheten är sätt "
+"till blank "
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:367
+msgid "Width Units"
+msgstr "Breddenhet"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:368
+msgid "Is the width a percentage of page width or absolute pixel size?"
+msgstr "Är bredden en procentandel av sidan bredd eller absolut pixelstorlek?"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:369
+msgid ""
+"Select blank to use CSS rules like auto or inherit in the Map Width setting."
+msgstr ""
+"Välj blank för att använda CSS-regler som -auto- eller -inherit- i "
+"inställningen för kartbredd."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:377
+msgid "Default Map Type"
+msgstr "Standard karttyp"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:378
+msgid "What style Google Map should we use?"
+msgstr "Vilken stil av Google Map ska användas?"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:384
+msgid "Remove Credits"
+msgstr "Ta bort SLPLUS info"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:385
+msgid "Remove the search provided by tagline under the map."
+msgstr "Ta bort informationstext från Store Locator Plus under kartan."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:392
+msgid "Center Map At"
+msgstr "Centrera kartan vid"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:393
+msgid "Enter an address to serve as the initial focus for the map. "
+msgstr "Ange en adress som ska ange den ursprungliga centreringan av kartan. "
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:394
+msgid "Default is the center of the country."
+msgstr "Standard är mitt i landet."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:395
+msgid ""
+"Enhanced Map add-on must be installed to set per-page with center_map_at="
+"\"address\" shortcode. "
+msgstr ""
+"Enhanced Map plugin måste vara installerat för att ställa in unik bredd och "
+"kartcenter=\"address\" kortkod. "
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:396
+msgid ""
+"Force JavaScript setting must be off when using the shortcode attribute. "
+msgstr ""
+"Tvinga JavaScript setting must be off when using the shortcode attribute. "
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:406
+msgid "Behavior"
+msgstr "Kartans utseende"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:411
+msgid "Map Domain"
+msgstr "Kartdomän"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:425
+msgid "Map Language"
+msgstr "Kartspråk"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:439
+msgid "Zoom Level"
+msgstr "Zoomnivå"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:440
+msgid ""
+"Initial zoom level of the map if \"immediately show locations\" is NOT "
+"selected or if only a single location is found.  0 = world view, 19 = house "
+"view."
+msgstr ""
+"Inledande zoomnivå på kartan om \"immediately show locations\" INTE är valt "
+"eller om bara en plats hittas.  0 = hela världen, 19 = gatunivå."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:448
+msgid "Zoom Adjustment"
+msgstr "Zoominställningar"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:449
+msgid ""
+"Changes how tight auto-zoom bounds the locations shown.  Lower numbers are "
+"closer to the locations."
+msgstr ""
+"Ändrar hur nära autozoom går till de platser som visas. Lägre siffa är "
+"närmare till platserna."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:468
+msgid "Home Marker"
+msgstr "Startmarkör"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:476
+msgid "Destination Marker"
+msgstr "Målmarkör"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:484
+msgid "Saved markers live here: "
+msgstr "Sparade markörer här: "
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:492
+msgid "Map Features"
+msgstr "Kartfunktioner"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:498
+msgid "Map Settings"
+msgstr "Kartinställningar"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:504
+msgid "Map Markers"
+msgstr "Kartmarkörer"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:512
+msgid "Map"
+msgstr "Karta"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:530
+msgid "United States"
+msgstr "USA"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:531
+msgid "Argentina"
+msgstr "Argentina"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:532
+msgid "Australia"
+msgstr "Australien"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:533
+msgid "Austria"
+msgstr "Österrike"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:534
+msgid "Bahamas"
+msgstr "Bahamas"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:535
+msgid "Belgium"
+msgstr "Belgien"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:536
+msgid "Brazil"
+msgstr "Brasilien"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:537
+msgid "Canada"
+msgstr "Kanada"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:538
+msgid "Chile"
+msgstr "Chile"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:539
+msgid "China"
+msgstr "Kina"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:540
+msgid "Czech Republic"
+msgstr "Tjeckien"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:541
+msgid "Denmark"
+msgstr "Danmark"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:542
+msgid "Estonia"
+msgstr "Estland"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:543
+msgid "Finland"
+msgstr "Finland"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:544
+msgid "France"
+msgstr "Frankrike"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:545
+msgid "Germany"
+msgstr "Tyskland"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:546
+msgid "Greece"
+msgstr "Grekland"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:547
+msgid "Hong Kong"
+msgstr "Hong Kong"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:548
+msgid "Hungary"
+msgstr "Ungern"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:549
+msgid "India"
+msgstr "Indien"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:550
+msgid "Philippines"
+msgstr "Filippinerna"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:551
+msgid "Republic of Ireland"
+msgstr "Irland"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:552
+msgid "Israel"
+msgstr "Israel"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:553
+msgid "Italy"
+msgstr "Italien"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:554
+msgid "Japan"
+msgstr "Japan"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:555
+msgid "Liechtenstein"
+msgstr "Liechtenstein"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:556
+msgid "Lithuania"
+msgstr "Litauen"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:557
+msgid "Mexico"
+msgstr "Mexico"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:558
+msgid "Netherlands"
+msgstr "Nederländerna"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:559
+msgid "New Zealand"
+msgstr "Nya Zeeland"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:560
+msgid "Norway"
+msgstr "Norge"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:561
+msgid "Poland"
+msgstr "Polen"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:562
+msgid "Portugal"
+msgstr "Portugal"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:563
+msgid "Russia"
+msgstr "Ryssland"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:564
+msgid "Singapore"
+msgstr "Singapore"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:565
+msgid "South Africa"
+msgstr "Sydafrika"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:566
+msgid "South Korea"
+msgstr "Sydkorea"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:567
+msgid "Spain"
+msgstr "Spanien"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:568
+msgid "Sweden"
+msgstr "Sverige"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:569
+msgid "Switzerland"
+msgstr "Schweiz"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:570
+msgid "Taiwan"
+msgstr "Taiwan"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:571
+msgid "Thailand"
+msgstr "Thailand"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:572
+msgid "United Arab Emirates"
+msgstr "Förenade Arabemiraten"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:573
+msgid "United Kingdom"
+msgstr "Storbritannien"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:588
+msgid "English"
+msgstr "Engelska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:589
+msgid "Arabic"
+msgstr "Arabiska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:590
+msgid "Basque"
+msgstr "Baskiska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:591
+msgid "Bulgarian"
+msgstr "Bulgariska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:592
+msgid "Bengali"
+msgstr "Bengaliska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:593
+msgid "Catalan"
+msgstr "Katalanska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:594
+msgid "Czech"
+msgstr "Tjeckiska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:595
+msgid "Danish"
+msgstr "Danska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:596
+msgid "German"
+msgstr "Tyska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:597
+msgid "Greek"
+msgstr "Grekiska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:598
+msgid "English (Australian)"
+msgstr "Engelska (Australien)"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:599
+msgid "English (Great Britain)"
+msgstr "Engelska (Storbritannien)"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:600
+msgid "Spanish"
+msgstr "Spanska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:601
+msgid "Farsi"
+msgstr "Farsi"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:602
+msgid "Finnish"
+msgstr "Finska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:603
+msgid "Filipino"
+msgstr "Fillippinska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:604
+msgid "French"
+msgstr "Franska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:605
+msgid "Galician"
+msgstr "Galiciska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:606
+msgid "Gujarati"
+msgstr "Gujarati"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:607
+msgid "Hindi"
+msgstr "Hindi"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:608
+msgid "Croatian"
+msgstr "Kroatiska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:609
+msgid "Hungarian"
+msgstr "Ungerska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:610
+msgid "Indonesian"
+msgstr "Indonesiska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:611
+msgid "Italian"
+msgstr "Italienska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:612
+msgid "Hebrew"
+msgstr "Hebreisk"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:613
+msgid "Japanese"
+msgstr "Japanska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:614
+msgid "Kannada"
+msgstr "Kannada"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:615
+msgid "Korean"
+msgstr "Koreanska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:616
+msgid "Lithuanian"
+msgstr "Litauiska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:617
+msgid "Latvian"
+msgstr "Lettiska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:618
+msgid "Malayalam"
+msgstr "Malayalam"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:619
+msgid "Marathi"
+msgstr "Marathi"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:620
+msgid "Dutch"
+msgstr "Hollänska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:621
+msgid "Norwegian"
+msgstr "Norska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:622
+msgid "Polish"
+msgstr "Polska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:623
+msgid "Portuguese"
+msgstr "Portugisiska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:624
+msgid "Portuguese (Brazil)"
+msgstr "Portugisiska (Brasilien)"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:625
+msgid "Portuguese (Portugal)"
+msgstr "Portugisiska (Portugal)"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:626
+msgid "Romanian"
+msgstr "Rumänska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:627
+msgid "Russian"
+msgstr "Ryska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:628
+msgid "Slovak"
+msgstr "Slovakiska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:629
+msgid "Slovenian"
+msgstr "Slovenska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:630
+msgid "Serbian"
+msgstr "Serbiska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:631
+msgid "Swedish"
+msgstr "Svenska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:632
+msgid "Tagalog"
+msgstr "Tagalog"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:633
+msgid "Tamil"
+msgstr "Tamil"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:634
+msgid "Telugu"
+msgstr "Telugu"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:635
+msgid "Thai"
+msgstr "Thai"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:636
+msgid "Turkish"
+msgstr "Turkiska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:637
+msgid "Ukrainian"
+msgstr "Ukrainska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:638
+msgid "Vietnamese"
+msgstr "Vietnamesiska"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:639
+msgid "Chinese (Simplified)"
+msgstr "Kinesiska (förenklad)"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:640
+msgid "Chinese (Traditional)"
+msgstr "Kinesiska (Traditionell)"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:690
+msgid "Successful Update"
+msgstr "Lyckad uppdatering"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:729
+#, php-format
+msgid "Your home marker %s cannot be located, please select a new one."
+msgstr "Din startmarkör %s hittas inte, vänligen välj en ny."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:739
+#, php-format
+msgid "Your destination marker %s cannot be located, please select a new one."
+msgstr "Din målmarkör %s hittas inte, vänligen välj en ny."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:793
+msgid "Results"
+msgstr "Resultat"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:804
+msgid "Search Results"
+msgstr "Sökresultat"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:807
+msgid "Max Search Results"
+msgstr "Max sökresultat"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:808
+msgid "How many locations does a search return? Default is 25."
+msgstr "Hur många platser visas vis sökning? Standard är 25."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:814
+msgid "Immediately Show Locations"
+msgstr "Visa platser direkt"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:815
+msgid ""
+"Display locations as soon as map loads, based on map center and default "
+"radius. Enhanced Search provides [slplus immediately_show_locations=\"true|"
+"false\"] attribute option."
+msgstr ""
+"Visa platser direkt när kartan laddas, baserat på kartans center och "
+"standardradie. Med Enhanced Search plugin [slplus immediately_show_locations="
+"\"true|false\"] får du fler inställingar."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:822
+msgid "Number To Show Initially"
+msgstr "Antal att visa direkt"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:823
+msgid ""
+"How many locations should be shown when Immediately Show Locations is "
+"checked.  Recommended maximum is 50."
+msgstr ""
+"Hur många platser ska visas när -Visa platser direkt- är valt. Rekommenderat "
+"max är 50."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:829
+msgid "Radius To Search Initially"
+msgstr "Radie att visa direkt"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:830
+msgid ""
+"What should immediately show locations use as the default search radius? "
+"Leave empty to use map radius default or set to a large number like 25000 to "
+"search everywhere."
+msgstr ""
+"Vad ska -Visa platser direkt- använda som standard sökradie? Lämna blankt "
+"för att använda kartans standardradie eller skriv in ett stort antal som "
+"25000 för att söka överallt."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:832
+#, php-format
+msgid ""
+"Can be set with <a href=\"%s\" target=\"csa\">shortcode attribute "
+"initial_radius</a> if Force Load JavaScript is turned off."
+msgstr ""
+"Kan sättas med <a href=\"%s\" target=\"csa\">kortkod attribut "
+"initial_radius</a> om -Tvinga laddning av JavaScript- är avstängt."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:847
+msgid "Results Features"
+msgstr "Resultatfunktioner"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:859
+#: include/class.adminui.mapsettings.php:911
+msgid "Results Labels"
+msgstr "Resultatetiketter"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:862
+msgid "Website URL"
+msgstr "Webbsida URL"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:863
+msgid "Search results text for the website link."
+msgstr "Sökresultat för webbsidans länk"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:870
+msgid "Hours label."
+msgstr "Öppetider."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:877
+msgid "Phone label."
+msgstr "Telefon."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:884
+msgid "Fax label."
+msgstr "Telefax."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:890
+#: include/class.adminui.mapsettings.php:893
+msgid "Directions"
+msgstr "Färdväg"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:891
+msgid "Directions label."
+msgstr "Färdväg"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:897
+msgid "Instructions"
+msgstr "Instruktioner"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:898
+msgid ""
+"Search results instructions shown if immediately show locations is not "
+"selected."
+msgstr "Sökresultatinstruktioner visas om visa platser direkt inte valts."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:900
+msgid "Enter an address or zip code and click the find locations button."
+msgstr "Skriv in en adress eller stad och klicka på knappen."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:933
+msgid "Search Features"
+msgstr "Sökfunktioner"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:938
+msgid "Radii Options"
+msgstr "Radie-alternativ"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:939
+msgid ""
+"Separate each number with a comma \",\". Put parenthesis \"( )\" around the "
+"default."
+msgstr ""
+"Kommatecken mellan varje nummer \",\". Sätt parentes \"( )\" om "
+"standardvärdet."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:945
+msgid "Distance Unit"
+msgstr "Avståndsenhet"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:950
+msgid "Kilometers"
+msgstr "Kilometer"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:950
+#: include/class.ajax.mobilelistener.php:162 include/class.ajaxhandler.php:229
+msgid "km"
+msgstr "km"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:951
+msgid "Miles"
+msgstr "Miles"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:951
+msgid "miles"
+msgstr "miles"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:962
+msgid "Use Find Location Text Button"
+msgstr "Använd hitta plats textknapp"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:963
+msgid ""
+"Use a standard text button for \"Find Locations\" instead of the provided "
+"button images."
+msgstr ""
+"Använd standard textknapp för \"Hitta plats\" istället för bifogade knapp "
+"bilder."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:979
+msgid "Search form address label."
+msgstr "Sökfält adress text."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:981
+msgid "Address / Zip"
+msgstr "Adress/Post nr"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:985
+msgid "Radius"
+msgstr "Radie"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:986
+msgid "Search form radius label."
+msgstr "Sökfält radie text."
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:988 include/class.ui.php:304
+msgid "Within"
+msgstr "Inom"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:996
+msgid "Search Labels"
+msgstr "Sök etiketter"
+
+# @ csa-slplus
+#: include/class.adminui.mapsettings.php:1003
+msgid "Search Form"
+msgstr "Sökformulär"
+
+# @ csa-slplus
+#: include/class.adminui.php:84
+msgid "Navigation"
+msgstr "Navigera"
+
+# @ csa-slplus
+#: include/class.adminui.php:101
+msgid "How to Use"
+msgstr "Hur man använder"
+
+# @ csa-slplus
+#: include/class.adminui.php:315
+#, php-format
+msgid "Could not read icon directory %s"
+msgstr "Kunde inte läsa ikon mappen %s"
+
+# @ csa-slplus
+#: include/class.ajax.mobilelistener.php:106
+msgid "no latitude passed"
+msgstr "Ingen latitud fungerade"
+
+# @ csa-slplus
+#: include/class.ajax.mobilelistener.php:110
+msgid "no longitude passed"
+msgstr "Ingen longitud fungerade"
+
+# @ csa-slplus
+#: include/class.ajaxhandler.php:355
+msgid "renderJSON_Response did not get an array()"
+msgstr "renderJSON_Response did not get an array()"
+
+# @ csa-slplus
+#: include/class.csvimport.php:188
+msgid "Import file name not set."
+msgstr "Importfilen är inte vald."
+
+# @ csa-slplus
+#: include/class.csvimport.php:195
+msgid "Import file was empty."
+msgstr "Importfilen var tom."
+
+# @ csa-slplus
+#: include/class.csvimport.php:204
+msgid "Uploaded file needs to be in CSV format."
+msgstr "Importfilen måste vara i rätt CSV format."
+
+# @ csa-slplus
+#: include/class.csvimport.php:205
+#, php-format
+msgid "Type was %s."
+msgstr "Typen var %s."
+
+# @ csa-slplus
+#: include/class.csvimport.php:230
+msgid "Imported CSV file could not be renamed."
+msgstr "Kunde inte ändra namn på importfilen."
+
+# @ csa-slplus
+#: include/class.csvimport.php:238
+msgid "Uploaded CSV file could not be moved."
+msgstr "Uppladdad importfil kunde inte flyttas."
+
+# @ csa-slplus
+#: include/class.csvimport.php:253
+msgid "Could not open CSV file for processing."
+msgstr "Kunde inte öppna och köra importfilen."
+
+# @ csa-slplus
+#: include/class.csvimport.php:328
+msgid " processed."
+msgstr " körd."
+
+# @ csa-slplus
+#: include/class.location.php:204
+msgid "draft"
+msgstr "utkast"
+
+# @ csa-slplus
+#: include/class.location.php:269
+msgid "Could not create or update the custom page for this location."
+msgstr ""
+"Det gick inte att skapa eller uppdatera den anpassade sidan för den här "
+"platsen."
+
+# @ csa-slplus
+#: include/class.location.php:483
+#, php-format
+msgid "Could not add %s as a new location"
+msgstr "Kunde inte lägga till %s som en ny plats"
+
+# @ csa-slplus
+#: include/class.ui.php:423
+#, php-format
+msgid "search provided by %s"
+msgstr "sökning skapas av %s"
+
+# @ csa-slplus
+#: include/class.ui.php:438
+msgid "Enter Your Address or Zip Code Above."
+msgstr "Ange din adress eller postnr ovanför."
+
+# @ csa-slplus
+#: include/class.ui.php:547
+#, php-format
+msgid "%s is not ready"
+msgstr "%s är inte redo"
+
+# @ csa-slplus
+#. translators: plugin header field 'Name'
+#: include/class.ui.php:547 store-locator-le.php:0 store-locator-le.php:169
+msgid "Store Locator Plus"
+msgstr "Store Locator Plus"
+
+# @ csa-slplus
+#: lib/class.notifications.php:89
+msgid "needs attention"
+msgstr "behöver kontrolleras"
+
+# @ csa-slplus
+#: lib/class.notifications.php:128
+msgid "wants you to know"
+msgstr "vill att du ska veta"
+
+# @ csa-slplus
+#: lib/class.plugin.php:483 lib/class.plugin.php:484
+msgid "Support"
+msgstr "Support"
+
+# @ csa-slplus
+#: lib/class.plugin.php:487
+msgid "Purchase"
+msgstr "Köp"
+
+# @ csa-slplus
+#: lib/class.plugin.php:488
+msgid "Buy Now"
+msgstr "Köp nu"
+
+# @ csa-slplus
+#: lib/class.plugin.php:511
+#, php-format
+msgid "The %s method is no longer available. "
+msgstr "%s metoden är inte längre tillgänglig. "
+
+# @ csa-slplus
+#: lib/class.plugin.php:514
+msgid "It is likely that one of your add-on pack is out of date. "
+msgstr "Det är troligt att ett av dina tillägg är för gammalt. "
+
+# @ csa-slplus
+#: lib/class.plugin.php:518
+#, php-format
+msgid ""
+"You need to <a href=\"%s\" target=\"csa\">upgrade</a> to the latest %s "
+"compatible version or <a href=\"%s\" target=\"csa\">downgrade</a> the %s "
+"plugin."
+msgstr ""
+"Du behöver <a href=\"%s\" target=\"csa\">uppgradera</a> till senast %s "
+"kompatibla version eller <a href=\"%s\" target=\"csa\">nergradera</a> %s "
+"tillägget."
+
+# @ csa-slplus
+#: lib/class.plugin.php:627
+#, php-format
+msgid "%s has been deactivated."
+msgstr "%s har inaktiverats."
+
+# @ csa-slplus
+#: lib/class.plugin.php:631
+#, php-format
+msgid "You have %s version %s."
+msgstr "Du har %s version %s."
+
+# @ csa-slplus
+#: lib/class.plugin.php:634
+#, php-format
+msgid "You need version %s or greater for this version of %s."
+msgstr "Du behöver version %s eller högre för denna version av %s."
+
+# @ csa-slplus
+#: lib/class.plugin.php:637
+#, php-format
+msgid "Please install an older version of %s or upgrade."
+msgstr "Vänligen installera en äldre version av %s eller uppgradera."
+
+# @ csa-slplus
+#: lib/class.plugin.php:640
+#, php-format
+msgid ""
+"Upgrading major versions of %s requires paid upgrades to all related add-on "
+"packs."
+msgstr ""
+"Uppgradera större versioner av %s betalda uppgraderingar till alla tillägg."
+
+# @ csa-slplus
+#: lib/class.settings.php:75
+msgid "Save Changes"
+msgstr "Spara ändringar"
+
+# @ csa-slplus
+#: lib/class.settings.php:412
+#, php-format
+msgid "Program Error: section <em>%s</em> not defined."
+msgstr "Programfel: avsnitt <em>%s</em> inte defenierad."
+
+# @ csa-slplus
+#: lib/class.settings.php:1235
+msgid "ON"
+msgstr "PÅ"
+
+# @ csa-slplus
+#: lib/class.settings.php:1236
+msgid "OFF"
+msgstr "AV"
+
+# @ csa-slplus
+#: lib/class.themes.admin.php:118
+msgid "About This Theme"
+msgstr "Om detta tema"
+
+# @ csa-slplus
+#: lib/class.themes.admin.php:120
+msgid "No description has been set for this theme."
+msgstr "Ingen beskrivning har angetts för detta tema."
+
+# @ csa-slplus
+#: lib/class.themes.admin.php:127
+msgid "Learn more about changing the Store Locator Plus interface via the "
+msgstr "Läs mer om att ändra utseendet för Store Locator Plus på "
+
+# @ csa-slplus
+#: lib/class.themes.admin.php:131
+msgid "Custom Themes documentation."
+msgstr "Dokumentation för egna teman"
+
+# @ csa-slplus
+#: lib/class.themes.admin.php:141
+msgid "Add On Packs"
+msgstr "Tillägg"
+
+# @ csa-slplus
+#: lib/class.themes.admin.php:178
+msgid "This theme will make use of these add-on packs:"
+msgstr "Detta tema kommer att använda dessa tillägg:"
+
+# @ csa-slplus
+#: lib/class.themes.admin.php:189
+msgid "This theme works best if you activate the following add-on packs:"
+msgstr "Detta tema fungerar bäst om du aktiverar följade tillägg:"
+
+# @ csa-slplus
+#: lib/class.themes.admin.php:214
+msgid ""
+"Settings have been made. Click Save Settings to activate or the User "
+"Exprience tab to cancel."
+msgstr ""
+"Inställningar har gjorts. Klicka på  \"Spara inställningar\" för att "
+"aktivera eller klicka på  \"Utseende\" fliken för att avbryta."
+
+# @ csa-slplus
+#: lib/class.themes.admin.php:216
+msgid "Preferred Settings"
+msgstr "Egna inställningar"
+
+# @ csa-slplus
+#: lib/class.themes.admin.php:222
+msgid "Change Layout"
+msgstr "Ändra layout"
+
+# @ csa-slplus
+#: lib/class.themes.admin.php:225
+msgid ""
+"Click the button above to change your layout options and make the most of "
+"this theme: "
+msgstr ""
+"Klicka på knappen ovan för att ändra din layout och få ut det mesta av valt "
+"tema. Extra tillägg kan behövas. "
+
+# @ csa-slplus
+#: lib/class.themes.admin.php:294
+#, php-format
+msgid "The theme directory:<br/>%s<br/>is missing. "
+msgstr "Tema mappen:<br/>%s<br/>saknas. "
+
+# @ csa-slplus
+#: lib/class.themes.admin.php:295
+msgid "Create it to enable themes and get rid of this message."
+msgstr "Skapa det för att aktivera teman och bli av med detta meddelande."
+
+# @ csa-slplus
+#: lib/class.themes.admin.php:359
+msgid "Select A Theme"
+msgstr "Välj ett tema"
+
+# @ csa-slplus
+#: lib/class.themes.admin.php:365
+msgid "How should the plugin UI elements look?  "
+msgstr "Hur ska delarna för tilläggets utseende se ut?  "
+
+# @ csa-slplus
+#: lib/class.themes.admin.php:367
+#, php-format
+msgid ""
+"Learn more in the <a href=\"%s\" target=\"csa\">online documentation</a>."
+msgstr "Läs mer i <a href=\"%s\" target=\"csa\">online dokumentationen</a>."
+
+# @ csa-slplus
+#. translators: plugin header field 'PluginURI'
+#: store-locator-le.php:0
+msgid "http://www.storelocatorplus.com/"
+msgstr ""
+
+# @ csa-slplus
+#. translators: plugin header field 'Description'
+#: store-locator-le.php:0
+msgid ""
+"Add a location finder or directory to your site in minutes. A Google "
+"Business Maps API licensed product. Extensive premium add-on library "
+"available!"
+msgstr ""
+"Lägg till en sökfunktion för platser eller butiker på din webbplats på några "
+"minuter. En Google Business Maps API licensierad produkt. Flera "
+"premiumtillägg finns!"
+
+# @ csa-slplus
+#. translators: plugin header field 'Author'
+#: store-locator-le.php:0
+msgid "Charleston Software Associates"
+msgstr ""
+
+# @ csa-slplus
+#. translators: plugin header field 'AuthorURI'
+#: store-locator-le.php:0
+msgid "http://www.storelocatorplus.com"
+msgstr ""
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:260
+msgid "Google Client ID"
+msgstr "Google Klient ID"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:265
+msgid "If you have a Google Maps for Work client ID, enter it here. "
+msgstr "Om du har ett Google Maps för Arbetsklient-ID, skriv in den här. "
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:266
+msgid "All Google API requests will go through your account at Google. "
+msgstr "Alla Google API funktioner kommer att gå via ditt Google konto. "
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:267
+msgid "You will receive higher quotas and faster maps I/O performance. "
+msgstr "Du kommer att få högre prestanda och snabbare kart-I/O prestanda. "
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:274
+msgid "Google Private Key"
+msgstr "Egen Google nyckel"
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:279
+msgid "Your Google private key (Crypto Key) for signing Geocoding requests. "
+msgstr ""
+"Din egna Google nyckel (Krypteringsnyckel) för verifiering av "
+"geokodningskörningar. "
+
+# @ csa-slplus
+#: include/class.adminui.generalsettings.php:280
+msgid ""
+"Do NOT share this with anyone and take extra measures to keep it private. "
+msgstr ""
+"Dela INTE detta med någon och vidta extra åtgärder för att hålla det "
+"hemligt. "
+
+# @ csa-slplus
+#: lib/class.settings.php:202
+msgid " update available"
+msgstr "uppdatering finns"
+
+# @ csa-slplus
+#. translators: plugin header field 'Version'
+#: store-locator-le.php:0
+msgid "4.2.10"
+msgstr ""

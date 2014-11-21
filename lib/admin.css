@@ -305,12 +305,12 @@ div.theme_details {
 .form_entry LABEL {
   display: inline-block;
   margin: 0 3px 0 3px;
-  max-width: 185px;
+  max-width: 192px;
   overflow: hidden;
   text-align: right;
   vertical-align: top;
   white-space: nowrap;
-  width: 185px; }
+  width: 192px; }
 
 .form_entry LABEL.disabled {
   color: #CCC; }
@@ -745,10 +745,17 @@ div.slp_editform_section small {
   font-size: 0.75em;
   text-align: right;
   width: 100%; }
-
-#manage_locations_table .infoid.floater {
-  width: auto;
-  float: right; }
+  #manage_locations_table .infoid.floater {
+    width: auto;
+    float: right; }
+#manage_locations_table .location_image {
+  max-width: 100px;
+  max-height: 100px;
+  overflow: none; }
+#manage_locations_table th {
+  vertical-align: top; }
+  #manage_locations_table th.thnowrap {
+    white-space: nowrap; }
 
 td.slp_manage_locations_cell {
   display: table-cell;
@@ -787,12 +794,6 @@ tr.slp_managelocations_row .store_latlong {
   display: block;
   font-size: 0.75em;
   font-style: italic; }
-
-#manage_locations_table th {
-  vertical-align: top; }
-
-#manage_locations_table th.thnowrap {
-  white-space: nowrap; }
 
 input.disabled {
   background: none repeat scroll 0 0 #FEFEFE;
