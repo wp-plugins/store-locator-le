@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-4/
 Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.4
 Tested up to: 4.0
-Stable tag: 4.2.10
+Stable tag: 4.2.16
 License: GLPv2 or later
 
 Add a location finder or directory to your site in minutes. A Google Business Maps API licensed product. Extensive premium add-on library available!
@@ -319,25 +319,16 @@ I am looking into working with the WPML plugin for added support for those of yo
 
 ==Upgrade Notice==
 
-*Upgrading From SLP 3.X to 4.0 or higher*
-
-Store Locator Plus 4 is a MAJOR upgrade to the previous version.
-
-If you are using ANY of the [premium add-on packs](http://www.storelocatorplus.com/product-category/slp4-products/) you must first deactivate and delete the premium add-on packs.
-
-You will need to purchase new [SLP4 compatible versions of the add-on packs](http://www.storelocatorplus.com/product-category/slp4-products/).
-Discounts will be made available to users that purchased a premium add-on pack within 1 year of purchasing the SLP4 compatible upgrades.
-
-*Upgrading From SLP 4.0 to SLP 4.1 or higher*
+*Upgrading From SLP 4.0*
 
 If you are using Enhanced Results or Contact Extender and activated Super Extendo at ANY TIME you must:
 
 1. Deactivate Enhanced Results, Contact Extender, and Super Extendo.
-2. Upgrade to SLP 4.1+.
-3. Upgrade Enhanced Results and/or Contact Extender to 4.1+.
+2. Upgrade to the latest version of Store Locator Plus.
+3. Upgrade Enhanced Results and/or Contact Extender.
 4. Delete Super Extendo.
 
-*Upgrading From SLP 4.1 to SLP 4.2*
+*Upgrading From SLP 4.1*
 
 If you are using the Janitor or Pro Pack add-on pack:
 
@@ -353,7 +344,26 @@ Please read the *description page* for this plugin for an important note about p
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
 
-= 2014-Nov (4.2.10+) =
+= 4.2.16 (2014-Nov-21) =
+
+* Enhancement: Map markers now have the location name as a tool tip.
+* Enhancement: General performance improvements to the map search engine (slp.js).
+* Enhancement: Minimum map zoom is set to 1 by default to prevent "double world wrapping".
+* Enhancement: Remove legacy defunct code for locator search and initial load, reducing overhead.
+* Enhancement: Update the add-on pack list and links.
+* Enhancement (4.2.13): Add Swedish language translation.
+* Enhancement (4.2.15): Show image on manage locations table (taken from Enhanced Results).
+* Enhancement (4.2.15): Show image instead of a "view" link in the image column.
+* Fix: Resolved an issue where searches would not execute if ignore radius was turned on, the address field was hidden, and the radius selector was hidden.
+* Fix: Remove the phantom home marker when the address field is blank and a search is performed.  Helps with state/country based searches with no radius or address selectors.
+* Fix: Stop setting map center based on previous searched location if the address field is left blank.  Fixes issues with searching with country/state/city selectors and no address.
+* Fix(4.2.13): Remove metadata variable warning introduced in 4.2.12 prerelease.
+* Fix(4.2.13): this.centerMarker is null error in slp.js introduced in 4.2.12 prerelease.
+* Fix(4.2.14): Force Google geocoding communication to SSL (https) mode when the Google API key is entered.
+* Fix(4.2.15): Adjust the admin label size to not cut off some setting labels.
+* Fix(4.2.16): Extra comma after state output (bug introduced in prior 4.2.10 release).
+
+= 4.2.10 (2014-Nov) =
 
 * Enhancement: Added settings for Google Maps for Work client ID activation to pass requests through the Google Maps Enterprise server.
 * Enhancement: Google Maps for Work will load the main map rendering from the Google Enterprise server if you have purchased a Google Enterprise key.
@@ -362,12 +372,12 @@ Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.co
 * Fix: Location geocoding uses the Google Maps domain set in the User Experience tab to assist in non-USA based address encoding.
 * Fix: Clean up an add-on pack manager bug that consumes far more memory than necessary.
 
-= 2014-Oct (4.2.08+) =
+= 4.2.08 (2014-Oct) =
 
 * Fix: Fix issue with subsequent searches not working when home marker is not set.
 * Fix: Help page text, link to proper shortcode URL on website.
 
-= 2014-Sep-27 (4.2.07+) =
+= 4.2.07 (2014-Sep-27) =
 
 * Enhancement: Manage locations shows text when a location is inactive due to missing lat/long.
 * Enhancement: Add a new filter 'slp_edit_location_change_extended_data_info' to allow add-on packs to change the extended data columns.
@@ -383,7 +393,7 @@ Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.co
 * Fix: Make the extended data system smarter with a fallback to detect extended data fields when the data options array has been corrupted.
 * Fix: Extended data fields are initialized to '0' and '' for consistency with update location method.
 
-= 2014-Aug-25 (4.2.05) =
+= 4.2.05 (2014-Aug-25) =
 
 * Enhancement: Add new server-to-server speed setting.  Adjusts time the server will wait to hear back from Google during geocoding.
 * Enhancement: Increase default wait time for geocoding responses to increase positive hits on locations on slower networks.
@@ -397,7 +407,7 @@ Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.co
 * Change: more admin css tweaks (4.2.05)
 * Change: Fix distance error in results layout string (4.2.05)
 
-= 2014-Aug-05 (4.2.03) =
+= 4.2.03 (2014-Aug-05) =
 
 * Note: Delete Janitor and Pro Pack add-on packs before upgrading the base plugin.
 * Enhancement: Added Thailand to the list of supported Google Domain maps

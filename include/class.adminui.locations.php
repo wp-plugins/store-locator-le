@@ -214,8 +214,8 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
 
             // SLP Filters
             //
-            // slp_edit_location_right_column : add extendo fields to location add/edit form
-            // slp_manage_location_columns : show extendo fields on the locations list table
+            // slp_edit_location_right_column : add fields to location add/edit form
+            // slp_manage_location_columns : show fields on the locations list table
             // slp_column_data : manipulate per-location data when it is rendered in the locations list table
             //
             add_filter('slp_edit_location_right_column'         ,array($this,'filter_AddExtendedDataToEditForm'                 ),05        );
@@ -393,7 +393,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         // Base Google API URL
         //
         $google_api_url =
-            'http' . ( is_ssl() ? 's' : '' ) . '://'    .
+            'http' . ( ( is_ssl() || ! empty($api_key) ) ? 's' : '' ) . '://'    .
             $this->slplus->options['map_domain']        .
             '/maps/api/'                                .
             'geocode/json'                              .
@@ -1037,6 +1037,54 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
             $current_cols[$col->slug] = $col->label;
         }
         return $current_cols;
+    }
+
+    /**
+     * Add the images column header to the manage locations table.
+     *
+     * SLP Filter: slp_manage_location_columns
+     *
+     * @param mixed[] $currentCols column name + column label for existing items
+     * @return mixed[] column name + column labels, extended with our extra fields data
+     */
+    function filter_AddFieldHeadersToManageLocations($currentCols) {
+        return array_merge($currentCols,
+            array(
+                'sl_image'       => __('Image'        ,'csa-slp-er'),
+            )
+        );
+    }
+
+    /**
+     * Render the extra fields on the manage location table.
+     *
+     * SLP Filter: slp_column_data
+     *
+     * @param string $theData  - the option_value field data from the database
+     * @param string $theField - the name of the field from the database (should be sl_option_value)
+     * @param string $theLabel - the column label for this column (should be 'Categories')
+     * @return type
+     */
+    function filter_AddImageToManageLocations($theData,$theField,$theLabel) {
+        if (
+            ($theField === 'sl_image') &&
+            ($theLabel === __('Image'        ,'csa-slp-er')
+            )
+        ) {
+            $theData =
+                ( $this->slplus->currentLocation->image != '' )
+                    ?
+                    "<a href='{$this->slplus->currentLocation->image}' target='blank'>" .
+                    sprintf('<img src="%s" alt="%s" title="%s" class="location_image manage_locations" />',
+                        $this->slplus->currentLocation->image ,
+                        $this->slplus->currentLocation->store . __(' image ' , 'csa-slp-er'),
+                        $this->slplus->currentLocation->store . __(' image ' , 'csa-slp-er')
+                    ) .
+                    '</a>'
+                    :
+                    '' ;
+        }
+        return $theData;
     }
 
     /**
@@ -2128,6 +2176,11 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
             " LIMIT {$this->start},".$this->slplus->data['sl_admin_locations_per_page'] . ' ';
         $this->debugMP('msg','',"SQL Query: {$dataQuery}");
 
+        // Add custom column headers
+        //
+        add_filter('slp_manage_location_columns'        ,array($this,'filter_AddFieldHeadersToManageLocations'      )           );
+
+
         // Get the locations into the array
         //
         if ($slpLocations=$this->slplus->db->get_results($dataQuery,ARRAY_A)) {
@@ -2158,15 +2211,20 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
             
             // Add lat/long to the name field
             //
-            add_filter('slp_column_data', array($this, 'filter_AddLatLongUnderName') , 10, 3 );
+            add_filter( 'slp_column_data' , array($this, 'filter_AddLatLongUnderName'           ) , 10, 3 );
+
+            // Add Image to the output columns
+            //
+            add_filter( 'slp_column_data' , array($this, 'filter_AddImageToManageLocations'     ), 90 ,  3  );
+
 
             // Loop through the locations list and render table rows.
             //
-            foreach ($slpLocations as $sl_value) {
+            foreach ($slpLocations as $location) {
 
                 // Set current location
                 //
-                $this->slplus->currentLocation->set_PropertiesViaArray($sl_value);
+                $this->slplus->currentLocation->set_PropertiesViaArray($location);
 
                 // Row color
                 //
@@ -2178,26 +2236,26 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
 
                 // Clean Up Data with trim()
                 //
-                $sl_value=array_map("trim",$sl_value);
+                $location=array_map("trim",$location);
 
                 // Custom Filters to set the links on special data like URLs and Email
                 //
-                $sl_value['sl_url']=(!$this->url_test($sl_value['sl_url']) && trim($sl_value['sl_url'])!="")?
-                    "http://".$sl_value['sl_url'] :
-                    $sl_value['sl_url'] ;
-                $sl_value['sl_url']=($sl_value['sl_url']!="")?
-                    "<a href='{$sl_value['sl_url']}' target='blank' ".
-                            "alt='{$sl_value['sl_url']}' title='{$sl_value['sl_url']}'>".
+                $location['sl_url']=(!$this->url_test($location['sl_url']) && trim($location['sl_url'])!="")?
+                    "http://".$location['sl_url'] :
+                    $location['sl_url'] ;
+                $location['sl_url']=($location['sl_url']!="")?
+                    "<a href='{$location['sl_url']}' target='blank' ".
+                            "alt='{$location['sl_url']}' title='{$location['sl_url']}'>".
                             __("View", 'csa-slplus').
                             '</a>' :
                     '';
-                $sl_value['sl_email']=($sl_value['sl_email']!="")?
-                    "<a href='mailto:{$sl_value['sl_email']}' target='blank' "          .
-                    "alt='{$sl_value['sl_email']}' title='{$sl_value['sl_email']}'>"    .
+                $location['sl_email']=($location['sl_email']!="")?
+                    "<a href='mailto:{$location['sl_email']}' target='blank' "          .
+                    "alt='{$location['sl_email']}' title='{$location['sl_email']}'>"    .
                     __('Email', 'csa-slplus').'</a>' :
                     '' ;
-                $sl_value['sl_description']=($sl_value['sl_description']!="")?
-                    "<a onclick='alert(\"".$this->slp_escape($sl_value['sl_description'])."\")' href='#'>".
+                $location['sl_description']=($location['sl_description']!="")?
+                    "<a onclick='alert(\"".$this->slp_escape($location['sl_description'])."\")' href='#'>".
                     __("View", 'csa-slplus')."</a>" :
                     "" ;
 
@@ -2219,7 +2277,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
 
                 // Create Address Block
                 //
-                $sl_value['address'] = '';
+                $location['address'] = '';
                 $newData = false;
                 foreach (array('address','address2','city','state','zip','country') as $property) {
                     // Added something and need formatting?
@@ -2229,13 +2287,13 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                             case 'address2':
                             case 'city':
                             case 'country':
-                                $sl_value['address'] .= '<br/>';
+                                $location['address'] .= '<br/>';
                                 break;
                             case 'state':
-                                $sl_value['address'] .= ' , ';
+                                $location['address'] .= ' , ';
                                 break;
                             case 'zip':
-                                $sl_value['address'] .= ' ';
+                                $location['address'] .= ' ';
                                 break;
                             default:
                                 break;
@@ -2247,7 +2305,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                     //
                     $propVal = $this->slplus->currentLocation->$property;
                     if (!empty($propVal)) {
-                        $sl_value['address'] .= $this->slplus->currentLocation->$property;
+                        $location['address'] .= $this->slplus->currentLocation->$property;
                         $newData = true;
                     }
                 }
@@ -2257,10 +2315,10 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                 //
                 foreach ($this->columns as $slpField => $slpLabel) {
                     $labelAsClass = sanitize_title($slpLabel);
-                    if ( ! isset( $sl_value[$slpField] ) ) { $sl_value[$slpField] = ''; }
+                    if ( ! isset( $location[$slpField] ) ) { $location[$slpField] = ''; }
                     $content['locationstable'] .=
                         "<td class='slp_manage_locations_cell {$labelAsClass}'>"                                           .
-                            apply_filters('slp_column_data',stripslashes($sl_value[$slpField]), $slpField, $slpLabel)     .
+                            apply_filters('slp_column_data',stripslashes($location[$slpField]), $slpField, $slpLabel)     .
                          '</td>';                       
                 }
 

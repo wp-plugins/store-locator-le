@@ -132,14 +132,22 @@ class SLPlus_AddOn_Manager {
     private function prepare() {
         if (count($this->available) > 0) { return; }
 
+        // plugin dir path (slug) , plain text name , web page purchase URL (after /product/)
+        //
+        // TODO : make this an autoregister via reflection or other code trickery.
+        // Need ot learn when this is queued and then where the object/property array is referenced.
+        //
         $this->add_AddOn( 'slp-contact-extender'       , __( 'Contact Extender'       , 'csa-slplus' ) , 'slp4-contact-extender'        );
+        $this->add_AddOn( 'slp-directory-builder'      , __( 'Directory Builder'      , 'csa-slplus' ) , 'directory-builder'            );
         $this->add_AddOn( 'slp-enhanced-map'           , __( 'Enhanced Map'           , 'csa-slplus' ) , 'slp4-enhanced-map'            );
         $this->add_AddOn( 'slp-enhanced-results'       , __( 'Enhanced Results'       , 'csa-slplus' ) , 'slp4-enhanced-results'        );
         $this->add_AddOn( 'slp-enhanced-search'        , __( 'Enhanced Search'        , 'csa-slplus' ) , 'slp4-enhanced-search'         );
         $this->add_AddOn( 'slp-janitor'                , __( 'Janitor'                , 'csa-slplus' ) , 'store-locator-plus-janitor'   );
+        $this->add_AddOn( 'slp-location-extender'      , __( 'Location Extender'      , 'csa-slplus' ) , 'location-extender'            );
         $this->add_AddOn( 'slp-pages'                  , __( 'Store Pages'            , 'csa-slplus' ) , 'slp4-store-pages'             );
         $this->add_AddOn( 'slp-pro'                    , __( 'Pro Pack'               , 'csa-slplus' ) , 'slp4-pro'                     );
         $this->add_AddOn( 'slp-tagalong'               , __( 'Tagalong'               , 'csa-slplus' ) , 'slp4-tagalong'                );
+        $this->add_AddOn( 'slp-social-media-extender'  , __( 'Social Media Extender'  , 'csa-slplus' ) , 'slp4-social-media-extender'   );
         $this->add_AddOn( 'slp-user-managed-locations' , __( 'User Managed Locations' , 'csa-slplus' ) , 'slp4-user-managed-locations'  );
         $this->add_AddOn( 'slp-widget'                 , __( 'Widget'                 , 'csa-slplus' ) , 'slp4-Widgets'                 );
 
