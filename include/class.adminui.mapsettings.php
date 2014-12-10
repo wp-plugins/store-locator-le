@@ -846,9 +846,9 @@ class SLPlus_AdminUI_MapSettings {
                  'section'       => $section_name,
                  'group'         => __('Results Features','csa-slplus'),
                  'label'         => '',
-                 'type'          => 'subheader',
+                 'type'          => 'custom',
                  'show_label'    => false,
-                 'description'   => $resultSettings['features']
+                 'custom'   => $resultSettings['features']
              )
          );
 

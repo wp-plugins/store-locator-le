@@ -4,8 +4,8 @@ Contributors: charlestonsw
 Donate link: http://www.charlestonsw.com/product/store-locator-plus-4/
 Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.4
-Tested up to: 4.0
-Stable tag: 4.2.16
+Tested up to: 4.0.1
+Stable tag: 4.2.17
 License: GLPv2 or later
 
 Add a location finder or directory to your site in minutes. A Google Business Maps API licensed product. Extensive premium add-on library available!
@@ -343,6 +343,12 @@ Please read the *description page* for this plugin for an important note about p
 *Version 4.x is a major upgrade that is not compatible with the version 3.x or earlier add-on packs.*
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 4.2.17 (2014-Dec) =
+
+* Enhancement: update admin panel CSS rules
+* Enhancement: provide disabled dropdown mechanism on admin settings
+* Change: location addition, geocoding, and lat/long lookup refactored to move from Admin class to Locations class for cron support.
 
 = 4.2.16 (2014-Nov-21) =
 

@@ -138,43 +138,49 @@ about
 #wpcsl_container #content .section:last-child {
   margin-bottom: 0; }
 
+/**
+ * .section_column div - all admin panel "box contents" go in here
+ */
 div.section_column {
   background-color: #F0F0E0;
   border: solid 1px #D0D0D0;
-  margin: 3px 6px 6px 0px;
+  margin: 0 0 0.25em 0;
+  padding: 0 0 0.25em 0;
   min-width: 520px;
   overflow: auto; }
-
-/* Settings Group */
-.wpcsl-group .section_column_intro {
-  font-weight: normal;
-  font-size: 1.2em;
-  font-family: Arial, sans-serif;
-  padding-bottom: 12px; }
+  div.section_column.wpcsl-group .section_column_intro {
+    font-weight: normal;
+    font-size: 1.2em;
+    font-family: Arial, sans-serif;
+    padding-bottom: 12px; }
+  div.section_column p.slp_admin_info {
+    clear: both;
+    padding-left: 9px;
+    margin: 0;
+    font-size: 14px;
+    color: #222;
+    font-weight: 600;
+    font-family: 'Open Sans', sans-serif; }
 
 /* Settings : wpcsl-input */
 .wpcsl-input {
   display: inline-block;
   min-width: 30px; }
+  .wpcsl-input INPUT {
+    width: 270px; }
+  .wpcsl-input.disabled {
+    color: #ABABAB; }
+  .wpcsl-input .wpcsl-subheader {
+    padding: 0px 6px; }
+    .wpcsl-input .wpcsl-subheader > h3 {
+      font-size: 1.07em; }
+
+#wpcsl_settings_group-inspect .wpcsl-input.disabled {
+  color: #ABABAB; }
 
 form#importForm input#bulk_file {
   border: none;
   width: auto; }
-
-.wpcsl-input > INPUT {
-  width: 270px; }
-
-.wpcsl-input.disabled {
-  color: #F1F1F1; }
-
-.wpcsl-input.wpcsl-subheader > h3 {
-  font-size: 1.07em; }
-
-#wpcsl_settings_group-inspect .wpcsl-input.disabled {
-  color: #464646; }
-
-.wpcsl-subheader {
-  padding: 0px 6px; }
 
 /* Action Icons */
 div.action_buttons {
@@ -236,7 +242,7 @@ span.label {
  */
 div.theme_details {
   display: none;
-  padding-left: 7em; }
+  padding-left: 1em; }
   div.theme_details .theme_option SPAN.theme_option_label {
     display: block;
     font-size: 1.1em;
@@ -289,45 +295,43 @@ div.theme_details {
  */
 .form_entry {
   display: block;
-  margin: 0 0 0.5em 0;
+  margin: 0 0.5em;
   padding: 0 0.25em 0 0;
   position: relative; }
+  .form_entry .small {
+    width: 3em;
+    vertical-align: top; }
+  .form_entry INPUT {
+    display: inline-block;
+    width: 270px; }
+  .form_entry INPUT[type="checkbox"] {
+    box-shadow: none;
+    height: 1.1em;
+    text-align: left;
+    width: auto;
+    -webkit-box-shadow: none; }
+  .form_entry LABEL {
+    display: inline-block;
+    margin: 0 3px 0 3px;
+    max-width: 192px;
+    overflow: hidden;
+    text-align: right;
+    vertical-align: top;
+    white-space: nowrap;
+    width: 192px; }
+    .form_entry LABEL.disabled {
+      color: #CCC; }
+  .form_entry TEXTAREA {
+    display: inline-block;
+    min-height: 150px;
+    margin-left: 3px;
+    min-width: 300px; }
 
 /**
  * Line Entries : Label and Input Wrapper
  */
 .csl-slplus-input {
   display: inline-block; }
-
-/**
- * Line Entries : Label
- */
-.form_entry LABEL {
-  display: inline-block;
-  margin: 0 3px 0 3px;
-  max-width: 192px;
-  overflow: hidden;
-  text-align: right;
-  vertical-align: top;
-  white-space: nowrap;
-  width: 192px; }
-
-.form_entry LABEL.disabled {
-  color: #CCC; }
-
-/**
- * Line Entries : Inputs
- */
-.form_entry INPUT {
-  display: inline-block;
-  width: 270px; }
-
-.form_entry INPUT[type="checkbox"] {
-  box-shadow: none;
-  height: 1.1em;
-  text-align: left;
-  width: auto;
-  -webkit-box-shadow: none; }
 
 /**
  * Line Entries : Slider (a label + checkbox input combo
@@ -418,19 +422,6 @@ LABEL.onoffswitch-label {
 
 .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
   right: 0px; }
-
-/**
- * Line Entries : Textarea
- */
-.form_entry TEXTAREA {
-  display: inline-block;
-  min-height: 150px;
-  margin-left: 3px;
-  min-width: 300px; }
-
-.form_entry .small {
-  width: 3em;
-  vertical-align: top; }
 
 /**
  * Line Entries : Help
@@ -650,34 +641,30 @@ table.manual_add_table LABEL,
   margin-top: 3px;
   display: block; }
 
-.add_location_form INPUT {
-  margin-right: 3px;
-  width: 34em; }
-
-.add_location_form INPUT.mediumfield {
-  width: 21.2em; }
-
-.add_location_form INPUT.shortfield {
-  width: 4.75em; }
-
-.add_location_form TEXTAREA {
-  width: 35.25em; }
-
 .add_location_form #slp_form_buttons {
   padding-left: 124px; }
-
-.add_location_form INPUT[type='submit'],
+.add_location_form INPUT {
+  background-color: #FFF;
+  margin-right: 3px;
+  width: 30em; }
+  .add_location_form INPUT.mediumfield {
+    width: 20em; }
+  .add_location_form INPUT.shortfield {
+    width: 4.75em; }
 .add_location_form INPUT[type='button'] {
   margin: 3px;
   width: 150px; }
-
-.add_location_form INPUT[type='submit']:hover {
-  background: none;
-  background-color: #228b22; }
-
 .add_location_form INPUT[type='checkbox'] {
   display: inline-block;
   width: auto; }
+.add_location_form INPUT[type='submit'] {
+  margin: 3px;
+  width: 150px; }
+  .add_location_form INPUT[type='submit']:hover {
+    background: none;
+    background-color: #228b22; }
+.add_location_form TEXTAREA {
+  width: 30em; }
 
 /* Add / Edit Locations */
 div.add_location_form input.iconfield {
@@ -919,14 +906,6 @@ div.section_column_intro {
 
 div.section_column_content {
   padding: 0px 6px; }
-
-p.slp_admin_info {
-  clear: both;
-  padding-left: 9px;
-  font-size: 14px;
-  color: #222;
-  font-weight: 600;
-  font-family: 'Open Sans', sans-serif; }
 
 .section_description {
   padding-bottom: 6px;

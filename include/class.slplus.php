@@ -393,7 +393,7 @@ class SLPlus extends wpCSL_plugin__slplus {
 
         parent::__construct($params);
         $this->initDB();
-        $this->currentLocation = new SLPlus_Location(array('plugin' => $this));
+        $this->currentLocation = new SLPlus_Location(array('slplus' => $this));
         $this->themes->css_dir = SLPLUS_PLUGINDIR . 'css/';
         $this->initOptions();
         $this->initData();
