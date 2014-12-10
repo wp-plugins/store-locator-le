@@ -145,7 +145,7 @@ if (! class_exists('SLP_BaseClass_Addon')) {
          *
          * @var \SLPlus $slplus
          */
-        protected $slplus;
+        public $slplus;
         
         /**
          * The slug for this plugin, usually matches the plugin subdirectory name.

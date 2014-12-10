@@ -456,7 +456,12 @@ class wpCSL_settings__slplus {
      * Same as add_item but uses named params.
      *
      * 'type' => textarea, text, checkbox, dropdown, slider, list, submit_button, ..custom..
-     * 
+     *
+     * NOTE: If use_prefix is false the automatic option saving in SLP 4.2 add-on framework will be disabled.
+     * This can be useful for admin settings you do not want saved/restored between sessions.
+     * It can suck if you do want that to happen though and will likely find this comment after spending
+     * the past 30 minutes tearing your hair out wondering WTF is going on.
+     *
      * @param mixed $params
      */
     function add_ItemToGroup($params) {
@@ -1193,9 +1198,13 @@ class wpCSL_settings_item__slplus {
                 break;
 
             case 'text':
-                echo '<input type="text" name="'.$this->name.'" '.
-                    ($this->disabled?'disabled="disabled" ':'').                
-                    'value="'. $showThis .'" />';
+                echo
+                    '<input type="text" '                                    .
+                        " name='{$this->name}' "                             .
+                        ( $this->disabled ? ' disabled="disabled" ' : '' )   .
+                        ( !empty( $this->onChange ) ? " onchange='{$this->onChange}' " : '' ) .
+                        " value='{$showThis}' ".
+                    '/>';
                 break;
 
             case 'checkbox':
@@ -1259,6 +1268,7 @@ class wpCSL_settings_item__slplus {
                             'name'          => $this->name,
                             'items'         => $this->custom,
                             'onchange'      => $this->onChange,
+                            'disabled'      => $this->disabled,
                             'selectedVal'   => $this->selectedVal,
                         )
                      );

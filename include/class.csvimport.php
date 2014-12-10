@@ -92,6 +92,13 @@ if (!class_exists('CSVImport')) {
         protected $processing_counts;
 
         /**
+         * The processing report.
+         *
+         * @var string
+         */
+        public $processing_report = array();
+
+        /**
          * Skip the first line in the file?
          *
          * @var boolean $skip_firstline
@@ -291,9 +298,7 @@ if (!class_exists('CSVImport')) {
 
             // Turn off notifications for OK addresses.
             //
-            if ( is_object( $this->slplus->AdminUI->ManageLocations ) ) {
-                $this->slplus->AdminUI->ManageLocations->geocodeSkipOKNotices = true;
-            }
+            $this->slplus->currentLocation->geocodeSkipOKNotices = true;
 
             // Loop through all records
             //
@@ -320,17 +325,20 @@ if (!class_exists('CSVImport')) {
             //
             $this->slplus->notifications->display();
 
-            // Tell them how many locations were added
+            // Processing Report
             //
+            $this->processing_report = array();
             if ($reccount > 0) {
-                print "<div class='updated fade'>".
-                        sprintf("%d",$reccount) ." " .
-                        __(" processed.",'csa-slplus') .
-                        '</div>';
+                $this->processing_report[] = sprintf( __( '%d processed.' , 'csa-slplus') , $reccount );
             }
             foreach ($this->processing_counts as $count_type=>$count) {
                 if ($count > 0) {
-                    print "<div class='updated fade'>".sprintf("%d %s",$count,$location_processing_types[$count_type]).'</div>';
+                    $this->processing_report[] = sprintf( "%d %s" , $count , $location_processing_types[$count_type] );
+                }
+            }
+            if ( count($this->processing_report) > 0 ) {
+                foreach ( $this->processing_report as $message ) {
+                    printf('<div class="updated fade">%s</div>', $message);
                 }
             }
         }

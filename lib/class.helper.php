@@ -100,8 +100,18 @@ class wpCSL_helper__slplus {
 
         if (!isset($params['id'         ])) { $params['id'          ] = 'actionType'                ; }
         if (!isset($params['name'       ])) { $params['name'        ] = 'action'                    ; }
-        if (!isset($params['onchange'   ])) { $params['onchange'    ] = ''                          ; }
         if (!isset($params['selectedVal'])) { $params['selectedVal' ] = ''                          ; }
+
+        $params['disabled'    ] =
+            ( isset( $params['disabled' ] ) && $params['disabled' ] ) ?
+                ' disabled ' :
+                ''           ;
+
+        if (!isset($params['onchange'   ])) { $params['onchange'    ] = ''                          ; }
+        $params['onchange'    ] =
+            ( isset( $params['onchange' ] ) && $params['onchange' ] ) ?
+                " onChange='{$params['onchange']}' " :
+                ''           ;
 
         // Drop down menu
         //
@@ -114,10 +124,13 @@ class wpCSL_helper__slplus {
             $dropdownHTML .= "<option $selected value='{$item['value']}'>{$item['label']}</option>";
         }
         return
-            "<select id='{$params['id']}' name='{$params['name']}' "                .
-                (!empty($params['onchange'])?'onChange="'.$params['onchange'].'"':'').
-                '>'         .
-            $dropdownHTML   .
+            '<select '                      .
+                "id='{$params['id']}' "     .
+                "name='{$params['name']}' " .
+                $params['disabled']         .
+                $params['onchange']         .
+                '>'                         .
+                $dropdownHTML               .
             '</select>'
             ;
     }

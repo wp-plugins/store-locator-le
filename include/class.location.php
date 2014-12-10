@@ -43,9 +43,11 @@
  * @property-read string $dbFieldPrefix - the database field prefix for locations
  * @property-read string[] $dbFields - an array of properties that are in the db table
  *
- * @property SLPlus $plugin - the parent plugin object
+ * @property SLPlus $slplus - the parent plugin object
  */
 class SLPlus_Location {
+
+    const StartingDelay = 2000000;
 
     //-------------------------------------------------
     // Properties
@@ -84,7 +86,28 @@ class SLPlus_Location {
     private $pages_on;
     private $option_value;
     private $lastupdated;
-    
+
+    /**
+     * What mode of SOAP/REST communication does this server prefer?
+     *
+     * @var string $comType
+     */
+    private $comType;
+
+    /**
+     * How many locations have processed for geocoding this session.
+     *
+     * @var int $count
+     */
+    private $count = 0;
+
+    /**
+     * How long to wait between geocoding requests.
+     *
+     * @var int $delay
+     */
+    private $delay = SLPlus_Location::StartingDelay;
+
     /**
      * Extended data values.
      * 
@@ -150,6 +173,33 @@ class SLPlus_Location {
     public $dataChanged = true;
 
     /**
+     *
+     * @var boolean $geocodeIssuesRendered
+     */
+    private $geocodeIssuesRendered = false;
+
+    /**
+     * If true do not show valid geocodes.
+     *
+     * @var boolean $geocodeSkipOKNotices
+     */
+    public $geocodeSkipOKNotices = false;
+
+    /**
+     * The URL of the geocoding service.
+     *
+     * @var string $geocodeURL
+     */
+    private $geocodeURL;
+
+    /**
+     * How many times to retry an address.
+     *
+     * @var int $iterations
+     */
+    private $iterations;
+
+    /**
      * Remember the last location data array passed into set properties via DB.
      *
      * @var mixed[] $locationData
@@ -181,7 +231,19 @@ class SLPlus_Location {
     private $dbFieldPrefix      = 'sl_';
     private $pageType           = 'store_page';
     private $pageDefaultStatus;
-    private $plugin;
+
+    /**
+     * Maxmium delay in milliseconds.
+     *
+     * @var $retry_maximum_delayms
+     */
+    private $retry_maximum_delayms = 5000000;
+
+    /**
+     * @var \SLPlus
+     */
+    private $slplus;
+
 
     //-------------------------------------------------
     // Methods
@@ -202,6 +264,157 @@ class SLPlus_Location {
         // Set gettext default properties.
         //
         $this->pageDefaultStatus = __('draft','csa-slplus');
+    }
+
+    /**
+     * Add an address into the SLP locations database.
+     *
+     * duplicates_handling can be:
+     * o none = ignore duplicates
+     * o skip = skip duplicates
+     * o update = update duplicates
+     *
+     * Returns:
+     * o added = new location added
+     * o location_exists = store id provided and not in update mode
+     * o not_updated = existing location not updated
+     * o skipped = duplicate skipped
+     * o updated = existing location updated
+     *
+     * @param array[] $locationData
+     * @param string $duplicates_handling
+     * @param boolean $skipGeocode
+     * @return string
+     *
+     */
+    function add_to_database($locationData,$duplicates_handling='none',$skipGeocode=false) {
+        $this->debugMP('msg','SLPlus_Location::'.__FUNCTION__,
+            "duplicates handling mode: {$duplicates_handling} " . ($skipGeocode?' skip geocode':'')
+        );
+
+        // Make sure locationData['sl_id'] is set to SOMETHING.
+        //
+        if (!isset($locationData['sl_id'])) { $locationData['sl_id'] = null; }
+
+        // If the incoming location ID is of a valid format...
+        // Go fetch that location record.
+        // This also ensures that ID actually exists in the database.
+        //
+        if ($this->slplus->currentLocation->isvalid_ID($locationData['sl_id'])) {
+            $this->debugMP('msg','',"location ID {$locationData['sl_id']} being loaded");
+            $this->slplus->currentLocation->set_PropertiesViaDB($locationData['sl_id']);
+            $locationData['sl_id'] = $this->slplus->currentLocation->id;
+
+            // Not a valid incoming ID, reset current location.
+            //
+        } else {
+            $this->slplus->currentLocation->reset();
+        }
+
+        // If the location ID is not valid either because it does not exist
+        // in the database or because it was not provided in a valid format,
+        // Go see if the location can be found by name + address
+        //
+        if (!$this->slplus->currentLocation->isvalid_ID()) {
+            $this->debugMP('msg','','location ID not provided or invalid.');
+            $locationData['sl_id'] = $this->slplus->db->get_var(
+                $this->slplus->db->prepare(
+                    $this->slplus->database->get_SQL('selectslid') .
+                    'WHERE ' .
+                    'sl_store   = %s AND '.
+                    'sl_address = %s AND '.
+                    'sl_address2= %s AND '.
+                    'sl_city    = %s AND '.
+                    'sl_state   = %s AND '.
+                    'sl_zip     = %s AND '.
+                    'sl_country = %s     '
+                    ,
+                    $this->val_or_blank($locationData,'sl_store')    ,
+                    $this->val_or_blank($locationData,'sl_address')  ,
+                    $this->val_or_blank($locationData,'sl_address2') ,
+                    $this->val_or_blank($locationData,'sl_city')     ,
+                    $this->val_or_blank($locationData,'sl_state')    ,
+                    $this->val_or_blank($locationData,'sl_zip')      ,
+                    $this->val_or_blank($locationData,'sl_country')
+                )
+            );
+        }
+
+        // Location ID exists, we have a duplicate entry...
+        //
+        if ( $this->slplus->currentLocation->isvalid_ID( $locationData['sl_id'] ) ) {
+            $this->debugMP('msg','',"location ID {$locationData['sl_id']} found or provided is valid.");
+            if ($duplicates_handling === 'skip') { return 'skipped'; }
+
+            // array ID and currentLocation ID do not match,
+            // must have found ID via address lookup, go load up the currentLocation record
+            //
+            if ($locationData['sl_id'] != $this->slplus->currentLocation->id) {
+                $this->slplus->currentLocation->set_PropertiesViaDB($locationData['sl_id']);
+            }
+
+            // TODO: if mode = 'add' force currentLocation->id to blank and set return code to 'added'.
+            //
+
+            $return_code = 'updated';
+
+            // Location ID does not exist, we are adding a new record.
+            //
+        } else {
+            $this->debugMP('msg','',"location {$locationData['sl_id']} not found via address lookup, original handling mode {$duplicates_handling}.");
+            $duplicates_handling = 'add';
+            $return_code = 'added';
+        }
+
+        // Update mode and we are NOT skipping the geocode process,
+        // check that the address has changed first.
+        //
+        if ( ! $skipGeocode && ( $duplicates_handling === 'update' ) ) {
+            $skipGeocode =
+                ($this->val_or_blank($locationData,'sl_address')   == $this->slplus->currentLocation->address ) &&
+                ($this->val_or_blank($locationData,'sl_address2')  == $this->slplus->currentLocation->address2) &&
+                ($this->val_or_blank($locationData,'sl_city')      == $this->slplus->currentLocation->city    ) &&
+                ($this->val_or_blank($locationData,'sl_state')     == $this->slplus->currentLocation->state   ) &&
+                ($this->val_or_blank($locationData,'sl_zip')       == $this->slplus->currentLocation->zip     ) &&
+                ($this->val_or_blank($locationData,'sl_country')   == $this->slplus->currentLocation->country )  ;
+            $this->debugMP('msg','','Address does '.($skipGeocode?'NOT ':'').'need to be recoded via location update mode.');
+        }
+
+        // Set the current location data
+        //
+        // In update duplicates mode this will not obliterate existing settings
+        // it will augment them.  To set a value to blank for an existing record
+        // it must exist in the column data and be set to blank.
+        //
+        // Non-update mode, it starts from a blank slate.
+        //
+        $this->debugMP('msg','',"set location properties via array in {$duplicates_handling} duplicates handling mode");
+        $this->slplus->currentLocation->set_PropertiesViaArray( $locationData, $duplicates_handling );
+
+        // HOOK: slp_location_add
+        //
+        do_action('slp_location_add');
+
+        // Geocode the location
+        //
+        if ( ! $skipGeocode ) { $this->do_geocoding(); }
+
+        // Write to disk
+        //
+        if ( $this->slplus->currentLocation->dataChanged ) {
+            $this->slplus->currentLocation->MakePersistent();
+
+            // Set not updated return code.
+            //
+        } else {
+            $return_code = 'not_updated';
+        }
+
+        // HOOK: slp_location_added
+        //
+        do_action('slp_location_added');
+
+        return $return_code;
     }
 
     /**
@@ -265,7 +478,7 @@ class SLPlus_Location {
         // We got an error... oh shit...
         //
         } else {
-            $this->plugin->notifications->add_notice('error',
+            $this->slplus->notifications->add_notice('error',
                     __('Could not create or update the custom page for this location.','csa-slplus')
                     );
             $this->debugMP('pr','location.crupdate_Page() failed',(is_object($touched_pageID)?$touched_pageID->get_error_messages():''));
@@ -289,8 +502,8 @@ class SLPlus_Location {
             return $this->$property;
         }
         if (
-            $this->plugin->database->is_Extended()                  &&
-            $this->plugin->database->extension->has_ExtendedData()  &&
+            $this->slplus->database->is_Extended()                  &&
+            $this->slplus->database->extension->has_ExtendedData()  &&
             isset($this->exdata[$property])
             ) {
             return $this->exdata[$property];
@@ -306,7 +519,7 @@ class SLPlus_Location {
      * @param string $msg
      */
     function debugMP($type,$hdr,$msg='') {
-        $this->plugin->debugMP('slp.location',$type,$hdr,$msg,NULL,NULL,true);
+        $this->slplus->debugMP('slp.location',$type,$hdr,$msg,NULL,NULL,true);
     }
 
     /**
@@ -323,6 +536,182 @@ class SLPlus_Location {
         $this->debugMP('pr','',$output);
     }
 
+    /**
+     * GeoCode a given location, updating the slplus_plugin currentLocation object lat/long.
+     *
+     * Writing to disk is to be handled by the calling function.
+     *
+     * slplus_plugin->currentLocation->dataChanged is set to true if the lat/long is updated.
+     *
+     * @param string $address the address to geocode, if not set use currentLocation
+     */
+    function do_geocoding($address=null) {
+        $this->debugMP('msg', 'SLPLus_Location::' . __FUNCTION__,$address);
+        $this->count++;
+        if ($this->count === 1) {
+            $this->retry_maximum_delayms = (int) $this->slplus->options_nojs['retry_maximum_delay'] * 1000000;
+            $this->iterations = max(1,(int) get_option(SLPLUS_PREFIX.'-geocode_retries','3'));
+        }
+
+        // Null address, build from current location
+        //
+        if ($address === null) {
+            $address =
+                $this->slplus->currentLocation->address  . ' ' .
+                $this->slplus->currentLocation->address2 . ' ' .
+                $this->slplus->currentLocation->city     . ' ' .
+                $this->slplus->currentLocation->state    . ' ' .
+                $this->slplus->currentLocation->zip      . ' ' .
+                $this->slplus->currentLocation->country
+            ;
+        }
+
+        $errorMessage = '';
+
+        // Get lat/long from Google
+        //
+        $this->debugMP('msg','',$address);
+        $json = $this->get_LatLong($address);
+        if ($json!==null) {
+
+            // Process the data based on the status of the JSON response.
+            //
+            $json = json_decode($json);
+            $this->debugMP('pr','',$json);
+            switch ($json->{'status'}) {
+
+                // OK
+                // Geocode completed successfully
+                // Update the lat/long if it has changed.
+                //
+                case 'OK':
+                    $this->slplus->currentLocation->set_LatLong($json->results[0]->geometry->location->lat,$json->results[0]->geometry->location->lng);
+                    $this->delay = SLPlus_Location::StartingDelay;
+                    break;
+
+                // OVER QUERY LIMIT
+                // Google is getting to many requests from this IP block.
+                // Loop through for X retries.
+                //
+                case 'OVER_QUERY_LIMIT':
+                    $errorMessage .= sprintf(__("Address %s (%d in current series) hit the Google query limit.\n", 'csa-slplus'),
+                            $address,
+                            $this->count
+                        ) . '<br/>'
+                    ;
+                    $attempts = 1;
+                    $totalDelay = 0;
+
+                    // Keep trying up until the user-selected number of retries.
+                    // Increase the wait between each try by 1 second.
+                    // Wait no more than 10 seconds between attempts.
+                    //
+                    while( $attempts++ < $this->iterations){
+                        if ($this->delay <= $this->retry_maximum_delayms+1) {
+                            $this->delay += 1000000;
+                        }
+                        $totalDelay += $this->delay;
+                        usleep($this->delay);
+                        $json = $this->get_LatLong($address);
+                        if ($json!==null) {
+                            $json = json_decode($json);
+                            if ($json->{'status'} === 'OK') {
+                                $this->slplus->currentLocation->set_LatLong($json->results[0]->geometry->location->lat,$json->results[0]->geometry->location->lng);
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+                    $errorMessage .= sprintf(
+                            __('Waited up to %4.2f seconds between request, total wait for this location was %4.2f seconds.', 'csa-slplus'),
+                            $this->delay/1000000,
+                            $totalDelay/1000000
+                        ).
+                        "\n<br>";
+                    $errorMessage .= sprintf(
+                            __('%d total attempts for this location.', 'csa-slplus'),
+                            $attempts-1
+                        ).
+                        "\n<br>";
+                    break;
+
+                // ZERO RESULTS
+                // Bad address provided or nothing found on Google end.
+                //
+                case 'ZERO_RESULTS':
+                    $errorMessage .= sprintf(__("Address #%d : %s <font color=red>failed to geocode</font>.", 'csa-slplus'),
+                            $this->slplus->currentLocation->id,
+                            $address
+                        ) . "<br />\n";
+                    $errorMessage .= sprintf(__("Unknown Address! Received status %s.", 'csa-slplus'),$json->{'status'})."\n<br>";
+                    $this->delay = SLPlus_Location::StartingDelay;
+                    break;
+
+                // GENERIC
+                // Could not geocode.
+                //
+                default:
+                    $errorMessage .=
+                        sprintf(__("Address #%d : %s <font color=red>failed to geocode</font>."  , 'csa-slplus'),
+                            $this->slplus->currentLocation->id,
+                            $address)    .
+                        "<br/>\n"                   .
+                        sprintf(__("Received status %s."                      , 'csa-slplus'),
+                            $json->{'status'})            .
+                        "<br/>\n"                   .
+                        sprintf(__("Received data %s."                                           , 'csa-slplus'),
+                            '<pre>'.print_r($json,true).'</pre>')
+                    ;
+                    $this->delay = SLPlus_Location::StartingDelay;
+                    break;
+            }
+
+
+            // No raw json
+            //
+        } else {
+            $json = '';
+            $errorMessage .= __('Geocode service non-responsive','csa-slplus') .
+                "<br/>\n" .
+                $this->geocodeURL . urlencode($address)
+            ;
+        }
+
+        // Show Error Messages
+        //
+        if ($errorMessage != '') {
+            if (!$this->geocodeIssuesRendered) {
+                $errorMessage =
+                    '<strong>'.
+                    sprintf(
+                        __('Read <a href="%s">this</a> if you are having geocoding issues.','csa-slplus'),
+                        'http://www.charlestonsw.com/support/documentation/store-locator-plus/troubleshooting/geocoding-errors/'
+                    ).
+                    "</strong><br/>\n" .
+                    $errorMessage
+                ;
+                $this->geocodeIssuesRendered = true;
+            }
+            $this->slplus->notifications->add_notice(6,$errorMessage);
+
+            // Good encoding
+            //
+        } elseif (!$this->geocodeSkipOKNotices) {
+            $this->slplus->notifications->add_notice(
+                9,
+                sprintf(
+                    __('Google thinks %s is at <a href="%s" target="_blank">lat: %s long %s</a>','csa-slplus'),
+                    $address,
+                    sprintf('http://%s/?q=%s,%s',
+                        $this->slplus->options['map_domain'],
+                        $this->slplus->currentLocation->latitude,
+                        $this->slplus->currentLocation->longitude),
+                    $this->slplus->currentLocation->latitude, $this->slplus->currentLocation->longitude
+                )
+            );
+        }
+
+    }
 
     /**
      * Delete this location permanently.
@@ -344,10 +733,90 @@ class SLPlus_Location {
             }
         }
 
-        $this->plugin->db->delete(
-            $this->plugin->database->info['table'],
+        $this->slplus->db->delete(
+            $this->slplus->database->info['table'],
             array('sl_id' => $this->id)
             );
+    }
+
+
+    /**
+     * Get the latitude/longitude for a given address.
+     *
+     * Google Server-Side API geocoding is documented here:
+     * https://developers.google.com/maps/documentation/geocoding/index
+     *
+     * Required Google Geocoding API Params:
+     * address
+     * sensor=true|false
+     *
+     * Optional Google Geocoding API Params:
+     * bounds
+     * language
+     * region
+     * components
+     *
+     * @param string $address the address to geocode
+     * @return string $response the JSON response string
+     */
+    function get_LatLong($address) {
+        $this->set_geocoding_baseURL();
+
+        // Set comType if not already determined.
+        //
+        // TODO: use wp_remote_get() instead of custom method here
+        //
+        if (!isset($this->comType)) {
+            if (isset($this->slplus->http_handler)) {
+                $this->comType = 'http_handler';
+            } elseif (extension_loaded("curl") && function_exists("curl_init")) {
+                $this->comType = 'curl';
+            } else {
+                $this->comType = 'file_get_contents';
+            }
+        }
+
+        $fullURL = $this->geocodeURL . urlencode($address);
+
+        // Client ID in use?   Sign the request.
+        //
+        if ( ! empty ( $this->slplus->options_nojs['google_client_id'] ) ) {
+            $fullURL = $this->sign_url( $fullURL , $this->slplus->options_nojs['google_private_key'] );
+        }
+
+        // Go fetch the data from the remote server.
+        //
+        switch ($this->comType) {
+            case 'http_handler':
+                $result = $this->slplus->http_handler->request($fullURL,array('timeout' => $this->slplus->options_nojs['http_timeout']));
+                if ($this->slplus->http_result_is_ok($result) ) {
+                    $raw_json = $result['body'];
+                } else {
+                    $raw_json = null;
+                }
+
+                break;
+
+            case 'curl':
+                $cURL = curl_init();
+                curl_setopt($cURL, CURLOPT_URL, $fullURL);
+                curl_setopt($cURL, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($cURL, CURLOPT_CONNECTTIMEOUT , $this->slplus->options_nojs['http_timeout'] );
+                $raw_json = curl_exec($cURL);
+                curl_close($cURL);
+                break;
+
+            case 'file_get_contents':
+                ini_set('default_socket_timeout' , $this->slplus->options_nojs['http_timeout'] );
+                $raw_json = file_get_contents($fullURL);
+                break;
+
+            default:
+                $raw_json = null;
+                return;
+        }
+
+        return $raw_json;
     }
 
     /**
@@ -371,6 +840,52 @@ class SLPlus_Location {
         }
         $this->pageData = null;
         $this->attributes = null;
+    }
+
+    /**
+     * Set the geocoding base URL.
+     */
+    private function set_geocoding_baseURL() {
+        if ( isset( $this->geocodeURL ) ) { return; }
+
+
+        // Google Maps API for Work client ID
+        //
+        $client_id =
+            ! empty ( $this->slplus->options_nojs['google_client_id'] )           ?
+                '&client=' . $this->slplus->options_nojs['google_client_id'] . '&v=3' :
+                ''                                                                    ;
+
+
+        // Google Maps API for Work (client_id above) CANNOT be used with a key.
+        //
+        $dbAPIKey  = trim( get_option(SLPLUS_PREFIX.'-api_key' , '' ) );
+        $api_key   =
+            ( ! empty( $dbAPIKey ) && empty( $client_id ) ) ?
+                '&key=' . $dbAPIKey                         :
+                ''                                          ;
+
+        // Set the map language
+        //
+        $language = '&language='.$this->slplus->helper->getData('map_language','get_item',null,'en');
+
+        // Base Google API URL
+        //
+        $google_api_url =
+            'http' . ( ( is_ssl() || ! empty($api_key) ) ? 's' : '' ) . '://'    .
+            $this->slplus->options['map_domain']        .
+            '/maps/api/'                                .
+            'geocode/json'                              .
+            '?sensor=false'                             ;
+
+        // Build the URL with all the params
+        //
+        $this->geocodeURL =
+            $google_api_url     .
+            $client_id          .
+            $api_key            .
+            $language           .
+            '&address='         ;
     }
 
     /**
@@ -468,7 +983,7 @@ class SLPlus_Location {
         //
         if ($this->id > 0) {
             $this->debugMP('msg','',"Update location {$this->id}");
-            if(!$this->plugin->db->update($this->plugin->database->info['table'],$dataToWrite,array('sl_id' => $this->id))) {
+            if(!$this->slplus->db->update($this->slplus->database->info['table'],$dataToWrite,array('sl_id' => $this->id))) {
                 $dataWritten = false;
                 $this->debugMP('msg','',"Update location {$this->id} DID NOT update core data.");
             }
@@ -477,8 +992,8 @@ class SLPlus_Location {
         //
         } else {
             $this->debugMP('msg','','Adding new location since no ID was provided.');
-            if (!$this->plugin->db->insert($this->plugin->database->info['table'],$dataToWrite)) {
-                $this->plugin->notifications->add_notice(
+            if (!$this->slplus->db->insert($this->slplus->database->info['table'],$dataToWrite)) {
+                $this->slplus->notifications->add_notice(
                         'warning',
                         sprintf(__('Could not add %s as a new location','csa-slplus'),$this->store)
                         );
@@ -488,7 +1003,7 @@ class SLPlus_Location {
             // Set our location ID to be the newly inserted record!
             //
             } else {
-                $this->id = $this->plugin->db->insert_id;
+                $this->id = $this->slplus->db->insert_id;
             }
 
         }
@@ -496,7 +1011,7 @@ class SLPlus_Location {
         // Reset the data changed flag, used to manage MakePersistent calls.
         // Stops MakePersistent from writing data to disk if it has not changed.
         //
-        $this->plugin->currentLocation->dataChanged = false;
+        $this->slplus->currentLocation->dataChanged = false;
 
         return $dataWritten;
     }
@@ -558,8 +1073,8 @@ class SLPlus_Location {
         // with a built-in property.
         //
         if (
-            $this->plugin->database->is_Extended()                  &&
-            $this->plugin->database->extension->has_ExtendedData()  &&
+            $this->slplus->database->is_Extended()                  &&
+            $this->slplus->database->extension->has_ExtendedData()  &&
             ! property_exists($this,$property)
             ) {
             $this->exdata[$property] = $value;
@@ -626,7 +1141,7 @@ class SLPlus_Location {
                 $ssd_value = stripslashes_deep($value);
                 if ($this->$property != $ssd_value ) {
                     $this->$property = $ssd_value;
-                    $this->plugin->currentLocation->dataChanged = true;
+                    $this->slplus->currentLocation->dataChanged = true;
                 }
             }
 
@@ -666,7 +1181,7 @@ class SLPlus_Location {
             $this->reset();
 
             $locData =
-                $this->plugin->database->get_Record(
+                $this->slplus->database->get_Record(
                     array('selectall','whereslid'),
                     $locationID
                 );
@@ -676,7 +1191,7 @@ class SLPlus_Location {
         // Reset the data changed flag, used to manage MakePersistent calls.
         // Stops MakePersistent from writing data to disk if it has not changed.
         //
-        $this->plugin->currentLocation->dataChanged = false;
+        $this->slplus->currentLocation->dataChanged = false;
 
         return $this;
     }
@@ -686,7 +1201,7 @@ class SLPlus_Location {
      *
      * @param mixed[] $newAttributes
      */
-    function update_Attributes($newAttributes) {
+    public function update_Attributes($newAttributes) {
         $this->debugMP('pr',__FUNCTION__,$newAttributes);
         if (is_array($newAttributes)) { 
             $this->attributes =
@@ -696,5 +1211,16 @@ class SLPlus_Location {
                 ;
             $this->dataChanged = true;
         }
+    }
+
+    /**
+     * Return the value of the specified location data element or blank if not set.
+     *
+     * @param mixed[] $locationdata the location data array
+     * @param string $dataElement store locator plus location data array key
+     * @return mixed - the data element value or a blank string
+     */
+    private function val_or_blank($data,$key) {
+        return isset($data[$key]) ? $data[$key] : '';
     }
 }
