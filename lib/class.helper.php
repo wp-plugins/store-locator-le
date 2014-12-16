@@ -110,7 +110,7 @@ class wpCSL_helper__slplus {
         if (!isset($params['onchange'   ])) { $params['onchange'    ] = ''                          ; }
         $params['onchange'    ] =
             ( isset( $params['onchange' ] ) && $params['onchange' ] ) ?
-                " onChange='{$params['onchange']}' " :
+                " onChange=\"{$params['onchange']}\" " :
                 ''           ;
 
         // Drop down menu
