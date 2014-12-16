@@ -116,7 +116,7 @@ if (! class_exists('SLP_BaseClass_Admin')) {
                 $this->update_prior_installs();
                 $this->addon->options['installed_version'] = $this->addon->version;
                 update_option( $this->addon->option_name , $this->addon->options);
-            }                    
+            }
         }
 
         /**

@@ -119,7 +119,7 @@ class SLPlus_AjaxHandler {
             $this->slplus->options = wp_parse_args($_REQUEST['options'],$this->slplus->options);
         }
 
-        $this->query_params['QUERY_STRING'] = $_SERVER['QUERY_STRING'];
+        $this->query_params['QUERY_STRING'] = isset( $_SERVER['QUERY_STRING'] ) ? $_SERVER['QUERY_STRING'] : '' ;
 
         // Set the valid keys
         //
