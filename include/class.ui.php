@@ -775,7 +775,7 @@ class SLPlus_UI {
             $this->slplus->data['radius_options'] = '';
             foreach ($radiusSelectionArray as $radius) {
                 $selected=(preg_match('/\(.*\)/', $radius))? " selected='selected' " : "" ;
-                $radius=preg_replace('/[^0-9]/', '', $radius);
+                $radius=preg_replace('/[^0-9\.]/', '', $radius);
                 $this->slplus->data['radius_options'].=
                         "<option value='$radius' $selected>$radius ".$this->slplus->options['distance_unit']."</option>";
             }

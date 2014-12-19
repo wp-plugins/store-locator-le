@@ -289,7 +289,7 @@ class SLPlus_AjaxHandler {
             apply_filters(
                 'slp_location_having_filters_for_AJAX',
                 array(
-                    '(sl_distance < %d) ',
+                    '(sl_distance < %f) ', 
                     'OR (sl_distance IS NULL) '
                 )
              );

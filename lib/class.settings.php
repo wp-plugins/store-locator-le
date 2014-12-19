@@ -86,7 +86,7 @@ class wpCSL_settings__slplus {
         $this->helper =
                 (isset($this->parent) && isset($this->parent->helper))  ?
                 $this->parent->helper                                   :
-                new wpCSL_helper__slplus(array('parent'=>$this)) ;
+                new wpCSL_helper__slplus(array('slplus'=>$this)) ;
 
         if (
             isset( $this->parent     )   && $this->parent->check_isOurAdminPage() &&
@@ -161,8 +161,7 @@ class wpCSL_settings__slplus {
         if (isset($this->parent->addons)) {
             foreach ($this->parent->addons as $addon => $instantiated_addon) {
 
-                // Update hook for current version info
-                //
+
                 if ( isset( $instantiated_addon ) ) {
 
                     // Plugins using old-school top-level updates object
@@ -199,10 +198,18 @@ class wpCSL_settings__slplus {
                 // If update is available, report it.
                 //
                 if ( ! empty( $newest_version ) && version_compare( $version , $newest_version , '<' ) ) {
-                    $version .=  ' , ' . $newest_version . __(' update available' , 'csa-slplus');
-                }
+                    $version .=  ' , ' . $newest_version;
+                    $url=  $instantiated_addon->metadata['PluginURI'];
+                    $version .= sprintf('<a href="%s">%s</a>',$url,__('UPDATE HERE','csa-slplus'));
 
-                if ( ! empty( $version        ) ) { $addonStr .= $this->create_EnvDiv($addon,$version); }
+                    }
+
+
+                if ( ! empty( $version        ) ) {
+                    $addonStr .= $this->create_EnvDiv($instantiated_addon->name,$version);
+
+
+                }
             }
         }
 
@@ -211,7 +218,7 @@ class wpCSL_settings__slplus {
                 'name' => 'Plugin Environment',
                 'description' =>
                     $this->create_EnvDiv($this->parent->metadata['Name'] . ' Version' ,$this->parent->metadata['Version'] ).
-                    $addonStr . 
+                    $addonStr .
                     '<br/>' .
                     $this->create_EnvDiv('WordPress Version'                        ,$GLOBALS['wp_version']             ).
                     $this->create_EnvDiv('Site URL'                                 ,get_option('siteurl')              ).
@@ -219,11 +226,16 @@ class wpCSL_settings__slplus {
                     $this->create_EnvDiv('MySQL Version'                            ,$wpdb->db_version()                ).
                     '<br/>' .
                     $this->create_EnvDiv('PHP Version'                              ,phpversion()                       ).
+                    $this->create_EnvDiv('PHP Limit'                                ,
+                       ini_get('memory_limit')                                                                          ).
+                    $this->create_EnvDiv('Wordpress Limit'                              ,
+                        WP_MEMORY_LIMIT                                                                                 ).
                     $this->create_EnvDiv('PHP Peak RAM'                             ,
                             sprintf('%0.2d MB',memory_get_peak_usage(true)/1024/1024)                                   ).
                     $this->create_EnvDiv('PHP Modules'                              ,
                             '<pre>'.print_r($this->csl_php_modules,true).'</pre>'                                       )
                     ,
+
                 'auto'              => true,
                 'innerdiv'          => true,
                 'start_collapsed'   => false
