@@ -1,4 +1,8 @@
 <?php
+if(!class_exists('WP_List_Table')){
+    require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
+}
+
 /**
  * Store Locator Plus manage locations admin user interface.
  *
@@ -453,6 +457,8 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
      */
     function action_SaveExtendedData() {
 
+        $action = isset( $_REQUEST['act'] ) ? $_REQUEST['act'] : '';
+
         // Check our extended column info and see if there is a matching property in exdata in currentLocation
         //
         $this->get_ExtendedDataInfo();
@@ -463,7 +469,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
             // Boolean force (off bools are not sent in request)
             //
             if ( $extraColumn->type === 'boolean' ) {
-                $boolREQField = $slug . '-' . (($_REQUEST['act']==='add')?'':$this->slplus->currentLocation->id);
+                $boolREQField = $slug . '-' . ( ( $action === 'add' ) ? '' : $this->slplus->currentLocation->id );
                 $newValues[$slug] = empty($_REQUEST[$boolREQField]) ? 0 : 1;
                 $this->slplus->currentLocation->$slug = $newValues[$slug];
             } else {

@@ -4,7 +4,7 @@
  *
  * @package StoreLocatorPlus\AdminUI\GeneralSettings
  * @author Lance Cleveland <lance@charlestonsw.com>
- * @copyright 2013 Charleston Software Associates, LLC
+ * @copyright 2013 - 2014 Charleston Software Associates, LLC
  */
 class SLPlus_AdminUI_GeneralSettings {
 
@@ -42,27 +42,12 @@ class SLPlus_AdminUI_GeneralSettings {
      * Called when this object is created.
      *
      */
-    function __construct() {
-        if (!$this->set_Plugin()) {
-            die('could not set plugin');
-            return;
+    function __construct( $params ) {
+        foreach ( $params as $property => $value ) {
+            if ( property_exists( $this , $property ) ) {
+                $this->$property = $value;
+            }
         }
-    }
-
-    /**
-     * Set the plugin property to point to the primary plugin object.
-     *
-     * Returns false if we can't get to the main plugin object.
-     *
-     * @global SLPlus the wpCSL object
-     * @return boolean true if plugin property is valid
-     */
-    function set_Plugin() {
-        if (!isset($this->slplus) || ($this->slplus == null)) {
-            global $slplus_plugin;
-            $this->slplus = $slplus_plugin;
-        }
-        return (isset($this->slplus) && ($this->slplus != null));
     }
 
     /**

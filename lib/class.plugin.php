@@ -294,7 +294,7 @@ class wpCSL_plugin__slplus {
         require_once('class.helper.php');
         $this->helper = new wpCSL_helper__slplus(
                 array(
-            'parent' => $this
+                    'slplus' => $this
                 )
         );
     }

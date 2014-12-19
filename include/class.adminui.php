@@ -165,7 +165,7 @@ class SLPlus_AdminUI {
      */
     function renderPage_GeneralSettings() {
         require_once(SLPLUS_PLUGINDIR . '/include/class.adminui.generalsettings.php');
-        $this->GeneralSettings = new SLPlus_AdminUI_GeneralSettings();
+        $this->GeneralSettings = new SLPlus_AdminUI_GeneralSettings( array( 'slplus' => $this->slplus ) );
         $this->GeneralSettings->render_adminpage();
     }
 

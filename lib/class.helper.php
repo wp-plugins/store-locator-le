@@ -28,9 +28,9 @@ class wpCSL_helper__slplus {
     /**
      * The parent wpCSL object.
      * 
-     * @var \wpCSL_plugin__slplus $parent
+     * @var \wpCSL_plugin__slplus $slplus
      */
-    private $parent;
+    private $slplus;
 
     /**
      *
@@ -57,7 +57,7 @@ class wpCSL_helper__slplus {
     function createstring_DropDownDiv($params) {
         return
             "<div class='form_entry'>".
-                "<div class='".$this->parent->css_prefix."-input'>" .
+                "<div class='".$this->slplus->css_prefix."-input'>" .
                 "<label  for='{$params['name']}'>{$params['label']}:</label>".
                 $this->createstring_DropDownMenu($params) .
                 "</div>".
@@ -202,12 +202,12 @@ class wpCSL_helper__slplus {
             $moreInfoText = esc_html($msg);
             return
                 "<a class='wpcsl-helpicon' ".
-                    "onclick=\"jQuery('div#{$this->parent->css_prefix}-help{$jqDivName}').toggle('slow');\" ".
+                    "onclick=\"jQuery('div#{$this->slplus->css_prefix}-help{$jqDivName}').toggle('slow');\" ".
                     "href=\"javascript:;\" ".
                     "alt='{$moreInfoText}' title='{$moreInfoText}'" .
                     '>'.
                 "</a>".
-                "<div id='{$this->parent->css_prefix}-help{$divname}' class='input_note wpcsl_helptext' style='display: none;'>".
+                "<div id='{$this->slplus->css_prefix}-help{$divname}' class='input_note wpcsl_helptext' style='display: none;'>".
                     $msg.
                 "</div>"
                 ;
@@ -237,12 +237,12 @@ class wpCSL_helper__slplus {
          * @return type
          */
         function CreateCheckboxDiv($boxname,$label='',$msg='',$prefix=null, $disabled=false, $default=0, $checkOption = null) {
-            if ($prefix === null) { $prefix = $this->parent->prefix; }
+            if ($prefix === null) { $prefix = $this->slplus->prefix; }
             $whichbox = $prefix.$boxname;
             if ($checkOption === null) { $checkOption = get_option($whichbox,$default); }
             return
                 "<div class='form_entry'>".
-                    "<div class='".$this->parent->css_prefix."-input'>" .
+                    "<div class='".$this->slplus->css_prefix."-input'>" .
                     "<label  for='$whichbox' ".
                         ($disabled?"class='disabled '":' ').
                         ">$label:</label>".
@@ -299,10 +299,36 @@ class wpCSL_helper__slplus {
      **  $prefix (string, optional) - defaults to SLPLUS_PREFIX, can be ''
      **/
     function SaveCheckboxToDB($boxname,$prefix = null, $separator='-') {
-        if ($prefix === null) { $prefix = $this->parent->prefix; }
+        if ($prefix === null) { $prefix = $this->slplus->prefix; }
         $whichbox = $prefix.$separator.$boxname;
-        $_POST[$whichbox] = (isset($_POST[$whichbox])&&!empty($_POST[$whichbox]))?1:0;
+        $this->create_checkbox_post( $whichbox );
         $this->SavePostToOptionsTable($whichbox,0);
+    }
+
+    /**
+     * Force the checkbox post on or off even if not sent in from form post.
+     *
+     * @param $checkbox_name
+     */
+    function create_checkbox_post( $checkbox_name ) {
+        $this->slplus->debugMP('msg', get_class() . '::' . __FUNCTION__ );
+        $_POST[$checkbox_name] = ( isset( $_POST[$checkbox_name] ) && ! empty( $_POST[$checkbox_name] ) ) ? 1 : 0 ;
+    }
+
+    /**
+     * Take an array of checkbox names and set all the form POSTS if not set and load into equivalent option_array key.
+     *
+     * $_POST['blah'] gets loaded into $option_array['blah'] whether on or off (1 or 0)
+     *
+     * @param $option_array
+     * @param $checkbox_list
+     */
+    function load_checkboxes_into_options( &$option_array , $checkbox_list ) {
+        $this->slplus->debugMP('msg', get_class() . '::' . __FUNCTION__ );
+        foreach ( $checkbox_list as $checkbox_name ) {
+            $this->create_checkbox_post( $checkbox_name );
+            $option_array[$checkbox_name] = $_POST[$checkbox_name];
+        }
     }
 
     /**
@@ -345,16 +371,16 @@ class wpCSL_helper__slplus {
     function getData($element = null, $function = null, $params=null, $default=null, $forceReload = false, $cantBeEmpty = false) {
         if ($element  === null) { return; }
         if ($function === null) { return; }
-        if (!isset($this->parent->data[$element] ) || $forceReload) {
+        if (!isset($this->slplus->data[$element] ) || $forceReload) {
 
            // get_option shortcut, fetch the option named by params
            //
            if ($function === 'get_option') {
                if (is_array($params)) {
-                    $this->parent->data[$element] = get_option($params[0],$params[1]);
+                    $this->slplus->data[$element] = get_option($params[0],$params[1]);
                 } else {
                     if ($params === null) { $params = $element; }
-                    $this->parent->data[$element] =
+                    $this->slplus->data[$element] =
                         ($default == null) ?
                             get_option($params) :
                             get_option($params,$default);
@@ -364,27 +390,27 @@ class wpCSL_helper__slplus {
            //
            } else if ($function === 'get_item') {
                if (is_array($params)) {
-                    $this->parent->data[$element] = $this->parent->settings->get_item($params[0],$params[1],'-',$forceReload);
+                    $this->slplus->data[$element] = $this->slplus->settings->get_item($params[0],$params[1],'-',$forceReload);
                 } else {
                     if ($params === null) { $params = $element; }
-                    $this->parent->data[$element] = $this->parent->settings->get_item($params,$default,'-',$forceReload);
+                    $this->slplus->data[$element] = $this->slplus->settings->get_item($params,$default,'-',$forceReload);
                 }
 
 
            // If not using get_option, assume $function is an anon and run it
            //
            } else {
-                $this->parent->data[$element] = $function($params);
+                $this->slplus->data[$element] = $function($params);
            }
        }
 
        // Cant Be Empty?
        //
-       if (($cantBeEmpty) && empty($this->parent->data[$element])) {
-           $this->parent->data[$element] = $default;
+       if (($cantBeEmpty) && empty($this->slplus->data[$element])) {
+           $this->slplus->data[$element] = $default;
        }
 
-       return esc_html($this->parent->data[$element]);
+       return esc_html($this->slplus->data[$element]);
     }
 
     /**
@@ -400,11 +426,11 @@ class wpCSL_helper__slplus {
      *
      */
     function loadPluginData() {
-        if (!isset($this->parent->dataElements)) {
-            $this->parent->dataElements = array();
+        if (!isset($this->slplus->dataElements)) {
+            $this->slplus->dataElements = array();
         }
-        if (count($this->parent->dataElements) > 0) {
-            foreach ($this->parent->dataElements as $element) {
+        if (count($this->slplus->dataElements) > 0) {
+            foreach ($this->slplus->dataElements as $element) {
                 $this->getData($element[0],$element[1],$element[2]);
             }
         }
@@ -421,8 +447,8 @@ class wpCSL_helper__slplus {
       */
      function create_SimpleMessage() {
         if (!$this->depnotice_create_SimpleMessage) {
-            $this->parent->notifications->add_notice(9,$this->parent->createstring_Deprecated(__FUNCTION__));
-            $this->parent->notifications->display();
+            $this->slplus->notifications->add_notice(9,$this->slplus->createstring_Deprecated(__FUNCTION__));
+            $this->slplus->notifications->display();
             $this->depnotice_create_SimpleMessage = true;
         }
      }
