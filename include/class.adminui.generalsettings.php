@@ -63,7 +63,6 @@ class SLPlus_AdminUI_GeneralSettings {
         $BoxesToHit =
             apply_filters('slp_save_general_settings_inputs',
                 array(
-                    SLPLUS_PREFIX.'-api_key'            ,
                     SLPLUS_PREFIX.'-geocode_retries'    ,
                 )
             );
@@ -227,17 +226,6 @@ class SLPlus_AdminUI_GeneralSettings {
         // Google License
         //
         $groupName = __('Google Business License','csa-slplus');
-        $this->settings->add_ItemToGroup(
-            array(
-                'section'      => $sectName                        ,
-                'group'        => $groupName                       ,
-                'label'        => __('Google API Key','csa-slplus'),
-                'setting'      => 'api_key'                        ,
-                'description'  =>
-                    __('This setting helps with query limits for businesses with a Google Business Account only.','csa-slplus').
-                    __('The free Google API keys do not have an impact on query limits.','csa-slplus')
-            )
-        );
          $this->settings->add_ItemToGroup(
              array(
                  'section'       => $sectName                                            ,

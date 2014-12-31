@@ -78,6 +78,9 @@ if (! class_exists('SLP_BaseClass_Admin')) {
          */
         function check_for_updates() {
             if ( is_plugin_active( $this->addon->slug ) ) {
+                if ( ! class_exists( 'SLPlus_Updates' ) ) {
+                    require_once('class.updates.php');
+                }
                 if ( class_exists('SLPlus_Updates') ) {
                     $this->Updates = new SLPlus_Updates(
                             $this->addon->metadata['Version'], 
@@ -85,7 +88,7 @@ if (! class_exists('SLP_BaseClass_Admin')) {
                             $this->addon->slug
                     );
                 }
-            }                        
+            }
         }        
         
         /**
@@ -111,8 +114,13 @@ if (! class_exists('SLP_BaseClass_Admin')) {
         /**
          * Update the install info for this add on.
          */
-        function update_install_info() {            
-            if ( version_compare( $this->addon->options['installed_version'] , $this->addon->version , '<' ) ) {
+        function update_install_info() {
+            $installed_version =
+                isset( $this->addon->options['installed_version'] ) ?
+                    $this->addon->options['installed_version']      :
+                    '0.0.0'                                         ;
+
+            if ( version_compare( $installed_version , $this->addon->version , '<' ) ) {
                 $this->update_prior_installs();
                 $this->addon->options['installed_version'] = $this->addon->version;
                 update_option( $this->addon->option_name , $this->addon->options);

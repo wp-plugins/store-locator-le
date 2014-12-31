@@ -96,10 +96,10 @@ class SLPlus_Activate {
                         slug varchar(250),
                         type varchar(55),
                         options text,
-                        key id (id),
-                        key field_id (field_id),
-                        key label (label),
-                        key slug (slug)
+                        KEY id (id),
+                        KEY field_id (field_id),
+                        KEY label (label),
+                        KEY slug (slug)
                 )
                 $charset_collate
                 ";
@@ -176,7 +176,7 @@ class SLPlus_Activate {
                 sl_pages_on varchar(1) NULL,
                 sl_option_value longtext NULL,
                 sl_lastupdated  timestamp NOT NULL default current_timestamp,			
-                PRIMARY KEY  (sl_id),
+                PRIMARY KEY (sl_id),
                 KEY sl_store (sl_store),
                 KEY sl_longitude (sl_longitude),
                 KEY sl_latitude (sl_latitude)
@@ -461,6 +461,7 @@ class SLPlus_Activate {
             // Always re-load theme details data.
             //
             if ( version_compare($updater->plugin_version_on_start,'4.99.99','<') ) {
+                delete_option(SLPLUS_PREFIX.'-api_key');
                 delete_option(SLPLUS_PREFIX.'-theme_details');
                 delete_option(SLPLUS_PREFIX.'-theme_array');
                 delete_option(SLPLUS_PREFIX.'-theme_lastupdated');

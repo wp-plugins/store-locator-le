@@ -238,6 +238,7 @@ class SLPlus extends wpCSL_plugin__slplus {
     [slp_search_element dropdown_with_label="country"]
     [slp_search_element selector_with_label="tag"]
     [slp_search_element dropdown_with_label="category"]
+    [slp_search_element dropdown_with_label="gfl_form_id"]
     <div class="search_item">
         [slp_search_element dropdown_with_label="radius"]
         [slp_search_element button="submit"]
@@ -552,7 +553,7 @@ class SLPlus extends wpCSL_plugin__slplus {
      */
     public function is_AddonActive( $slug ) {
         $this->createobject_AddOnManager();
-        $this->add_ons->is_active( $slug );
+		return $this->add_ons->is_active( $slug );
     }
 
     /**
@@ -590,6 +591,20 @@ class SLPlus extends wpCSL_plugin__slplus {
         }
         return $false_value;
     }
+
+    /**
+     * Checks if a URL is valid.
+     *
+     * @param $url
+     * @return bool
+     */
+    public function is_valid_url( $url ) {
+        $url = trim( $url );
+
+        return ( ( strpos( $url, 'http://' ) === 0 || strpos( $url, 'https://' ) === 0 ) &&
+            filter_var( $url, FILTER_VALIDATE_URL ) !== false );
+    }
+
 
     /**
      * Set valid options from the incoming REQUEST

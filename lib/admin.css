@@ -631,8 +631,7 @@ div.locations_div_add {
   width: 100%; }
 
 table.slp_locationinfoform_table LABEL,
-table.manual_add_table LABEL,
-.add_location_form LABEL {
+table.manual_add_table LABEL {
   clear: both;
   width: 120px;
   float: left;
@@ -644,11 +643,14 @@ table.manual_add_table LABEL,
 .add_location_form #slp_form_buttons {
   padding-left: 124px; }
 .add_location_form INPUT {
+  box-sizing: content-box;
   background-color: #FFF;
+  display: inline-block;
   margin-right: 3px;
-  width: 30em; }
+  width: 29em;
+  font-size: 1em; }
   .add_location_form INPUT.mediumfield {
-    width: 20em; }
+    width: 16em; }
   .add_location_form INPUT.shortfield {
     width: 4.75em; }
 .add_location_form INPUT[type='button'] {
@@ -663,7 +665,17 @@ table.manual_add_table LABEL,
   .add_location_form INPUT[type='submit']:hover {
     background: none;
     background-color: #228b22; }
+.add_location_form LABEL {
+  box-sizing: content-box;
+  display: inline-block;
+  font-size: 1em;
+  width: 9em;
+  text-align: right;
+  margin-right: 0.5em;
+  margin-top: 3px; }
 .add_location_form TEXTAREA {
+  box-sizing: content-box;
+  font-size: 1em;
   width: 30em; }
 
 /* Add / Edit Locations */
