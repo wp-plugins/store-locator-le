@@ -856,15 +856,6 @@ class SLPlus_Location {
                 '&client=' . $this->slplus->options_nojs['google_client_id'] . '&v=3' :
                 ''                                                                    ;
 
-
-        // Google Maps API for Work (client_id above) CANNOT be used with a key.
-        //
-        $dbAPIKey  = trim( get_option(SLPLUS_PREFIX.'-api_key' , '' ) );
-        $api_key   =
-            ( ! empty( $dbAPIKey ) && empty( $client_id ) ) ?
-                '&key=' . $dbAPIKey                         :
-                ''                                          ;
-
         // Set the map language
         //
         $language = '&language='.$this->slplus->helper->getData('map_language','get_item',null,'en');
@@ -872,7 +863,7 @@ class SLPlus_Location {
         // Base Google API URL
         //
         $google_api_url =
-            'http' . ( ( is_ssl() || ! empty($api_key) ) ? 's' : '' ) . '://'    .
+            'https://'    .
             $this->slplus->options['map_domain']        .
             '/maps/api/'                                .
             'geocode/json'                              .
@@ -883,7 +874,6 @@ class SLPlus_Location {
         $this->geocodeURL =
             $google_api_url     .
             $client_id          .
-            $api_key            .
             $language           .
             '&address='         ;
     }

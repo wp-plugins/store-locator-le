@@ -537,15 +537,18 @@ class SLPlus_UI {
      * @return string HTML the shortcode will render
      */
      function render_shortcode($attributes, $content = null) {
-         if ( ! is_object( $this->slplus ) ) {
-             return sprintf(__('%s is not ready','csa-slplus'),__('Store Locator Plus','csa-slplus'));
+        if ( ! is_object( $this->slplus ) ) {
+            return sprintf(__('%s is not ready','csa-slplus'),__('Store Locator Plus','csa-slplus'));
         }
-        $this->slplus->debugMP('slp.main','msg','SLPlus_UI:'.__FUNCTION__);
+        $this->slplus->debugMP('msg', get_class() . '::' . __FUNCTION__ );
 
         // Force some plugin data properties
         //
         $this->slplus->data['radius_options'] =
-                (isset($this->slplus->data['radius_options'])?$this->slplus->data['radius_options']:'');
+            ( isset( $this->slplus->data['radius_options'] ) ?
+                $this->slplus->data['radius_options']        :
+                ''
+            );
 
         // Load from plugin object data table first,
         // attributes trump options
@@ -565,6 +568,7 @@ class SLPlus_UI {
                 $attributes ,
                 'slplus'
                );
+        do_action( 'slp_before_render_shortcode', $attributes );
         
         // Set plugin data and options to include the attributes.
         // TODO: data needs to go away and become part of options.
@@ -631,6 +635,7 @@ class SLPlus_UI {
         remove_shortcode('slp_maptagline'  );
         remove_shortcode('slp_results'     );
         remove_shortcode( 'tagalong'       );
+		do_action( 'slp_after_render_shortcode', $attributes );
         
         return $HTML;
     }
@@ -674,6 +679,10 @@ class SLPlus_UI {
         $this->slplus->debugMP('slp.main','msg','SLPlus_UI:'.__FUNCTION__);
 
         $this->slplus->loadPluginData();
+
+		// Handle any IconAttributes optionally set using the shortcode in combination with the Pro Pack
+		$this->handleIconAttributes('sl_map_home_icon', 'homeicon');
+		$this->handleIconAttributes('sl_map_end_icon',  'endicon' );
 
         $slplus_home_icon_file = str_replace(SLPLUS_ICONURL,SLPLUS_ICONDIR,$this->slplus->data['sl_map_home_icon']);
         $slplus_end_icon_file  = str_replace(SLPLUS_ICONURL,SLPLUS_ICONDIR,$this->slplus->data['sl_map_end_icon']);
@@ -736,6 +745,40 @@ class SLPlus_UI {
         wp_localize_script('csl_script' ,'slplus'   , $scriptData);            
 
     }
+
+	/**
+	 * Handle any IconAttributes optionally set using the shortcode in combination with the Pro Pack.
+	 *
+	 * Uses data['sl_map_home_icon'] by default.
+	 */
+	function handleIconAttributes( $data_element, $attribute_element ) {
+		$this->slplus->debugMP('slp.main','pr',get_class().'::'.__FUNCTION__ . ' Checking attribute[' . $attribute_element . '] with data:',$this->slplus->data);
+
+		// Check Settings for $attribute_element
+		//
+		if (isset($this->slplus->data[$attribute_element]) && !empty($this->slplus->data[$attribute_element])) {
+
+			// Start with attribute_element value
+			$icon_url = $this->slplus->data[$attribute_element];
+
+			// Prepends value with SLPLUS_ICONURL when it is not a url (could use url_test() )
+            //  Try WordPress is_valid_url() from the common.php library.
+            //
+            if ( ! $this->slplus->is_valid_url( $icon_url ) ) {
+				$icon_url = SLPLUS_ICONURL . $icon_url;
+
+				// If file doesn't exist, try to make relative url into absolute url
+				$icon_file = str_replace(SLPLUS_ICONURL,SLPLUS_ICONDIR,$icon_url);
+				if (!file_exists($icon_file)) {
+					$icon_url = get_site_url() . $this->slplus->data[$attribute_element];
+				}
+			}
+
+			// Store value found in data_element
+			$this->slplus->data[$data_element] = $icon_url;
+		}
+
+	}
 
     /**
      * Set the starting point for the center of the map.

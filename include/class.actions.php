@@ -411,14 +411,6 @@ class SLPlus_Actions {
                 '&client=' . $this->slplus->options_nojs['google_client_id'] . '&v=3' :
                 ''                                                                    ;
 
-            // Google Maps API for Work (client_id above) CANNOT be used with a key.
-            //
-            $dbAPIKey  = trim( get_option(SLPLUS_PREFIX.'-api_key' , '' ) );
-            $api_key   =
-                ( ! empty( $dbAPIKey ) && empty( $client_id ) ) ?
-                    '&key=' . $dbAPIKey                         :
-                    ''                                          ;
-
             // Set the map language
             //
             $language = '&language='.$this->slplus->helper->getData('map_language','get_item',null,'en');
@@ -436,7 +428,7 @@ class SLPlus_Actions {
             //
             wp_enqueue_script(
                     'google_maps',
-                    $google_api_url . $client_id . $api_key . $language,
+                    $google_api_url . $client_id . $language,
                     array(),
                     SLPLUS_VERSION,
                     ! $this->slplus->javascript_is_forced

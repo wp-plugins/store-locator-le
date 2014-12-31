@@ -1,11 +1,11 @@
 === Store Locator Plus ===
 Plugin Name:  Store Locator Plus
-Contributors: charlestonsw
+Contributors: charlestonsw, DeBAAT
 Donate link: http://www.charlestonsw.com/product/store-locator-plus-4/
 Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.4
 Tested up to: 4.1
-Stable tag: 4.2.21
+Stable tag: 4.2.23
 License: GLPv2 or later
 
 Add a location finder or directory to your site in minutes. A Google Business Maps API licensed product. Extensive premium add-on library available!
@@ -28,7 +28,7 @@ The Store Locator Plus search form and map will "magically" appear.
 
 The base plugin, [available for free from the WordPress Plugin Directory](http://wordpress.org/extend/plugins/store-locator-le) has all the features you need
 to create a comprehensive store locator interface on your website.
-Set up an interactive Google map for your customers with a single shortcode.
+Set up an interactive Google map for your customers with a [single shortcode](http://www.charlestonsw.com/support/documentation/store-locator-plus/getting-started/shortcodes/).
 
 Advanced customization is available via the settings interface in the admin panel.
 Set the map size to best fit your site.
@@ -212,7 +212,7 @@ Any EASIER way to perform translations?  Load the [Codestyling Localization plug
 1. Search for "Store Locator Plus" via Plugins/Add New on your WordPress admin panel.
 2. Click install.
 3. Add your locations through the 'Add Locations' page in the Store Locator admin panel
-4. Create or edit a page and add the [SLPLUS] shortcode.
+4. Create or edit a page and add the [[SLPLUS] shortcode](http://www.charlestonsw.com/support/documentation/store-locator-plus/getting-started/shortcodes/).
 
 = Icons =
 
@@ -344,12 +344,29 @@ Please read the *description page* for this plugin for an important note about p
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
 
-= 4.2.21 (2014-Dec-17) =
+= 4.2.23 (2014-Dec-28) =
+
+* Change: Remove Google API key support.  It is no longer used by Google Maps API V3.
+* Change: Tweak the before and after shortcode rendering hook to pass along attributes.
+* Fix: Fix the Add-on Framework update checker, all premium add-on packs should now receive proper update notifications.
+* Fix: [homeicon](http://www.charlestonsw.com/support/documentation/store-locator-plus/getting-started/shortcodes/#homeicon) and [endicon](http://www.charlestonsw.com/support/documentation/store-locator-plus/getting-started/shortcodes/#endicon) SLPLUS shortcode attributes have been fixed (requires Pro Pack).
+
+= 4.2.22 (2014-Dec-22) =
+
+* Change: Default SLP Theme has been modified to provide better design for the WP 4.1 2015 theme.
+* Enhancement: The Default 2014 theme has been added, it is the prior Default theme.  If your UI change switch your SLP Theme to Default 2014.
+* Enhancement: Add slp_before_render_shortcode action hook, called immediately before do_shortcode for SLPLUS.   Added for Multimap add-on support.
+* Enhancement: Add slp_after_render_shortcode action hook, called after do_shortcode for SLPLUS.   Added for Multimap add-on support.
+
+= 4.2.21 (2014-Dec-19) =
 
 * Enhancement: Locations admin page updated to auto-load WordPress WPListTable class for support of Gravity Forms integration plugin by DeBaat.
 * Enhancement: Add some new helper functions to simplify checkbox processing.
 * Enhancement: Add WordPress and PHP memory limit settings to plugin environment panel.
 * Enhancement: Add link to add-on product pages when update is available.
+* Fix: Allow for decimal point in the radius selector allowing a radius like 0.5 to work.
+* NOTE: Requires an update to Enhanced Search premium add-on to be updated to version 4.2.05.
+
 
 = 4.2.19 (2014-Dec-15) =
 
