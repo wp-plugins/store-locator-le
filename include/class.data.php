@@ -246,9 +246,11 @@ class SLPlus_Data {
                         add_filter('slp_ajaxsql_where',array($this,'filter_SetWhereValidLatLong'));
                     }
 
+                    // FILTER: slp_location_where
                     // FILTER: slp_ajaxsql_where
                     //
                     $where = apply_filters('slp_ajaxsql_where','');
+                    $where = apply_filters('slp_location_where', $where );
                     if (!empty($where)) {
                         $sqlStatement .= ' WHERE ' . $where . ' ';
                     }

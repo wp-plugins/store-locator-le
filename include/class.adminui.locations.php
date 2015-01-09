@@ -8,7 +8,7 @@ if(!class_exists('WP_List_Table')){
  *
  * @package StoreLocatorPlus\AdminUI\Locations
  * @author Lance Cleveland <lance@charlestonsw.com>
- * @copyright 2012-2014 Charleston Software Associates, LLC
+ * @copyright 2012-2015 Charleston Software Associates, LLC
  *
  * @var mixed[] $columns our column headers
  */
@@ -313,10 +313,10 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
     /**
      * Set all the properties that manage the location query.
      * 
-     * @global \wpdb $wpdb
      */
     function set_LocationQueryProperties() {
-        
+        $this->slplus->debugMP('slp.managelocs','msg', get_class() . ':: ' . __FUNCTION__ );
+
         // Where Clause
         //
         $this->db_where = '';
@@ -376,53 +376,6 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                 $this->hangoverURL = str_replace('&start=','&prevstart=',$this->hangoverURL);
             }
         }
-    }
-
-    /**
-     * Encode a string to URL-safe base64
-     *
-     * @param $value
-     * @return mixed
-     */
-    private function encode_Base64UrlSafe($value) {
-        return str_replace(array('+', '/'), array('-', '_'), base64_encode($value));
-    }
-
-    /**
-     * Decode a string from URL-safe base64.
-     *
-     * @param $value
-     * @return string
-     */
-    private function decode_Base64UrlSafe( $value ) {
-        return base64_decode(str_replace(array('-', '_'), array('+', '/'), $value));
-    }
-
-    /**
-     * Sign a URL with a given crypto key.
-     *
-     * Note that this URL must be properly URL-encoded.
-     *
-     * @param $myUrlToSign
-     * @param $privateKey
-     * @return string
-     */
-    private function sign_url( $myUrlToSign, $privateKey ) {
-        // parse the url
-        $url = parse_url($myUrlToSign);
-
-        $urlPartToSign = $url['path'] . "?" . $url['query'];
-
-        // Decode the private key into its binary format
-        $decodedKey = $this->decode_Base64UrlSafe($privateKey);
-
-        // Create a signature using the private key and the URL-encoded
-        // string using HMAC SHA1. This signature will be binary.
-        $signature = hash_hmac("sha1",$urlPartToSign, $decodedKey,  true);
-
-        $encodedSignature = $this->encode_Base64UrlSafe($signature);
-
-        return $myUrlToSign."&signature=".$encodedSignature;
     }
 
     /**
@@ -1094,14 +1047,20 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                 ( isset($locationData['sl_latitude'  ]) && is_numeric($locationData['sl_latitude'  ])    ) &&
                 ( isset($locationData['sl_longitude' ]) && is_numeric($locationData['sl_longitude' ])    )
                 ;
-            $this->location_AddToDatabase(
+            $response_code =
+                $this->location_AddToDatabase(
                     $locationData,
                     'none',
                     $skipGeocode
                     );
+
             print "<div class='updated fade'>".
-                    stripslashes_deep($_POST['store-']) ." " .
-                    __("Added Successfully",'csa-slplus') . '.</div>';
+                    stripslashes_deep($_POST['store-']) . ' ' .
+                    __('added successfully','csa-slplus') . ' ' .
+                    $response_code .
+                '.</div>'
+                ;
+
         } else {
             $this->slplus->debugMP('slp.managelocs','pr','location_Add no POST[store-]',$locationData,NULL,NULL,true);
             print "<div class='updated fade'>".
@@ -1990,8 +1949,8 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
             // ADD
             //
             case 'add' :
-                
                 $this->location_Add();
+                $this->slplus->notifications->display();
                 break;
 
             // SAVE
