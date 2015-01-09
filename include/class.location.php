@@ -6,7 +6,7 @@
  *
  * @package StoreLocatorPlus\Location
  * @author Lance Cleveland <lance@charlestonsw.com>
- * @copyright 2012-2013 Charleston Software Associates, LLC
+ * @copyright 2012-2015 Charleston Software Associates, LLC
  *
  * @property int $id
  * @property string $store          the store name
@@ -288,7 +288,7 @@ class SLPlus_Location {
      *
      */
     function add_to_database($locationData,$duplicates_handling='none',$skipGeocode=false) {
-        $this->debugMP('msg','SLPlus_Location::'.__FUNCTION__,
+        $this->debugMP('msg', get_class() . '::' .__FUNCTION__,
             "duplicates handling mode: {$duplicates_handling} " . ($skipGeocode?' skip geocode':'')
         );
 
@@ -537,6 +537,16 @@ class SLPlus_Location {
     }
 
     /**
+     * Decode a string from URL-safe base64.
+     *
+     * @param $value
+     * @return string
+     */
+    private function decode_Base64UrlSafe( $value ) {
+        return base64_decode(str_replace(array('-', '_'), array('+', '/'), $value));
+    }
+
+    /**
      * GeoCode a given location, updating the slplus_plugin currentLocation object lat/long.
      *
      * Writing to disk is to be handled by the calling function.
@@ -546,7 +556,7 @@ class SLPlus_Location {
      * @param string $address the address to geocode, if not set use currentLocation
      */
     function do_geocoding($address=null) {
-        $this->debugMP('msg', 'SLPLus_Location::' . __FUNCTION__,$address);
+        $this->debugMP('msg', get_class() . '::' . __FUNCTION__,$address);
         $this->count++;
         if ($this->count === 1) {
             $this->retry_maximum_delayms = (int) $this->slplus->options_nojs['retry_maximum_delay'] * 1000000;
@@ -571,12 +581,16 @@ class SLPlus_Location {
         // Get lat/long from Google
         //
         $this->debugMP('msg','',$address);
-        $json = $this->get_LatLong($address);
-        if ($json!==null) {
+        $json_response = $this->get_LatLong($address);
+        if ( ! empty( $json_response ) ) {
 
             // Process the data based on the status of the JSON response.
             //
-            $json = json_decode($json);
+            $json = json_decode($json_response);
+            if ( $json === null ) {
+                $json = json_decode( json_encode( array( 'status' => 'ERROR' , 'message' => $json_response ) ) );
+            }
+
             $this->debugMP('pr','',$json);
             switch ($json->{'status'}) {
 
@@ -739,6 +753,15 @@ class SLPlus_Location {
             );
     }
 
+    /**
+     * Encode a string to URL-safe base64
+     *
+     * @param $value
+     * @return mixed
+     */
+    private function encode_Base64UrlSafe($value) {
+        return str_replace(array('+', '/'), array('-', '_'), base64_encode($value));
+    }
 
     /**
      * Get the latitude/longitude for a given address.
@@ -938,6 +961,34 @@ class SLPlus_Location {
         $this->pageData = apply_filters('slp_location_page_attributes', $this->pageData);
 
         return $this->pageData;
+    }
+
+
+    /**
+     * Sign a URL with a given crypto key.
+     *
+     * Note that this URL must be properly URL-encoded.
+     *
+     * @param $myUrlToSign
+     * @param $privateKey
+     * @return string
+     */
+    private function sign_url( $myUrlToSign, $privateKey ) {
+        // parse the url
+        $url = parse_url($myUrlToSign);
+
+        $urlPartToSign = $url['path'] . "?" . $url['query'];
+
+        // Decode the private key into its binary format
+        $decodedKey = $this->decode_Base64UrlSafe($privateKey);
+
+        // Create a signature using the private key and the URL-encoded
+        // string using HMAC SHA1. This signature will be binary.
+        $signature = hash_hmac("sha1",$urlPartToSign, $decodedKey,  true);
+
+        $encodedSignature = $this->encode_Base64UrlSafe($signature);
+
+        return $myUrlToSign."&signature=".$encodedSignature;
     }
 
     /**

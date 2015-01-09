@@ -197,18 +197,20 @@ class wpCSL_settings__slplus {
 
                 // If update is available, report it.
                 //
-                if ( ! empty( $newest_version ) && version_compare( $version , $newest_version , '<' ) ) {
-                    $version .=  ' , ' . $newest_version;
-                    $url=  $instantiated_addon->metadata['PluginURI'];
-                    $version .= sprintf('<a href="%s">%s</a>',$url,__('UPDATE HERE','csa-slplus'));
+                if  ( $instantiated_addon != null ) {
+                    if (!empty($newest_version) && version_compare($version, $newest_version, '<')) {
+                        $version .= ' , ' . $newest_version;
+                        $url = $instantiated_addon->metadata['PluginURI'];
+                        $version .= sprintf('<a href="%s">%s</a>', $url, __('UPDATE HERE', 'csa-slplus'));
 
                     }
 
 
-                if ( ! empty( $version        ) ) {
-                    $addonStr .= $this->create_EnvDiv($instantiated_addon->name,$version);
+                    if (!empty($version)) {
+                        $addonStr .= $this->create_EnvDiv($instantiated_addon->name, $version);
 
 
+                    }
                 }
             }
         }

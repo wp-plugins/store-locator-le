@@ -350,15 +350,22 @@ class SLPlus_Actions {
             register_post_type(SLPlus::locationPostType,$storepage_attributes);
 
             register_taxonomy(
-                    'stores',
-                    'store_page',
+                SLPLus::locationTaxonomy,
+                SLPLus::locationPostType,
                     array (
                         'hierarchical'  => true,
                         'labels'        =>
                             array(
                                     'menu_name' => __('Categories','csa-slplus'),
                                     'name'      => __('Store Categories','csa-slplus'),
-                                 )
+                                 ) ,
+                        'capabilities'  =>
+                            array (
+                                'manage_terms'  => 'manage_slp_admin',
+                                'edit_terms'    => 'manage_slp_admin',
+                                'delete_terms'  => 'manage_slp_admin',
+                                'assign_terms'  => 'manage_slp_admin',
+                            )
                         )
                 );
         }

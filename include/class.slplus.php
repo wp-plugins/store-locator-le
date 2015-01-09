@@ -229,8 +229,15 @@ class SLPlus extends wpCSL_plugin__slplus {
         // Search Layout
         // If you change this change default.css theme as well.
         //
+        // Use the slp_search_element shortcode processor to hook in add-on packs.
+        // Look for the attributes add_on and location="..." to place items.
+        //
+        // TODO: update PRO, ES, GFI&GFL to use the add_on location="..." processing.
+        // TODO: deprecate the add-on specific shortcodes at some point
+        //
         'searchlayout' =>
         '<div id="address_search">
+    [slp_search_element add_on location="very_top"]
     [slp_search_element input_with_label="name"]
     [slp_search_element input_with_label="address"]
     [slp_search_element dropdown_with_label="city"]
@@ -239,10 +246,13 @@ class SLPlus extends wpCSL_plugin__slplus {
     [slp_search_element selector_with_label="tag"]
     [slp_search_element dropdown_with_label="category"]
     [slp_search_element dropdown_with_label="gfl_form_id"]
+    [slp_search_element add_on location="before_radius_submit"]
     <div class="search_item">
         [slp_search_element dropdown_with_label="radius"]
         [slp_search_element button="submit"]
     </div>
+    [slp_search_element add_on location="after_radius_submit"]
+    [slp_search_element add_on location="very_bottom"]
 </div>'
             ,
     );
@@ -290,6 +300,13 @@ class SLPlus extends wpCSL_plugin__slplus {
     );
 
     /**
+     * The default options (before being read from DB)
+     *
+     * @var array
+     */
+    public $options_default = array();
+
+    /**
      * Serialized plugin options that do NOT get passed to slp.js.
      *
      * @var mixed[]
@@ -307,6 +324,13 @@ class SLPlus extends wpCSL_plugin__slplus {
         'next_field_ported'         => '',
         'retry_maximum_delay'       => '5.0',
     );
+
+    /**
+     * The default options_nojs (before being read from DB)
+     *
+     * @var array
+     */
+    public $options_nojs_default = array();
 
     /**
      * The settings that impact how the plugin renders.
@@ -438,6 +462,7 @@ class SLPlus extends wpCSL_plugin__slplus {
 
         // Options from the database
         //
+        $this->options_default = $this->options;
         $dbOptions = get_option(SLPLUS_PREFIX . '-options');
         if (is_array($dbOptions)) {
             array_walk($dbOptions, array($this, 'set_ValidOptions'));
@@ -445,6 +470,7 @@ class SLPlus extends wpCSL_plugin__slplus {
 
         // Load serialized options for noJS
         //
+        $this->options_nojs_default = $this->options_nojs;
         $dbOptions = get_option(SLPLUS_PREFIX . '-options_nojs');
         if (is_array($dbOptions)) {
             array_walk($dbOptions, array($this, 'set_ValidOptionsNoJS'));
@@ -613,12 +639,12 @@ class SLPlus extends wpCSL_plugin__slplus {
      * @param string $key - the key for that form var
      */
     function set_ValidOptions($val, $key) {
-        if (
-                array_key_exists($key, $this->options) &&
-                ( is_numeric($val) || !empty($val) )
-        ) {
-            $this->options[$key] = stripslashes_deep($val);
-            $this->debugMP('slp.main', 'msg', '', "set options[{$key}]=" . stripslashes_deep($val), NULL, NULL, true);
+        if ( array_key_exists($key, $this->options) ) {
+            if ( is_numeric($val) || ! empty( $val ) ) {
+                $this->options[$key] = stripslashes_deep($val);
+            } else {
+                $this->options[$key] = $this->options_default[$key];
+            }
         }
     }
 
@@ -631,11 +657,12 @@ class SLPlus extends wpCSL_plugin__slplus {
      * @param string $key - the key for that form var
      */
     function set_ValidOptionsNoJS($val, $key) {
-        if (
-                array_key_exists($key, $this->options_nojs) &&
-                ( is_numeric($val) || !empty($val) )
-        ) {
-            $this->options_nojs[$key] = stripslashes_deep($val);
+        if ( array_key_exists($key, $this->options_nojs) ) {
+            if ( is_numeric($val) || ! empty( $val ) ) {
+                $this->options_nojs[$key] = stripslashes_deep($val);
+            } else {
+                $this->options_nojs[$key] = $this->options_nojs_default[$key];
+            }
         }
     }
 

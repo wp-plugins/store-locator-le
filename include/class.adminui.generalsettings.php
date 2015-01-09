@@ -4,7 +4,7 @@
  *
  * @package StoreLocatorPlus\AdminUI\GeneralSettings
  * @author Lance Cleveland <lance@charlestonsw.com>
- * @copyright 2013 - 2014 Charleston Software Associates, LLC
+ * @copyright 2013 - 2015 Charleston Software Associates, LLC
  */
 class SLPlus_AdminUI_GeneralSettings {
 

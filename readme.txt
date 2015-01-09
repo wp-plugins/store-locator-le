@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-4/
 Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.4
 Tested up to: 4.1
-Stable tag: 4.2.23
+Stable tag: 4.2.25
 License: GLPv2 or later
 
 Add a location finder or directory to your site in minutes. A Google Business Maps API licensed product. Extensive premium add-on library available!
@@ -343,6 +343,13 @@ Please read the *description page* for this plugin for an important note about p
 *Version 4.x is a major upgrade that is not compatible with the version 3.x or earlier add-on packs.*
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 4.2.25 (2015-Jan-08) =
+
+* Enhancement: Provide better search layout shortcode elements for add-on packs to hook into such as [slp_search_element add_on location="very_top"]
+* Enhancement: Added manage_slp_admin to the Store Locator Plus custom taxonomy (stores) allowing 3rd party add-ons to grant user permissions to manage/edit/delete/assign store categories.
+* Fix: Google OEM License fields can be deleted after they are set to a value.
+* Fix: Google OEM API queries are working again.
 
 = 4.2.23 (2014-Dec-28) =
 
