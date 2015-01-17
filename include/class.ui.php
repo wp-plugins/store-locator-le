@@ -5,7 +5,7 @@
  *
  * @package StoreLocatorPlus\UI
  * @author Lance Cleveland <lance@charlestonsw.com>
- * @copyright 2012-2014 Charleston Software Associates, LLC
+ * @copyright 2012-2015 Charleston Software Associates, LLC
  */
 class SLPlus_UI {
 
@@ -723,7 +723,6 @@ class SLPlus_UI {
             'msg_noresults'     => $this->slplus->settings->get_item('message_noresultsfound','No results found.','_'),
             'results_string'    => $this->set_ResultsLayout( false ),
             'overview_ctrl'     => get_option('sl_map_overview_control',0),
-            'use_email_form'    => (get_option(SLPLUS_PREFIX.'_use_email_form',0)==1),
             'zoom_level'        => get_option('sl_zoom_level',12),
             'zoom_tweak'        => get_option('sl_zoom_tweak',1),
 
@@ -917,17 +916,11 @@ class SLPlus_UI {
 		                        $attributes = ' format text';
 		                        break;
 
-
 	                        // convert to slp_option
 	                        //
 	                        case 'map_domain'     :
 	                        case 'distance_unit'  :
 		                        $shortcode_label = 'slp_option';
-                                break;
-
-                            case 'email_link'     :
-	                            $shortcode_label = 'slp_option';
-								$attributes .= ' raw';
                                 break;
 
                             case 'directions_text':

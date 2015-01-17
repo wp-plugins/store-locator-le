@@ -141,6 +141,15 @@ if (! class_exists('SLP_BaseClass_Addon')) {
         );
 
         /**
+         * Default options.
+         *
+         * @var array
+         */
+        public $options_defaults = array(
+
+        );
+
+        /**
          * The base SLPlus object.
          *
          * @var \SLPlus $slplus
@@ -205,7 +214,7 @@ if (! class_exists('SLP_BaseClass_Addon')) {
                 
             // When SLP finished initializing do this
             //
-            add_action('slp_init_complete', array($this, 'slp_init'));            
+            add_action('slp_init_complete', array($this, 'slp_init'));
         }
         
         /**
@@ -359,7 +368,8 @@ if (! class_exists('SLP_BaseClass_Addon')) {
             if ( isset( $this->option_name) ) {
                 $dbOptions = get_option($this->option_name);
                 if (is_array($dbOptions)) {
-                    $this->options = array_merge($this->options, $dbOptions);
+                    $this->options = array_merge( $this->options, $this->options_defaults );
+                    $this->options = array_merge( $this->options, $dbOptions );
                 }
             }
         }

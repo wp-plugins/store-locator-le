@@ -26,6 +26,20 @@ if (! class_exists('SLP_BaseClass_AJAX')) {
         protected $addon;
 
         /**
+         * Form data that comes into the AJAX request in the formdata variable.
+         *
+         * @var mixed[] $formdata
+         */
+        protected $formdata = array();
+
+        /**
+         * The formdata default values.
+         *
+         * @var mixed[] $formdata_defaults
+         */
+        protected $formdata_defaults = array();
+
+        /**
          * The base SLPlus object.
          *
          * @var \SLPlus $slplus
@@ -86,5 +100,15 @@ if (! class_exists('SLP_BaseClass_AJAX')) {
 		    }
 		    return false;
 	    }
+
+        /**
+         * Set incoming query and request parameters into object properties.
+         */
+        function set_QueryParams() {
+            if ( isset( $_REQUEST['formdata'] ) ) {
+                $this->formdata = wp_parse_args( $_REQUEST['formdata'] ,$this->formdata_defaults);
+            }
+        }
+
     }
 }

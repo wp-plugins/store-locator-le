@@ -457,6 +457,13 @@ class SLPlus_Activate {
                 $options_changed = true; // new setting always write the options array to disk
             }
 
+            // Upgrading to version 4.2.26
+            //
+            if ( version_compare($updater->plugin_version_on_start,'4.2.26','<') ) {
+                $option_name  = SLPLUS_PREFIX.'_use_email_form';
+                delete_option($option_name);
+            }
+
             // Upgrading to version 4.1.XX+
             // Always re-load theme details data.
             //

@@ -191,7 +191,7 @@ class SLPlus_AdminUI {
      * Render the Map Settings admin page.
      */
     function renderPage_MapSettings() {
-        require_once(SLPLUS_PLUGINDIR . '/include/class.adminui.mapsettings.php');
+        require_once(SLPLUS_PLUGINDIR . '/include/class.adminui.userexperience.php');
         $this->MapSettings = new SLPlus_AdminUI_MapSettings();
         $this->MapSettings->render_adminpage();
     }

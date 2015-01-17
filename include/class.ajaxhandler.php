@@ -161,6 +161,7 @@ class SLPlus_AjaxHandler {
               'url'         => esc_attr($row['sl_url']),
               'sl_pages_url'=> esc_attr($row['sl_pages_url']),
               'email'       => esc_attr($row['sl_email']),
+              'email_link'  => esc_attr($row['sl_email']),
               'hours'       => esc_attr($row['sl_hours']),
               'phone'       => esc_attr($row['sl_phone']),
               'fax'         => esc_attr($row['sl_fax']),

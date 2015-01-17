@@ -279,6 +279,38 @@ class SLPlus_Actions {
     }
 
     /**
+     * Create the SLPlus Extensions Object based on the 4.2 Add On Framework
+     *
+     * This is a variation of "eat our own cooking", using the add-on framework to augment basic
+     * SLP functionality within the base plugin itself.
+     *
+     */
+    function create_object_extensions() {
+        if ( !isset( $this->slplus->extension ) ) {
+            if( !function_exists( 'get_plugin_data' ) )
+                include_once( ABSPATH.'wp-admin/includes/plugin.php');
+
+            require_once( SLPLUS_PLUGINDIR . 'include/class.slplus.extension.php');
+            $this->slplus->extension = new SLP_Extension(
+                array(
+                    'version'               => SLPLUS_VERSION                               ,
+                    'min_slp_version'       => SLPLUS_VERSION                               ,
+
+                    'name'                  => __('SLP Base Extensions', 'csa-slplus')      ,
+                    'option_name'           => SLPLUS_PREFIX . '-options'                   ,
+                    'slug'                  => SLPLUS_BASENAME                              ,
+                    'metadata'              => get_plugin_data( $this->slplus->fqfile , false, false)      ,
+
+                    'url'                   => SLPLUS_PLUGINURL                             ,
+                    'dir'                   => SLPLUS_PLUGINDIR                             ,
+
+                    'ajax_class_name'        => 'SLP_AJAX'                                  ,
+                )
+            );
+        }
+    }
+
+    /**
      * Called when the WordPress init action is processed.
      */
     function init() {
@@ -372,7 +404,15 @@ class SLPlus_Actions {
 
         // Fire the SLP initialized trigger
         //
-        add_action('wp_enqueue_scripts',array($this,'wp_enqueue_scripts'));
+        add_action( 'wp_enqueue_scripts' , array( $this , 'wp_enqueue_scripts'      ) );
+
+        // Attach SLP Extensions via the SLP 4.2 Add On Framework
+        //
+        $this->create_object_extensions();
+
+        // HOOK: slp_init_complete
+        // gets a copy of the slplus actions object as a parameter
+        //
         do_action('slp_init_complete', $this);
     }
 

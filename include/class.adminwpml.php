@@ -46,9 +46,9 @@ class SLPlus_AdminWMPL {
 	 * @param string text name, which used by WPML to tell user the meaning of the text.
 	 * @param string text value, the text need to translate.
 	 */
-	public function regWPMLText($name, $value) {
+	public function regWPMLText($name, $value, $textdomain = 'csa-slplus') {
 		if ( $this->plugin->WPML->isActive() ) {
-			icl_register_string('csa-slplus', $name, $value);
+			icl_register_string($textdomain , $name, $value);
 		}
 	}
 
