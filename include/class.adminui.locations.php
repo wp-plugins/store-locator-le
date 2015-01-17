@@ -254,7 +254,12 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
             $this->columns = array_merge($this->columns,
                         array(
                             'sl_description'=> __('Description'  ,'csa-slplus'),
-                            'sl_email'      => __('Email'        ,'csa-slplus'),
+
+                            'sl_email'      =>
+                                $this->slplus->WPML->getWPMLText(
+                                    'label_email' ,
+                                    $this->slplus->options['label_email']
+                                ) ,
                             'sl_url'        =>
                                 $this->slplus->WPML->getWPMLText(
                                     'sl_website_label' ,
@@ -1457,11 +1462,58 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
     }
 
     /**
+     * Create location details based on current location.
+     */
+    function createstring_location_details() {
+        $HTML = '';
+
+        // SLPlus location properties and the span class to use when rendering them
+        //
+        $interesting_fields = array(
+            'description' => 'textblock',
+            'email'       => 'text',
+            'url'         => 'text',
+            'hours'       => 'textblock',
+            'phone'       => 'text',
+            'fax'         => 'text',
+            'image'       => 'text',
+            'private'     => 'boolean',
+            'neat_title'  => 'text',
+            'lastupdated' => 'text',
+            'id'          => 'text'
+
+            );
+
+        // FILTER: slp_location_details_fields
+        // gets the array of fields to output and the span CSS in the details expansion on the location manager table
+        // return a modified array of SLPlus location property names => span CSS class
+        //
+        $interesting_fields = apply_filters( 'slp_location_details_fields' , $interesting_fields );
+
+        foreach ( $interesting_fields as $field_name => $span_class ) {
+            $HTML .=
+                "<span class='location_details_field {$span_class}'>"               .
+                    "<span class='label  {$span_class}'>{$field_name}</span>"     .
+                    "<span class='content  {$span_class}'>{$this->slplus->currentLocation->$field_name}</span>" .
+                "</span>"
+                ;
+        }
+
+        // FILTER: slp_location_details
+        // gets the HTML that is output in the details expansion on the location manager table
+        // return  modified HTML
+        //
+        $HTML = apply_filters( 'slp_location_details' , $HTML );
+        return $HTML;
+    }
+
+    /**
      * Create the manage locations pagination block
      *
-     * @param type $totalLocations
+     * @param int $totalLocations
      * @param int $num_per_page
      * @param int $start
+     * @return string
      */
     function createstring_PaginationBlock($totalLocations = 0, $num_per_page = 10, $start = 0) {
 
@@ -1715,32 +1767,52 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                 $location['sl_url']=(!$this->url_test($location['sl_url']) && trim($location['sl_url'])!="")?
                     "http://".$location['sl_url'] :
                     $location['sl_url'] ;
+
                 $location['sl_url']=($location['sl_url']!="")?
                     "<a href='{$location['sl_url']}' target='blank' ".
                             "alt='{$location['sl_url']}' title='{$location['sl_url']}'>".
-                            __("View", 'csa-slplus').
+                            $this->slplus->options['label_website'] .
                             '</a>' :
                     '';
-                $location['sl_email']=($location['sl_email']!="")?
-                    "<a href='mailto:{$location['sl_email']}' target='blank' "          .
-                    "alt='{$location['sl_email']}' title='{$location['sl_email']}'>"    .
-                    __('Email', 'csa-slplus').'</a>' :
-                    '' ;
+
+                $location['sl_email'] =
+                    ! empty( $location['sl_email'] )        ?
+                        sprintf('<a href="mailto:%s" target="blank" alt="%s" title="%s">%s</a>' ,
+                                $location['sl_email'],
+                                $location['sl_email'],
+                                $location['sl_email'],
+                                $this->slplus->options['label_email']
+                                )                           :
+                        ''                                  ;
+
                 $location['sl_description']=($location['sl_description']!="")?
                     "<a onclick='alert(\"".$this->slp_escape($location['sl_description'])."\")' href='#'>".
                     __("View", 'csa-slplus')."</a>" :
                     "" ;
 
                 $cleanName = urlencode($this->slplus->currentLocation->store);
+
+                // Location Row Click Action
+                //
+                $row_click_action =
+                    "jQuery('#location-details-{$this->slplus->currentLocation->id}').toggle(); " .
+                    "var cursor_type='s-resize'; " .
+                    " if ( jQuery('#location-details-{$this->slplus->currentLocation->id}').is(':visible') ) { cursor_type='n-resize'; } " .
+                    "jQuery('#location-{$this->slplus->currentLocation->id}').css('cursor', cursor_type); " .
+                    "jQuery('#location-details-{$this->slplus->currentLocation->id}').css('cursor', cursor_type); "
+                    ;
+
+                // Location Row Start
+                //
                 $content['locationstable'] .=
                     "<tr "                                                                                  .
                         "id='location-{$this->slplus->currentLocation->id}' "                               .
                         "name='{$cleanName}' "                                                              .
                         "class='slp_managelocations_row $colorClass $extraCSSClasses' "                     .
+                        "onClick=\"{$row_click_action}\" "                                                  .
                         ">"                                                                                 .
                     "<th class='th_checkbox'>"                                                              .
                         "<input type='checkbox' class='slp_checkbox' name='sl_id[]' value='{$this->slplus->currentLocation->id}'>"        .
-                        "<span class='infoid'>{$this->slplus->currentLocation->id}</span>"                  .
                     '</th>'                                                                                 .
                     "<th class='thnowrap'><div class='action_buttons'>"                                     .
                         $this->createstring_ActionButtons()                                                 .
@@ -1795,6 +1867,24 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                 }
 
                 $content['locationstable'] .= '</tr>';
+
+                // Details Block
+                //
+                $column_count = count( $this->columns );
+                $content['locationstable'] .=
+                    "<tr "                                                                              .
+                    "id='location-details-{$this->slplus->currentLocation->id}' "                       .
+                    "name='{$cleanName} Details' "                                                      .
+                    "class='slp_managelocations_row collapsed $colorClass $extraCSSClasses' "           .
+                    "onClick=\"{$row_click_action}\" "                                                  .
+                    ">"                                                                                 .
+                        "<td colspan='2'               >&nbsp;</td>"                                    .
+                        "<td colspan='{$column_count}' >"                                               .
+                                $this->createstring_location_details()                                  .
+                        '</td>'                                                                         .
+                    '</tr>'
+                    ;
+
             }
 
             // Close Out Table

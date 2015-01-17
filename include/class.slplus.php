@@ -122,7 +122,6 @@ class SLPlus extends wpCSL_plugin__slplus {
      * @var mixed[] $defaults
      */
     public $defaults = array(
-        'label_email' => 'Email',
 
         // Overall Layout
         //
@@ -258,6 +257,13 @@ class SLPlus extends wpCSL_plugin__slplus {
     );
 
     /**
+     * The extension object.
+     *
+     * @var \SLP_Extension
+     */
+    public $extension;
+
+    /**
      * Array of slugs + booleans for plugins we've already fetched info for.
      *
      * @var array[] named array, key = slug, value = true
@@ -277,6 +283,16 @@ class SLPlus extends wpCSL_plugin__slplus {
      *
      * These elements are LOADED EVERY TIME the plugin starts.
      *
+     * TODO : Create a new MASTER options list called something like master_options.
+     * Master options is an array of options names with various properties.
+     * The init_options() call sets up those properties for things like:
+     *     needs_translation
+     *     javascript / nojavascript
+     *
+     * public $master_options = array(
+     *       'label_email' => array(   'javascript' => false , 'translate' => true , default_value=> 'Email' ) ,
+     * );
+     *
      * @var mixed[] $options
      */
     public $options = array(
@@ -286,7 +302,7 @@ class SLPlus extends wpCSL_plugin__slplus {
         'initial_radius'             => '10000',
         'initial_results_returned'   => '25',
         'label_directions'           => '',
-        'label_email'                => '',
+        'label_email'                => 'Email',
         'label_fax'                  => '',
         'label_hours'                => '',
         'label_phone'                => '',
@@ -305,6 +321,20 @@ class SLPlus extends wpCSL_plugin__slplus {
      * @var array
      */
     public $options_default = array();
+
+    /**
+     * These are the options needing translation.
+     *
+     * @var array
+     */
+    public $options_needing_translation = array(
+        'label_directions'  ,
+        'label_email'       ,
+        'label_fax'         ,
+        'label_hours'       ,
+        'label_phone'       ,
+        'label_website'     ,
+        );
 
     /**
      * Serialized plugin options that do NOT get passed to slp.js.
@@ -494,6 +524,13 @@ class SLPlus extends wpCSL_plugin__slplus {
             }
         }
 
+        // FILTER: slp_set_options_needing_translation
+        // gets the options_needing translation array used by the set_ValidOptions and set_ValidOptionsNoJS
+        // methods that interface with WPML
+        // return a modified array of options setting names
+        //
+        $this->options_needing_translation = apply_filters( 'slp_set_options_needing_translation' , $this->options_needing_translation );
+
         $this->debugMP('slp.main', 'msg', '', 'Options passed to JavaScript:');
         $this->debugMP('slp.main', 'pr', '', $this->options);
 
@@ -645,6 +682,11 @@ class SLPlus extends wpCSL_plugin__slplus {
             } else {
                 $this->options[$key] = $this->options_default[$key];
             }
+
+            // i18n/l10n translations may be needed.
+            if  ( array_key_exists( $key , $this->options_needing_translation ) ) {
+                $this->plugin->AdminWPML->regWPMLText( $key , $this->options[$key] );
+            }
         }
     }
 
@@ -662,6 +704,11 @@ class SLPlus extends wpCSL_plugin__slplus {
                 $this->options_nojs[$key] = stripslashes_deep($val);
             } else {
                 $this->options_nojs[$key] = $this->options_nojs_default[$key];
+            }
+
+            // i18n/l10n translations may be needed.
+            if  ( array_key_exists( $key , $this->options_needing_translation ) ) {
+                $this->plugin->AdminWPML->regWPMLText( $key , $this->options_nojs[$key] );
             }
         }
     }

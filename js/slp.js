@@ -233,74 +233,6 @@ var slp = {
      */
     Utils: function () {
 
-        /***********************************
-         *
-         * Create the lightbox email form.
-         *
-         */
-        this.show_email_form = function (to) {
-            emailWin = window.open("about:blank", "",
-                "height=220,width=310,scrollbars=no,top=50,left=50,status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=0");
-            with (emailWin.document) {
-                writeln("<html><head><title>Send Email To " + to + "</title></head>");
-
-                writeln("<body scroll='no' onload='self.focus()' onblur='close()'>");
-
-                writeln("<style>");
-                writeln(".form_entry{ width: 300px; clear: both;} ");
-                writeln(".form_submit{ width: 300px; text-align: center; padding: 12px;} ");
-                writeln(".to{ float: left; font-size: 12px; color: #444444; } ");
-                writeln("LABEL{ float: left; width: 75px;  text-align:right; ");
-                writeln(" font-size: 11px; color: #888888; margin: 3px 3px 0px 0px;} ");
-                writeln("INPUT type=['text']{ float: left; width: 225px; text-align:left; } ");
-                writeln("INPUT type=['submit']{ padding-left: 120px; } ");
-                writeln("TEXTAREA { width: 185px; clear: both; padding-left: 120px; } ");
-                writeln("</style>");
-
-                writeln("<form id='emailForm' method='GET'");
-                writeln(" action='" + slplus.plugin_url + "/include/send-email.php'>");
-
-                writeln("    <div id='email_form_content'>");
-
-                writeln("        <div class='form_entry'>");
-                writeln("            <label for='email_to'>To:</label>");
-                writeln("            <input type='hidden' name='email_to' value='" + to + "'/>");
-
-                writeln("            <div class='to'>" + to + "</div>");
-                writeln("        </div>");
-
-
-                writeln("        <div class='form_entry'>");
-                writeln("            <label for='email_name'>Your Name:</label>");
-                writeln("            <input name='email_name' value='' />");
-                writeln("        </div>");
-
-                writeln("        <div class='form_entry'>");
-                writeln("            <label for='email_from'>Your Email:</label>");
-                writeln("            <input name='email_from' value='' />");
-                writeln("        </div>");
-
-                writeln("        <div class='form_entry'>");
-                writeln("            <label for='email_subject'>Subject:</label>");
-                writeln("            <input name='email_subject'  value='' />");
-                writeln("        </div>");
-
-                writeln("        <div class='form_entry'>");
-                writeln("            <label for='email_message'>Message:</label>");
-                writeln("            <textarea name='email_message'></textarea>");
-                writeln("        </div>");
-                writeln("    </div>");
-
-                writeln("    <div class='form_submit'>");
-                writeln("        <input type='submit' value='Send Message'>");
-                writeln("    </div>");
-                writeln("            <input type='hidden' name='valid' value=slplus.nonce/>");
-                writeln("</form>");
-                writeln("</body></html>");
-                close();
-            }
-        };
-
         /**************************************
          * function: escapeExtended()
          *
@@ -543,8 +475,8 @@ var slp = {
          */
         this.show_home_marker = function () {
             return (
-                this.usingSensor ||
-                ( (slplus.options.immediately_show_locations === '1') && (slplus.options.no_homeicon_at_start !== '1') )
+            this.usingSensor ||
+            ( (slplus.options.immediately_show_locations === '1') && (slplus.options.no_homeicon_at_start !== '1') )
             );
         };
 
@@ -652,8 +584,8 @@ var slp = {
                 if ( this.homePoint ) { this.gmap.panTo(this.homePoint); }
                 document.getElementById('map_sidebar').innerHTML = '<div class="no_results_found"><h2>' + slplus.msg_noresults + '</h2></div>';
 
-            // Results Processing
-            //
+                // Results Processing
+                //
             } else {
 
                 // Set the initial bounds to default (1,180)/(-1,180), include home marker if shown.
@@ -1042,8 +974,8 @@ var slp = {
                 this.address = cslutils.escapeExtended(address);
                 this.doGeocode();
 
-            // Otherwise use the current map center as the center location
-            //
+                // Otherwise use the current map center as the center location
+                //
             } else {
                 var tag_to_search_for = this.saneValue('tag_to_search_for', '');
                 var radius = this.saneValue('radiusSelect', this.default_radius );
@@ -1066,18 +998,6 @@ var slp = {
             var url = this.__getMarkerUrl(aMarker);
             if (url !== '') {
                 aMarker.web_link = "<a href='" + url + "' target='" + ((slplus.options.use_same_window === "on") ? '_self' : '_blank') + "' class='storelocatorlink'><nobr>" + slplus.options['label_website'] + "</nobr></a><br/>";
-            }
-
-            // Email Link
-            // If the email is set link to the email with an anchor mailto or a JS popup form if Pro Pack use form is set.
-            //
-            aMarker.email_link = '';
-            if (aMarker.email.indexOf('@') !== -1 && aMarker.email.indexOf('.') !== -1) {
-                if (!slplus.use_email_form) {
-                    aMarker.email_link = "<a href='mailto:" + aMarker.email + "' target='_blank'  id='slp_marker_email' class='storelocatorlink'><nobr>" + aMarker.email + "</nobr></a>";
-                } else {
-                    aMarker.email_link = "<a href='javascript:cslutils.show_email_form(" + '"' + aMarker.email + '"' + ");'  id='slp_marker_email' class='storelocatorlink'><nobr>" + aMarker.email + "</nobr></a>";
-                }
             }
 
             //if we are showing tags in the table

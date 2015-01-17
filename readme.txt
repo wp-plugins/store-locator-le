@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-4/
 Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.4
 Tested up to: 4.1
-Stable tag: 4.2.25
+Stable tag: 4.2.27
 License: GLPv2 or later
 
 Add a location finder or directory to your site in minutes. A Google Business Maps API licensed product. Extensive premium add-on library available!
@@ -343,6 +343,20 @@ Please read the *description page* for this plugin for an important note about p
 *Version 4.x is a major upgrade that is not compatible with the version 3.x or earlier add-on packs.*
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 4.2.27 (2015-Jan-17) =
+
+* Change: Revamp the email popup form support mechanism for Enhanced Results.
+* Change: The DEFAULT email output in results is now the word "email" instead of the email address.
+* Change: Simplify the base JavaScript, reducing memory consumption for visitors browsers.
+* Enhancement: Add a details panel to the default Manage Locations table.  Click a location row to expand/collapse the details panel.
+* Enhancement: Improve WPML text support for the newer serialized text labels.
+* Enhancement: Add a setting to display a text string instead of a direct email address in the results output.
+* Enhancement: Show the new user-set email label in the manage locations table.
+* Enhancement: Manage Locations table users display website label on expanded locations view instead of the generic "view" text.
+* Enhancement: Improve the AJAX interface for the add-on framework.
+* Enhancement: Improve the user interface system to simplify custom JavaScript loading via the add-on framework.
+* Enhancement: Extend the SLP 4.2 add-on framework to better handle default option settings.
 
 = 4.2.25 (2015-Jan-08) =
 

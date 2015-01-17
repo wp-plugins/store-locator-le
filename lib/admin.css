@@ -26,27 +26,34 @@ about
 #wpcsl-option-navbar_wrapper .about-wrap {
   margin: 3px 0px 0px 3px; }
 
-#wpcsl_container div.section_description h4:first-of-type {
-  margin-top: 0px; }
-#wpcsl_container select {
-  height: 1.5em;
-  padding: 0em; }
-
 #wpfooter {
   position: relative; }
 
-/* Woo-ish */
+/*--------------------------
+ * SLP Custom Admin Panel
+ *--------------------------*/
 #wpcsl_container {
   position: relative;
   z-index: 0; }
-
-#wpcsl_container #main {
-  border-bottom: 1px solid #CCCCCC;
-  height: 100%;
-  margin: 0 0 0 -19px;
-  min-width: 10%;
-  padding-bottom: 0;
-  position: relative; }
+  #wpcsl_container div.section_description h4:first-of-type {
+    margin-top: 0px; }
+  #wpcsl_container select {
+    padding: 0em; }
+  #wpcsl_container .navsave {
+    background-color: #E0E0E0;
+    border-bottom: 1px solid #CCCCCC;
+    border-top: 1px solid white;
+    margin: 0 auto;
+    padding: 6px 0;
+    text-align: center;
+    width: 100%; }
+  #wpcsl_container #main {
+    border-bottom: 1px solid #CCCCCC;
+    height: 100%;
+    margin: 0 0 0 -19px;
+    min-width: 10%;
+    padding-bottom: 0;
+    position: relative; }
 
 /**
  * Navigation Elements
@@ -55,15 +62,6 @@ about
   margin-bottom: 0px;
   margin-left: -22px;
   padding-left: 20px; }
-
-#wpcsl_container .navsave {
-  background-color: #E0E0E0;
-  border-bottom: 1px solid #CCCCCC;
-  border-top: 1px solid white;
-  margin: 0 auto;
-  padding: 6px 0;
-  text-align: center;
-  width: 100%; }
 
 /**
  * wpcsl-nav : sidebar panel navigation
@@ -764,35 +762,48 @@ td.slp_manage_locations_cell {
 /* 
  * Manage Locations Row 
  */
-tr.slp_managelocations_row:hover {
-  background-color: #FFFFDD; }
-tr.slp_managelocations_row.invalid {
-  background-color: #FFDDDD; }
-  tr.slp_managelocations_row.invalid:hover {
-    background-color: #FFCCCC; }
-tr.slp_managelocations_row.featured {
-  background-color: #DDFFDD; }
-  tr.slp_managelocations_row.featured:hover {
-    background-color: #CCFFCC; }
-  tr.slp_managelocations_row.featured td.slp_manage_locations_cell.name {
-    font-size: 1.25em; }
-  tr.slp_managelocations_row.featured td.slp_manage_locations_cell.featured {
-    background-image: url("../images/star-open-2x.png");
-    background-position: 12% 70%;
-    background-repeat: no-repeat;
-    background-size: 16px auto; }
-tr.slp_managelocations_row.alternate.invalid {
-  background-color: #FFEEEE; }
-  tr.slp_managelocations_row.alternate.invalid:hover {
-    background-color: #FFCCCC; }
-tr.slp_managelocations_row.alternate.featured {
-  background-color: #EEFFEE; }
-  tr.slp_managelocations_row.alternate.featured:hover {
-    background-color: #CCFFCC; }
-tr.slp_managelocations_row .store_latlong {
-  display: block;
-  font-size: 0.75em;
-  font-style: italic; }
+tr.slp_managelocations_row {
+  cursor: s-resize; }
+  tr.slp_managelocations_row:hover {
+    background-color: #FFFFDD; }
+  tr.slp_managelocations_row.invalid {
+    background-color: #FFDDDD; }
+    tr.slp_managelocations_row.invalid:hover {
+      background-color: #FFCCCC; }
+  tr.slp_managelocations_row.featured {
+    background-color: #DDFFDD; }
+    tr.slp_managelocations_row.featured:hover {
+      background-color: #CCFFCC; }
+    tr.slp_managelocations_row.featured td.slp_manage_locations_cell.name {
+      font-size: 1.25em; }
+    tr.slp_managelocations_row.featured td.slp_manage_locations_cell.featured {
+      background-image: url("../images/star-open-2x.png");
+      background-position: 12% 70%;
+      background-repeat: no-repeat;
+      background-size: 16px auto; }
+  tr.slp_managelocations_row.alternate.invalid {
+    background-color: #FFEEEE; }
+    tr.slp_managelocations_row.alternate.invalid:hover {
+      background-color: #FFCCCC; }
+  tr.slp_managelocations_row.alternate.featured {
+    background-color: #EEFFEE; }
+    tr.slp_managelocations_row.alternate.featured:hover {
+      background-color: #CCFFCC; }
+  tr.slp_managelocations_row.collapsed {
+    display: none; }
+  tr.slp_managelocations_row .store_latlong {
+    display: block;
+    font-size: 0.75em;
+    font-style: italic; }
+  tr.slp_managelocations_row .location_details_field {
+    display: block; }
+    tr.slp_managelocations_row .location_details_field .label {
+      text-align: right; }
+    tr.slp_managelocations_row .location_details_field .content {
+      text-align: left; }
+      tr.slp_managelocations_row .location_details_field .content.textblock {
+        white-space: pre-wrap;
+        max-width: 100em; }
 
 input.disabled {
   background: none repeat scroll 0 0 #FEFEFE;
