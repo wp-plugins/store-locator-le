@@ -2,7 +2,7 @@
 Plugin Name:  Store Locator Plus
 Contributors: charlestonsw, DeBAAT
 Donate link: http://www.charlestonsw.com/product/store-locator-plus-4/
-Tags: store locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
+Tags: store locator, business locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.4
 Tested up to: 4.1
 Stable tag: 4.2.27
