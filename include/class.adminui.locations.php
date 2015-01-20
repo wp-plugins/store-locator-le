@@ -533,10 +533,10 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
      /**
       * Create an inner content panel wrapped in proper WPCSL subnav divs.
       *
-      * @param type $cleanLabel
-      * @param type $content
-      * @param type $display
-      * @return type
+      * @param string $cleanLabel
+      * @param string $content
+      * @param string $display
+      * @return string
       */
     function createstring_SubContentPanel($cleanLabel,$content,$display='none') {
         $divID = 'wpcsl-option-'.strtolower($cleanLabel);
@@ -552,9 +552,9 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
     /**
      * Add a sidebar tab entry.
      * 
-     * @param type $label
-     * @param type $moreclass
-     * @return type
+     * @param string $label
+     * @param string $moreclass
+     * @return string
      */
     function create_SubTab($label,$moreclass='') {
         $cleanLabel = strtolower(str_replace(' ','_',$label));
@@ -1792,24 +1792,15 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
 
                 $cleanName = urlencode($this->slplus->currentLocation->store);
 
-                // Location Row Click Action
-                //
-                $row_click_action =
-                    "jQuery('#location-details-{$this->slplus->currentLocation->id}').toggle(); " .
-                    "var cursor_type='s-resize'; " .
-                    " if ( jQuery('#location-details-{$this->slplus->currentLocation->id}').is(':visible') ) { cursor_type='n-resize'; } " .
-                    "jQuery('#location-{$this->slplus->currentLocation->id}').css('cursor', cursor_type); " .
-                    "jQuery('#location-details-{$this->slplus->currentLocation->id}').css('cursor', cursor_type); "
-                    ;
-
                 // Location Row Start
                 //
                 $content['locationstable'] .=
                     "<tr "                                                                                  .
+                        "data-id='{$this->slplus->currentLocation->id}' "                                   .
+                        "data-type='base' "                                                                 .
                         "id='location-{$this->slplus->currentLocation->id}' "                               .
                         "name='{$cleanName}' "                                                              .
                         "class='slp_managelocations_row $colorClass $extraCSSClasses' "                     .
-                        "onClick=\"{$row_click_action}\" "                                                  .
                         ">"                                                                                 .
                     "<th class='th_checkbox'>"                                                              .
                         "<input type='checkbox' class='slp_checkbox' name='sl_id[]' value='{$this->slplus->currentLocation->id}'>"        .
@@ -1872,12 +1863,13 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                 //
                 $column_count = count( $this->columns );
                 $content['locationstable'] .=
-                    "<tr "                                                                              .
-                    "id='location-details-{$this->slplus->currentLocation->id}' "                       .
-                    "name='{$cleanName} Details' "                                                      .
-                    "class='slp_managelocations_row collapsed $colorClass $extraCSSClasses' "           .
-                    "onClick=\"{$row_click_action}\" "                                                  .
-                    ">"                                                                                 .
+                    "<tr "  .
+                        "data-id='{$this->slplus->currentLocation->id}' "                               .
+                        "data-type='details' "                                                          .
+                        "id='location-details-{$this->slplus->currentLocation->id}' "                   .
+                        "name='{$cleanName} Details' "                                                  .
+                        "class='slp_managelocations_row collapsed $colorClass $extraCSSClasses' "       .
+                        ">"                                                                             .
                         "<td colspan='2'               >&nbsp;</td>"                                    .
                         "<td colspan='{$column_count}' >"                                               .
                                 $this->createstring_location_details()                                  .
