@@ -352,6 +352,7 @@ class SLPlus extends wpCSL_plugin__slplus {
         'max_results_returned'      => '25',
         'next_field_id'             => 1,
         'next_field_ported'         => '',
+        'php_max_execution_time'    => '600',
         'retry_maximum_delay'       => '5.0',
     );
 
