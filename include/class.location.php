@@ -88,13 +88,6 @@ class SLPlus_Location {
     private $lastupdated;
 
     /**
-     * What mode of SOAP/REST communication does this server prefer?
-     *
-     * @var string $comType
-     */
-    private $comType;
-
-    /**
      * How many locations have processed for geocoding this session.
      *
      * @var int $count
@@ -784,21 +777,6 @@ class SLPlus_Location {
      */
     function get_LatLong($address) {
         $this->set_geocoding_baseURL();
-
-        // Set comType if not already determined.
-        //
-        // TODO: use wp_remote_get() instead of custom method here
-        //
-        if (!isset($this->comType)) {
-            if (isset($this->slplus->http_handler)) {
-                $this->comType = 'http_handler';
-            } elseif (extension_loaded("curl") && function_exists("curl_init")) {
-                $this->comType = 'curl';
-            } else {
-                $this->comType = 'file_get_contents';
-            }
-        }
-
         $fullURL = $this->geocodeURL . urlencode($address);
 
         // Client ID in use?   Sign the request.
@@ -807,37 +785,11 @@ class SLPlus_Location {
             $fullURL = $this->sign_url( $fullURL , $this->slplus->options_nojs['google_private_key'] );
         }
 
-        // Go fetch the data from the remote server.
-        //
-        switch ($this->comType) {
-            case 'http_handler':
-                $result = $this->slplus->http_handler->request($fullURL,array('timeout' => $this->slplus->options_nojs['http_timeout']));
-                if ($this->slplus->http_result_is_ok($result) ) {
-                    $raw_json = $result['body'];
-                } else {
-                    $raw_json = null;
-                }
-
-                break;
-
-            case 'curl':
-                $cURL = curl_init();
-                curl_setopt($cURL, CURLOPT_URL, $fullURL);
-                curl_setopt($cURL, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($cURL, CURLOPT_CONNECTTIMEOUT , $this->slplus->options_nojs['http_timeout'] );
-                $raw_json = curl_exec($cURL);
-                curl_close($cURL);
-                break;
-
-            case 'file_get_contents':
-                ini_set('default_socket_timeout' , $this->slplus->options_nojs['http_timeout'] );
-                $raw_json = file_get_contents($fullURL);
-                break;
-
-            default:
-                $raw_json = null;
-                return;
-        }
+        $request_args = array(
+                'timeout'   => $this->slplus->options_nojs['http_timeout'],
+            );
+        $response = wp_remote_get( $fullURL , $request_args );
+        $raw_json = is_wp_error( $response ) ? null : $response['body'];
 
         return $raw_json;
     }
@@ -887,7 +839,7 @@ class SLPlus_Location {
         //
         $google_api_url =
             'https://'    .
-            $this->slplus->options['map_domain']        .
+            'maps.googleapis.com'                       .
             '/maps/api/'                                .
             'geocode/json'                              .
             '?sensor=false'                             ;

@@ -143,6 +143,11 @@ if (!class_exists('CSVImport')) {
             if ( isset( $this->plugin ) && ! isset( $this->slplus ) ) { $this->slplus = $this->plugin; }
             if ( isset( $this->parent ) && ! isset( $this->addon  ) ) { $this->addon  = $this->parent; }
             if ($this->firstline_has_fieldname) { $this->skip_firstline = true; }
+
+            // Set execution time limit.
+            //
+            ini_set( 'max_execution_time' , $this->slplus->options_nojs['php_max_execution_time'] );
+            set_time_limit( $this->slplus->options_nojs['php_max_execution_time'] );
         }
 
         /**

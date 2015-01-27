@@ -254,10 +254,9 @@ class SLPlus_AdminUI_GeneralSettings {
              )
          );
 
-
         // ACTION: slp_generalsettings_modify_googlepanel
         //    params: settings object, section name
-        do_action('slp_generalsettings_modify_googlepanel',$this->settings,$sectName);
+        do_action( 'slp_generalsettings_modify_googlepanel' ,   $this->settings ,   $sectName );
      }
 
      /**
@@ -328,6 +327,31 @@ class SLPlus_AdminUI_GeneralSettings {
         do_action('slp_generalsettings_modify_userpanel',$this->settings,$sectName);
      }
 
+    /**
+     * Add web app settings.
+     */
+    function build_WebAppSettings( ) {
+        $section   = __('Server','csa-slplus');
+        $groupName = __( 'Web App Settings' ,'csa-slplus');
+        $this->settings->add_ItemToGroup(
+            array(
+                'section'       => $section                                             ,
+                'group'         => $groupName                                           ,
+                'label'         => __('PHP Time Limit','csa-slplus')                    ,
+                'setting'       => 'php_max_execution_time'                             ,
+                'use_prefix'    => false                                                ,
+                'value'         => $this->slplus->options_nojs['php_max_execution_time'],
+                'description'   =>
+                    __('Maximum execution time, in seconds, for PHP processing. ','csa-slplus')  .
+                    __('Affects all CSV imports for add-ons and Janitor delete all locations. ','csa-slplus')  .
+                    __('SLP Default 600. ' , 'csa-slplus' ) .
+                    sprintf( __('Your server default %s. ' , 'csa-slplus' )  ,
+                             ini_get( 'max_execution_time')
+                        )
+            )
+        );
+    }
+
      /**
       * Render the map settings admin page.
       */
@@ -369,11 +393,13 @@ class SLPlus_AdminUI_GeneralSettings {
 
         // Panel building actions
         //
-        add_action('slp_build_general_settings_panels',array($this,'build_UserSettingsPanel'    ) ,10);
-        add_action('slp_build_general_settings_panels',array($this,'build_AdminSettingsPanel'   ) ,20);
-        add_action('slp_build_general_settings_panels',array($this,'build_ServerSection'        ) ,30);
+        add_action('slp_build_general_settings_panels',array($this,'build_UserSettingsPanel'    ) ,10 );
+        add_action('slp_build_general_settings_panels',array($this,'build_AdminSettingsPanel'   ) ,20 );
+        add_action('slp_build_general_settings_panels',array($this,'build_ServerSection'        ) ,30 );
+        add_action( 'slp_build_general_settings_panels' , array( $this, 'build_WebAppSettings'  ), 40 );
 
-        //------------------------------------
+
+         //------------------------------------
         // Render It
         //
         do_action('slp_build_general_settings_panels');
