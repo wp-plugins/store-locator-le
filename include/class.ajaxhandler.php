@@ -276,7 +276,7 @@ class SLPlus_AjaxHandler {
 
         // ORDER BY
         //
-        add_filter('slp_ajaxsql_orderby',array($this,'filter_SetDefaultOrderByDistance'),100);
+        add_action( 'slp_orderby_default' , array( $this , 'add_distance_sort_to_orderby') , 100 );
 
         // Having clause filter
         // Do filter after sl_distance has been calculated
@@ -362,12 +362,9 @@ class SLPlus_AjaxHandler {
 
     /**
      * Add sort by distance ASC as default order.
-     *
-     * @param string $orderby
-     * @return string
      */
-    function filter_SetDefaultOrderByDistance($orderby) {
-        return $this->slplus->database->extend_OrderBy($orderby,' sl_distance ASC ');
+    function add_distance_sort_to_orderby() {
+        $this->slplus->database->extend_order_array( 'sl_distance ASC' );
     }
 
     /**
