@@ -40,6 +40,13 @@ class SLPlus_Data {
      */
     public $is_extended = false;
 
+    /**
+     * The various order by clauses used by the location selection clause.
+     *
+     * @var string[]
+     */
+    public $order_by_array = array();
+
     //-------------------------------------------------
     // Methods
     //-------------------------------------------------
@@ -91,14 +98,39 @@ class SLPlus_Data {
     }
 
     /**
+     * Add new strings to the order by array property.
+     *
+     * @param $new_string
+     */
+    function extend_order_array( $new_string ) {
+        $new_string = trim( strtolower( $new_string ) );
+        if ( ! in_array( $new_string , $this->order_by_array ) ) {
+            $this->order_by_array[] = $new_string;
+        }
+    }
+
+    /**
      * Add elements to the order by clause, adding a comma if needed.
      * 
      * @param string $startwith the starting order by clause
      * @param string $add what to add
      * @return string the extended order by with comma if needed (no ORDER BY prefix)
      */
-    function extend_OrderBy($startwith,$add) {
-        return $startwith.(empty($startwith)?'':',').$add;
+    function extend_OrderBy( $startwith , $add ) {
+        $add = trim( $add );
+
+        // Not adding anything, return starting order by clause
+        //
+        if ( empty( $add ) ) { return $startwith; }
+
+        // Not starting with anything, return only the add part
+        //
+        $startwith = trim( $startwith );
+        if ( empty( $startwith ) ) { return $add; }
+
+        // Starting text and adding text are both set, put a comma between them.
+        //
+        return " {$startwith} , {$add}";
     }
 
     /**
@@ -263,9 +295,16 @@ class SLPlus_Data {
                 // ORDER BY
                 //
                 case 'orderby_default':
+
+                    // HOOK: slp_orderby_default
+                    // Allows processes to extend the oder by string array
+                    //
+                    do_action( 'slp_orderby_default' , $this->order_by_array );
+                    $order_by_string = empty( $this->order_by_array ) ? '' : join( ',' , $this->order_by_array );
+
                     // FILTER: slp_ajaxsql_orderby
-                    $order = apply_filters('slp_ajaxsql_orderby','');
-                    if (!empty($order)) {
+                    $order = apply_filters('slp_ajaxsql_orderby', $order_by_string );
+                    if ( ! empty( $order ) ) {
                         $sqlStatement .= ' ORDER BY ' . $order . ' ';
                     }
                     break;
