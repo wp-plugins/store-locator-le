@@ -119,9 +119,20 @@ class SLPlus extends wpCSL_plugin__slplus {
      *
      * These elements are LOADED EVERY TIME the plugin starts.
      *
+     * o bubblelayout - default html and shortcodes for map bubbles
+     * o layout - default html structure for slplus shortcode page view
+     * o maplayout - default html and shortcodes for map bubbles
+     * o resultslayout -  default html and shortcodes for search results
+     * o searchlayout -  default html and shortcodes for the search form
+     * o theme - the default theme if not previously set (new installs)
+     *
      * @var mixed[] $defaults
      */
     public $defaults = array(
+
+        // Theme
+        //
+        'theme' => 'twentyfifteen_rev02',
 
         // Overall Layout
         //
@@ -328,6 +339,7 @@ class SLPlus extends wpCSL_plugin__slplus {
      * @var array
      */
     public $options_needing_translation = array(
+        'invalid_query_message',
         'label_directions'  ,
         'label_email'       ,
         'label_fax'         ,
@@ -349,6 +361,7 @@ class SLPlus extends wpCSL_plugin__slplus {
         'google_private_key'        => '',
         'has_extended_data'         => '',
         'http_timeout'              => '10', // HTTP timeout for GeoCode Requests (s)
+        'invalid_query_message'     => '',
         'max_results_returned'      => '25',
         'next_field_id'             => 1,
         'next_field_ported'         => '',
@@ -501,6 +514,7 @@ class SLPlus extends wpCSL_plugin__slplus {
 
         // Load serialized options for noJS
         //
+        $this->options_nojs['invalid_query_message'] = __('Store Locator Plus did not send back a valid JSONP response.','csa-slplus' );
         $this->options_nojs_default = $this->options_nojs;
         $dbOptions = get_option(SLPLUS_PREFIX . '-options_nojs');
         if (is_array($dbOptions)) {
@@ -601,7 +615,7 @@ class SLPlus extends wpCSL_plugin__slplus {
             ),
             array('theme',
                 'get_item',
-                array('theme', 'default')
+                array('theme', $this->defaults['theme'] )
             ),
                 )
         );

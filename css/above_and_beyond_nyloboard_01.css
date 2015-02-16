@@ -100,8 +100,8 @@
 .like-a-button {
   background: #FFF;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD');
-  background: -webkit-gradient(linear, left top, left bottom, from(white), to(#dddddd));
-  background: -moz-linear-gradient(top, white, #dddddd);
+  background: -webkit-gradient(linear, left top, left bottom, from(#FFF), to(#DDD));
+  background: -moz-linear-gradient(top, #FFF, #DDD);
   text-decoration: none;
   border: 1px solid #BBBBBB;
   margin: 0;
@@ -120,8 +120,8 @@
 .like-a-button:hover {
   background: #DDD;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF');
-  background: -webkit-gradient(linear, left top, left bottom, from(#dddddd), to(white));
-  background: -moz-linear-gradient(top, #dddddd, white); }
+  background: -webkit-gradient(linear, left top, left bottom, from(#DDD), to(#FFF));
+  background: -moz-linear-gradient(top, #DDD, #FFF); }
 
 .like-a-button A {
   text-decoration: none; }
@@ -202,6 +202,17 @@ div#slp_tagline {
   float: left;
   margin-left: 0.2em; }
 
+ul.ui-autocomplete.ui-front.ui-widget {
+  color: gray;
+  background-color: white;
+  border: solid 1px #C0C0C0;
+  border-radius: 3px;
+  padding: 0.2em;
+  display: inline-block;
+  height: inherit; }
+  ul.ui-autocomplete.ui-front.ui-widget li {
+    list-style: none; }
+
 /*---------------------
  * WordPress Tweaks
  *---------------------*/
@@ -264,7 +275,7 @@ div#slp_tagline {
  * Search Form
  *---------------------*/
 #search_box #search_box_header {
-  color: white;
+  color: #FFFFFF;
   font-weight: bold;
   background-color: #da8e12;
   padding: 0.5em 0.5em;
@@ -338,7 +349,7 @@ div#radius_in_submit {
 
 input#addressSubmit,
 input#slpw_addressSubmit {
-  background-color: #ce8829;
+  background-color: #CE8829;
   border: medium none;
   border-radius: 6px 6px 6px 6px;
   color: #FFFFFF;
@@ -352,7 +363,7 @@ input#slpw_addressSubmit {
 
 input#addressSubmit:hover,
 input#slpw_addressSubmit:hover {
-  background-color: #f3981d; }
+  background-color: #F3981D; }
 
 form#searchForm .slp_checkbox_entry {
   display: block; }
@@ -365,7 +376,7 @@ form#searchForm .slp_checkbox_group {
  * Results
  *---------------------*/
 #results_box #results_box_header {
-  color: white;
+  color: #FFFFFF;
   font-weight: bold;
   background-color: #8bc719;
   padding: 0.5em 0.5em;
@@ -470,3 +481,5 @@ div#map_sidebar .results_entry.featured {
 /* Make the icon array appear on its own line */
 .results_line.location_iconarray {
   display: block; }
+
+/*# sourceMappingURL=above_and_beyond_nyloboard_01.css.map */

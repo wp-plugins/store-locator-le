@@ -95,8 +95,8 @@
 .like-a-button {
   background: #FFF;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD');
-  background: -webkit-gradient(linear, left top, left bottom, from(white), to(#dddddd));
-  background: -moz-linear-gradient(top, white, #dddddd);
+  background: -webkit-gradient(linear, left top, left bottom, from(#FFF), to(#DDD));
+  background: -moz-linear-gradient(top, #FFF, #DDD);
   text-decoration: none;
   border: 1px solid #BBBBBB;
   margin: 0;
@@ -115,8 +115,8 @@
 .like-a-button:hover {
   background: #DDD;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF');
-  background: -webkit-gradient(linear, left top, left bottom, from(#dddddd), to(white));
-  background: -moz-linear-gradient(top, #dddddd, white); }
+  background: -webkit-gradient(linear, left top, left bottom, from(#DDD), to(#FFF));
+  background: -moz-linear-gradient(top, #DDD, #FFF); }
 
 .like-a-button A {
   text-decoration: none; }
@@ -197,6 +197,17 @@ div#slp_tagline {
   float: left;
   margin-left: 0.2em; }
 
+ul.ui-autocomplete.ui-front.ui-widget {
+  color: gray;
+  background-color: white;
+  border: solid 1px #C0C0C0;
+  border-radius: 3px;
+  padding: 0.2em;
+  display: inline-block;
+  height: inherit; }
+  ul.ui-autocomplete.ui-front.ui-widget li {
+    list-style: none; }
+
 /*---------------------
  * Search
  *---------------------*/
@@ -258,9 +269,9 @@ div#map {
 
 .results_entry {
   padding: 0.3em;
-  -webkit-box-shadow: 2px 4px 4px 0px #dadada;
-  -moz-box-shadow: 2px 4px 4px 0px #dadada;
-  box-shadow: 2px 4px 4px 0px #dadada;
+  -webkit-box-shadow: 2px 4px 4px 0px #DADADA;
+  -moz-box-shadow: 2px 4px 4px 0px #DADADA;
+  box-shadow: 2px 4px 4px 0px #DADADA;
   border-bottom: 1px solid #DDDDDD;
   border-right: 1px solid #EEEEEE; }
 
@@ -315,3 +326,5 @@ div#map {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap; }
+
+/*# sourceMappingURL=twenty_fourteen_01.css.map */

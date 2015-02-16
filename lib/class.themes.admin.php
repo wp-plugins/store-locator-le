@@ -70,6 +70,13 @@ class PluginThemeAdmin {
     public $prefix;
 
     /**
+     * The base SLPlus object.
+     *
+     * @var \SLPlus
+     */
+    public $slplus;
+
+    /**
      * Full web address to the support web pages.
      *
      * @var string $support_url
@@ -277,7 +284,7 @@ class PluginThemeAdmin {
     /**
      * Add the theme settings to the admin panel.
      *
-     * @param mixed[] $settingsObj
+     * @param \wpCSL_settings__slplus $settingsObj
      * @return type
      */
     public function add_settings($settingsObj = null,$section=null,$group=null) {
@@ -352,15 +359,16 @@ class PluginThemeAdmin {
 
 
         if ($section==null) { $section = 'Display Settings'; }
+
         $settingsObj->add_itemToGroup(
                 array(
                     'section'       => $section                                     ,
                     'group'         => $group                                       ,
-                    'label'         => __('Select A Theme','csa-slplus')                 ,
+                    'label'         => __('Select A Theme','csa-slplus')            ,
                     'setting'       => 'theme'                                      ,
                     'type'          => 'list'                                       ,
                     'custom'        => $themeArray                                  ,
-                    'value'         => 'default'                                    ,
+                    'value'         => $this->slplus->defaults['theme']        ,
                     'description'   =>
                         __('How should the plugin UI elements look?  ','csa-slplus') .
                         sprintf(
