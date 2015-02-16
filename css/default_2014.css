@@ -199,6 +199,17 @@ div#slp_tagline {
   float: left;
   margin-left: 0.2em; }
 
+ul.ui-autocomplete.ui-front.ui-widget {
+  color: gray;
+  background-color: white;
+  border: solid 1px #C0C0C0;
+  border-radius: 3px;
+  padding: 0.2em;
+  display: inline-block;
+  height: inherit; }
+  ul.ui-autocomplete.ui-front.ui-widget li {
+    list-style: none; }
+
 /**
  * General SLP Div Only
  **/

@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-4/
 Tags: store locator, business locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.4
 Tested up to: 4.1
-Stable tag: 4.2.31
+Stable tag: 4.2.35
 License: GLPv2 or later
 
 Add a location finder or directory to your site in minutes. A Google Business Maps API licensed product. Extensive premium add-on library available!
@@ -338,11 +338,14 @@ If you are using the Janitor or Pro Pack add-on pack:
 
 == Changelog ==
 
-Please read the *description page* for this plugin for an important note about premium add-on packs if you are upgrading from version 3.x or earlier.
-
-*Version 4.x is a major upgrade that is not compatible with the version 3.x or earlier add-on packs.*
-
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 4.2.35 (Feb-2015) =
+
+* Enhancement: Update the default theme manager.   New installs now get a specific default theme that IS NOT named "default", pre-existing installs will no longer change as the default theme is improved.
+* Enhancement: A new SLP theme, Twenty Fifteen Rev 02, has been created for better responsive layouts on the WordPress TwentyFifteen theme.   This is the new default for fresh installs.
+* Enhancement: Performance improvement when Enhanced Search employs "ignore radius" options.
+* Enhancement: Improve the handling of invalid database search queries on the back-end AJAX handler.
 
 = 4.2.30 (2015-Jan-29) =
 

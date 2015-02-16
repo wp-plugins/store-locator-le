@@ -4,7 +4,7 @@
  *
  * @package StoreLocatorPlus\Data
  * @author Lance Cleveland <lance@charlestonsw.com>
- * @copyright 2013 - 2014 Charleston Software Associates, LLC
+ * @copyright 2013 - 2015 Charleston Software Associates, LLC
  *
  */
 class SLPlus_Data {
@@ -299,6 +299,9 @@ class SLPlus_Data {
                     // HOOK: slp_orderby_default
                     // Allows processes to extend the oder by string array
                     //
+                    // Default AJAX order by distance is priority 100
+                    // Tagalong order by category count is priority 5 (if enabled)
+                    //
                     do_action( 'slp_orderby_default' , $this->order_by_array );
                     $order_by_string = empty( $this->order_by_array ) ? '' : join( ',' , $this->order_by_array );
 
@@ -336,9 +339,10 @@ class SLPlus_Data {
      * @param mixed[] $params
      * @param int $offset
      * @param mixed $type the type of object/array/etc. to return see wpdb get_row.
+     * @param string $mode = get_row or get_col to fetch a single row or multiple rows of a single column
      * @return mixed the database array_a or object.
      */
-    function get_Record($commandList,$params=array(),$offset=0, $type = ARRAY_A ) {
+    function get_Record($commandList,$params=array(),$offset=0, $type = ARRAY_A , $mode = 'get_row' ) {
         $this->is_Extended();
         $query = $this->get_SQL($commandList);
 
@@ -348,7 +352,14 @@ class SLPlus_Data {
             $query = $this->db->prepare( $query , $params );
         }
 
-        return $this->db->get_row( $query , $type ,$offset );
+        // get_row (default) or get_col based on the mode
+        if ( $mode === 'get_col' ) {
+            $results = $this->db->get_col( $query, $offset );
+        } else {
+            $results = $this->db->get_row($query, $type, $offset);
+        }
+
+        return $results;
     }
 
     /**

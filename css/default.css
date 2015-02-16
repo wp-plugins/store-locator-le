@@ -1,6 +1,6 @@
 /** file: default.css
- ** label: Default Theme
- ** description: The default SLPLUS Theme for WordPress 4.1.  Search form on top of the map on top of the results.  Add on packs listed will be set back to the default layout settings when using set options and save settings.  Add on packs are not required for this theme to function properly.
+ ** label: Default Theme WP 2015 Rev 01
+ ** description: The default SLPLUS Theme for WordPress 2015 Revision 01.  This was Default for SLP versions 4.2.14 to 4.2.31. Search form on top of the map on top of the results.  Add on packs listed will be set back to the default layout settings when using set options and save settings.  Add on packs are not required for this theme to function properly.
  ** add-ons: slp-pro,slp-enhanced-map,slp-enhanced-results,slp-enhanced-search
  ** Pro Pack Locator Layout: <div id="sl_div">[slp_search][slp_map][slp_results]</div>
  ** Enhanced Map Bubble Layout: <div id="sl_info_bubble" class="[slp_location featured]"><span id="slp_bubble_name"><strong>[slp_location name  suffix  br]</strong></span><span id="slp_bubble_address">[slp_location address       suffix  br]</span><span id="slp_bubble_address2">[slp_location address2      suffix  br]</span><span id="slp_bubble_city">[slp_location city          suffix  comma]</span><span id="slp_bubble_state">[slp_location state suffix    space]</span><span id="slp_bubble_zip">[slp_location zip suffix  br]</span><span id="slp_bubble_country"><span id="slp_bubble_country">[slp_location country       suffix  br]</span></span><span id="slp_bubble_directions">[html br ifset directions][slp_option label_directions wrap directions]</span><span id="slp_bubble_website">[html br ifset url][slp_location url           wrap    website][slp_option label_website ifset url][html closing_anchor ifset url][html br ifset url]</span><span id="slp_bubble_email">[slp_location email         wrap    mailto ][slp_option label_email ifset email][html closing_anchor ifset email][html br ifset email]</span><span id="slp_bubble_phone">[html br ifset phone]<span class="location_detail_label">[slp_option   label_phone   ifset   phone]</span>[slp_location phone         suffix    br]</span><span id="slp_bubble_fax"><span class="location_detail_label">[slp_option   label_fax     ifset   fax  ]</span>[slp_location fax           suffix    br]<span><span id="slp_bubble_description"><span id="slp_bubble_description">[html br ifset description][slp_location description raw]</span>[html br ifset description]</span><span id="slp_bubble_hours">[html br ifset hours]<span class="location_detail_label">[slp_option   label_hours   ifset   hours]</span><span class="location_detail_hours">[slp_location hours         suffix    br]</span></span><span id="slp_bubble_img">[html br ifset img][slp_location image         wrap    img]</span><span id="slp_tags">[slp_location tags]</span></div>
@@ -198,6 +198,17 @@ div#slp_tagline {
   display: none;
   float: left;
   margin-left: 0.2em; }
+
+ul.ui-autocomplete.ui-front.ui-widget {
+  color: gray;
+  background-color: white;
+  border: solid 1px #C0C0C0;
+  border-radius: 3px;
+  padding: 0.2em;
+  display: inline-block;
+  height: inherit; }
+  ul.ui-autocomplete.ui-front.ui-widget li {
+    list-style: none; }
 
 /**
  * General SLP Div Only

@@ -863,7 +863,7 @@ class SLPlus_UI {
     function setup_stylesheet_for_slplus() {
         $this->slplus->helper->loadPluginData();
         if (!isset($this->slplus->data['theme']) || empty($this->slplus->data['theme'])) {
-            $this->slplus->data['theme'] = 'default';
+            $this->slplus->data['theme'] = $this->slplus->defaults['theme'];
         }
         $this->slplus->themes->assign_user_stylesheet($this->slplus->data['theme'],true);
     }

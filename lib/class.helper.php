@@ -96,7 +96,7 @@ class wpCSL_helper__slplus {
      *
      */
     function createstring_DropDownMenu($params) {
-        if (!isset($params['items'      ]) || !is_array($params['items'])) { return; }
+        if (!isset($params['items'      ]) || !is_array($params['items'])) { return ''; }
 
         if (!isset($params['id'         ])) { $params['id'          ] = 'actionType'                ; }
         if (!isset($params['name'       ])) { $params['name'        ] = 'action'                    ; }
@@ -121,7 +121,7 @@ class wpCSL_helper__slplus {
             if (!isset($item['value'])) { $item['value'] = $item['label']; }
             if ($item['value'] === $params['selectedVal']) { $item['selected'] = true; }
             $selected = (isset($item['selected']) && $item['selected']) ? 'selected="selected" ' : '';
-            $dropdownHTML .= "<option $selected value='{$item['value']}'>{$item['label']}</option>";
+            $dropdownHTML .= "<option {$selected} value='{$item['value']}'>{$item['label']}</option>";
         }
         return
             '<select '                      .
@@ -159,7 +159,7 @@ class wpCSL_helper__slplus {
      *
      */
     function createstring_DropDownMenuWithButton($params) {
-        if (!isset($params['items'      ]) || !is_array($params['items'])) { return; }
+        if (!isset($params['items'      ]) || !is_array($params['items'])) { return ''; }
 
         if (!isset($params['id'         ])) { $params['id'          ] = 'actionType'                    ; }
         if (!isset($params['name'       ])) { $params['name'        ] = 'action'                        ; }
@@ -234,7 +234,7 @@ class wpCSL_helper__slplus {
          * @param boolean $disabled - defaults to false
          * @param mixed $default
          * @param mixed $checkOption - if present, test this variable == 1 to mark as checked otherwise get the boxname option.
-         * @return type
+         * @return string
          */
         function CreateCheckboxDiv($boxname,$label='',$msg='',$prefix=null, $disabled=false, $default=0, $checkOption = null) {
             if ($prefix === null) { $prefix = $this->slplus->prefix; }
@@ -250,7 +250,7 @@ class wpCSL_helper__slplus {
                         "type='checkbox' ".
                         (($checkOption ==1)?' checked ':' ').
                         ($disabled?"disabled='disabled'":' ') .
-                    ">".
+                    '>'.
                     "</div>".
                     $this->CreateHelpDiv($boxname,$msg) .
                 "</div>"
@@ -366,11 +366,11 @@ class wpCSL_helper__slplus {
      * @param mixed $default - default value for 'get_item' calls
      * @param boolean $forceReload - if set, reload the data element from the options table
      * @param boolean $cantBeEmpty - if set and the data is empty, set it to default
-     * @return the value
+     * @return mixed[] value
      */
     function getData($element = null, $function = null, $params=null, $default=null, $forceReload = false, $cantBeEmpty = false) {
-        if ($element  === null) { return; }
-        if ($function === null) { return; }
+        if ($element  === null) { return null; }
+        if ($function === null) { return null; }
         if (!isset($this->slplus->data[$element] ) || $forceReload) {
 
            // get_option shortcut, fetch the option named by params

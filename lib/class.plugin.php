@@ -355,12 +355,13 @@ class wpCSL_plugin__slplus {
         require_once('class.themes.php');
         $this->themes = new PluginTheme(
                 array(
-            'notifications' => $this->notifications,
-            'parent' => $this,
-            'plugin_path' => $this->plugin_path,
-            'plugin_url' => $this->plugin_url,
-            'prefix' => $this->prefix,
-            'support_url' => $this->support_url,
+                    'notifications' => $this->notifications,
+                    'parent'        => $this,
+                    'plugin_path'   => $this->plugin_path,
+                    'plugin_url'    => $this->plugin_url,
+                    'prefix'        => $this->prefix,
+                    'slplus'        => $this,
+                    'support_url'   => $this->support_url,
                 )
         );
     }

@@ -920,12 +920,23 @@ var slp = {
             // Send AJAX call
             //
             ajax.send(action, function (response) {
-                if (typeof response.response !== 'undefined') {
+                valid_response = (typeof response.response !== 'undefined');
+                if ( valid_response ) { valid_response = response.success; }
+
+                if ( valid_response ) {
                     _this.clearMarkers();
                     _this.putMarkers(response.response);
+
                 } else {
                     if (window.console) {
                         console.log('SLP server did not send back a valid JSONP response for ' + action.action + '.');
+                        if ( typeof response.response !== 'undefined' ) {
+                            console.log( 'Response: ' + response.response );
+                        }
+                        if ( typeof response.message !== 'undefined' ) {
+                            var sidebar = document.getElementById('map_sidebar');
+                            sidebar.innerHTML = response.message;
+                        }
                     }
                 }
             });

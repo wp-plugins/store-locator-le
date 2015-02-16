@@ -63,6 +63,13 @@ class PluginTheme {
     public $prefix;
 
     /**
+     * The base SLPlus object.
+     *
+     * @var \SLPlus
+     */
+    public $slplus;
+
+    /**
      * Full web address to the support web pages.
      *
      * @var string $support_url
@@ -123,7 +130,7 @@ class PluginTheme {
         // If themefile not passed, fetch from db
         //
         if ($themeFile == '') {
-            $themeFile = get_option($this->prefix.'-theme','default') . '.css';
+            $themeFile = get_option($this->prefix.'-theme',$this->slplus->defaults['theme']) . '.css';
 
         } else {
             // append .css if left off

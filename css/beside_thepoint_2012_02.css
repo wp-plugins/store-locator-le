@@ -105,8 +105,8 @@
 .like-a-button {
   background: #FFF;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD');
-  background: -webkit-gradient(linear, left top, left bottom, from(white), to(#dddddd));
-  background: -moz-linear-gradient(top, white, #dddddd);
+  background: -webkit-gradient(linear, left top, left bottom, from(#FFF), to(#DDD));
+  background: -moz-linear-gradient(top, #FFF, #DDD);
   text-decoration: none;
   border: 1px solid #BBBBBB;
   margin: 0;
@@ -125,8 +125,8 @@
 .like-a-button:hover {
   background: #DDD;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF');
-  background: -webkit-gradient(linear, left top, left bottom, from(#dddddd), to(white));
-  background: -moz-linear-gradient(top, #dddddd, white); }
+  background: -webkit-gradient(linear, left top, left bottom, from(#DDD), to(#FFF));
+  background: -moz-linear-gradient(top, #DDD, #FFF); }
 
 .like-a-button A {
   text-decoration: none; }
@@ -207,6 +207,17 @@ div#slp_tagline {
   float: left;
   margin-left: 0.2em; }
 
+ul.ui-autocomplete.ui-front.ui-widget {
+  color: gray;
+  background-color: white;
+  border: solid 1px #C0C0C0;
+  border-radius: 3px;
+  padding: 0.2em;
+  display: inline-block;
+  height: inherit; }
+  ul.ui-autocomplete.ui-front.ui-widget li {
+    list-style: none; }
+
 /*---------------------
  * WordPress Tweaks
  *---------------------*/
@@ -281,19 +292,19 @@ div.slp_basic_widget div#sl_search_arrow {
 form#searchForm,
 div#slpw_searchform {
   background-color: #FFFFFF;
-  background: -moz-linear-gradient(top, #dddddd 0%, white 40%, #dddddd 100%);
+  background: -moz-linear-gradient(top, #ddd 0%, #ffffff 40%, #ddd 100%);
   /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #dddddd), color-stop(40%, white), color-stop(100%, #dddddd));
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ddd), color-stop(40%, #ffffff), color-stop(100%, #ddd));
   /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top, #dddddd 0%, white 40%, #dddddd 100%);
+  background: -webkit-linear-gradient(top, #ddd 0%, #ffffff 40%, #ddd 100%);
   /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top, #dddddd 0%, white 40%, #dddddd 100%);
+  background: -o-linear-gradient(top, #ddd 0%, #ffffff 40%, #ddd 100%);
   /* Opera 11.10+ */
-  background: -ms-linear-gradient(top, #dddddd 0%, white 40%, #dddddd 100%);
+  background: -ms-linear-gradient(top, #ddd 0%, #ffffff 40%, #ddd 100%);
   /* IE10+ */
-  background: linear-gradient(to bottom, #dddddd 0%, white 40%, #dddddd 100%);
+  background: linear-gradient(to bottom, #ddd 0%, #ffffff 40%, #ddd 100%);
   /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ddd', endColorstr='#ddd',GradientType=0 );
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ddd', endColorstr='#ddd',GradientType=0 );
   /* IE6-9 */
   border-radius: 6px 6px 6px 6px;
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
@@ -380,7 +391,7 @@ div#radius_in_submit {
 
 input#addressSubmit,
 input#slpw_addressSubmit {
-  background: linear-gradient(to bottom, #888888 0%, #666666 4%, #444444 44%, #222222 100%) repeat scroll 0 0 transparent;
+  background: linear-gradient(to bottom, #888 0%, #666 4%, #444 44%, #222 100%) repeat scroll 0 0 transparent;
   border: 0 none;
   border-radius: 3px 3px 3px 3px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
@@ -421,19 +432,19 @@ div#map_sidebar .results_entry:hover,
 div#slpw_resultsbox .results_entry:hover {
   background: #ddeef3;
   /* Old browsers */
-  background: -moz-linear-gradient(top, #eeeeee 0%, white 45%, white 61%, #eeeeee 100%);
+  background: -moz-linear-gradient(top, #eeeeee 0%, #ffffff 45%, #ffffff 61%, #eeeeee 100%);
   /* FF3.6+ */
-  background: -webkit-linear-gradient(top, #eeeeee 0%, white 45%, white 61%, #eeeeee 100%);
+  background: -webkit-linear-gradient(top, #eeeeee 0%, #ffffff 45%, #ffffff 61%, #eeeeee 100%);
   /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top, #eeeeee 0%, white 45%, white 61%, #eeeeee 100%);
+  background: -o-linear-gradient(top, #eeeeee 0%, #ffffff 45%, #ffffff 61%, #eeeeee 100%);
   /* Opera 11.10+ */
-  background: -ms-linear-gradient(top, #eeeeee 0%, white 45%, white 61%, #eeeeee 100%);
+  background: -ms-linear-gradient(top, #eeeeee 0%, #ffffff 45%, #ffffff 61%, #eeeeee 100%);
   /* IE10+ */
-  background: linear-gradient(to bottom, #eeeeee 0%, white 45%, white 61%, #eeeeee 100%);
+  background: linear-gradient(to bottom, #eeeeee 0%, #ffffff 45%, #ffffff 61%, #eeeeee 100%);
   /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#eeeeee',GradientType=0 );
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#eeeeee',GradientType=0 );
   /* IE6-9 */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #eeeeee), color-stop(45%, white), color-stop(61%, white), color-stop(100%, #eeeeee));
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #eeeeee), color-stop(45%, #ffffff), color-stop(61%, #ffffff), color-stop(100%, #eeeeee));
   /* Chrome,Safari4+ */ }
 
 div.no_results_found {
@@ -509,3 +520,5 @@ div#map_sidebar .results_entry.featured {
 /* Make the icon array appear on its own line */
 .results_line.location_iconarray {
   display: block; }
+
+/*# sourceMappingURL=beside_thepoint_2012_02.css.map */
