@@ -312,6 +312,10 @@ class SLPlus_AjaxHandler {
             $having_clause = '';
         }
 
+        // WHERE clauses
+        //
+        add_filter( 'slp_ajaxsql_where' , array( $this , 'filter_out_private_locations' ) );
+
         // FILTER: slp_ajaxsql_fullquery
         //
         $this->basic_query =
@@ -383,6 +387,16 @@ class SLPlus_AjaxHandler {
      */
     function add_distance_sort_to_orderby() {
         $this->slplus->database->extend_order_array( 'sl_distance ASC' );
+    }
+
+    /**
+     * Do not return private locations by default.
+     *
+     * @param string the current where clause
+     * @return string the extended where clause
+     */
+    function filter_out_private_locations( $where ) {
+        return $this->slplus->database->extend_Where( $where , ' NOT sl_private ' );
     }
 
     /**

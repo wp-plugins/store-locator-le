@@ -749,6 +749,10 @@ div.slp_editform_section small {
   max-width: 100px;
   max-height: 100px;
   overflow: none; }
+#manage_locations_table .private TD {
+  color: lightgray; }
+  #manage_locations_table .private TD A {
+    color: lightgray; }
 #manage_locations_table th {
   vertical-align: top; }
   #manage_locations_table th.thnowrap {
