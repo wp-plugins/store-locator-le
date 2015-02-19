@@ -446,6 +446,39 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
     }
 
 
+    /**
+     * Add the private class to locations marked private.
+     *
+     * @param $class the current class string for the manage locations location entry.
+     * @return string the modified CSS class with private attached if warranted.
+     */
+    function add_private_location_css( $class ) {
+        if ( $this->slplus->currentLocation->private ) {
+            $class .= ' private ';
+        }
+        return $class;
+    }
+
+    /**
+     * Show the private marker on the manage locations interface.
+     *
+     * @param $field_value
+     * @param $field
+     * @param $label
+     * @return mixed
+     */
+    function add_private_text_under_name( $field_value , $field , $label ) {
+        if ( $field === 'sl_store' ) {
+            if ( $this->slplus->currentLocation->private ) {
+                $field_value .=
+                    '<span class="privacy_please">' .
+                    __('private', 'csa-slplus') .
+                    '</span>';
+            }
+        }
+        return $field_value;
+    }
+
      /**
       * Returns the string that is the Location Info Form guts.
       *
@@ -814,11 +847,11 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
     /**
      * Add the left column to the add/edit locations form.
      *
-     * @param string $HTML the html of the base form.
+     * @param string the html of the base form.
      * @return string HTML of the form inputs
      */
-    function filter_EditLocationLeft_Address($HTML) {
-        return
+    function filter_EditLocationLeft_Address( $starting_html ) {
+        $HTML =
             $this->slplus->helper->create_SubheadingLabel(__('Address','csa-slplus')).
             $this->createstring_InputElement(
                 'store',
@@ -873,7 +906,19 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                     $this->slplus->currentLocation->longitude,
                     '', false, 'input',
                     __('Leave blank to have Google look up the longitude.', 'csa-slplus')
-                    ).
+                    );
+
+        $HTML .= $this->slplus->helper->CreateCheckboxDiv(
+            "private-{$this->slplus->currentLocation->id}" ,
+            __('Private Entry' , 'csa-slplus') ,
+            __('If checked the listing will not show up in location search results.' , 'csa-slplus' ),
+            '' ,
+            false ,
+            0,
+            $this->slplus->is_CheckTrue( $this->slplus->currentLocation->private )
+        );
+
+        $HTML .=
             '<p class="text_info">' .
                 sprintf('<a href="%s" target="csa" alt="%s" title="%s">%s</a>',
                         'http://www.latlong.net',
@@ -881,9 +926,9 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                         __('Latitude/Longitude lookup.','csa-slplus') ,
                         __('The LatLong.net website can help you locate an exact latitude/longitude.','csa-slplus') 
                     ) .
-            '</p>' .                
-            $HTML
-            ;
+            '</p>';
+
+        return $HTML . $starting_html;
     }
 
     /**
@@ -1133,6 +1178,13 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                     $this->slplus->currentLocation->dataChanged = true;
                 }
             }
+        }
+
+        // Missing Checkboxes (private)
+        //
+        if ( $this->slplus->currentLocation->private && ! isset( $_POST["private-{$this->slplus->currentLocation->id}"] ) ) {
+            $this->slplus->currentLocation->private = false;
+            $this->slplus->currentLocation->dataChanged = true;
         }
 
         // RE-geocode if the address changed
@@ -1731,11 +1783,13 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
 
             // Highlight invalid locations
             //
-            add_filter('slp_locations_manage_cssclass',array($this,'filter_InvalidHighlight'));
-            
+            add_filter('slp_locations_manage_cssclass',array($this,'filter_InvalidHighlight'  ) , 10 );
+            add_filter('slp_locations_manage_cssclass',array($this,'add_private_location_css' ) , 15 );
+
             // Add lat/long to the name field
             //
             add_filter( 'slp_column_data' , array($this, 'filter_AddLatLongUnderName'           ) , 10, 3 );
+            add_filter( 'slp_column_data' , array($this, 'add_private_text_under_name'          ) , 11, 3 );
 
             // Add Image to the output columns
             //
