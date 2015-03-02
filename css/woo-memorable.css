@@ -26,6 +26,9 @@ div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
 #map_box_image {
   display: block; }
 
+div.gm-style-iw div#sl_info_bubble {
+  min-width: 12em; }
+
 #map_box_map {
   display: none; }
 
@@ -138,3 +141,5 @@ div.results_entry.featured:hover {
   right: 0;
   text-align: right;
   top: 0; }
+
+/*# sourceMappingURL=woo-memorable.css.map */

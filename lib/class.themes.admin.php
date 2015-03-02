@@ -340,7 +340,7 @@ class PluginThemeAdmin {
 
         // Remove empties and sort
         $themeArray = array_filter($themeArray);
-        ksort($themeArray);
+        uksort($themeArray , 'strcasecmp' );
 
         // Delete the default theme if we have specific ones
         //

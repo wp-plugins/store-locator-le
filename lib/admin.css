@@ -12,6 +12,16 @@ button, input, textarea {
   border-radius: 3px 3px 3px 3px;
   font-family: inherit; }
 
+div .box.note {
+  background: url("../images/ico-note.png") no-repeat scroll 20px 45% #fef6d2;
+  border-color: #efe3ae;
+  border-style: solid;
+  border-width: 1px 0;
+  color: #555;
+  margin: 1em 0 1.5em;
+  padding: 9px 10px 9px 50px;
+  text-shadow: none; }
+
 /*--------------------------
  * WordPress Overrides
  *--------------------------*/

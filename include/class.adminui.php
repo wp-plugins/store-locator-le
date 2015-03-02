@@ -4,7 +4,7 @@
  *
  * @package StoreLocatorPlus\AdminUI
  * @author Lance Cleveland <lance@charlestonsw.com>
- * @copyright 2012-2013 Charleston Software Associates, LLC
+ * @copyright 2012-2015 Charleston Software Associates, LLC
  */
 class SLPlus_AdminUI {
 
@@ -110,12 +110,11 @@ class SLPlus_AdminUI {
      * 
      * @global type $sl_google_map_country
      * @global type $sl_location_table_view
-     * @global type $sl_zoom_level
      * @global type $sl_zoom_tweak
      * @global type $sl_use_name_search
      */
     function initialize_variables() {
-        global $sl_google_map_country, $sl_location_table_view,$sl_zoom_level, $sl_zoom_tweak, $sl_use_name_search;
+        global $sl_google_map_country, $sl_location_table_view, $sl_zoom_tweak, $sl_use_name_search;
 
         $sl_map_type=get_option('sl_map_type');
         if (isset($sl_map_type)) {
@@ -132,9 +131,6 @@ class SLPlus_AdminUI {
             $sl_use_name_search="0";
             add_option('sl_use_name_search', $sl_use_name_search);
             }
-
-        $sl_zoom_level=get_option('sl_zoom_level','4');
-        add_option('sl_zoom_level', $sl_zoom_level);
 
         $sl_zoom_tweak=get_option('sl_zoom_tweak','1');
         add_option('sl_zoom_tweak', $sl_zoom_tweak);
@@ -157,6 +153,26 @@ class SLPlus_AdminUI {
     function enqueue_admin_stylesheet($hook) {
         $this->slplus->debugMP('slp.main','msg','SLPlus_AdminUI::'.__FUNCTION__);
         if ($this->slplus->check_isOurAdminPage()) {wp_enqueue_style($this->styleHandle);}
+    }
+
+    /**
+     * Render the rating box.
+     */
+    function render_rate_box() {
+        $rating_url = 'https://wordpress.org/support/view/plugin-reviews/store-locator-le?filter=5#postform';
+        print
+            '<div class="box note">'.
+            sprintf(
+                __('If you like <strong>Store Locator Plus</strong> please leave me a <a target="_blank" href="%s" title="Rate Store Locator Plus on WordPress">★★★★★</a> rating ' , 'csa-slplus'),
+                $rating_url
+                ).
+            sprintf(
+                __('on <a target="_blank" href="%s" title="Rate Store Locator Plus on WordPress">WordPress.org</a>. ' , 'csa-slplus'),
+                $rating_url
+                ).
+        __('A huge thank you from Lance and his fellow code geeks!','csa-slplus') .
+        '</div>'
+        ;
     }
 
     /**
@@ -192,7 +208,11 @@ class SLPlus_AdminUI {
      */
     function renderPage_MapSettings() {
         require_once(SLPLUS_PLUGINDIR . '/include/class.adminui.userexperience.php');
-        $this->MapSettings = new SLPlus_AdminUI_MapSettings();
+        $this->MapSettings = new SLPlus_AdminUI_UserExperience(
+            array(
+                'slplus'    => $this->slplus
+            )
+        );
         $this->MapSettings->render_adminpage();
     }
 

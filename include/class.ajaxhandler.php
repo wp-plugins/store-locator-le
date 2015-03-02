@@ -396,7 +396,7 @@ class SLPlus_AjaxHandler {
      * @return string the extended where clause
      */
     function filter_out_private_locations( $where ) {
-        return $this->slplus->database->extend_Where( $where , ' NOT sl_private ' );
+        return $this->slplus->database->extend_Where( $where , ' ( NOT sl_private OR sl_private IS NULL) ' );
     }
 
     /**

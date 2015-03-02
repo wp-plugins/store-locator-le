@@ -179,7 +179,7 @@ class SLPlus_UI {
      * Output the search form based on the search results layout.
      */
     function createstring_SearchForm() {
-        $this->slplus->debugMP('slp.main','msg','SLPlus_UI:'.__FUNCTION__);
+        $this->slplus->debugMP('slp.main','msg',get_class().'::'.__FUNCTION__);
         if ( $this->slplus->is_CheckTrue( $this->slplus->options['hide_search_form'] ) ) { return ''; }
         
         // Register our custom shortcodes
@@ -224,6 +224,31 @@ class SLPlus_UI {
      */
     public function createstring_TagalongPlaceholder( $attributes , $content='' ) {
         return '';
+    }
+
+    /**
+     * Return a plugin option value.
+     *
+     * Third party add-ons can use the shortcode_slp_option filter to set $this->slplus->options[<option_name>]
+     * or $this->slplus->options_nojs[<option_name>] accordingly.
+     *
+     * [slp_option js="option_name"]
+     * [slp_option nojs="option_name"]
+     *
+     * @param $attributes
+     * @param null $content
+     * @return mixed[]
+     */
+    function create_string_slp_option_value( $attributes , $content = null ) {
+            $this->slplus->debugMP('slp.main','pr',get_class().'::'.__FUNCTION__,$attributes);
+            $attributes = apply_filters('shortcode_slp_option',$attributes);
+            foreach ($attributes as $name=>$value) {
+                if ( strtolower($name) === 'nojs' ) {
+                    return isset( $this->slplus->options_nojs[$value] ) ? $this->slplus->options_nojs[$value] : '';
+                } else {
+                    return isset( $this->slplus->options[$value] ) ? $this->slplus->options[$value] : '';
+                }
+            }
     }
 
     /**
@@ -283,31 +308,31 @@ class SLPlus_UI {
      * Create the default search radius div.
      */
     function create_DefaultSearchDiv_Radius() {
-        $this->slplus->debugMP('msg',__FUNCTION__);
+        // This is the old-school/bad way of doing this,
+        // this option is only set with the ES plugin... this should
+        // never have lived here, but for legacy support needs to remain (for now)
+        //
+        // TODO: deprecate this which will break very old versions of SLP:ES (pre 4.2)
+        // move this using the slp_change_ui_radius_selector filter.
+        //
+        if ( ! $this->slplus->is_CheckTrue( get_option(SLPLUS_PREFIX.'_hide_radius_selections',0 ) ) ) {
+            $HTML =
+                "<div id='addy_in_radius'>".
+                "<label for='radiusSelect'>".
+                $this->slplus->WPML->getWPMLText('sl_radius_label', get_option('sl_radius_label',__('Within','csa-slplus'))).
+                '</label>'.
+                "<select id='radiusSelect'>".$this->slplus->data['radius_options'].'</select>'.
+                "</div>"
+            ;
+        } else {
+            $HTML = $this->slplus->data['radius_options'];
+        }
 
-	    // This is the old-school/bad way of doing this,
-	    // this option is only set with the ES plugin... this should
-	    // never have lived here, but for legacy support needs to remain (for now)
-	    //
-	    // TODO: deprecate this which will break very old versions of SLP:ES (pre 4.2)
-	    //
-	    if (get_option(SLPLUS_PREFIX.'_hide_radius_selections',0) == 0) {
-		    $HTML =
-			    "<div id='addy_in_radius'>".
-			    "<label for='radiusSelect'>".
-			    $this->slplus->WPML->getWPMLText('sl_radius_label', get_option('sl_radius_label',__('Within','csa-slplus'))).
-			    '</label>'.
-			    "<select id='radiusSelect'>".$this->slplus->data['radius_options'].'</select>'.
-			    "</div>"
-		    ;
-	    } else {
-		    $HTML = $this->slplus->data['radius_options'];
-	    }
-
-	    // FILTER: slp_change_ui_radius_selector
-	    //
-	    return apply_filters( 'slp_change_ui_radius_selector' , $HTML ) ;
+        // FILTER: slp_change_ui_radius_selector
+        //
+        return apply_filters( 'slp_change_ui_radius_selector' , $HTML ) ;
     }
+
 
     /**
      * Create the default search submit div.
@@ -441,7 +466,7 @@ class SLPlus_UI {
      * Process shortcodes for search form.
      */
     function create_SearchElement($attributes, $content = null) {
-        $this->slplus->debugMP('slp.main','pr','SLPlus_UI:'.__FUNCTION__,$attributes);
+        $this->slplus->debugMP('slp.main','pr',get_class().'::'.__FUNCTION__,$attributes);
 
         // Pre-process the attributes.
         //
@@ -601,6 +626,7 @@ class SLPlus_UI {
 
         // Shortcodes for SLPLUS layouts
         //
+        add_shortcode('slp_option'      ,array( $this, 'create_string_slp_option_value'   ) );
         add_shortcode('slp_search'      ,array( $this, 'createstring_SearchForm'          ) );
         add_shortcode('slp_map'         ,array( $this, 'create_Map'                       ) );
         add_shortcode('slp_mapcontent'  ,array( $this, 'create_MapContent'                ) );
@@ -700,6 +726,10 @@ class SLPlus_UI {
         //
         $this->slplus->options['use_sensor'] = (get_option(SLPLUS_PREFIX.'_use_location_sensor',0 )==1);
 
+        // Set starting map center
+        //
+        $this->slplus->options['map_center'] = $this->set_MapCenter();
+
         // Lets get some variables into our script.
         // "Higher Level" JS Options are those noted below.
         //
@@ -710,7 +740,6 @@ class SLPlus_UI {
             'core_url'          => SLPLUS_COREURL,
             'disable_scroll'    => (get_option(SLPLUS_PREFIX.'_disable_scrollwheel')==1),
             'map_3dcontrol'     => (get_option(SLPLUS_PREFIX.'_disable_largemapcontrol3d')==0),
-            'map_country'       => $this->set_MapCenter(),
             'map_home_icon'     => $this->slplus->data['sl_map_home_icon'],
             'map_home_sizew'    => $this->slplus->data['home_size'][0],
             'map_home_sizeh'    => $this->slplus->data['home_size'][1],
@@ -723,7 +752,6 @@ class SLPlus_UI {
             'msg_noresults'     => $this->slplus->settings->get_item('message_noresultsfound','No results found.','_'),
             'results_string'    => $this->set_ResultsLayout( false ),
             'overview_ctrl'     => get_option('sl_map_overview_control',0),
-            'zoom_level'        => get_option('sl_zoom_level',12),
             'zoom_tweak'        => get_option('sl_zoom_tweak',1),
 
             // FILTER: slp_js_options
@@ -804,7 +832,7 @@ class SLPlus_UI {
         $radiusSelections = get_option('sl_map_radii','1,5,10,(25),50,100,200,500');
 
         // Hide Radius, set the only (or default) radius
-        if (get_option(SLPLUS_PREFIX.'_hide_radius_selections', 0) == 1) {
+        if ( $this->slplus->is_CheckTrue( get_option(SLPLUS_PREFIX.'_hide_radius_selections',0 ) ) ) {
             preg_match('/\((.*?)\)/', $radiusSelections, $selectedRadius);
             $selectedRadius = preg_replace('/[^0-9]/', '', (isset($selectedRadius[1])?$selectedRadius[1]:$radiusSelections));
             if (empty($selectedRadius) || ($selectedRadius <= 0)) { $selectedRadius = '2500'; }
