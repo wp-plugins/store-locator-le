@@ -390,7 +390,7 @@ var slp = {
                 //
                 var addressInput = this.getSearchAddress();
                 if (typeof addressInput === 'undefined') {
-                    this.address = slplus.map_country;
+                    this.address = slplus.options.map_center;
                 } else {
                     this.address = addressInput;
                 }
@@ -424,7 +424,7 @@ var slp = {
                     scrollwheel: !this.disableScroll,
 
                     minZoom: 1,
-                    zoom: parseInt(slplus.zoom_level),
+                    zoom: parseInt(slplus.options.zoom_level),
                 };
 
                 slpMapDiv = document.getElementById('map');
@@ -654,7 +654,7 @@ var slp = {
                                 (this.loadedOnce || (markerList.length > 1))
                                 ) ?
                                 this.gmap.getZoom() - parseInt(slplus.zoom_tweak) :
-                                    parseInt(slplus.zoom_level)
+                                    parseInt(slplus.options.zoom_level)
                             ), 20), 1)
                     ;
                 this.gmap.setZoom(newZoom);

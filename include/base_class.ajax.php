@@ -33,6 +33,11 @@ if (! class_exists('SLP_BaseClass_AJAX')) {
         protected $formdata = array();
 
         /**
+         * @var bool has the formdata been set already?
+         */
+        private $formdata_set = false;
+
+        /**
          * The formdata default values.
          *
          * @var mixed[] $formdata_defaults
@@ -105,8 +110,11 @@ if (! class_exists('SLP_BaseClass_AJAX')) {
          * Set incoming query and request parameters into object properties.
          */
         function set_QueryParams() {
-            if ( isset( $_REQUEST['formdata'] ) ) {
-                $this->formdata = wp_parse_args( $_REQUEST['formdata'] ,$this->formdata_defaults);
+            if ( ! $this->formdata_set ) {
+                if ( isset( $_REQUEST['formdata'] ) ) {
+                    $this->formdata = wp_parse_args($_REQUEST['formdata'], $this->formdata_defaults);
+                }
+                $this->formdata_set = true;
             }
         }
 

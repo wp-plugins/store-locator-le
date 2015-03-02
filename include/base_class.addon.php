@@ -131,6 +131,18 @@ if (! class_exists('SLP_BaseClass_Addon')) {
          */
         public $option_name;
 
+
+        /**
+         * The default values for options.
+         *
+         * Set this in init_options for any gettext elements.
+         *
+         * $options_defaults['setting'] = __('string to translate', 'textdomain');
+         *
+         * @var array
+         */
+        public $option_defaults = array();
+
         /**
          * Settable options for this plugin. (Does NOT go into main plugin JavaScript)
          *
@@ -366,12 +378,28 @@ if (! class_exists('SLP_BaseClass_Addon')) {
          */
         function init_options() {
             if ( isset( $this->option_name) ) {
+                $this->set_option_defaults();
                 $dbOptions = get_option($this->option_name);
                 if (is_array($dbOptions)) {
                     $this->options = array_merge( $this->options, $this->options_defaults );
                     $this->options = array_merge( $this->options, $dbOptions );
                 }
             }
+        }
+
+
+        /**
+         * Set option defaults outside of hard-coded property values via an array.
+         *
+         * This allows for gettext() string translations of defaults.
+         *
+         * Only bring over items in default_value_array that have matching keys in $this->options already.
+         *
+         */
+        function set_option_defaults( ) {
+            $valid_options = array_intersect_key( $this->option_defaults , $this->options );
+            $this->options = array_merge( $this->options , $valid_options );
+            return;
         }
     }
 }

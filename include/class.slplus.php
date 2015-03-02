@@ -7,7 +7,7 @@
  *
  * @package StoreLocatorPlus
  * @author Lance Cleveland <lance@charlestonsw.com>
- * @copyright 2012-2014 Charleston Software Associates, LLC
+ * @copyright 2012-2015 Charleston Software Associates, LLC
  *
  */
 class SLPlus extends wpCSL_plugin__slplus {
@@ -318,8 +318,10 @@ class SLPlus extends wpCSL_plugin__slplus {
         'label_hours'                => '',
         'label_phone'                => '',
         'label_website'              => '',
+        'map_center'                 => '',
         'map_domain'                 => 'maps.google.com',
         'slplus_version'             => SLPLUS_VERSION,
+        'zoom_level'                 => '12',
 
         // AJAX Incoming Variables
         //
@@ -504,15 +506,22 @@ class SLPlus extends wpCSL_plugin__slplus {
     function initOptions() {
         $this->debugMP('slp.main', 'msg', 'SLPlus:' . __FUNCTION__);
 
-        // Options from the database
+        // Set options defaults to values set in property definition above.
         //
         $this->options_default = $this->options;
+
+        // Serialized Options from DB for JS parameters
+        //
         $dbOptions = get_option(SLPLUS_PREFIX . '-options');
-        if (is_array($dbOptions)) {
+        if ( is_array( $dbOptions ) ) {
             array_walk($dbOptions, array($this, 'set_ValidOptions'));
         }
 
-        // Load serialized options for noJS
+        // Non-serialized options from DB for JS Parameters
+        //
+        $this->options['zoom_level'] = get_option('sl_zoom_level', $this->options_default['zoom_level'] );
+
+        // Load serialized options for noJS parameters
         //
         $this->options_nojs['invalid_query_message'] = __('Store Locator Plus did not send back a valid JSONP response.','csa-slplus' );
         $this->options_nojs_default = $this->options_nojs;
