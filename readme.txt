@@ -1,5 +1,5 @@
-=== Store Locator Plus ===
-Plugin Name:  Store Locator Plus - Google Maps
+=== Store Locator Plus - Google Maps===
+Plugin Name:  Store Locator Plus
 Contributors: charlestonsw, DeBAAT
 Donate link: http://www.charlestonsw.com/product/store-locator-plus-4/
 Tags: store locator, business locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
