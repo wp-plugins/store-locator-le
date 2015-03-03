@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-4/
 Tags: store locator, business locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.4
 Tested up to: 4.1
-Stable tag: 4.2.38
+Stable tag: 4.2.39
 License: GLPv2 or later
 
 Add a location finder or directory to your site in minutes. A Google Business Maps API licensed product. Extensive premium add-on library available!
@@ -339,6 +339,11 @@ If you are using the Janitor or Pro Pack add-on pack:
 == Changelog ==
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 4.2.39 (2015-Mar-02) =
+
+* Fix: HAVING clause processing, resolves conflict between Enhanced Results and Enhanced Search when featured locations are always shown and radius is set to "ignore unless address entered".
+* Change: Add featured listing highlighting to Simple White 4 Col plugin theme.
 
 = 4.2.38 (2015-Mar) =
 

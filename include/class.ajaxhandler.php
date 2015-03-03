@@ -303,13 +303,18 @@ class SLPlus_AjaxHandler {
         // If there are element for the having clause set it
         // otherwise leave it as a blank string
         //
+        $having_clause = '';
         if ( count($havingClauseElements) > 0 ) {
-            $having_clause = 'HAVING ';
             foreach ($havingClauseElements as $filter) {
                 $having_clause .= $filter;
             }
-        } else {
-            $having_clause = '';
+            $having_clause = trim( $having_clause );
+            $having_clause = preg_replace( '/^OR /', '' , $having_clause );
+
+            if ( ! empty( $having_clause ) ) {
+                $having_clause = 'HAVING ' . $having_clause;
+            }
+
         }
 
         // WHERE clauses
