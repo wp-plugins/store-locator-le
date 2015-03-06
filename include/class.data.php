@@ -377,6 +377,10 @@ class SLPlus_Data {
                     $sqlStatement .= $this->add_where_clause( $where );
                     break;
 
+                case 'where_not_private':
+                    $sqlStatement .= $this->add_where_clause( "( NOT sl_private OR sl_private IS NULL)" );
+                    break;
+
                 case 'where_valid_state':
                     $sqlStatement .= $this->add_where_clause( "(sl_state<>'') AND (sl_state IS NOT NULL)" );
                     break;
