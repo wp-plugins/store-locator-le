@@ -310,6 +310,31 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                 }
                 break;
 
+            // NO action ,can indicate over post max size
+            // Test for that with REQUEST_METHOD and CONTENT_LENGTH
+            case '':
+                if (
+                    isset( $_SERVER['REQUEST_METHOD'] )      &&
+                    ($_SERVER['REQUEST_METHOD'] === 'POST' ) &&
+                    isset( $_SERVER['CONTENT_LENGTH'] )      &&
+                    ( empty( $_POST ) )
+                ) {
+                    $max_post_size = ini_get('post_max_size');
+                    $content_length = $_SERVER['CONTENT_LENGTH'] / 1024 / 1024;
+                    if ($content_length > $max_post_size ) {
+                        print "<div class='updated fade'>" .
+                            sprintf(
+                                __('It appears you tried to upload %d MiB of data but the PHP post_max_size is %d MiB.', 'csa-slplus'),
+                                $content_length,
+                                $max_post_size
+                            ) .
+                            '<br/>' .
+                            __( 'Try increasing the post_max_size setting in your php.ini file.' , 'csa-slplus' ) .
+                            '</div>';
+                    }
+                }
+                break;
+
             default:
                 break;
         }
@@ -2078,6 +2103,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
      */
     function process_Actions() {
         $this->debugMP('msg',__FUNCTION__,"Action: {$this->current_action}");
+
         if ( $this->current_action === '' ) { return; }
 
         switch ($this->current_action) {
@@ -2152,6 +2178,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
             default:
                 break;
         }
+
         do_action('slp_manage_locations_action');
     }
     

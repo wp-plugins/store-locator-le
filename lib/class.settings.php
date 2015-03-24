@@ -231,14 +231,33 @@ class wpCSL_settings__slplus {
                     $this->create_EnvDiv('Site URL'                                 ,get_option('siteurl')              ).
                     '<br/>' .
                     $this->create_EnvDiv('MySQL Version'                            ,$wpdb->db_version()                ).
-                    '<br/>' .
                     $this->create_EnvDiv('PHP Version'                              ,phpversion()                       ).
-                    $this->create_EnvDiv('PHP Limit'                                ,
-                       ini_get('memory_limit')                                                                          ).
-                    $this->create_EnvDiv('Wordpress Limit'                              ,
-                        WP_MEMORY_LIMIT                                                                                 ).
+                    '<br/>' .
+
+                    $this->create_EnvDiv(
+                        __( 'PHP Limit' , 'csa-slplus' )                                ,
+                       ini_get('memory_limit')
+                    ) .
+
+                    $this->create_EnvDiv(
+                        __( 'WordPress General Limit' , 'csa-slplus' )                           ,
+                        WP_MEMORY_LIMIT
+                    ).
+
+                    $this->create_EnvDiv(
+                        __( 'WordPress Admin Limit' , 'csa-slplus' )                           ,
+                        WP_MAX_MEMORY_LIMIT
+                    ).
+
+
                     $this->create_EnvDiv('PHP Peak RAM'                             ,
                             sprintf('%0.2d MB',memory_get_peak_usage(true)/1024/1024)                                   ).
+
+                    $this->create_EnvDiv(
+                        'PHP Post Max Size' ,
+                        ini_get( 'post_max_size' )
+                    ) .
+
                     $this->create_EnvDiv('PHP Modules'                              ,
                             '<pre>'.print_r($this->csl_php_modules,true).'</pre>'                                       )
                     ,

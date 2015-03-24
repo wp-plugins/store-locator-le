@@ -10,6 +10,13 @@
 class SLPlus_Data {
 
     /**
+     * The collate modifier for create table commands.
+     *
+     * @var string $collate
+     */
+    public $collate;
+
+    /**
      * The global WordPress DB
      *
      * @var \wpdb $db
@@ -68,30 +75,58 @@ class SLPlus_Data {
 
     /**
      * Initialize a new data object.
-     *
      */
-    public function SLPlus_Data($params=null) {
+    public function __construct( $params = null )
+    {
         global $wpdb;
         $this->db = $wpdb;
+
+        // Set parameters.
+        //
+        if (($params != null) && is_array($params)) {
+            foreach ($params as $key => $value) {
+                $this->$key = $value;
+            }
+        }
 
         // Collation
         //
         $collate = '';
-        if( $this->db->has_cap( 'collation' ) ) {
-            if( ! empty($this->db->charset ) ) { $collate .= "DEFAULT CHARACTER SET {$this->db->charset}"; }
-            if( ! empty($this->db->collate ) ) { $collate .= " COLLATE {$this->db->collate}"; }
+        if ($this->db->has_cap('collation')) {
+            if (!empty($this->db->charset)) {
+                $collate .= "DEFAULT CHARACTER SET {$this->db->charset}";
+            }
+            if (!empty($this->db->collate)) {
+                $collate .= " COLLATE {$this->db->collate}";
+            }
         }
-        $this->collate   = $collate;
+        $this->collate = $collate;
 
         // Legacy stuff - replace with data property below.
         //
         $this->info = array(
-            'table'     => $this->db->prefix.'store_locator'   ,
-            'query'     =>
+            'table' => $this->db->prefix . 'store_locator',
+            'query' =>
                 array(
-                    'selectthis'            => 'SELECT %s FROM '.$this->db->prefix.'store_locator ' ,
+                    'selectthis' => 'SELECT %s FROM ' . $this->db->prefix . 'store_locator ',
                 ),
         );
+
+        $this->add_filters();
+        $this->set_properties();
+    }
+
+    /**
+     * Override to add custom data filters.
+     */
+    protected function add_filters() {
+
+    }
+
+    /**
+     * Override to set custom properties.
+     */
+    protected function set_properties() {
 
     }
 

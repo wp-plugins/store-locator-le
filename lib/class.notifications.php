@@ -5,7 +5,7 @@
  * Puts notifications on top of wpCSL plugin admin pages.
  *
  * @author Lance Cleveland <lance@charlestonsw.com>
- * @copyright 2013 Charleston Software Associates
+ * @copyright 2013 - 2015 Charleston Software Associates
  * @package wpCSL/Notifications
  *
  */
@@ -17,11 +17,18 @@ class wpCSL_notifications__slplus {
     private $notices = null;
 
     /**
+     * Are notifications enabled?
+     *
+     * @var bool
+     */
+    public $enabled = true;
+
+    /**
      * Build a new notification object.
      *
-     * @param type $params
+     * @param mixed[] $params
      */
-    function __construct($params) {
+    function __construct( $params ) {
         foreach ($params as $name => $value) {
             $this->$name = $value;
         }
@@ -35,6 +42,7 @@ class wpCSL_notifications__slplus {
      * @param string $link - url
      */
     function add_notice($level = 1, $content='', $link = null) {
+        if ( ! $this->enabled ) { return; }
         
         // Set numeric level for string input
         //
@@ -63,6 +71,8 @@ class wpCSL_notifications__slplus {
      * Render the notices to the browser page.
      */
     function display() {
+        if ( ! $this->enabled ) { return; }
+
         echo $this->get();
     }
 
@@ -73,6 +83,7 @@ class wpCSL_notifications__slplus {
     * @return string - the HTML or simple string output
     */
    function get($simple=false) {
+       if ( ! $this->enabled ) { return; }
 
         // No need to do anything if there aren't any notices
         if (!isset($this->notices) ) { return; }
@@ -195,4 +206,3 @@ class wpCSL_notifications_notice__slplus {
     }
 }
 
-?>
