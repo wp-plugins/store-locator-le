@@ -23,7 +23,7 @@ if (!class_exists('CSVImport')) {
          *
          * @var file $filehandle
          */
-        private $filehandle;
+        protected $filehandle;
 
         //----------------------------------------------------------------------------
         // Properties : Protected (access by defining class, inherited class, parents)
@@ -35,6 +35,13 @@ if (!class_exists('CSVImport')) {
          * @var mixed $addon
          */
         protected $addon;
+
+        /**
+         * Autodetect line endings setting.
+         *
+         * @var boolean
+         */
+        protected $adle_setting;
 
         /**
          * The current CSV data array.
@@ -184,46 +191,74 @@ if (!class_exists('CSVImport')) {
             do_action('slp_csv_processing_complete');
         }
 
-
         /**
-         * Process a CSV file breaking it into arrays and pass to filters for handling.
+         * Is this a valid CSV File?
          *
-         * Hook onto the slp_csv_processing action in your extended class to do something with the array of data.
-         *
-         * @param $file_meta a $_FILES-like structure.
+         * @param $file_meta
+         * @return bool
          */
-        function process_FileDirect( $file_meta ) {
+        function is_valid_csv_file( $file_meta ) {
 
             // Is the file name set?  If not, exit.
             //
             if (!isset($file_meta['csvfile']['name']) || empty($file_meta['csvfile']['name'])) {
-                print "<div class='updated fade'>".__('Import file name not set.','csa-slplus').'</div>';
-                return;
+                echo "<div class='updated fade'>".__('Import file name not set.','csa-slplus').'</div>';
+                return false;
             }
 
             // Does the file have any content?  If not, exit.
             //
             if ($file_meta['csvfile']['size'] <= 0)    {
-                print "<div class='updated fade'>".__('Import file was empty.','csa-slplus').'</div>';
-                return;
+                switch ( $file_meta['csvfile']['error'] ) {
+                    case UPLOAD_ERR_INI_SIZE:
+                        $message = __( 'Import file exceeds the upload_max_filesize in php.ini.' , 'csa-slplus' );
+                        break;
+
+                    case UPLOAD_ERR_PARTIAL:
+                        $message = __( 'Import file was only partially loaded.' , 'csa-slplus' );
+                        break;
+
+                    case UPLOAD_ERR_NO_FILE:
+                        $message = __( 'Import file seems to have gone missing.' , 'csa-slplus' );
+                        break;
+
+                    default:
+                        $message = __('Import file is empty.','csa-slplus');
+                        break;
+                }
+                echo "<div class='updated fade'>", $message , '</div>';
+                return false;
             }
-            
+
             // Is the file CSV?  If not, exit.
             //
             $arr_file_type = wp_check_filetype( basename( $file_meta['csvfile']['name'] ) , array( 'csv' => 'text/csv' ) );
             if ($arr_file_type['type'] != 'text/csv') {
-                print "<div class='updated fade'>".
+                echo "<div class='updated fade'>".
                     __('Uploaded file needs to be in CSV format.','csa-slplus')        .
                     sprintf(__('Type was %s.','csa-slplus'),$arr_file_type['type'])    .
                     '</div>';
-                return;
+                return false;
             }
+
+            return true;
+        }
+
+        /**
+         * Move the CSV File to a local directory.
+         *
+         * @param $file_meta
+         * @return string
+         */
+        function move_csv_to_slpdir( $file_meta ) {
 
             // Can the file be saved to disk?  If not, exit.
             //
             $updir = wp_upload_dir();
             $updir = $updir['basedir'].'/slplus_csv';
             if (!is_dir($updir)) {   mkdir($updir,0755); }
+
+            $new_file = $updir.'/'.$file_meta['csvfile']['name'];
 
             // Move File -
             // If csvfile source is set to csv_file_url assume an http or ftp_get
@@ -237,41 +272,70 @@ if (!class_exists('CSVImport')) {
                 isset( $file_meta['csvfile']['source'] ) &&
                 ( $file_meta['csvfile']['source'] === 'direct_url' )
             )  {
-                if ( ! rename( $file_meta['csvfile']['tmp_name'] , $updir.'/'.$file_meta['csvfile']['name'] ) ) {
+                if ( ! rename( $file_meta['csvfile']['tmp_name'] , $new_file ) ) {
                     print "<div class='updated fade'>"                                  .
                         __('Imported CSV file could not be renamed.','csa-slplus')      .
                         '</div>';
-                    return;
+                    return '';
                 }
 
             } else {
-                if ( ! move_uploaded_file( $file_meta['csvfile']['tmp_name'] , $updir.'/'.$file_meta['csvfile']['name'] ) ) {
+                if ( ! move_uploaded_file( $file_meta['csvfile']['tmp_name'] , $new_file ) ) {
                     print "<div class='updated fade'>"                                  .
                         __('Uploaded CSV file could not be moved.','csa-slplus')        .
                         '</div>';
-                    return;
+                    return '';
                 }
             }
 
+            return $new_file;
+        }
+
+        /**
+         * Open the CSV File and set the filehandle.
+         *
+         * @return bool
+         */
+        function open_csv_file( $filename ) {
+
             // Line Endings
             //
-            $adle_setting = ini_get('auto_detect_line_endings');
+            $this->adle_setting = ini_get('auto_detect_line_endings');
             ini_set('auto_detect_line_endings', true);
 
             // Can the file be opened? If not, exit.
             //
-            if (($this->filehandle = fopen($updir.'/'.$file_meta['csvfile']['name'], "r")) === FALSE) {
+            if (($this->filehandle = fopen( $filename , "r")) === FALSE) {
                 print "<div class='updated fade'>".
                     __('Could not open CSV file for processing.','csa-slplus')         . '<br/>' .
-                    $updir.'/'.$file_meta['csvfile']['name']                               .
+                    $new_file                               .
                     '</div>';
-                ini_set('auto_detect_line_endings', $adle_setting);
-                return;
+                ini_set('auto_detect_line_endings', $this->adle_setting);
+                return false;
             }
-            
+
             // Set first line processing flag.
             //
             $this->first_has_been_skipped = false;
+
+            return true;
+        }
+
+        /**
+         * Process a CSV file breaking it into arrays and pass to filters for handling.
+         *
+         * Hook onto the slp_csv_processing action in your extended class to do something with the array of data.
+         *
+         * @param $file_meta a $_FILES-like structure.
+         */
+        function process_FileDirect( $file_meta ) {
+
+            if ( ! $this->is_valid_csv_file( $file_meta ) ) { return; }
+
+            $new_file = $this->move_csv_to_slpdir( $file_meta );
+            if ( empty( $new_file ) ) { return; }
+
+            if ( ! $this->open_csv_file( $new_file ) ) { return; }
 
             // Set the field names.
             //
@@ -324,7 +388,7 @@ if (!class_exists('CSVImport')) {
             }
             fclose($this->filehandle);
 
-            ini_set('auto_detect_line_endings', $adle_setting);
+            ini_set('auto_detect_line_endings', $this->adle_setting);
 
             // Show Notices
             //

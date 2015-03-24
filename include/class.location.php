@@ -285,93 +285,109 @@ class SLPlus_Location {
             "duplicates handling mode: {$duplicates_handling} " . ($skipGeocode?' skip geocode':'')
         );
 
-        // Make sure locationData['sl_id'] is set to SOMETHING.
-        //
-        if (!isset($locationData['sl_id'])) { $locationData['sl_id'] = null; }
+        $add_mode = ( $duplicates_handling === 'add' );
 
-        // If the incoming location ID is of a valid format...
-        // Go fetch that location record.
-        // This also ensures that ID actually exists in the database.
+        // Add Mode : skip lots of duplication checking stuff
         //
-        if ($this->slplus->currentLocation->isvalid_ID($locationData['sl_id'])) {
-            $this->debugMP('msg','',"location ID {$locationData['sl_id']} being loaded");
-            $this->slplus->currentLocation->set_PropertiesViaDB($locationData['sl_id']);
-            $locationData['sl_id'] = $this->slplus->currentLocation->id;
+        if ( $add_mode ) {
+            $locationData['sl_id'] = null;
+            $return_code = 'added';
+
+        // Update, skip, etc. modes need to check for duplicates
+        //
+        } else {
+
+            // Make sure locationData['sl_id'] is set to SOMETHING.
+            //
+            if (!isset($locationData['sl_id'])) {
+                $locationData['sl_id'] = null;
+            }
+
+            // If the incoming location ID is of a valid format...
+            // Go fetch that location record.
+            // This also ensures that ID actually exists in the database.
+            //
+            if ($this->slplus->currentLocation->isvalid_ID($locationData['sl_id'])) {
+                $this->debugMP('msg', '', "location ID {$locationData['sl_id']} being loaded");
+                $this->slplus->currentLocation->set_PropertiesViaDB($locationData['sl_id']);
+                $locationData['sl_id'] = $this->slplus->currentLocation->id;
 
             // Not a valid incoming ID, reset current location.
             //
-        } else {
-            $this->slplus->currentLocation->reset();
-        }
-
-        // If the location ID is not valid either because it does not exist
-        // in the database or because it was not provided in a valid format,
-        // Go see if the location can be found by name + address
-        //
-        if (!$this->slplus->currentLocation->isvalid_ID()) {
-            $this->debugMP('msg','','location ID not provided or invalid.');
-            $locationData['sl_id'] = $this->slplus->db->get_var(
-                $this->slplus->db->prepare(
-                    $this->slplus->database->get_SQL('selectslid') .
-                    'WHERE ' .
-                    'sl_store   = %s AND '.
-                    'sl_address = %s AND '.
-                    'sl_address2= %s AND '.
-                    'sl_city    = %s AND '.
-                    'sl_state   = %s AND '.
-                    'sl_zip     = %s AND '.
-                    'sl_country = %s     '
-                    ,
-                    $this->val_or_blank($locationData,'sl_store')    ,
-                    $this->val_or_blank($locationData,'sl_address')  ,
-                    $this->val_or_blank($locationData,'sl_address2') ,
-                    $this->val_or_blank($locationData,'sl_city')     ,
-                    $this->val_or_blank($locationData,'sl_state')    ,
-                    $this->val_or_blank($locationData,'sl_zip')      ,
-                    $this->val_or_blank($locationData,'sl_country')
-                )
-            );
-        }
-
-        // Location ID exists, we have a duplicate entry...
-        //
-        if ( $this->slplus->currentLocation->isvalid_ID( $locationData['sl_id'] ) ) {
-            $this->debugMP('msg','',"location ID {$locationData['sl_id']} found or provided is valid.");
-            if ($duplicates_handling === 'skip') { return 'skipped'; }
-
-            // array ID and currentLocation ID do not match,
-            // must have found ID via address lookup, go load up the currentLocation record
-            //
-            if ($locationData['sl_id'] != $this->slplus->currentLocation->id) {
-                $this->slplus->currentLocation->set_PropertiesViaDB($locationData['sl_id']);
+            } else {
+                $this->slplus->currentLocation->reset();
             }
 
-            // TODO: if mode = 'add' force currentLocation->id to blank and set return code to 'added'.
+            // If the location ID is not valid either because it does not exist
+            // in the database or because it was not provided in a valid format,
+            // Go see if the location can be found by name + address
             //
+            if (!$this->slplus->currentLocation->isvalid_ID()) {
+                $this->debugMP('msg', '', 'location ID not provided or invalid.');
+                $locationData['sl_id'] = $this->slplus->db->get_var(
+                    $this->slplus->db->prepare(
+                        $this->slplus->database->get_SQL('selectslid') .
+                        'WHERE ' .
+                        'sl_store   = %s AND ' .
+                        'sl_address = %s AND ' .
+                        'sl_address2= %s AND ' .
+                        'sl_city    = %s AND ' .
+                        'sl_state   = %s AND ' .
+                        'sl_zip     = %s AND ' .
+                        'sl_country = %s     '
+                        ,
+                        $this->val_or_blank($locationData, 'sl_store'),
+                        $this->val_or_blank($locationData, 'sl_address'),
+                        $this->val_or_blank($locationData, 'sl_address2'),
+                        $this->val_or_blank($locationData, 'sl_city'),
+                        $this->val_or_blank($locationData, 'sl_state'),
+                        $this->val_or_blank($locationData, 'sl_zip'),
+                        $this->val_or_blank($locationData, 'sl_country')
+                    )
+                );
+            }
 
-            $return_code = 'updated';
-
-            // Location ID does not exist, we are adding a new record.
+            // Location ID exists, we have a duplicate entry...
             //
-        } else {
-            $this->debugMP('msg','',"location {$locationData['sl_id']} not found via address lookup, original handling mode {$duplicates_handling}.");
-            $duplicates_handling = 'add';
-            $return_code = 'added';
+            if ($this->slplus->currentLocation->isvalid_ID($locationData['sl_id'])) {
+                $this->debugMP('msg', '', "location ID {$locationData['sl_id']} found or provided is valid.");
+                if ($duplicates_handling === 'skip') {
+                    return 'skipped';
+                }
+
+                // array ID and currentLocation ID do not match,
+                // must have found ID via address lookup, go load up the currentLocation record
+                //
+                if ($locationData['sl_id'] != $this->slplus->currentLocation->id) {
+                    $this->slplus->currentLocation->set_PropertiesViaDB($locationData['sl_id']);
+                }
+
+                $return_code = 'updated';
+
+                // Location ID does not exist, we are adding a new record.
+                //
+            } else {
+                $this->debugMP('msg', '', "location {$locationData['sl_id']} not found via address lookup, original handling mode {$duplicates_handling}.");
+                $duplicates_handling = 'add';
+                $return_code = 'added';
+            }
+
+            // Update mode and we are NOT skipping the geocode process,
+            // check that the address has changed first.
+            //
+            if (!$skipGeocode && ($duplicates_handling === 'update')) {
+                $skipGeocode =
+                    ($this->val_or_blank($locationData, 'sl_address') == $this->slplus->currentLocation->address) &&
+                    ($this->val_or_blank($locationData, 'sl_address2') == $this->slplus->currentLocation->address2) &&
+                    ($this->val_or_blank($locationData, 'sl_city') == $this->slplus->currentLocation->city) &&
+                    ($this->val_or_blank($locationData, 'sl_state') == $this->slplus->currentLocation->state) &&
+                    ($this->val_or_blank($locationData, 'sl_zip') == $this->slplus->currentLocation->zip) &&
+                    ($this->val_or_blank($locationData, 'sl_country') == $this->slplus->currentLocation->country);
+                $this->debugMP('msg', '', 'Address does ' . ($skipGeocode ? 'NOT ' : '') . 'need to be recoded via location update mode.');
+            }
+            $this->debugMP('msg', '', "set location properties via array in {$duplicates_handling} duplicates handling mode");
         }
 
-        // Update mode and we are NOT skipping the geocode process,
-        // check that the address has changed first.
-        //
-        if ( ! $skipGeocode && ( $duplicates_handling === 'update' ) ) {
-            $skipGeocode =
-                ($this->val_or_blank($locationData,'sl_address')   == $this->slplus->currentLocation->address ) &&
-                ($this->val_or_blank($locationData,'sl_address2')  == $this->slplus->currentLocation->address2) &&
-                ($this->val_or_blank($locationData,'sl_city')      == $this->slplus->currentLocation->city    ) &&
-                ($this->val_or_blank($locationData,'sl_state')     == $this->slplus->currentLocation->state   ) &&
-                ($this->val_or_blank($locationData,'sl_zip')       == $this->slplus->currentLocation->zip     ) &&
-                ($this->val_or_blank($locationData,'sl_country')   == $this->slplus->currentLocation->country )  ;
-            $this->debugMP('msg','','Address does '.($skipGeocode?'NOT ':'').'need to be recoded via location update mode.');
-        }
 
         // Set the current location data
         //
@@ -381,7 +397,6 @@ class SLPlus_Location {
         //
         // Non-update mode, it starts from a blank slate.
         //
-        $this->debugMP('msg','',"set location properties via array in {$duplicates_handling} duplicates handling mode");
         $this->slplus->currentLocation->set_PropertiesViaArray( $locationData, $duplicates_handling );
 
         // HOOK: slp_location_add

@@ -66,6 +66,13 @@ class wpCSL_plugin__slplus {
     private $dmpStack = array('main' => array());
 
     /**
+     * True if debug-my-plugin is installed and active.
+     *
+     * @var bool
+     */
+    private $debugMP_is_active = false;
+
+    /**
      * True if we are on an admin page for the plugin.
      * 
      * @var boolean $isOurAdminPage
@@ -78,6 +85,15 @@ class wpCSL_plugin__slplus {
      * @var mixed[] $metadata
      */
     public $metadata;
+
+    /**
+     * Should we NOT use a default CSS?
+     *
+     * This appears to always be true.
+     *
+     * @var bool
+     */
+    protected $no_default_css = true;
 
     /**
      * The fully qualified directory name where the plugin is installed.
@@ -142,6 +158,7 @@ class wpCSL_plugin__slplus {
         $this->broadcast_url = 'http://www.charlestonsw.com/signage/index.php';
         $this->css_prefix = '';
         $this->current_admin_page = '';
+        $this->debugMP_is_active = $this->is_debugMP_active();
         $this->prefix = '';
         $this->shortcode_was_rendered = false;
         $this->themes_enabled = false;
@@ -460,6 +477,9 @@ class wpCSL_plugin__slplus {
             add_action('admin_notices', array($this->notifications, 'display'));
             add_action('dmp_addpanel', array($this, 'create_DMPPanels'));
         } else {
+
+            // TODO: This whole chunk can probably come out. no_default_css is always true.
+            //
             if (!$this->themes_enabled && !$this->no_default_css) {
                 // non-admin enqueues, actions, and filters
                 add_filter('wp_print_scripts', array($this, 'user_header_js'));
@@ -505,6 +525,7 @@ class wpCSL_plugin__slplus {
      * Return a deprecated notification.
      *
      * @param string $function_name name of function that is deprecated.
+     * @return string
      */
     public function createstring_Deprecated($function_name) {
         return
@@ -534,6 +555,7 @@ class wpCSL_plugin__slplus {
      * @return null
      */
     function debugMP($panel = 'main', $type = 'msg', $header = 'wpCSL DMP', $message = '', $file = null, $line = null, $notime = true, $clearingStack = false) {
+        if ( ! $this->debugMP_is_active ) { return; }
 
         // Escape HTML Messages
         //
@@ -541,6 +563,9 @@ class wpCSL_plugin__slplus {
             $message = esc_html($message);
         }
 
+        // TODO : Only if DebugMyPlugin Is Active
+        // otherwise we consume memory for no reason.
+        //
         // Panel not setup yet?  Push onto stack.
         //
         if (
@@ -713,6 +738,19 @@ class wpCSL_plugin__slplus {
             return false;
         }
 
+        return true;
+    }
+
+    /**
+     * Check if the debugMP plugin is active and installed.
+     *
+     * @return bool
+     */
+    public function is_debugMP_active() {
+        include_once(ABSPATH . 'wp-admin/includes/plugin.php');
+        if (!function_exists('is_plugin_active') || !is_plugin_active('debug-my-plugin/debug-my-plugin.php')) {
+            return false;
+        }
         return true;
     }
 

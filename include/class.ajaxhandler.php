@@ -107,6 +107,7 @@ class SLPlus_AjaxHandler {
             $this->slplus->register_module($this->name,$this);
             $this->plugin = $this->slplus;
         }
+        $this->slplus->notifications->enabled = false;
 
         // Set incoming params
         //
