@@ -5,7 +5,7 @@ Donate link: http://www.charlestonsw.com/product/store-locator-plus-4/
 Tags: locator,map,store locator, business locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.4
 Tested up to: 4.1
-Stable tag: 4.2.41
+Stable tag: 4.2.42
 License: GLPv2 or later
 
 Add a location finder or directory to your site in minutes. A Google Business Maps API licensed product. Extensive premium add-on library available!
@@ -234,7 +234,7 @@ Copy an existing CSS file, change the file name and update the CSS header, uploa
 * Chinese (zh_CN) by iSurge
 * Chinese (zh_TW) by iSurge
 * Dutch (nl_NL) by [Jan de Baat](http://www.de-baat.nl/)
-* French (fr_FR) by François Serrault
+* French (fr_FR) by [Dimitri Lekien](http://www.visitonweb.com/)
 * German (de_DE)
 * Italian (it_IT) by Matteo Colangeli
 * Japanese (ja) by [Karen Ellrick](http://l4jp.com)
@@ -339,6 +339,10 @@ If you are using the Janitor or Pro Pack add-on pack:
 == Changelog ==
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 4.2.42 (2015-Mar-26) =
+
+* Enhancement: Update French translation.
 
 = 4.2.41 (2015-Mar-20) =
 
