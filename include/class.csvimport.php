@@ -79,6 +79,13 @@ if (!class_exists('CSVImport')) {
         protected $maxcols;
 
         /**
+         * The message stack for the current import operation.
+         *
+         * @var \CSVImportMessages
+         */
+        protected $message_stack;
+
+        /**
          * The parent object.
          *
          * @var object $parent
@@ -164,6 +171,25 @@ if (!class_exists('CSVImport')) {
          */
         function create_BulkUploadForm() {
             die( 'function CSVImport::'.__FUNCTION__.' must be over-ridden in a sub-class.' );
+        }
+
+        /**
+         * Attach a message stack to this import object.
+         */
+        function initialize_message_stack() {
+            if ( ! class_exists( 'CSVImportMessages' ) ) {
+                require_once( 'class.csvimport.messages.php' );
+            }
+
+            if ( ! isset( $this->message_stack ) ) {
+                $this->message_stack =
+                    new CSVImportMessages(
+                        array(
+                            'addon'     => $this        ,
+                            'slplus'    => $this->slplus
+                        )
+                    );
+            }
         }
 
         /**
@@ -322,6 +348,15 @@ if (!class_exists('CSVImport')) {
         }
 
         /**
+         * Override this to add special processing that skips the data processing of the file.
+         *
+         * @return bool
+         */
+        function ok_to_process_file() {
+            return true;
+        }
+
+        /**
          * Process a CSV file breaking it into arrays and pass to filters for handling.
          *
          * Hook onto the slp_csv_processing action in your extended class to do something with the array of data.
@@ -336,6 +371,8 @@ if (!class_exists('CSVImport')) {
             if ( empty( $new_file ) ) { return; }
 
             if ( ! $this->open_csv_file( $new_file ) ) { return; }
+
+            $this->processing_report = array();
 
             // Set the field names.
             //
@@ -356,6 +393,7 @@ if (!class_exists('CSVImport')) {
                 'exists'            => 0,
                 'not_updated'       => 0,
                 'skipped'           => 0,
+                'malformed'         => 0,
                 'updated'           => 0,
                 );
 
@@ -364,27 +402,28 @@ if (!class_exists('CSVImport')) {
             //
             $location_processing_types = apply_filters('slp_csv_processing_messages',array());
 
-
             // Turn off notifications for OK addresses.
             //
             $this->slplus->currentLocation->geocodeSkipOKNotices = true;
 
             // Loop through all records
             //
-            while (($this->data = fgetcsv($this->filehandle)) !== FALSE) {
+            if ( $this->ok_to_process_file() ) {
+                while (($this->data = fgetcsv($this->filehandle)) !== FALSE) {
 
-                // Skip First Line
-                //
-                if (!$this->first_has_been_skipped && $this->skip_firstline){
-                    $this->first_has_been_skipped = true;
-                    continue;
+                    // Skip First Line
+                    //
+                    if (!$this->first_has_been_skipped && $this->skip_firstline) {
+                        $this->first_has_been_skipped = true;
+                        continue;
+                    }
+
+                    // HOOK: slp_csv_processing
+                    // Process the CSV data.
+                    //
+                    do_action('slp_csv_processing');
+                    $reccount++;
                 }
-
-                // HOOK: slp_csv_processing
-                // Process the CSV data.
-                //
-                do_action('slp_csv_processing');
-                $reccount++;
             }
             fclose($this->filehandle);
 
@@ -396,9 +435,8 @@ if (!class_exists('CSVImport')) {
 
             // Processing Report
             //
-            $this->processing_report = array();
             if ($reccount > 0) {
-                $this->processing_report[] = sprintf( __( '%d processed.' , 'csa-slplus') , $reccount );
+                $this->processing_report[] = sprintf( __( '%d data lines read from the CSV file.' , 'csa-slplus') , $reccount );
             }
             foreach ($this->processing_counts as $count_type=>$count) {
                 if ($count > 0) {
@@ -441,12 +479,12 @@ if (!class_exists('CSVImport')) {
 
             // Set the default
             //
-            if (!isset($this->fieldnames)) {
+            if ( ! isset( $this->fieldnames ) ) {
 
                 // FILTER: slp_csv_default_fieldnames
                 // Set default field names if the header line does not have field names.
                 //
-                $this->fieldnames = apply_filters('slp_csv_default_fieldnames',array());
+                $this->fieldnames = apply_filters( 'slp_csv_default_fieldnames' , array() );
             }
         }
     }

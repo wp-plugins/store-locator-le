@@ -412,8 +412,8 @@ class SLPlus_Location {
         if ( $this->slplus->currentLocation->dataChanged ) {
             $this->slplus->currentLocation->MakePersistent();
 
-            // Set not updated return code.
-            //
+        // Set not updated return code.
+        //
         } else {
             $return_code = 'not_updated';
         }
@@ -563,13 +563,8 @@ class SLPlus_Location {
      *
      * @param string $address the address to geocode, if not set use currentLocation
      */
-    function do_geocoding($address=null) {
+    function do_geocoding( $address = null ) {
         $this->debugMP('msg', get_class() . '::' . __FUNCTION__,$address);
-        $this->count++;
-        if ($this->count === 1) {
-            $this->retry_maximum_delayms = (int) $this->slplus->options_nojs['retry_maximum_delay'] * 1000000;
-            $this->iterations = max(1,(int) get_option(SLPLUS_PREFIX.'-geocode_retries','3'));
-        }
 
         // Null address, build from current location
         //
@@ -583,126 +578,139 @@ class SLPlus_Location {
                 $this->slplus->currentLocation->country
             ;
         }
+        $address = trim( $address );
 
-        $errorMessage = '';
-
-        // Get lat/long from Google
+        // Only process non-empty addresses.
         //
-        $this->debugMP('msg','',$address);
-        $json_response = $this->get_LatLong($address);
-        if ( ! empty( $json_response ) ) {
-
-            // Process the data based on the status of the JSON response.
-            //
-            $json = json_decode($json_response);
-            if ( $json === null ) {
-                $json = json_decode( json_encode( array( 'status' => 'ERROR' , 'message' => $json_response ) ) );
+        if ( ! empty( $address ) ) {
+            $this->count++;
+            if ($this->count === 1) {
+                $this->retry_maximum_delayms = (int) $this->slplus->options_nojs['retry_maximum_delay'] * 1000000;
+                $this->iterations = max(1,(int) get_option(SLPLUS_PREFIX.'-geocode_retries','3'));
             }
 
-            $this->debugMP('pr','',$json);
-            switch ($json->{'status'}) {
+            $errorMessage = '';
 
-                // OK
-                // Geocode completed successfully
-                // Update the lat/long if it has changed.
+            // Get lat/long from Google
+            //
+            $this->debugMP('msg', '', $address);
+            $json_response = $this->get_LatLong($address);
+            if (!empty($json_response)) {
+
+                // Process the data based on the status of the JSON response.
                 //
-                case 'OK':
-                    $this->slplus->currentLocation->set_LatLong($json->results[0]->geometry->location->lat,$json->results[0]->geometry->location->lng);
-                    $this->delay = SLPlus_Location::StartingDelay;
-                    break;
+                $json = json_decode($json_response);
+                if ($json === null) {
+                    $json = json_decode(json_encode(array('status' => 'ERROR', 'message' => $json_response)));
+                }
 
-                // OVER QUERY LIMIT
-                // Google is getting to many requests from this IP block.
-                // Loop through for X retries.
-                //
-                case 'OVER_QUERY_LIMIT':
-                    $errorMessage .= sprintf(__("Address %s (%d in current series) hit the Google query limit.\n", 'csa-slplus'),
-                            $address,
-                            $this->count
-                        ) . '<br/>'
-                    ;
-                    $attempts = 1;
-                    $totalDelay = 0;
+                $this->debugMP('pr', '', $json);
+                switch ($json->{'status'}) {
 
-                    // Keep trying up until the user-selected number of retries.
-                    // Increase the wait between each try by 1 second.
-                    // Wait no more than 10 seconds between attempts.
+                    // OK
+                    // Geocode completed successfully
+                    // Update the lat/long if it has changed.
                     //
-                    while( $attempts++ < $this->iterations){
-                        if ($this->delay <= $this->retry_maximum_delayms+1) {
-                            $this->delay += 1000000;
-                        }
-                        $totalDelay += $this->delay;
-                        usleep($this->delay);
-                        $json = $this->get_LatLong($address);
-                        if ($json!==null) {
-                            $json = json_decode($json);
-                            if ($json->{'status'} === 'OK') {
-                                $this->slplus->currentLocation->set_LatLong($json->results[0]->geometry->location->lat,$json->results[0]->geometry->location->lng);
+                    case 'OK':
+                        $this->slplus->currentLocation->set_LatLong($json->results[0]->geometry->location->lat, $json->results[0]->geometry->location->lng);
+                        $this->delay = SLPlus_Location::StartingDelay;
+                        break;
+
+                    // OVER QUERY LIMIT
+                    // Google is getting to many requests from this IP block.
+                    // Loop through for X retries.
+                    //
+                    case 'OVER_QUERY_LIMIT':
+                        $errorMessage .= sprintf(__("Address %s (%d in current series) hit the Google query limit.\n", 'csa-slplus'),
+                                $address,
+                                $this->count
+                            ) . '<br/>';
+                        $attempts = 1;
+                        $totalDelay = 0;
+
+                        // Keep trying up until the user-selected number of retries.
+                        // Increase the wait between each try by 1 second.
+                        // Wait no more than 10 seconds between attempts.
+                        //
+                        while ($attempts++ < $this->iterations) {
+                            if ($this->delay <= $this->retry_maximum_delayms + 1) {
+                                $this->delay += 1000000;
                             }
-                        } else {
-                            break;
+                            $totalDelay += $this->delay;
+                            usleep($this->delay);
+                            $json = $this->get_LatLong($address);
+                            if ($json !== null) {
+                                $json = json_decode($json);
+                                if ($json->{'status'} === 'OK') {
+                                    $this->slplus->currentLocation->set_LatLong($json->results[0]->geometry->location->lat, $json->results[0]->geometry->location->lng);
+                                }
+                            } else {
+                                break;
+                            }
                         }
-                    }
-                    $errorMessage .= sprintf(
-                            __('Waited up to %4.2f seconds between request, total wait for this location was %4.2f seconds.', 'csa-slplus'),
-                            $this->delay/1000000,
-                            $totalDelay/1000000
-                        ).
-                        "\n<br>";
-                    $errorMessage .= sprintf(
-                            __('%d total attempts for this location.', 'csa-slplus'),
-                            $attempts-1
-                        ).
-                        "\n<br>";
-                    break;
+                        $errorMessage .= sprintf(
+                                __('Waited up to %4.2f seconds between request, total wait for this location was %4.2f seconds.', 'csa-slplus'),
+                                $this->delay / 1000000,
+                                $totalDelay / 1000000
+                            ) .
+                            "\n<br>";
+                        $errorMessage .= sprintf(
+                                __('%d total attempts for this location.', 'csa-slplus'),
+                                $attempts - 1
+                            ) .
+                            "\n<br>";
+                        break;
 
-                // ZERO RESULTS
-                // Bad address provided or nothing found on Google end.
-                //
-                case 'ZERO_RESULTS':
-                    $errorMessage .= sprintf(__("Address #%d : %s <font color=red>failed to geocode</font>.", 'csa-slplus'),
-                            $this->slplus->currentLocation->id,
-                            $address
-                        ) . "<br />\n";
-                    $errorMessage .= sprintf(__("Unknown Address! Received status %s.", 'csa-slplus'),$json->{'status'})."\n<br>";
-                    $this->delay = SLPlus_Location::StartingDelay;
-                    break;
+                    // ZERO RESULTS
+                    // Bad address provided or nothing found on Google end.
+                    //
+                    case 'ZERO_RESULTS':
+                        $errorMessage .= sprintf(__("Address #%d : %s <font color=red>failed to geocode</font>.", 'csa-slplus'),
+                                $this->slplus->currentLocation->id,
+                                $address
+                            ) . "<br />\n";
+                        $errorMessage .= sprintf(__("Unknown Address! Received status %s.", 'csa-slplus'), $json->{'status'}) . "\n<br>";
+                        $this->delay = SLPlus_Location::StartingDelay;
+                        break;
 
-                // GENERIC
-                // Could not geocode.
+                    // GENERIC
+                    // Could not geocode.
+                    //
+                    default:
+                        $errorMessage .=
+                            sprintf(__("Address #%d : %s <font color=red>failed to geocode</font>.", 'csa-slplus'),
+                                $this->slplus->currentLocation->id,
+                                $address) .
+                            "<br/>\n" .
+                            sprintf(__("Received status %s.", 'csa-slplus'),
+                                $json->{'status'}) .
+                            "<br/>\n" .
+                            sprintf(__("Received data %s.", 'csa-slplus'),
+                                '<pre>' . print_r($json, true) . '</pre>');
+                        $this->delay = SLPlus_Location::StartingDelay;
+                        break;
+                }
+
+
+                // No raw json
                 //
-                default:
-                    $errorMessage .=
-                        sprintf(__("Address #%d : %s <font color=red>failed to geocode</font>."  , 'csa-slplus'),
-                            $this->slplus->currentLocation->id,
-                            $address)    .
-                        "<br/>\n"                   .
-                        sprintf(__("Received status %s."                      , 'csa-slplus'),
-                            $json->{'status'})            .
-                        "<br/>\n"                   .
-                        sprintf(__("Received data %s."                                           , 'csa-slplus'),
-                            '<pre>'.print_r($json,true).'</pre>')
-                    ;
-                    $this->delay = SLPlus_Location::StartingDelay;
-                    break;
+            } else {
+                $json = '';
+                $errorMessage .= __('Geocode service non-responsive', 'csa-slplus') .
+                    "<br/>\n" .
+                    $this->geocodeURL . urlencode($address);
             }
 
-
-            // No raw json
-            //
+        // Blank Address Error
+        //
         } else {
-            $json = '';
-            $errorMessage .= __('Geocode service non-responsive','csa-slplus') .
-                "<br/>\n" .
-                $this->geocodeURL . urlencode($address)
-            ;
+            $errorMessage = __( 'Address is blank.' , 'csa-slplus');
         }
 
         // Show Error Messages
         //
         if ($errorMessage != '') {
-            if (!$this->geocodeIssuesRendered) {
+            if ( ! $this->geocodeIssuesRendered ) {
                 $errorMessage =
                     '<strong>'.
                     sprintf(
@@ -716,8 +724,8 @@ class SLPlus_Location {
             }
             $this->slplus->notifications->add_notice(6,$errorMessage);
 
-            // Good encoding
-            //
+        // Good encoding
+        //
         } elseif (!$this->geocodeSkipOKNotices) {
             $this->slplus->notifications->add_notice(
                 9,
@@ -1112,7 +1120,7 @@ class SLPlus_Location {
         $this->debugMP('msg',__FUNCTION__,"Mode: {$mode}");
 
         // If we have an array, assume we are on the right track...
-        if (is_array($locationData)) {
+        if ( is_array( $locationData ) ) {
 
             // Do not set the data if it is unchanged from the last go-around
             //
@@ -1144,12 +1152,17 @@ class SLPlus_Location {
                 //
                 $property = str_replace($this->dbFieldPrefix,'',$field);
 
-                // Set our property value
+                // If this is a valid property...
                 //
-                $ssd_value = stripslashes_deep($value);
-                if ($this->$property != $ssd_value ) {
-                    $this->$property = $ssd_value;
-                    $this->slplus->currentLocation->dataChanged = true;
+                if ( property_exists( $this , $property ) ) {
+
+                    // Set our property value
+                    //
+                    $ssd_value = stripslashes_deep($value);
+                    if ($this->$property != $ssd_value) {
+                        $this->$property = $ssd_value;
+                        $this->slplus->currentLocation->dataChanged = true;
+                    }
                 }
             }
 
