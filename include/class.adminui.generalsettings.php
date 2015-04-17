@@ -77,7 +77,6 @@ class SLPlus_AdminUI_GeneralSettings {
             apply_filters('slp_save_general_settings_checkboxes',
                 array(
                     SLPLUS_PREFIX.'-no_google_js'               ,
-                    SLPLUS_PREFIX.'-thisbox'                    ,
                     )
                 );
         foreach ($BoxesToHit as $JustAnotherBox) {
@@ -116,31 +115,7 @@ class SLPlus_AdminUI_GeneralSettings {
         $panel_name     = __('Admin'    ,'csa-slplus');
         $section_name   = __('Settings' ,'csa-slplus');
         $this->settings->add_section(array('name' => $panel_name));
-        $this->settings->add_ItemToGroup(
-                array(
-                    'section'       => $panel_name                                    ,
-                    'group'         => $section_name,
-                    'label'         => __('Turn off rate notification','csa-slplus'),
-                    'setting'       => 'thisbox'                                    ,
-                    'type'          => 'checkbox'                                   ,
-                    'description'   =>
-                        __('This will disable the notification asking you to rate our product.','csa-slplus')
-                )
-            );
-        $this->settings->add_ItemToGroup(
-                array(
-                    'section'       => $panel_name                                  ,
-                    'group'         => $section_name                                ,
-                    'type'          => 'checkbox'                                   ,
-                    'use_prefix'    => false,
-                    'label'         => __('Extended Admin Messages'   ,'csa-slplus'),
-                    'setting'       => 'extended_admin_messages'                    ,
-                    'value'         => $this->slplus->is_CheckTrue($this->slplus->options_nojs['extended_admin_messages']),
-                    'description'   =>
-                        __('Show extended messages on the admin panel.','csa-slplus')
-                )
-            );
-        
+
         // ACTION: slp_generalsettings_modify_adminpanel
         //    params: settings object, section name
         do_action('slp_generalsettings_modify_adminpanel',$this->settings,$panel_name);

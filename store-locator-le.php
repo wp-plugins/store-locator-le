@@ -3,7 +3,7 @@
 Plugin Name: Store Locator Plus
 Plugin URI: http://www.storelocatorplus.com/
 Description: Add a location finder or directory to your site in minutes. A Google Business Maps API licensed product. Extensive premium add-on library available!
-Version: 4.2.43
+Version: 4.2.44
 Tested up to: 4.1.1
 Author: Charleston Software Associates
 Author URI: http://www.storelocatorplus.com
@@ -12,7 +12,7 @@ License: GPL3
 Text Domain: csa-slplus
 Domain Path: /languages/
 
-Copyright 2012 - 2015  Charleston Software Associates (info@charlestonsw.com)
+Copyright 2012 - 2015  Charleston Software Associates (info@storelocatorplus.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -33,16 +33,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 if (!defined( 'ABSPATH'     )) { exit;   } // Exit if accessed directly, dang hackers
 
 if (defined('SLPLUS_VERSION') === false) {
-    define('SLPLUS_VERSION', '4.2.43');
+    define('SLPLUS_VERSION', '4.2.44');
 }
 
 // Drive Path Defines
 //
 if (defined('SLPLUS_PLUGINDIR') === false) {
     define('SLPLUS_PLUGINDIR', plugin_dir_path(__FILE__));
-}
-if (defined('SLPLUS_COREDIR') === false) {
-    define('SLPLUS_COREDIR', SLPLUS_PLUGINDIR . 'core/');
 }
 if (defined('SLPLUS_ICONDIR') === false) {
     define('SLPLUS_ICONDIR', SLPLUS_PLUGINDIR . 'images/icons/');
@@ -54,18 +51,10 @@ if (defined('SLPLUS_ICONDIR') === false) {
 if (defined('SLPLUS_PLUGINURL') === false) {
     define('SLPLUS_PLUGINURL', plugins_url('',__FILE__));
 }
-if (defined('SLPLUS_COREURL') === false) {
-    define('SLPLUS_COREURL', SLPLUS_PLUGINURL . '/core/');
-}
 if (defined('SLPLUS_ICONURL') === false) {
     define('SLPLUS_ICONURL', SLPLUS_PLUGINURL . '/images/icons/');
 }
-if (defined('SLPLUS_ADMINPAGE') === false) {
-    define('SLPLUS_ADMINPAGE', admin_url() . 'admin.php?page=' . SLPLUS_COREDIR );
-}
-if (defined('SLPLUS_PLUSPAGE') === false) {
-    define('SLPLUS_PLUSPAGE', admin_url() . 'admin.php?page=' . SLPLUS_PLUGINDIR );
-}
+
 // The relative path from the plugins directory
 //
 if (defined('SLPLUS_BASENAME') === false) {
@@ -167,8 +156,6 @@ if (defined('SLPLUS_PLUGINDIR')) {
             'wp_downloads_url'      => 'http://wordpress.org/plugins/store-locator-le/developers/',
             'support_url'           => 'http://www.storelocatorplus.com/support/documentation/store-locator-plus/',
             'purchase_url'          => 'http://www.storelocatorplus.com/product-category/slp4-products/',
-            'rate_url'              => 'http://wordpress.org/extend/plugins/store-locator-le/',
-            'forum_url'             => 'http://www.storelocatorplus.com/forums/',
             'updater_url'           => 'http://www.storelocatorplus.com/paypal/updater.php',
             'broadcast_url'         => 'http://www.storelocatorplus.com/signage/index.php?sku=SLP4&version='.SLPLUS_VERSION,
 
