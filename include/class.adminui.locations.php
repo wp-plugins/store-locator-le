@@ -1972,10 +1972,13 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                      (empty($_REQUEST['searchfor']))                                  ?
                             __("No locations have been created yet.", 'csa-slplus')   :
                             __("Search Locations returned no matches.", 'csa-slplus')
-                    ) .
-                    ($this->slplus->is_CheckTrue($this->slplus->options_nojs['extended_admin_messages'])?'<br/><br/>'.__('Where: ','csa-slplus').$this->db_where : '').
+                    );
 
-                "</div>";
+                if ( ! empty( $this->db_where ) ) {
+                    $content['locationstable'] .= '<br/><br/>' . __('Where: ', 'csa-slplus') . $this->db_where;
+                }
+
+                $content['locationstable'] .=    "</div>";
         }
         
         return $content['locationstable'];

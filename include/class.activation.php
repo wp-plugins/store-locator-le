@@ -273,18 +273,6 @@ class SLPlus_Activate {
         return true;
     }
 
-    /**
-     * Delete all files in a directory, non-recursive.
-     * 
-     * @param string $dirname
-     * @param string $filepattern
-     * @return null
-     */
-    function emptydir($dirname=null, $filepattern='*') {
-       if ($dirname === null) { return; }
-       array_map('unlink', glob($dirname.$filepattern));
-    }
-
     /*************************************
      * Copy language and image files to wp-content/uploads/sl-uploads for safekeeping.
      */
@@ -306,22 +294,10 @@ class SLPlus_Activate {
             mkdir(SLPLUS_UPLOADDIR . "saved-icons", 0755);
         }
 
-        // Copy core language files to languages save location
-        //
-        if (is_dir(SLPLUS_COREDIR. "languages") && is_dir(SLPLUS_UPLOADDIR . "languages")) {
-            $allOK = $allOK && $this->copyr(SLPLUS_COREDIR . "languages", SLPLUS_UPLOADDIR . "languages");
-        }
-
-        // Copy ./images/icons to custom-icons save loation
+        // Copy ./images/icons to custom-icons save location
         //
         if (is_dir(SLPLUS_PLUGINDIR . "/images/icons") && is_dir(SLPLUS_UPLOADDIR . "saved-icons")) {
             $allOK = $allOK && $this->copyr(SLPLUS_PLUGINDIR . "/images/icons", SLPLUS_UPLOADDIR . "saved-icons");
-        }
-
-        // Copy core images to images save location
-        //
-        if (is_dir(SLPLUS_COREDIR . "images/icons") && is_dir(SLPLUS_UPLOADDIR . "saved-icons")) {
-            $allOK = $allOK && $this->copyr(SLPLUS_COREDIR . "images/icons", SLPLUS_UPLOADDIR . "saved-icons");
         }
 
         return $allOK;
@@ -360,26 +336,18 @@ class SLPlus_Activate {
                 $old_version                                                    :
                 get_option($updater->plugin->prefix."-installed_base_version")  ;
 
-            // Save Image and Lanuages Files
+            // Save Image and Language Files
             $filesSaved = $updater->save_important_files();
 
             // Core Icons Moved
             // 3.8.6
             //
-            if (is_dir(SLPLUS_COREDIR.'images/icons/')) {
+            if (is_dir(SLPLUS_PLUGINDIR.'core/images/icons/')) {
 
                 // Change home and end icon if it was in core/images/icons
                 //
                 update_option('sl_map_home_icon', $updater->iconMapper(get_option('sl_map_home_icon')));
                 update_option('sl_map_end_icon' , $updater->iconMapper(get_option('sl_map_end_icon') ));
-
-                // If the icons were saved in the save dir
-                // clean out core icons and remove the directory.
-                //
-                if ($filesSaved) {
-                    $updater->emptydir(SLPLUS_COREDIR.'images/icons/');
-                    rmdir(SLPLUS_COREDIR.'images/icons/');
-                }
             }
 
             // Admin Pages might be blank, set to 10

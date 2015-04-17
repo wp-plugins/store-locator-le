@@ -357,7 +357,6 @@ if (! class_exists('SLPlus')) {
          * @var mixed[]
          */
         public $options_nojs = array(
-            'extended_admin_messages' => '0',
             'extended_data_tested' => '0',
             'force_load_js' => '0',
             'google_client_id' => '',

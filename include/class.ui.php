@@ -351,7 +351,7 @@ class SLPlus_UI {
 
                 if (!file_exists($sl_theme_path."/search_button.png")) {
                     $sl_theme_base=SLPLUS_PLUGINURL."/images";
-                    $sl_theme_path=SLPLUS_COREDIR."/images";
+                    $sl_theme_path=SLPLUS_PLUGINDIR."/images";
                 }
 
                 $sub_img=$sl_theme_base."/search_button.png";
@@ -375,7 +375,13 @@ class SLPlus_UI {
             return
                 "<div id='radius_in_submit'>".
                     "<input $button_style " .
-                        "value='". $this->slplus->WPML->getWPMLText('find_button_label', get_option(SLPLUS_PREFIX.'_find_button_label','Find Locations') , 'csa-slplus') . "' ".
+                        "value='".
+                            $this->slplus->WPML->getWPMLText(
+                                'find_button_label',
+                                get_option(SLPLUS_PREFIX.'_find_button_label', __( 'Find Locations' , 'csa-slplus' ) ),
+                                'csa-slplus'
+                            ) .
+                        "' ".
                         "id='addressSubmit'/>".
                 "</div>"
                 ;
@@ -737,7 +743,6 @@ class SLPlus_UI {
         //
         $scriptData = array(
             'plugin_url'        => SLPLUS_PLUGINURL,
-            'core_url'          => SLPLUS_COREURL,
             'disable_scroll'    => (get_option(SLPLUS_PREFIX.'_disable_scrollwheel')==1),
             'map_3dcontrol'     => (get_option(SLPLUS_PREFIX.'_disable_largemapcontrol3d')==0),
             'map_home_icon'     => $this->slplus->data['sl_map_home_icon'],

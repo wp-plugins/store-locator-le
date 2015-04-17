@@ -198,6 +198,9 @@ class SLPlus_AdminUI {
      * Render the Locations admin page.
      */
     function renderPage_Locations() {
+        ini_set( 'max_execution_time' , $this->slplus->options_nojs['php_max_execution_time'] );
+        set_time_limit( $this->slplus->options_nojs['php_max_execution_time'] );
+
         require_once(SLPLUS_PLUGINDIR . '/include/class.adminui.locations.php');
         $this->ManageLocations = new SLPlus_AdminUI_Locations();
         $this->ManageLocations->render_adminpage();

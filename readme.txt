@@ -1,18 +1,18 @@
 === Store Locator Plus - Google Maps===
 Plugin Name:  Store Locator Plus
 Contributors: charlestonsw, DeBAAT
-Donate link: http://www.charlestonsw.com/product/store-locator-plus-4/
+Donate link: http://www.storelocatorplus.com/product/store-locator-plus-4/
 Tags: locator,map,store locator, business locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.4
 Tested up to: 4.1
-Stable tag: 4.2.43
+Stable tag: 4.2.44
 License: GLPv2 or later
 
 Add a location finder or directory to your site in minutes. A Google Business Maps API licensed product. Extensive premium add-on library available!
 
 == Description ==
 
-Store Locator Plus is a Google Business Maps API licensed location mapping and directory system with  over 40,000 active installations. 
+Store Locator Plus is a Google Business Maps API licensed location mapping and directory system with  over 10,000 active installations.
 Learn more at the [Store Locator Plus website](http://www.storelocatorplus.com/).
 The website offers more [screen shots](http://www.storelocatorplus.com/support/documentation/store-locator-plus/store-locator-plus-screen-shots/), [technical documentation](http://www.storelocatorplus.com/support/documentation/technical-documentation/), and [full release notes](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/release-notes-4-0/), and a very active [user forum](http://www.charlestonsw.com/forums/).
 
@@ -28,7 +28,7 @@ The Store Locator Plus search form and map will "magically" appear.
 
 The base plugin, [available for free from the WordPress Plugin Directory](http://wordpress.org/extend/plugins/store-locator-le) has all the features you need
 to create a comprehensive store locator interface on your website.
-Set up an interactive Google map for your customers with a [single shortcode](http://www.charlestonsw.com/support/documentation/store-locator-plus/getting-started/shortcodes/).
+Set up an interactive Google map for your customers with a [single shortcode](http://www.storelocatorplus.com/support/documentation/store-locator-plus/getting-started/shortcodes/).
 
 Advanced customization is available via the settings interface in the admin panel.
 Set the map size to best fit your site.
@@ -64,11 +64,11 @@ Visit the [SLP Customers page](http://www.storelocatorplus.com/support/documenta
 All add-on packs are released under GPL.  Purchase once and own the add-on packs forever.  There is no ongoing maintenance or support fee required.
 Your add-on pack will always remain fully functional after purchase.
 
-**Contacts Data** via [Contact Extender](http://www.charlestonsw.com/product/slp4-contact-extender/)
+**Contacts Data** via [Contact Extender](http://www.storelocatorplus.com/product/slp4-contact-extender/)
 
 * Adds a dozen extra contact specific data fields for each location.
 
-**Instant Location Directories** via [Directory Builder](http://www.charlestonsw.com/product/directory-builder/)
+**Instant Location Directories** via [Directory Builder](http://www.storelocatorplus.com/product/directory-builder/)
 
 * Adds a shortcode for creating a dynamic list of location cities, states, countries, or other location property.
 * City/State/Country list can link directly to the locator page with automatic search results showing the locations.
@@ -104,7 +104,7 @@ Your add-on pack will always remain fully functional after purchase.
 * Location search reporting.
 * Location tags.
 
-**Extended Location Data** via [Location Extender](http://www.charlestonsw.com/product/location-extender/)
+**Extended Location Data** via [Location Extender](http://www.storelocatorplus.com/product/location-extender/)
 
 * Adds a half-dozen new fields to the basic location data.
 * Introduction text, Year Established, County, District, Region, Territory
@@ -134,7 +134,7 @@ Your add-on pack will always remain fully functional after purchase.
 * Put location search in your widget-enabled areas.
 * Direct users to the default map page, or show results right in the widget area.
 
-**Get It All** with a [Premier Subscription](http://www.charlestonsw.com/product/premier-subscription/)
+**Get It All** with a [Premier Subscription](http://www.storelocatorplus.com/product/premier-subscription/)
 
  This optional subscription service is a great way to support the plugin.
  The subscription is not required and  your base plugin as well as any add-on packs will always remain fully functional.
@@ -212,7 +212,7 @@ Any EASIER way to perform translations?  Load the [Codestyling Localization plug
 1. Search for "Store Locator Plus" via Plugins/Add New on your WordPress admin panel.
 2. Click install.
 3. Add your locations through the 'Add Locations' page in the Store Locator admin panel
-4. Create or edit a page and add the [[SLPLUS] shortcode](http://www.charlestonsw.com/support/documentation/store-locator-plus/getting-started/shortcodes/).
+4. Create or edit a page and add the [[SLPLUS] shortcode](http://www.storelocatorplus.com/support/documentation/store-locator-plus/getting-started/shortcodes/).
 
 = Icons =
 
@@ -248,13 +248,6 @@ Copy an existing CSS file, change the file name and update the CSS header, uploa
 * Map markers by [Nicolas Mollet](http://mapicons.nicolasmollet.com/)
 * Icons by Icons-Land (http://www.icons-land.com/) via Icon Finder.
 * Logos and other site graphics by [Massive Creative](http://www.massivecreativeinc.com).
-* Markers and icons by [Google](http://www.google.com).  Some of the Google open-source icons are found [at this unofficial list](http://www.visual-case.it/cgi-bin/vc/GMapsIcons.pl).
-
-*Code*
-
-* Security review, thanks to "PennyGrit".
-* Map engine and starting code templates thanks to [Google](http://www.google.com).
-
 
 == Frequently Asked Questions ==
 
@@ -282,11 +275,6 @@ All plugins are true add-on packs.  They are non-destructive OPTIONAL additions 
 They do not require the base plugin to be uninstalled or re-installed.
 Installed an add-on pack will not change location data or modify base plugin settings.
 
-= Who is Charleston Software Associates? =
-
-Currently it is one guy hacking code in a home office.
-I ONLY do WordPress plugins for a living.
-Lately it has been almost exclusively work on Store Locator Plus due to the popularity and requests for added features that come in every month.
 
 = What are the terms of the license? =
 
@@ -301,9 +289,9 @@ on the [License Terms page](http://www.storelocatorplus.com/products/general-eul
 * If everything is ok, email the files to info@charlestonsw.com and I will add them to the next release.
 * For more information on POT files, domains, gettext and i18n have a look at the I18n for WordPress developers Codex page and more specifically at the section about themes and plugins.
 
-
 This plugin has settings for many of the user-interface labels.
-I am looking into working with the WPML plugin for added support for those of you that are not in North America.
+
+Store Locator Plus has built-in interfaces for WPML.
 
 == Screenshots ==
 
@@ -339,6 +327,12 @@ If you are using the Janitor or Pro Pack add-on pack:
 == Changelog ==
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 4.2.44 (2015-Apr-15) =
+
+* Enhancement: Make Find Buttons default WPML text string compatible.
+* Enhancement: Update Dutch translatons (nl_NL).
+* Enhancement: Utilize the PHP Time Limit setting on manage locations screen.  When set to 0, allows admin users to view 10k locations at-a-time.
 
 = 4.2.43 (2015-Apr-08) =
 
