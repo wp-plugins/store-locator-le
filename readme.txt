@@ -4,8 +4,8 @@ Contributors: charlestonsw, DeBAAT
 Donate link: http://www.storelocatorplus.com/product/store-locator-plus-4/
 Tags: locator,map,store locator, business locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
 Requires at least: 3.4
-Tested up to: 4.1
-Stable tag: 4.2.44
+Tested up to: 4.2
+Stable tag: 4.2.45
 License: GLPv2 or later
 
 Add a location finder or directory to your site in minutes. A Google Business Maps API licensed product. Extensive premium add-on library available!
@@ -327,6 +327,12 @@ If you are using the Janitor or Pro Pack add-on pack:
 == Changelog ==
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 4.2.45 (2015-Apr-24) =
+
+* Enhancement: Add the Brewery plugin theme to work with the Brewery WordPress theme from [Rescue Themes](https://rescuethemes.com/).
+* Enhancement: Connect all add-on packs to the new inline updates system.
+
 
 = 4.2.44 (2015-Apr-15) =
 

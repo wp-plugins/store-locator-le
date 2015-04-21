@@ -281,8 +281,24 @@ if (!class_exists('CSVImport')) {
             // Can the file be saved to disk?  If not, exit.
             //
             $updir = wp_upload_dir();
+
+
+            // Check WordPress has an uploads directory.
+            //
+            if ( ! is_dir( $updir['basedir'] ) ) {
+                echo "<div class='updated fade'>".
+                    sprintf(
+                        __('WordPress upload directory %s is missing, check directory permissions.','csa-slplus') ,
+                        $updir['basedir']
+                    ) .
+                    '</div>';
+                return null;
+            }
+
+            // Make the SLP CSV Upload Directory \
+            //
             $updir = $updir['basedir'].'/slplus_csv';
-            if (!is_dir($updir)) {   mkdir($updir,0755); }
+            if ( ! is_dir( $updir ) ) {   mkdir( $updir ,0755 ); }
 
             $new_file = $updir.'/'.$file_meta['csvfile']['name'];
 
