@@ -6,7 +6,7 @@
  *
  * @package StoreLocatorPlus\Updates
  * @author Lance Cleveland <lance@charlestonsw.com>
- * @copyright 2012-2014 Charleston Software Associates, LLC
+ * @copyright 2012-2015 Charleston Software Associates, LLC
  */
 class SLPlus_Updates {
 
@@ -34,7 +34,7 @@ class SLPlus_Updates {
      * The plugin remote update path
      * @var string
      */
-    public $update_path;
+    public $update_request_path;
 
     /**
      * The global plugin.
@@ -71,7 +71,7 @@ class SLPlus_Updates {
         list ($t1, $t2) = explode('/', $plugin_slug);
         $this->slug = str_replace('.php', '', $t2);
         $this->base_path = $update_path;
-        $this->set_update_path();
+        $this->set_update_request_path();
 
         // define the alternative API for updating checking
         add_filter('pre_set_site_transient_update_plugins', array($this, 'check_update'));
@@ -102,8 +102,8 @@ class SLPlus_Updates {
             $obj = new stdClass();
             $obj->slug = $this->slug;
             $obj->new_version = $this->remote_version;
-            $obj->url = $this->update_path;
-            $obj->package = $this->update_path;
+            $obj->url = $this->update_request_path;
+            $obj->package = $this->update_request_path;
             $transient->response[$this->plugin_slug] = $obj;
         }
         return $transient;
@@ -144,7 +144,7 @@ class SLPlus_Updates {
      */
     public function getRemote_version()
     {
-        $request = wp_remote_post($this->update_path . '&action=version' );
+        $request = wp_remote_post($this->update_request_path . '&fetch=version' );
         if (!is_wp_error($request) || wp_remote_retrieve_response_code($request) === 200) {
             $this->remote_version = $request['body'];
         } else {
@@ -163,7 +163,7 @@ class SLPlus_Updates {
             error_log('SLPlus_Updates.getRemote_information()');
         }
         
-        $request = wp_remote_post($this->update_path . '&action=info' );
+        $request = wp_remote_post($this->update_request_path . '&fetch=info' );
         if (!is_wp_error($request) || wp_remote_retrieve_response_code($request) === 200) {
             if (isset($GLOBALS['DebugMyPlugin'])) {
                 error_log('retrieved remote info for ' . $slug);
@@ -175,22 +175,11 @@ class SLPlus_Updates {
         }
         return false;
     }
-    /**
-     * Get a list of remote packages on this updater URL.
-     * @return mixed false if error on remote, unserialized list of products otherwise
-     */
-    public function getRemote_list() {
-        $request = wp_remote_post($this->update_path . '&action=list');
-        if (!is_wp_error($request) || wp_remote_retrieve_response_code($request) === 200) {
-            return unserialize($request['body']);
-        }
-        return false;
-    }
 
     /**
      * Set the update path.
      */
-    public function set_update_path()  {
-        $this->update_path = $this->base_path . '?slug='.$this->slug . '&current_version=' . $this->current_version;
+    public function set_update_request_path()  {
+        $this->update_request_path = $this->base_path . '?action=wpdk_updater&slug='.$this->slug . '&current_version=' . $this->current_version;
     }
 }

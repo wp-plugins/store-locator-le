@@ -1,0 +1,374 @@
+/** file: brewery.css
+ ** label: Brewery 1.0
+ ** description: Built to work with Rescue Theme's (rescuethemes.com) Brewery theme.
+ ** add-ons: slp-pro,slp-enhanced-map,slp-enhanced-results,slp-enhanced-search
+ ** Pro Pack Locator Layout: <div id="sl_div">[slp_search][slp_map][slp_results]</div>
+ ** Enhanced Map Bubble Layout: <div id="sl_info_bubble" class="[slp_location featured]"><span id="slp_bubble_name"><strong>[slp_location name  suffix  br]</strong></span><span id="slp_bubble_address">[slp_location address       suffix  br]</span><span id="slp_bubble_address2">[slp_location address2      suffix  br]</span><span id="slp_bubble_city">[slp_location city          suffix  comma]</span><span id="slp_bubble_state">[slp_location state suffix    space]</span><span id="slp_bubble_zip">[slp_location zip suffix  br]</span><span id="slp_bubble_country"><span id="slp_bubble_country">[slp_location country       suffix  br]</span></span><span id="slp_bubble_directions">[html br ifset directions][slp_option label_directions wrap directions]</span><span id="slp_bubble_website">[html br ifset url][slp_location url           wrap    website][slp_option label_website ifset url][html closing_anchor ifset url][html br ifset url]</span><span id="slp_bubble_email">[slp_location email         wrap    mailto ][slp_option label_email ifset email][html closing_anchor ifset email][html br ifset email]</span><span id="slp_bubble_phone">[html br ifset phone]<span class="location_detail_label">[slp_option   label_phone   ifset   phone]</span>[slp_location phone         suffix    br]</span><span id="slp_bubble_fax"><span class="location_detail_label">[slp_option   label_fax     ifset   fax  ]</span>[slp_location fax           suffix    br]<span><span id="slp_bubble_description"><span id="slp_bubble_description">[html br ifset description][slp_location description raw]</span>[html br ifset description]</span><span id="slp_bubble_hours">[html br ifset hours]<span class="location_detail_label">[slp_option   label_hours   ifset   hours]</span><span class="location_detail_hours">[slp_location hours         suffix    br]</span></span><span id="slp_bubble_img">[html br ifset img][slp_location image         wrap    img]</span><span id="slp_tags">[slp_location tags]</span></div>
+ ** Enhanced Results Results Layout: <div id="slp_results_[slp_location id]" class="results_entry  [slp_location featured]"><div class="results_row_left_column"   id="slp_left_cell_[slp_location id]"   ><span class="location_name">[slp_location name]</span><span class="location_distance">[slp_location distance_1] [slp_location distance_unit]</span></div><div class="results_row_center_column" id="slp_center_cell_[slp_location id]" ><span class="slp_result_address slp_result_street">[slp_location address]</span><span class="slp_result_address slp_result_street2">[slp_location address2]</span><span class="slp_result_address slp_result_citystatezip">[slp_location city_state_zip]</span><span class="slp_result_address slp_result_country">[slp_location country]</span><span class="slp_result_address slp_result_phone">[slp_location phone]</span><span class="slp_result_address slp_result_fax">[slp_location fax]</span></div><div class="results_row_right_column"  id="slp_right_cell_[slp_location id]"  ><span class="slp_result_contact slp_result_website">[slp_location web_link]</span><span class="slp_result_contact slp_result_email">[slp_location email_link]</span><span class="slp_result_contact slp_result_directions"><a href="http://[slp_location map_domain]/maps?saddr=[slp_location search_address]&daddr=[slp_location location_address]" target="_blank" class="storelocatorlink">[slp_location directions_text]</a></span><span class="slp_result_contact slp_result_hours">[slp_location hours]</span>[slp_location iconarray wrap="fullspan"]</div></div>
+ ** Enhanced Search Search Layout: <div id="address_search">[slp_search_element input_with_label="name"][slp_search_element input_with_label="address"][slp_search_element dropdown_with_label="city"][slp_search_element dropdown_with_label="state"][slp_search_element dropdown_with_label="country"][slp_search_element selector_with_label="tag"][slp_search_element dropdown_with_label="category"]<div class="search_item">[slp_search_element dropdown_with_label="radius"][slp_search_element button="submit"]</div></div>
+ **
+ ** Sass Source: ./assets/stylesheets/brewery.scss
+ **/
+.onoffswitch-block {
+  display: inline-block;
+  float: right;
+  margin-right: 8px; }
+
+.onoffswitch-pretext {
+  display: inline-block;
+  padding-right: 12px;
+  vertical-align: super; }
+
+.onoffswitch {
+  display: inline-block;
+  position: relative;
+  width: 56px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none; }
+
+.onoffswitch-checkbox {
+  display: none; }
+
+.onoffswitch-label {
+  display: block;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid #999999;
+  border-radius: 20px; }
+
+.onoffswitch-inner {
+  width: 200%;
+  margin-left: -100%;
+  -moz-transition: margin 0.3s ease-in 0s;
+  -webkit-transition: margin 0.3s ease-in 0s;
+  -o-transition: margin 0.3s ease-in 0s;
+  transition: margin 0.3s ease-in 0s; }
+
+.onoffswitch-inner:before, .onoffswitch-inner:after {
+  float: left;
+  width: 50%;
+  height: 17px;
+  padding: 0;
+  line-height: 17px;
+  font-size: 10px;
+  color: white;
+  font-family: Trebuchet, Arial, sans-serif;
+  font-weight: bold;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box; }
+
+.onoffswitch-inner:before {
+  content: "ON";
+  padding-left: 8px;
+  background-color: #2FCCFF;
+  color: #FFFFFF; }
+
+.onoffswitch-inner:after {
+  content: "OFF";
+  padding-right: 8px;
+  background-color: #EEEEEE;
+  color: #999999;
+  text-align: right; }
+
+.onoffswitch-switch {
+  width: 8px;
+  margin: 4.5px;
+  background: #FFFFFF;
+  border: 2px solid #999999;
+  border-radius: 20px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 35px;
+  -moz-transition: all 0.3s ease-in 0s;
+  -webkit-transition: all 0.3s ease-in 0s;
+  -o-transition: all 0.3s ease-in 0s;
+  transition: all 0.3s ease-in 0s; }
+
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+  margin-left: 0; }
+
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+  right: 0px; }
+
+/* A div that looks like a button. */
+.like-a-button {
+  background: #FFF;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF', endColorstr='#DDDDDD');
+  background: -webkit-gradient(linear, left top, left bottom, from(#FFF), to(#DDD));
+  background: -moz-linear-gradient(top, #FFF, #DDD);
+  text-decoration: none;
+  border: 1px solid #BBBBBB;
+  margin: 0;
+  padding: 3px 12px;
+  text-align: center;
+  width: auto;
+  cursor: pointer;
+  color: #333;
+  display: inline-block;
+  line-height: 1em;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  -khtml-border-radius: 3px; }
+
+.like-a-button:hover {
+  background: #DDD;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#DDDDDD', endColorstr='#FFFFFF');
+  background: -webkit-gradient(linear, left top, left bottom, from(#DDD), to(#FFF));
+  background: -moz-linear-gradient(top, #DDD, #FFF); }
+
+.like-a-button A {
+  text-decoration: none; }
+
+#sl_info_bubble .location_detail_hours {
+  white-space: pre-wrap; }
+
+.slp_result_contact.slp_result_hours {
+  white-space: pre-wrap; }
+
+div#map img {
+  background-color: transparent;
+  box-shadow: none;
+  border: none;
+  max-width: none;
+  opacity: 1.0;
+  visibility: visible; }
+
+/* Fix IE10 Rules */
+div#map .gm-style-cc > div {
+  word-wrap: normal; }
+
+/* Hide the default Google bubble shadow */
+div#map img[src='http://maps.gstatic.com/mapfiles/iws3.png'] {
+  display: none; }
+
+#map_box_image {
+  display: block; }
+
+div.gm-style-iw div#sl_info_bubble {
+  min-width: 12em; }
+
+#map_box_map {
+  display: none; }
+
+div#slp_tagline {
+  background-color: #AABBDD;
+  font-size: 11px;
+  font-family: Arial, sans-serif;
+  opacity: 0.45;
+  filter: alpha(opacity=45);
+  margin-bottom: 3px;
+  padding-right: 3px;
+  text-align: right;
+  width: 100%; }
+
+#search_by_tag span {
+  margin-right: 0.4em; }
+
+#search_by_tag span input[type="radio"] {
+  margin: 0 0.2em 0 1em;
+  width: 1em;
+  vertical-align: sub; }
+
+/*#tagalong_legend {
+    border: none;
+    padding: 12px;
+}
+#tagalong_legend .legend_text {
+    display: inline-block;
+    margin-left: 6px;
+    margin-right: 20px;
+    vertical-align: middle;
+}
+#tagalong_legend .tagalong_legend_icon {
+    display: inline-block;
+    margin-bottom: 12px;
+    min-width: 190px;
+}*/
+#tagalong_category_selector .category_selector.parent {
+  display: block;
+  float: left; }
+
+#tagalong_cascade_dropdowns {
+  display: inline-block;
+  position: relative;
+  vertical-align: top; }
+
+#tagalong_category_selector .category_selector.child {
+  display: none;
+  float: left;
+  margin-left: 0.2em; }
+
+ul.ui-autocomplete.ui-front.ui-widget {
+  color: gray;
+  background-color: white;
+  border: solid 1px #C0C0C0;
+  border-radius: 3px;
+  padding: 0.2em;
+  display: inline-block;
+  height: inherit; }
+  ul.ui-autocomplete.ui-front.ui-widget li {
+    list-style: none; }
+
+/*--------------------------------------------------------------
+>>> TABLE OF CONTENTS:
+----------------------------------------------------------------
+1.0 Search Form 
+2.0 Map
+3.0 Directory
+-------------------------------------------------------------------*/
+/*--------------------------------------------------------------
+	1.0 Search Form 
+--------------------------------------------------------------*/
+form#searchForm {
+  background-color: #ccc4ba;
+  padding: 0.75em 0;
+  border-top: 1px solid #b9ad9d;
+  border-left: 1px solid #b9ad9d;
+  border-right: 1px solid #b9ad9d;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px; }
+  form#searchForm #addy_in_address {
+    width: 60%;
+    padding-top: 0;
+    padding-bottom: 0; }
+  form#searchForm #addy_in_address label {
+    text-align: right;
+    position: relative;
+    top: 0.55em;
+    font-size: 0.875rem;
+    color: #5c5956;
+    margin-right: 1.75em; }
+  form#searchForm #addy_in_address input[type="text"] {
+    height: 2.25rem;
+    border: 1px solid #b0b0b0;
+    width: 70%; }
+  form#searchForm .search_item {
+    width: 35%;
+    display: inline-block; }
+  form#searchForm .search_item label {
+    position: relative;
+    top: 0.55em;
+    float: left;
+    color: #5c5956;
+    font-size: 0.875rem;
+    min-width: 0;
+    text-align: left;
+    margin-right: 1.75em; }
+  form#searchForm .search_item select {
+    height: 2.25rem;
+    border: 1px solid #b0b0b0;
+    width: 55%;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px; }
+  form#searchForm input[type="submit"] {
+    font-size: 0.75rem;
+    font-style: normal;
+    text-transform: uppercase;
+    padding: 0.75em 2.5em; }
+
+@media only screen and (max-width: 40em) {
+  form#searchForm #addy_in_address {
+    width: 90%;
+    padding-bottom: 1em;
+    display: table;
+    margin: 0 auto; } }
+@media only screen and (min-width: 40.063em) and (max-width: 64em) {
+  form#searchForm #addy_in_address {
+    width: 90%;
+    padding-bottom: 1em;
+    display: table;
+    margin: 0 auto; } }
+@media only screen and (max-width: 40em) {
+  form#searchForm #addy_in_address label {
+    text-align: center;
+    width: 100%;
+    position: inherit;
+    margin-right: 0; } }
+@media only screen and (min-width: 40.063em) and (max-width: 64em) {
+  form#searchForm #addy_in_address label {
+    text-align: center;
+    width: 100%;
+    position: inherit;
+    margin-right: 0; } }
+@media only screen and (max-width: 40em) {
+  form#searchForm #addy_in_address input[type="text"] {
+    width: 100%; } }
+@media only screen and (min-width: 40.063em) and (max-width: 64em) {
+  form#searchForm #addy_in_address input[type="text"] {
+    width: 100%; } }
+@media only screen and (max-width: 40em) {
+  form#searchForm .search_item #addy_in_radius {
+    position: relative;
+    left: 1em;
+    width: 40%; } }
+@media only screen and (min-width: 40.063em) and (max-width: 64em) {
+  form#searchForm .search_item #addy_in_radius {
+    width: 65%; } }
+@media only screen and (max-width: 40em) {
+  form#searchForm .search_item {
+    width: 100%;
+    display: block; } }
+@media only screen and (min-width: 40.063em) and (max-width: 64em) {
+  form#searchForm .search_item {
+    width: 100%;
+    display: block; } }
+@media only screen and (min-width: 40.063em) and (max-width: 64em) {
+  form#searchForm .search_item label {
+    text-align: right;
+    margin-right: 0; } }
+@media only screen and (max-width: 40em) {
+  form#searchForm input[type="submit"] {
+    font-size: 0.6875rem;
+    padding: 0.55em 1.5em; } }
+@media only screen and (max-width: 40em) {
+  form#searchForm #radius_in_submit {
+    width: 45%;
+    position: relative;
+    top: 2em; } }
+@media only screen and (min-width: 40.063em) and (max-width: 64em) {
+  form#searchForm #radius_in_submit {
+    width: 35%; } }
+/*--------------------------------------------------------------
+	2.0 Map 
+--------------------------------------------------------------*/
+#sl_info_bubble {
+  font-size: 14px !important; }
+  #sl_info_bubble #slp_bubble_name {
+    font-size: 16px; }
+  #sl_info_bubble #slp_bubble_directions a, #sl_info_bubble #sl_info_bubble #slp_bubble_website a {
+    color: #aaaaaa; }
+  #sl_info_bubble #slp_bubble_directions a:hover, #sl_info_bubble #sl_info_bubble #slp_bubble_website a:hover {
+    color: #fac32b; }
+  #sl_info_bubble #slp_bubble_hours {
+    background-color: whitesmoke; }
+  #sl_info_bubble #slp_bubble_img img {
+    margin-top: 2em; }
+
+/*--------------------------------------------------------------
+	3.0 Directory
+--------------------------------------------------------------*/
+#map_sidebar {
+  margin-top: 2em; }
+  #map_sidebar .results_wrapper:nth-child(even) {
+    background-color: #f9f9f9; }
+  #map_sidebar .text_below_map {
+    color: #cccccc;
+    font-style: italic;
+    text-align: center;
+    font-size: 1.125rem; }
+  #map_sidebar .no_results_found h2 {
+    font-family: "Source Sans Pro", sans-serif;
+    color: #cccccc;
+    font-style: italic;
+    text-align: center;
+    font-size: 1.125rem; }
+
+div.results_entry {
+  padding: 1em; }
+
+/*# sourceMappingURL=brewery.css.map */

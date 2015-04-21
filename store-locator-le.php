@@ -3,8 +3,8 @@
 Plugin Name: Store Locator Plus
 Plugin URI: http://www.storelocatorplus.com/
 Description: Add a location finder or directory to your site in minutes. A Google Business Maps API licensed product. Extensive premium add-on library available!
-Version: 4.2.44
-Tested up to: 4.1.1
+Version: 4.2.45
+Tested up to: 4.2
 Author: Charleston Software Associates
 Author URI: http://www.storelocatorplus.com
 License: GPL3
@@ -33,7 +33,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 if (!defined( 'ABSPATH'     )) { exit;   } // Exit if accessed directly, dang hackers
 
 if (defined('SLPLUS_VERSION') === false) {
-    define('SLPLUS_VERSION', '4.2.44');
+    define('SLPLUS_VERSION', '4.2.45');
 }
 
 // Drive Path Defines
@@ -156,7 +156,7 @@ if (defined('SLPLUS_PLUGINDIR')) {
             'wp_downloads_url'      => 'http://wordpress.org/plugins/store-locator-le/developers/',
             'support_url'           => 'http://www.storelocatorplus.com/support/documentation/store-locator-plus/',
             'purchase_url'          => 'http://www.storelocatorplus.com/product-category/slp4-products/',
-            'updater_url'           => 'http://www.storelocatorplus.com/paypal/updater.php',
+            'updater_url'           => 'http://www.storelocatorplus.com/wp-admin/admin-ajax.php',
             'broadcast_url'         => 'http://www.storelocatorplus.com/signage/index.php?sku=SLP4&version='.SLPLUS_VERSION,
 
             'fqfile'                => __FILE__,
