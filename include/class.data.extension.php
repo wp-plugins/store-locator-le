@@ -274,10 +274,10 @@ class SLPlus_Data_Extension {
         $query = $wpdb->prepare("select * from {$this->plugintable['name']} where sl_id = %s", $sl_id);
         $cols = $wpdb->get_results($query, ARRAY_A);
         if ($cols === null) {
-            return;
+            return array();
         }
         if (count($cols) < 1) {
-            return;
+            return array();
         }
 
         if (isset($field_id)) {
@@ -350,12 +350,12 @@ class SLPlus_Data_Extension {
 
         // No Current Data?  Insert
         //
-        if ($currentData === null) {
+        if ( ($currentData === null) || ( count($currentData) <= 0 ) ) {
             $data['sl_id'] = $sl_id;
             $wpdb->insert($this->plugintable['name'], $data);
         } else {
             $data = array_merge($currentData, $data);
-            $replacementCount = $wpdb->update($this->plugintable['name'], $data, array('sl_id' => $data['sl_id']));
+            $replacementCount = $wpdb->update($this->plugintable['name'], $data, array('sl_id' => $sl_id));
         }
     }
 

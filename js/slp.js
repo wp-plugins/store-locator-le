@@ -572,8 +572,8 @@ var slp = {
             // Reset map marker list and the results output HTML
             //
             this.markers = [];
+            var sidebar = document.getElementById('map_sidebar');
             if (this.loadedOnce) {
-                var sidebar = document.getElementById('map_sidebar');
                 sidebar.innerHTML = '';
             }
 
@@ -622,7 +622,7 @@ var slp = {
 
                     //create a sidebar entry
                     //
-                    if (this.loadedOnce) {
+                    if (sidebar) {
                         var sidebarEntry = this.createSidebar(markerList[markerNumber]);
                         sidebar.insertBefore(sidebarEntry, sidebar.firstChild);
                         jQuery('div#map_sidebar span:empty').hide();
