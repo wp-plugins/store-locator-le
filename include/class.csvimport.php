@@ -421,6 +421,7 @@ if (!class_exists('CSVImport')) {
             // Turn off notifications for OK addresses.
             //
             $this->slplus->currentLocation->geocodeSkipOKNotices = true;
+            $this->slplus->currentLocation->validate_fields = true;
 
             // Loop through all records
             //
@@ -442,6 +443,8 @@ if (!class_exists('CSVImport')) {
                 }
             }
             fclose($this->filehandle);
+
+            $this->slplus->currentLocation->validate_fields = false;
 
             ini_set('auto_detect_line_endings', $this->adle_setting);
 

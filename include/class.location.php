@@ -106,7 +106,7 @@ class SLPlus_Location {
      * 
      * @var mixed[] $exdata
      */
-    private $exdata;
+    private $exdata = array();
 
     /**
      * The WordPress database connection.
@@ -237,6 +237,13 @@ class SLPlus_Location {
      */
     private $slplus;
 
+    /**
+     * Validate fields? no by default.
+     *
+     * @var bool
+     */
+    public $validate_fields = false;
+
 
     //-------------------------------------------------
     // Methods
@@ -277,6 +284,7 @@ class SLPlus_Location {
      * @param array[] $locationData
      * @param string $duplicates_handling
      * @param boolean $skipGeocode
+     * @param boolean $validate_fields = false
      * @return string
      *
      */
@@ -1117,7 +1125,7 @@ class SLPlus_Location {
      * @return boolean
      */
     public function set_PropertiesViaArray($locationData,$mode='reset') {
-        $this->debugMP('msg',__FUNCTION__,"Mode: {$mode}");
+        $this->debugMP('msg', get_class() . '::' . __FUNCTION__, "Mode: {$mode}");
 
         // If we have an array, assume we are on the right track...
         if ( is_array( $locationData ) ) {
@@ -1136,7 +1144,6 @@ class SLPlus_Location {
                 case 'update':
                     break;
                 default:
-                    $this->debugMP('msg','','data reset');
                     $this->reset();
                     break;
             }
@@ -1152,12 +1159,10 @@ class SLPlus_Location {
                 //
                 $property = str_replace($this->dbFieldPrefix,'',$field);
 
-                // If this is a valid property...
+                // If this is a valid property in the base properties
+                // or extended data properties
                 //
-                if ( property_exists( $this , $property ) ) {
-
-                    // Set our property value
-                    //
+                if ( ( ! $this->validate_fields ) || $this->valid_location_property( $property ) ) {
                     $ssd_value = stripslashes_deep($value);
                     if ($this->$property != $ssd_value) {
                         $this->$property = $ssd_value;
@@ -1171,7 +1176,7 @@ class SLPlus_Location {
             $this->attributes = maybe_unserialize($this->option_value);
 
             $this->locationData = $locationData;
-
+            $this->debugMP('pr', 'locationData', $locationData);
             return true;
         }
 
@@ -1243,5 +1248,21 @@ class SLPlus_Location {
      */
     private function val_or_blank($data,$key) {
         return isset($data[$key]) ? $data[$key] : '';
+    }
+
+    /**
+     * Return true if the property is valid.
+     *
+     * @param $property property name to validate
+     * @return boolean true if property is OK
+     */
+    private function valid_location_property( $property ) {
+        if ( property_exists( $this , $property )           ) { return true; }
+        if ( array_key_exists( $property, $this->exdata )   ) { return true; }
+        if ( isset( $this->slplus->database->extension ) ) {
+            $this->slplus->database->extension->set_cols();
+            if ( array_key_exists( $property , $this->slplus->database->extension->metatable['records'] ) ) { return true; }
+        }
+        return false;
     }
 }
