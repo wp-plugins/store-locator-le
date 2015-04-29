@@ -288,16 +288,14 @@ class wpCSL_settings__slplus {
      function get_broadcast() {
          $content = '';
         if (isset($this->http_handler)) { 
-            if ($this->broadcast_url != '') {
-                $result = $this->http_handler->request( 
-                                $this->broadcast_url, 
-                                array('timeout' => 3) 
-                                ); 
-                if ($this->parent->http_result_is_ok($result) ) {
-                    return $result['body'];
-                }
-            }                
-        }         
+            $result = $this->http_handler->request(
+                            $this->broadcast_url,
+                            array('timeout' => 3)
+                            );
+            if ($this->parent->http_result_is_ok($result) ) {
+                return $result['body'];
+            }
+        }
         
         // Return default content
         //

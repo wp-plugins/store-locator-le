@@ -87,15 +87,6 @@ class wpCSL_plugin__slplus {
     public $metadata;
 
     /**
-     * Should we NOT use a default CSS?
-     *
-     * This appears to always be true.
-     *
-     * @var bool
-     */
-    protected $no_default_css = true;
-
-    /**
      * The fully qualified directory name where the plugin is installed.
      *
      * @var string $plugin_path
@@ -155,7 +146,6 @@ class wpCSL_plugin__slplus {
 
         // These settings can be overridden
         //
-        $this->broadcast_url = 'http://www.charlestonsw.com/signage/index.php';
         $this->css_prefix = '';
         $this->current_admin_page = '';
         $this->debugMP_is_active = $this->is_debugMP_active();
@@ -476,15 +466,6 @@ class wpCSL_plugin__slplus {
             add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_stylesheet'));
             add_action('admin_notices', array($this->notifications, 'display'));
             add_action('dmp_addpanel', array($this, 'create_DMPPanels'));
-        } else {
-
-            // TODO: This whole chunk can probably come out. no_default_css is always true.
-            //
-            if (!$this->themes_enabled && !$this->no_default_css) {
-                // non-admin enqueues, actions, and filters
-                add_filter('wp_print_scripts', array($this, 'user_header_js'));
-                add_filter('wp_print_styles', array($this, 'user_header_css'));
-            }
         }
 
         add_filter('plugin_row_meta', array($this, 'add_meta_links'), 10, 2);
