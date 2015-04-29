@@ -6,7 +6,7 @@
  *
  * @package StoreLocatorPlus\AdminUI\Info
  * @author Lance Cleveland <lance@charlestonsw.com>
- * @copyright 2013 Charleston Software Associates, LLC
+ * @copyright 2013 - 2015 Charleston Software Associates, LLC
  *
  */
 class SLPlus_AdminUI_Info {
@@ -20,20 +20,20 @@ class SLPlus_AdminUI_Info {
         <p style="padding-left: 30px;">
         Add a location or two via the <a href="'.admin_url().'admin.php?page=slp_manage_locations">Add Location form</a>.
         You will find this link, and other Store Locator Plus links, in the left sidebar under the "Store Locator Plus" entry.
-        If you have many locations to add, check out the <a href="http://www.charlestonsw.com/product-category/slplus/" target="csa">Pro Pack</a> and the bulk import options.
+        If you have many locations to add, check out the <a href="http://www.storelocatorplus.com//product/slp4-pro/" target="csa">Pro Pack</a> and the bulk import options.
         </p>
 
         <h4>'.__('Create A Page','csa-slplus').'</h4>
         <p style="padding-left: 30px;">
         Go to the sidebar and select "Add New" under the pages section.  You will be creating a standard WordPress page.
-        On that page add <a href="http://www.charlestonsw.com/support/documentation/store-locator-plus/getting-started/shortcodes/" target="csa">the [SLPLUS] shortcode</a>.  When a visitor goes to that page it will show a default search form and a Google Map.
+        On that page add <a href="http://www.storelocatorplus.com/support/documentation/store-locator-plus/getting-started/shortcodes/" target="csa">the [SLPLUS] shortcode</a>.  When a visitor goes to that page it will show a default search form and a Google Map.
         When someone searches for a zip code that is close enough to a location you entered it will show those locations on the map.
         </p>
 
         <h4>'.__('Tweak The Settings','csa-slplus').'</h4>
         <p style="padding-left: 30px;">
         You can modify basic settings such as the options shown on the radius pull down list on the <a href="'.admin_url().'admin.php?page=slp_map_settings">User Experience</a> page.
-        Even more settings are available via <a href="http://www.charlestonsw.com/product-category/slp4-products/" target="csa">the premium add-on packs</a>.
+        Even more settings are available via <a href="http://www.storelocatorplus.com/product-category/slp4-products/" target="csa">the premium add-on packs</a>.
         </p>
         <p style="padding-left: 30px;"><strong>'.
 
@@ -54,7 +54,7 @@ class SLPlus_AdminUI_Info {
 
         <h4>'.__('More Help?','csa-slplus').'</h4>
         <p style="padding-left: 30px;">
-        Check out the <a href="http://www.charlestonsw.com/support/" target="csa">online documentation and support forums</a>.
+        Check out the <a href="http://www.storelocatorplus.com/support/" target="csa">online documentation and support forums</a>.
         </p>
         ';
     }

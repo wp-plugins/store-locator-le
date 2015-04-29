@@ -111,13 +111,6 @@ class SLPlus_Actions {
         //
         if ($this->slplus->check_isOurAdminPage()) {
 
-            // Update the broadcast URL with the registered plugins
-            // registered plugins are expected to tell us they are here using
-            // slp_init_complete
-            //
-            $this->slplus->broadcast_url = $this->slplus->broadcast_url . '&' . $this->slplus->AdminUI->create_addon_query();
-            $this->slplus->settings->broadcast_url = $this->slplus->broadcast_url;
-
             // Admin UI Helpers
             //
             $this->attachAdminUI();
