@@ -3,9 +3,9 @@ Plugin Name:  Store Locator Plus
 Contributors: charlestonsw, DeBAAT
 Donate link: http://www.storelocatorplus.com/product/store-locator-plus-4/
 Tags: locator,map,store locator, business locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
-Requires at least: 3.4
+Requires at least: 3.8
 Tested up to: 4.2.1
-Stable tag: 4.2.47
+Stable tag: 4.2.48
 License: GLPv2 or later
 
 Add a location finder or directory to your site in minutes. A Google Business Maps API licensed product. Extensive premium add-on library available!
@@ -204,8 +204,9 @@ Any EASIER way to perform translations?  Load the [Codestyling Localization plug
 
 = Requirements =
 
-* PHP 5.2.4 (same as WordPress 3.4)
-* WordPress: 3.4
+* WordPress: 3.8
+* PHP 5.2.4 (same as WordPress 3.2+)
+* MySQL 5.0.15 (same as WordPress 3.2+)
 
 = Main Plugin =
 
@@ -246,7 +247,7 @@ Copy an existing CSS file, change the file name and update the CSS header, uploa
 *Graphics*
 
 * Map markers by [Nicolas Mollet](http://mapicons.nicolasmollet.com/)
-* Icons by Icons-Land (http://www.icons-land.com/) via Icon Finder.
+* Icons by [Icons-Land](http://www.icons-land.com/) via Icon Finder.
 * Logos and other site graphics by [Massive Creative](http://www.massivecreativeinc.com).
 
 == Frequently Asked Questions ==
@@ -333,6 +334,7 @@ Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.co
 * Info: Tested for WP 4.2.1 compatibility.
 * Update: Simplify the news feed for faster delivery of add on information.
 * Enhancement: Improve plugin CSS processor speed by eliminating unused CSS force default processor.
+* Fix: Delete locations with special characters in title possible from manage locations.
 
 = 4.2.46 (2015-Apr-22) =
 

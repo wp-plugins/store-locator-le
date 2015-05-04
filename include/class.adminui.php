@@ -42,7 +42,7 @@ class SLPlus_AdminUI {
      *
      * @var string $styleHandle
      */
-    public $styleHandle = 'csl_slplus_admin_css';
+    public $styleHandle;
 
     /**
      * @var \SLPlus_AdminUI_GeneralSettings $GeneralSettings
@@ -67,12 +67,7 @@ class SLPlus_AdminUI {
     function __construct() {
         global $slplus_plugin;
         $this->slplus = $slplus_plugin;
-
-        // Register our admin styleseheet
-        //
-        if (file_exists(SLPLUS_PLUGINDIR.'css/admin.css')) {
-            wp_register_style($this->styleHandle, SLPLUS_PLUGINURL .'/css/admin.css');
-        }
+        $this->styleHandle = $this->slplus->styleHandle;
     }
 
     /**
@@ -183,6 +178,7 @@ class SLPlus_AdminUI {
         require_once(SLPLUS_PLUGINDIR . '/include/class.adminui.generalsettings.php');
         $this->GeneralSettings = new SLPlus_AdminUI_GeneralSettings( array( 'slplus' => $this->slplus ) );
         $this->GeneralSettings->render_adminpage();
+        $this->render_rate_box();
     }
 
     /**
@@ -192,6 +188,7 @@ class SLPlus_AdminUI {
     function renderPage_Info() {
         $this->slplus->settings->no_save_button = true;
         $this->slplus->settings->render_settings_page();
+        $this->render_rate_box();
     }
 
     /**

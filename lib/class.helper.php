@@ -201,7 +201,7 @@ class wpCSL_helper__slplus {
             $jqDivName = str_replace(']','\\\\]',str_replace('[','\\\\[',$divname));
             $moreInfoText = esc_html($msg);
             return
-                "<a class='wpcsl-helpicon' ".
+                "<a class='dashicons dashicons-editor-help slp-no-box-shadow' ".
                     "onclick=\"jQuery('div#{$this->slplus->css_prefix}-help{$jqDivName}').toggle('slow');\" ".
                     "href=\"javascript:;\" ".
                     "alt='{$moreInfoText}' title='{$moreInfoText}'" .
