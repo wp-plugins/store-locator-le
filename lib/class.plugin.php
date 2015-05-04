@@ -105,7 +105,7 @@ class wpCSL_plugin__slplus {
      * 
      * @var string $styleHandle
      */
-    private $styleHandle = 'wpcsl';
+    public $styleHandle = 'wpcsl';
 
     //-------------------------------
     // Primary Object Types for wpCSL
@@ -672,17 +672,17 @@ class wpCSL_plugin__slplus {
         // The CSS file must exists where we expect it and
         // The admin page being rendered must be in "our family" of admin pages
         //
-        if (file_exists($this->plugin_path . '/lib/admin.css') &&
+        if (file_exists($this->plugin_path . '/css/admin/admin.css') &&
                 array_search($hook, $this->admin_slugs)
         ) {
-            wp_register_style($this->styleHandle, $this->plugin_url . '/lib/admin.css');
+            wp_register_style($this->styleHandle, $this->plugin_url . '/css/admin/admin.css');
             wp_enqueue_style($this->styleHandle);
 
             // jQuery Smoothness Theme
             //
-            if (file_exists($this->plugin_path . '/lib/jquery-ui-smoothness.css')) {
+            if (file_exists($this->plugin_path . '/css/admin/jquery-ui-smoothness.css')) {
                 wp_enqueue_style(
-                        'jquery-ui-smoothness', $this->plugin_url . '/lib/jquery-ui-smoothness.css'
+                        'jquery-ui-smoothness', $this->plugin_url . '/css/admin/jquery-ui-smoothness.css'
                 );
             }
 

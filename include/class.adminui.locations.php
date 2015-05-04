@@ -1257,7 +1257,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
     function createstring_ActionButtons() {
         $buttons_HTML =
             sprintf(
-                '<a class="action_icon edit_icon" alt="%s" title="%s" href="%s" onclick="%s"></a>'   ,
+                '<a class="dashicons dashicons-welcome-write-blog slp-no-box-shadow" alt="%s" title="%s" href="%s" onclick="%s"></a>'   ,
                 __('edit','csa-slplus')                                                 ,
                 __('edit','csa-slplus')                                                 ,
                 '#'                                                                     ,
@@ -1265,12 +1265,12 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                 "AdminUI.doAction('edit','');"
             ).
             sprintf(
-                '<a class="action_icon delete_icon" alt="%s" title="%s" href="%s" onclick="%s"></a>'   ,
+                '<a class="dashicons dashicons-trash slp-no-box-shadow" alt="%s" title="%s" href="%s" onclick="%s"></a>'   ,
                 __('delete','csa-slplus')                                                              ,
                 __('delete','csa-slplus')                                                              ,
                 '#'                                                                                    ,
                 "jQuery('#id').val('{$this->slplus->currentLocation->id}');".
-                "AdminUI.doAction('delete','".sprintf(__('Delete %s?','csa-slplus'),$this->slplus->currentLocation->store)."'); "                    
+                "AdminUI.doAction('delete','".sprintf(__('Delete %s?','csa-slplus'), esc_js($this->slplus->currentLocation->store) )."'); "
             )
             ;
 
@@ -1881,7 +1881,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                         "name='{$cleanName}' "                                                              .
                         "class='slp_managelocations_row $colorClass $extraCSSClasses' "                     .
                         ">"                                                                                 .
-                    "<th class='th_checkbox'>"                                                              .
+                    "<th class='th_checkbox slp_th slp_checkbox'>"                                                              .
                         "<input type='checkbox' class='slp_checkbox' name='sl_id[]' value='{$this->slplus->currentLocation->id}'>"        .
                     '</th>'                                                                                 .
                     "<th class='thnowrap'><div class='action_buttons'>"                                     .
@@ -2050,7 +2050,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
             '<thead>'                                                                                                           .
                 '<tr >'                                                                                                         .
                     "<th id='top_of_checkbox_column'>"                                                                          .
-                        '<input type="checkbox" class="button" '                                                                .
+                        '<input type="checkbox"  '                                                                .
                             'onclick="'                                                                                         .
                                 "jQuery('.slp_checkbox').prop('checked',jQuery(this).prop('checked'));"                                                 .
                                 '" '                                                                                            .
