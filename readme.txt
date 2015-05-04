@@ -329,6 +329,10 @@ If you are using the Janitor or Pro Pack add-on pack:
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
 
+= 4.2.48 (2015-May-4) =
+
+* Enhancement: Admin interface updates to provide better layout for phones and tablets.
+
 = 4.2.47 (2015-Apr-27) =
 
 * Info: Tested for WP 4.2.1 compatibility.
