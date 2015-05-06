@@ -280,6 +280,11 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                                     'label_fax' ,
                                     $this->slplus->settings->get_item( 'label_fax'  , __('Fax','csa-slplus')  , '_' )
                                     ) ,
+							'sl_image'        =>
+                                $this->slplus->WPML->getWPMLText(
+                                    'label_image' ,
+                                    $this->slplus->settings->get_item( 'label_image'  , __('Image','csa-slplus')  , '_' )
+                                    ) ,								
                         )
                     );
             // FILTER: slp_manage_expanded_location_columns - add columns to expanded view on manage locations
@@ -778,22 +783,6 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
             $current_cols[$col->slug] = $col->label;
         }
         return $current_cols;
-    }
-
-    /**
-     * Add the images column header to the manage locations table.
-     *
-     * SLP Filter: slp_manage_location_columns
-     *
-     * @param mixed[] $currentCols column name + column label for existing items
-     * @return mixed[] column name + column labels, extended with our extra fields data
-     */
-    function filter_AddFieldHeadersToManageLocations($currentCols) {
-        return array_merge($currentCols,
-            array(
-                'sl_image'       => __('Image'        ,'csa-slplus'),
-            )
-        );
     }
 
     /**
@@ -1777,10 +1766,6 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
             " LIMIT {$this->start},".$this->slplus->data['sl_admin_locations_per_page'] . ' ';
         $this->debugMP('msg','',"SQL Query: {$dataQuery}");
 
-        // Add custom column headers
-        //
-        add_filter('slp_manage_location_columns'        ,array($this,'filter_AddFieldHeadersToManageLocations'      )           );
-
 
         // Get the locations into the array
         //
@@ -1884,7 +1869,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                     "<th class='th_checkbox slp_th slp_checkbox'>"                                                              .
                         "<input type='checkbox' class='slp_checkbox' name='sl_id[]' value='{$this->slplus->currentLocation->id}'>"        .
                     '</th>'                                                                                 .
-                    "<th class='thnowrap'><div class='action_buttons'>"                                     .
+                    "<th><div class='action_buttons'>"                                     .
                         $this->createstring_ActionButtons()                                                 .
                     "</div></th>"
                     ;
@@ -2056,7 +2041,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                                 '" '                                                                                            .
                             '>'                                                                                                 .
                     '</th>'                                                                                                     .
-                    "<th class='manage-column sortable address'>"                                                                           .
+                    "<th class='manage-column sortable actions'>"                                                                           .
                         $this->createstring_ColumnHeader(
                                 'sl_id'  ,__('Actions'   ,'csa-slplus'),
                                 $dir,false) .

@@ -220,7 +220,7 @@ class SLPlus_Data_Extension {
      * @return string
      */
     function filter_ExtendSelectAll($sqlStatement) {
-        if (false !== strpos('LEFT JOIN ' . $this->metatable['name'], $sqlStatement)) {
+        if ( strpos($sqlStatement , ' LEFT JOIN ' . $this->plugintable['name'] . ' USING(sl_id) ' ) !== false ) {
             return $sqlStatement;
         }
         return $sqlStatement . $this->filter_ExtendedDataQueries('join_extendo');

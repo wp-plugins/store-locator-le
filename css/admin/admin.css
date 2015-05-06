@@ -26,7 +26,7 @@ div .box.note {
  * WordPress Overrides
  *--------------------------*/
 #wpbody-content {
-  width: auto; }
+  width: 100%; }
 
 /* Base WP Override */
 about
@@ -88,7 +88,7 @@ body.store-locator-plus_page_slp_map_settings .button-primary {
     font-family: sans-serif;
     min-height: 650px; }
     #wpcsl_container #content .group {
-      margin-top: 3px; }
+      margin-top: 0; }
       #wpcsl_container #content .group h1 {
         border-bottom: 1px solid #E0E0E0;
         color: #464646;
@@ -731,8 +731,6 @@ div.slp_editform_section small {
   #manage_locations_table th.slp_checkbox {
     padding-left: 0;
     padding-right: 0; }
-  #manage_locations_table th.thnowrap {
-    white-space: nowrap; }
   #manage_locations_table th#top_of_checkbox_column {
     padding-left: 0;
     padding-right: 0; }

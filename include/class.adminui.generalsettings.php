@@ -320,6 +320,7 @@ class SLPlus_AdminUI_GeneralSettings {
                     __('Maximum execution time, in seconds, for PHP processing. ','csa-slplus')  .
                     __('Affects all CSV imports for add-ons and Janitor delete all locations. ','csa-slplus')  .
                     __('SLP Default 600. ' , 'csa-slplus' ) .
+                    __('On most servers you will need to edit this setting in the php.ini file. ' , 'csa-slplus' ) .
                     sprintf( __('Your server default %s. ' , 'csa-slplus' )  ,
                              ini_get( 'max_execution_time')
                         )
