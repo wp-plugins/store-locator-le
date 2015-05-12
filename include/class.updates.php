@@ -117,13 +117,12 @@ class SLPlus_Updates {
      * @param object $arg
      * @return bool|object
      */
-    public function check_info($orig, $action, $arg)
-    {
+    public function check_info($orig, $action, $arg) {
+
         // No slug? Not plugin update.
         //
         if (empty($arg->slug)) { return $orig; }
         if (!array_key_exists($arg->slug,$this->plugin->addons)) { return $orig; }
-
         if (isset($GLOBALS['DebugMyPlugin'])) {
             error_log('check info for action ' . $action . ' arg slug ' . $arg->slug);
         }
@@ -142,8 +141,7 @@ class SLPlus_Updates {
      * Return the remote version
      * @return string $remote_version
      */
-    public function getRemote_version()
-    {
+    public function getRemote_version() {
         $request = wp_remote_post($this->update_request_path . '&fetch=version' );
         if (!is_wp_error($request) || wp_remote_retrieve_response_code($request) === 200) {
             $this->remote_version = $request['body'];
@@ -156,22 +154,16 @@ class SLPlus_Updates {
      * Get information about the remote version
      * @return mixed[] false if cannot get info, unserialized info if we could
      */
-    public function getRemote_information($slug=null) {
-        if ($slug===null) { $slug = $this->slug; }
+    public function getRemote_information( $slug = null ) {
+        $this->set_update_request_path( $slug );
 
         if (isset($GLOBALS['DebugMyPlugin'])) {
-            error_log('SLPlus_Updates.getRemote_information()');
+            error_log(get_class() . '::' . __FUNCTION__ . " slug = {$slug} ");
         }
         
         $request = wp_remote_post($this->update_request_path . '&fetch=info' );
         if (!is_wp_error($request) || wp_remote_retrieve_response_code($request) === 200) {
-            if (isset($GLOBALS['DebugMyPlugin'])) {
-                error_log('retrieved remote info for ' . $slug);
-            }
             return unserialize($request['body']);
-        }
-        if (isset($GLOBALS['DebugMyPlugin'])) {
-            error_log('remote info retrieval failed for ' . $slug);
         }
         return false;
     }
@@ -179,7 +171,47 @@ class SLPlus_Updates {
     /**
      * Set the update path.
      */
-    public function set_update_request_path()  {
-        $this->update_request_path = $this->base_path . '?action=wpdk_updater&slug='.$this->slug . '&current_version=' . $this->current_version;
+    public function set_update_request_path( $slug = null )  {
+
+        // Implied slug, use the update class properties.
+        //
+        if ( $slug === null ) {
+            $slug = $this->slug;
+            $version = $this->current_version;
+
+        // Explicit slug, go look up the info.
+        //
+        } else {
+            $version = $this->plugin->addons[$slug]->options['installed_version'];
+            if ( empty( $version ) ) {
+                $version = $this->set_plugin_version( $slug );;
+            }
+        }
+
+        $this->update_request_path = $this->base_path .
+            '?action=wpdk_updater' .
+            '&slug='.$slug .
+            '&current_version=' . $version;
+    }
+
+    /**
+     * Set the plugin version if not a registered plugin with options['installed_version'] set.
+     *
+     * @param $slug
+     * @return string
+     */
+    function set_plugin_version( $slug ) {
+        $version = '00.00.001';
+
+        require_once(ABSPATH . 'wp-admin/includes/plugin-install.php');
+        $plugins = get_plugin_updates();
+        foreach ( (array) $plugins as $plugin_file => $plugin_data) {
+           if ( $plugin_data->update->slug === $slug ) {
+               $version = $plugin_data->Version;
+               break;
+           }
+        }
+
+        return $version;
     }
 }

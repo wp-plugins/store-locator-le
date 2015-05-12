@@ -2011,7 +2011,16 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
      */
     function createstring_SearchBlock() {
         $currentSearch = ((isset($_REQUEST['searchfor'])&&!empty($_REQUEST['searchfor']))?$_REQUEST['searchfor']:'');
-        return
+
+		if ( ! empty( $currentSearch ) ) {
+		  $currentSearch = 
+			   htmlentities(
+				  stripslashes_deep( $currentSearch ), 
+					ENT_QUOTES
+			   );
+		}
+		
+		return
             '<div class="alignleft actions">'                                                                               .
                 "<input id='searchfor' value='{$currentSearch}' type='text' name='searchfor' "                              .
                     ' onkeypress=\'if (event.keyCode == 13) { event.preventDefault();AdminUI.doAction("search",""); } \' '              .
