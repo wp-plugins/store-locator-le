@@ -427,6 +427,10 @@ var slp = {
                     zoom: parseInt(slplus.options.zoom_level),
                 };
 
+                if ( slplus.options.google_map_style ) {
+                    jQuery.extend( this.options , { styles: JSON.parse( slplus.options.google_map_style) } );
+                }
+
                 slpMapDiv = document.getElementById('map');
                 this.gmap = new google.maps.Map(slpMapDiv, this.options);
 

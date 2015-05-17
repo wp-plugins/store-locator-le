@@ -222,14 +222,7 @@ class PluginThemeAdmin {
         $HTML =
             $this->parent->helper->create_SubheadingLabel(__('Preferred Settings','csa-slplus')) .
                 
-            '<a href="#" '.
-                'class="like-a-button" ' .
-                "onClick='AdminUI.set_ThemeOptions(\"$save_message\"); return false;' ".
-                '>'.
-                __('Change Layout','csa-slplus').
-            '</a>' .
-                
-            __('Click the button above to change your layout options and make the most of this theme: ','csa-slplus') .
+            __('When you Save Settings the following layout settings will be changed automatically.','csa-slplus') .
             '<br/>'
             ;
 
@@ -312,7 +305,16 @@ class PluginThemeAdmin {
         if (count($themeArray, COUNT_RECURSIVE) < 2) {
             $themeArray = array('Default' => 'default');
         }
-
+		
+		// Remove from drop down list if theme file does not exist in the plugin dir
+		//
+		foreach( $themeArray as $k => $theme ){
+			if( ! file_exists( $this->css_dir . $theme . '.css' ) ){
+				unset( $themeArray[$k] );
+			}
+			
+		}
+		
         // Check for theme files
         //
         $lastNewThemeDate = get_option($this->prefix.'-theme_lastupdated');

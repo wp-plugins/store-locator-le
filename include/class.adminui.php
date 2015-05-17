@@ -27,7 +27,7 @@ class SLPlus_AdminUI {
 
     /**
      *
-     * @var \SLPlus_AdminUI_MapSettings $MapSettings
+     * @var \SLPlus_AdminUI_UserExperience $MapSettings
      */
     public $MapSettings;
 
