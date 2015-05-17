@@ -2,10 +2,10 @@
 Plugin Name:  Store Locator Plus
 Contributors: charlestonsw, DeBAAT
 Donate link: http://www.storelocatorplus.com/product/store-locator-plus-4/
-Tags: locator,map,store locator, business locator,location management,location map,responsive,mapping,map,maps,marker,locations,place,store,dealer,shop,business,retail,brick,mortar,directory,google,bing,coordinates,latitude,longitude,geo,geocoding,miles,kilometers,locator,finder,search,mapper,zipcode,name,radius
+Tags:address location map, address map, admin, ajax, best google maps,business locations, coordinates, custom google maps, dealer locater, dealer locator, directions, easy map, geo, geocoder, geocoding, gmaps, google, google map, google map plugin, google maps,google maps, google map widget, jquery, latitude, location, location finder, locator, locator maps, longitude, map, map creator, map directions, map maker, map markers, map multiple locations, map of addresses, mapper, mapping, mapping software, mapping tools, map plugin, maps, map tools, map widget, marker, page, places, plugin, polygons, polylines, post, posts, proximity, proximity search, routes, shop finder, shop locator, shops, shortcode, store finder, store locater, store locator, store locator map, stores, streetview, widget, wordpress locator, wp google map, wp google maps, wp maps, zipcode, zip code, zip code locator, zipcode locator, zip code search, zipcode search
 Requires at least: 3.8
 Tested up to: 4.2.2
-Stable tag: 4.2.50
+Stable tag: 4.2.54
 License: GLPv2 or later
 
 Add a location finder or directory to your site in minutes. A Google Business Maps API licensed product. Extensive premium add-on library available!
@@ -328,6 +328,15 @@ If you are using the Janitor or Pro Pack add-on pack:
 == Changelog ==
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 4.2.54 (2015-May-15) =
+
+* Enhancement: Create the system needed to allow Enhanced Maps to utilize custom map styles using JSON rules like those on [Snazzy Maps](https://snazzymaps.com).
+* Enhancement: Make the database update routine on activation more robust for field and key checking to avoid overhead on database updates.
+* Enhancement: Reduce directory management overhead when processing CSV imports.
+* Enhancement: Add a record processing limit clause for large volume data sets that can exhaust server memory.
+* Enhancement: Simplify the process of implementing a plugin themes.
+* Fix: Retain custom plugin themes (CSS files) for Store Locator Plus when upgrading (will start remembering/saving custom themes AFTER installing 4.2.52 and setting your User Experience/View theme to the custom theme at least once).
 
 = 4.2.50 (2015-May-10) =
 

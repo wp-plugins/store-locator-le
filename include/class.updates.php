@@ -190,6 +190,8 @@ class SLPlus_Updates {
 
         $this->update_request_path = $this->base_path .
             '?action=wpdk_updater' .
+            '&uid=' . $this->plugin->options_nojs['premium_user_id'] .
+            '&sid=' . $this->plugin->options_nojs['premium_subscription_id'] .
             '&slug='.$slug .
             '&current_version=' . $version;
     }

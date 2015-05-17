@@ -458,6 +458,19 @@ class SLPlus_Data {
                         $this->add_group_by_clause( 'sl_state' );
                     break;
 
+                //------------------- LIMIT
+                //
+                case 'limit_one':
+                    $sqlStatement .= ' LIMIT 1 ';
+                    break;
+
+                //------------------- OFFSET
+                //
+                case 'manual_offset':
+                    $sqlStatement .= ' OFFSET %d ';
+                    break;
+
+
                 // FILTER: slp_extend_get_SQL
                 //
                 default:

@@ -368,6 +368,8 @@ if (! class_exists('SLPlus')) {
             'next_field_id' => 1,
             'next_field_ported' => '',
             'php_max_execution_time' => '600',
+            'premium_user_id' => '',
+            'premium_subscription_id' => '',
             'retry_maximum_delay' => '5.0',
         );
 

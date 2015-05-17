@@ -48,6 +48,61 @@ class SLPlus_AdminUI_GeneralSettings {
                 $this->$property = $value;
             }
         }
+
+        add_filter( 'slp_generalsettings_modify_adminpanel' , array( $this, 'add_premium_subscription_settings') );
+    }
+
+    /**
+     * Add Premium Subscription section to settings page.
+     */
+    function add_premium_subscription_settings() {
+
+        $section_name   = __('Admin'    ,'csa-slplus');
+        $group_name     = __( 'Premier Members' ,'csa-slpplus' );
+
+        $this->settings->add_ItemToGroup(
+            array(
+                'section' => $section_name,
+                'group' => $group_name,
+                'label' => '',
+                'type' => 'subheader',
+                'show_label' => false,
+                'description' =>
+                    sprintf(
+                        __('These settings enable <a href="%s" target="slp">Premier Membership</a> features within the plugin. ', 'csa-slplus') ,
+                        $this->slplus->url . 'product/premier-subscription'
+                    ) .
+                    __('This includes updating the Premier Plugin to the latest release when an update is available. ', 'csa-slplus') .
+                    __('Premier Members also get priority support and access to real-time product update information. ', 'csa-slplus')
+            )
+        );
+
+        $this->settings->add_ItemToGroup(
+            array(
+                'section'       => $section_name                                    ,
+                'group'         => $group_name                                      ,
+                'label'         => __( 'User ID' ,'csa-slplus' )                    ,
+                'setting'       => 'premium_user_id'                                ,
+                'value'         => $this->slplus->options_nojs['premium_user_id']    ,
+                'use_prefix'    => false                                            ,
+                'description'   =>
+                    __('Your StoreLocatorPlus.com Premium Membership user ID.','csa-slplus')
+            )
+        );
+
+        $this->settings->add_ItemToGroup(
+            array(
+                'section'       => $section_name                                         ,
+                'group'         => $group_name                                           ,
+                'label'         => __( 'Subscription ID' ,'csa-slplus' )                 ,
+                'setting'       => 'premium_subscription_id'                             ,
+                'value'         => $this->slplus->options_nojs['premium_subscription_id'],
+                'use_prefix'    => false                                                 ,
+                'description'   =>
+                    __('Your StoreLocatorPlus.com Premium Membership subscriptions ID.','csa-slplus')
+            )
+        );
+
     }
 
     /**

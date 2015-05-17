@@ -6,8 +6,8 @@
  * Update the plugin version in config.php on every structure change.
  *
  * @package StoreLocatorPlus\Activation
- * @author Lance Cleveland <lance@charlestonsw.com>
- * @copyright 2012-2014 Charleston Software Associates, LLC
+ * @author Lance Cleveland <lance@storelocatorplus.com>
+ * @copyright 2012-2015 Charleston Software Associates, LLC
  */
 class SLPlus_Activate {
 
@@ -142,6 +142,7 @@ class SLPlus_Activate {
      *
      */
     function install_main_table() {
+
         global $wpdb;
 
         $charset_collate = '';
@@ -171,12 +172,12 @@ class SLPlus_Activate {
                 sl_image varchar(255) NULL,
                 sl_private varchar(1) NULL,
                 sl_neat_title varchar(255) NULL,
-                sl_linked_postid int NULL,
+                sl_linked_postid int(11) NULL,
                 sl_pages_url varchar(255) NULL,
                 sl_pages_on varchar(1) NULL,
                 sl_option_value longtext NULL,
-                sl_lastupdated  timestamp NOT NULL default current_timestamp,			
-                PRIMARY KEY (sl_id),
+                sl_lastupdated timestamp NOT NULL default CURRENT_TIMESTAMP,
+                PRIMARY KEY  (sl_id),
                 KEY sl_store (sl_store),
                 KEY sl_longitude (sl_longitude),
                 KEY sl_latitude (sl_latitude)
@@ -292,6 +293,9 @@ class SLPlus_Activate {
         }
         if (!is_dir(SLPLUS_UPLOADDIR . "saved-icons")) {
             mkdir(SLPLUS_UPLOADDIR . "saved-icons", 0755);
+        }
+		if (!is_dir(SLPLUS_UPLOADDIR . "css")) {
+            mkdir(SLPLUS_UPLOADDIR . "css", 0755);
         }
 
         // Copy ./images/icons to custom-icons save location
@@ -468,6 +472,9 @@ class SLPlus_Activate {
         $updater->install_main_table();
         $updater->install_ExtendedDataTables();
         $updater->add_splus_roles_and_caps();
+		
+		// Restore Custom CSS Files
+		$updater->restore_custom_css();
     }
 
     /**
@@ -510,4 +517,17 @@ class SLPlus_Activate {
 
         return $newIcon;
     }
+	
+	/**
+     * Pulls out the backup copy of all custom css 
+     *
+     */
+	public function restore_custom_css() {
+		$file = new SLPlus_Activate;	
+		// Copy custom css files from upload dir back to plugin dir
+		$file->copyr( SLPLUS_UPLOADDIR . "css", SLPLUS_PLUGINDIR . "/css" );
+	}
+	
 }
+
+// Dad. Explorer. Rum Lover. Code Geek. Not necessarily in that order.
