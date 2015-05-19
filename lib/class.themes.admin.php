@@ -219,14 +219,23 @@ class PluginThemeAdmin {
         // Add An Apply Settings Button
         //
         $save_message = __('Settings have been made. Click Save Settings to activate or the User Exprience tab to cancel.','csa-slplus');
+
         $HTML =
             $this->parent->helper->create_SubheadingLabel(__('Preferred Settings','csa-slplus')) .
-                
-            __('When you Save Settings the following layout settings will be changed automatically.','csa-slplus') .
+
+            '<a href="#" '.
+            'class="like-a-button" ' .
+            "onClick='AdminUI.set_ThemeOptions(\"$save_message\"); return false;' ".
+            '>'.
+            __('Change Layout','csa-slplus').
+            '</a>' .
+
+            __('Click the button above to change your layout options and make the most of this theme: ','csa-slplus') .
             '<br/>'
             ;
 
         $this->setup_ThemeOptionFields();
+
         foreach ( $this->theme_option_fields as $option_slug => $option_settings ) {
             if ( ! empty ( $this->themeDetails[$this->current_slug][$option_slug] ) ) {
                 $activity_class = 

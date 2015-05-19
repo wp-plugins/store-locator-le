@@ -58,7 +58,7 @@ class SLPlus_AdminUI_GeneralSettings {
     function add_premium_subscription_settings() {
 
         $section_name   = __('Admin'    ,'csa-slplus');
-        $group_name     = __( 'Premier Members' ,'csa-slpplus' );
+        $group_name     = __( 'Premier Members' ,'csa-slplus' );
 
         $this->settings->add_ItemToGroup(
             array(

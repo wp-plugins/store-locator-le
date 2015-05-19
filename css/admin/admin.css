@@ -267,9 +267,9 @@ div.theme_details {
       color: #CCC; }
   .form_entry TEXTAREA {
     display: inline-block;
-    min-height: 150px;
+    min-height: 3em;
     margin-left: 3px;
-    min-width: 300px; }
+    min-width: 20em; }
 
 /**
  * Line Entries : Label and Input Wrapper

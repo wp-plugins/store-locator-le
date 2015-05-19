@@ -5,7 +5,7 @@ Donate link: http://www.storelocatorplus.com/product/store-locator-plus-4/
 Tags:address location map, address map, admin, ajax, best google maps,business locations, coordinates, custom google maps, dealer locater, dealer locator, directions, easy map, geo, geocoder, geocoding, gmaps, google, google map, google map plugin, google maps,google maps, google map widget, jquery, latitude, location, location finder, locator, locator maps, longitude, map, map creator, map directions, map maker, map markers, map multiple locations, map of addresses, mapper, mapping, mapping software, mapping tools, map plugin, maps, map tools, map widget, marker, page, places, plugin, polygons, polylines, post, posts, proximity, proximity search, routes, shop finder, shop locator, shops, shortcode, store finder, store locater, store locator, store locator map, stores, streetview, widget, wordpress locator, wp google map, wp google maps, wp maps, zipcode, zip code, zip code locator, zipcode locator, zip code search, zipcode search
 Requires at least: 3.8
 Tested up to: 4.2.2
-Stable tag: 4.2.54
+Stable tag: 4.2.55
 License: GLPv2 or later
 
 Add a location finder or directory to your site in minutes. A Google Business Maps API licensed product. Extensive premium add-on library available!
@@ -306,28 +306,16 @@ Store Locator Plus has built-in interfaces for WPML.
 8. Add Locations with Pro Pack Bulk Import
 9. Directions from results link
 
-==Upgrade Notice==
-
-*Upgrading From SLP 4.0*
-
-If you are using Enhanced Results or Contact Extender and activated Super Extendo at ANY TIME you must:
-
-1. Deactivate Enhanced Results, Contact Extender, and Super Extendo.
-2. Upgrade to the latest version of Store Locator Plus.
-3. Upgrade Enhanced Results and/or Contact Extender.
-4. Delete Super Extendo.
-
-*Upgrading From SLP 4.1*
-
-If you are using the Janitor or Pro Pack add-on pack:
-
-1. Delete and deactivate your Janitor and/or Pro Pack add-on packs.
-2. If you were using Janitor, re-install and activate Janitor version 4.1.08 or higher.
-3. If you were using Pro Pack, re-install and activate Pro Pack version 4.1.06 or higher.
-
 == Changelog ==
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 4.2.55 (2015-May-19) =
+
+* Enhancement: Add linked post ID to marker results in AJAX handler.
+* Enhancement: Add neat_title to marker results in AJAX handler.
+* Enhancement: Further admin interface CSS refinements.
+* Fix: Custom Results, Map, and Bubble Layout saving of layout settings.
 
 = 4.2.54 (2015-May-15) =
 
