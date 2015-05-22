@@ -27,6 +27,13 @@ if (! class_exists('SLP_BaseClass_Admin')) {
         protected $addon;
 
         /**
+         * The expected checkboxes on each admin tab.
+         *
+         * @var array
+         */
+        protected $admin_checkboxes = array();
+
+        /**
          * The slug for the admin page.
          *
          * @var string $admin_page_slug
@@ -70,7 +77,11 @@ if (! class_exists('SLP_BaseClass_Admin')) {
          * Should include WordPress and SLP specific hooks and filters.
          */
         function add_hooks_and_filters() {
+
             // Add your hooks and filters in the class that extends this base class.
+            // Then call parent::add_hooks_and_filters();
+            //
+            add_action('slp_save_ux_settings' ,array( $this ,'save_ux_settings' ) );
         }
         
         /**
@@ -97,9 +108,27 @@ if (! class_exists('SLP_BaseClass_Admin')) {
         function do_admin_startup() {
             
             // Add your startup methods you want the add on to run here.
-            // Some suggestions: 
+            // Some suggestions:
             // $this->check_for_updates();
             // $this->update_install_info();
+        }
+
+        /**
+         * Save settings from the UX tab.
+         *
+         * Set $this->admin_checkboxes with all the expected checkbox names then call parent::save_ux_settings.
+         */
+        function save_ux_settings() {
+            array_walk( $_POST ,array( $this ,'set_ValidOptions' ) );
+
+            $this->options =
+                $this->slplus->AdminUI->save_SerializedOption(
+                    $this->addon->option_name,
+                    $this->addon->options,
+                    $this->admin_checkboxes
+                );
+
+            $this->addon->init_options();
         }
 
         /**
@@ -109,6 +138,19 @@ if (! class_exists('SLP_BaseClass_Admin')) {
             // Replace this with the properties from the parent add-on to set this class properties.
             //
             // $this->admin_page_slug = <class>::ADMIN_PAGE_SLUG
+        }
+
+        /**
+         * Set valid options according to the addon options array.
+         *
+         * @param $val
+         * @param $key
+         */
+        function set_ValidOptions($val,$key) {
+            $simpleKey = str_replace($this->slplus->prefix.'-','',$key);
+            if (array_key_exists($simpleKey, $this->addon->options)) {
+                $this->addon->options[$simpleKey] = stripslashes_deep($val);
+            }
         }
         
         /**

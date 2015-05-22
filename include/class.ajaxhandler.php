@@ -8,7 +8,7 @@
  *
  * @package StoreLocatorPlus\AjaxHandler
  * @author Lance Cleveland <lance@charlestonsw.com>
- * @copyright 2012-2014 Charleston Software Associates, LLC
+ * @copyright 2012-2015 Charleston Software Associates, LLC
  */
 class SLPlus_AjaxHandler {
 
@@ -87,6 +87,13 @@ class SLPlus_AjaxHandler {
      * @var string
      */
     private $basic_query;
+
+    /**
+     * The query limit.
+     *
+     * @var int
+     */
+    public $query_limit;
 
     //----------------------------------
     // Methods
@@ -201,7 +208,8 @@ class SLPlus_AjaxHandler {
         // Return How Many?
         //
         $response=array();
-        $locations = $this->execute_LocationQuery($this->slplus->options['initial_results_returned']);
+        $this->query_limit = $this->slplus->options['initial_results_returned'];
+        $locations = $this->execute_LocationQuery();
         foreach ($locations as $row){
             $response[] = $this->slp_add_marker($row);
         }
@@ -229,7 +237,8 @@ class SLPlus_AjaxHandler {
         //
 		$response = array();
 		$resultRowids = array();
-        $locations = $this->execute_LocationQuery($this->slplus->options_nojs['max_results_returned']);
+        $this->query_limit = $this->slplus->options_nojs['max_results_returned'];
+        $locations = $this->execute_LocationQuery();
         foreach ($locations as $row){
             $thisLocation = $this->slp_add_marker($row);
             if (!empty($thisLocation)) {
@@ -257,10 +266,9 @@ class SLPlus_AjaxHandler {
     /**
      * Run a database query to fetch the locations the user asked for.
      *
-     * @param string $maxReturned how many results to max out at
      * @return object a MySQL result object
      */
-    function execute_LocationQuery($maxReturned) {
+    function execute_LocationQuery() {
 
         // SLP options that tweak the query
         //
@@ -351,7 +359,7 @@ class SLPlus_AjaxHandler {
         if ( ! empty( $having_clause ) ) {
             $default_query_parameters[] = $this->query_params['radius'];
         }
-        $default_query_parameters[] = $maxReturned;
+        $default_query_parameters[] = $this->query_limit;
 
         // FILTER: slp_ajaxsql_queryparams
         $queryParams = apply_filters( 'slp_ajaxsql_queryparams' , $default_query_parameters );
@@ -437,6 +445,7 @@ class SLPlus_AjaxHandler {
                     ),
                     $data
                 );
+        $data = apply_filters('slp_ajax_response' , $data );
 
         // Tell them what is coming...
         //
