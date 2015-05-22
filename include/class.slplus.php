@@ -91,6 +91,13 @@ if (! class_exists('SLPlus')) {
         public $AdminWPML;
 
         /**
+         * The Ajax Handler object.
+         *
+         * @var SLPlus_AjaxHandler
+         */
+        public $AjaxHandler;
+
+        /**
          * The User Interface object.
          *
          * @var SLPlus_UI $UI

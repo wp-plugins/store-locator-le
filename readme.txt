@@ -1,11 +1,11 @@
-=== Store Locator Plus - Google Maps===
+=== Store Locator Plus===
 Plugin Name:  Store Locator Plus
 Contributors: charlestonsw, DeBAAT
 Donate link: http://www.storelocatorplus.com/product/store-locator-plus-4/
 Tags:address location map, address map, admin, ajax, best google maps,business locations, coordinates, custom google maps, dealer locater, dealer locator, directions, easy map, geo, geocoder, geocoding, gmaps, google, google map, google map plugin, google maps,google maps, google map widget, jquery, latitude, location, location finder, locator, locator maps, longitude, map, map creator, map directions, map maker, map markers, map multiple locations, map of addresses, mapper, mapping, mapping software, mapping tools, map plugin, maps, map tools, map widget, marker, page, places, plugin, polygons, polylines, post, posts, proximity, proximity search, routes, shop finder, shop locator, shops, shortcode, store finder, store locater, store locator, store locator map, stores, streetview, widget, wordpress locator, wp google map, wp google maps, wp maps, zipcode, zip code, zip code locator, zipcode locator, zip code search, zipcode search
 Requires at least: 3.8
 Tested up to: 4.2.2
-Stable tag: 4.2.55
+Stable tag: 4.2.56
 License: GLPv2 or later
 
 Add a location finder or directory to your site in minutes. A Google Business Maps API licensed product. Extensive premium add-on library available!
@@ -16,7 +16,7 @@ Store Locator Plus is a Google Business Maps API licensed location mapping and d
 Learn more at the [Store Locator Plus website](http://www.storelocatorplus.com/).
 The website offers more [screen shots](http://www.storelocatorplus.com/support/documentation/store-locator-plus/store-locator-plus-screen-shots/), [technical documentation](http://www.storelocatorplus.com/support/documentation/technical-documentation/), and [full release notes](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/release-notes-4-0/), and a very active [user forum](http://www.charlestonsw.com/forums/).
 
-For the latest updates and news follow me on [Facebook](http://www.facebook.com/charlestonsoftwareassociates/) or [Twitter](https://twitter.com/lancecleveland).
+For the latest updates and news follow me on [Twitter](https://twitter.com/charlestonsoft/).
 
 = Details =
 
@@ -309,6 +309,14 @@ Store Locator Plus has built-in interfaces for WPML.
 == Changelog ==
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
+
+= 4.2.56 (2015-May-22) =
+
+* Enhancement: [Premier Pack](http://www.storelocatorplus.com/product/premier-subscription/)Add filter for extending JSON responses to map interface queries.
+* Enhancement: Expose the JSON response data for add-on pack userinterface.js access.
+* Enhancement: Extend the SLP 4.2 add-on framework to add set_ValidOptions() and reduce overall overhead.
+* Change: Refactor AJAX response handler to allow for response handling by add-on packs.
+* Change: Extended the front end UI to AJAX listener model to support the upcoming [Premier Add-On Pack](http://www.storelocatorplus.com/product/premier-plugin/).
 
 = 4.2.55 (2015-May-19) =
 

@@ -76,7 +76,9 @@ if (! class_exists('SLP_BaseClass_UI')) {
          * Should include WordPress and SLP specific hooks and filters.
          */
         function add_hooks_and_filters() {
-            add_action( 'slp_after_render_shortcode' , array( $this , 'enqueue_ui_javascript' ) );
+            add_action( 'slp_after_render_shortcode' , array( $this , 'enqueue_ui_javascript'   ) );
+            add_action( 'slp_after_render_shortcode' , array( $this , 'enqueue_ui_css'          ) );
+
             // Add your hooks and filters in the class that extends this base class.
         }
         
@@ -85,6 +87,15 @@ if (! class_exists('SLP_BaseClass_UI')) {
          */
         function do_ui_startup() {
             // Add your startup methods you want the add on to run here.
+        }
+
+        /**
+         * If the file userinterface.css exists, enqueue it.
+         */
+        function enqueue_ui_css() {
+            if ( file_exists( $this->addon->dir . 'css/userinterface.css' ) ) {
+                wp_enqueue_style( $this->addon->slug . '_userinterface_css' , $this->addon->url . '/css/userinterface.css' );
+            }
         }
 
         /**

@@ -316,32 +316,18 @@ var slp = {
 
         //php passed vars set in init
         this.address = null;
-        this.canvasID = null;
         this.draggable = true;
-        this.tilt = 45; //n
-        this.zoomStyle = 0; // 0 = default, 1 = small, 2 = large
         this.markers = null;
 
         //slplus options
         this.usingSensor = false;
         this.disableScroll = null;
-        this.disableDir = null;
-        this.distanceUnit = null;
-        this.map3dControl = null;
-        this.mapDomain = null;
         this.mapHomeIconUrl = null;
-        this.mapHomeIconWidth = null;
-        this.mapHomeIconHeight = null;
         this.mapEndIconUrl = null;
-        this.mapEndIconWidth = null;
-        this.mapEndIconHeight = null;
         this.mapScaleControl = null;
         this.mapType = null;
         this.mapTypeControl = null;
-        this.showTags = null;
         this.overviewControl = null;
-        this.useEmailForm = null;
-        this.websiteLabel = null;
 
         //gmap set variables
         this.options = null;
@@ -350,11 +336,14 @@ var slp = {
         this.marker = null;
         this.infowindow = new google.maps.InfoWindow();
         this.bounds = null;
-        this.homeAddress = null;
         this.homePoint = null;
         this.lastCenter = null;
         this.lastRadius = null;
         this.loadedOnce = false;
+
+        // AJAX communication
+        //
+        this.latest_response = null;
 
         /***************************
          * function: __init()
@@ -368,19 +357,11 @@ var slp = {
             if (typeof slplus !== 'undefined') {
                 this.mapType = slplus.map_type;
                 this.disableScroll = !!slplus.disable_scroll;
-                this.distanceUnit = slplus.distance_unit;
-                this.mapDomain = slplus.options.map_domain;
                 this.mapHomeIconUrl = slplus.map_home_icon;
-                this.mapHomeIconWidth = slplus.map_home_icon_sizew;
-                this.mapHomeIconHeight = slplus.map_home_icon_sizeh;
                 this.mapEndIconUrl = slplus.map_end_icon;
-                this.mapEndIconWidth = slplus.map_end_sizew;
-                this.mapEndIconHeight = slplus.map_end_sizeh;
                 this.mapScaleControl = !!slplus.map_scalectrl;
                 this.mapTypeControl = !!slplus.map_typectrl;
                 this.overviewControl = !!(parseInt(slplus.overview_ctrl));
-                this.useEmailForm = !!slplus.use_email_form;
-                this.disableDefaultUI = false;
                 if (!slplus.disable_dir) {
                     this.loadedOnce = true;
                 }
@@ -923,27 +904,33 @@ var slp = {
 
             // Send AJAX call
             //
-            ajax.send(action, function (response) {
-                valid_response = (typeof response.response !== 'undefined');
-                if ( valid_response ) { valid_response = response.success; }
+            ajax.send( action, _this.process_ajax_response );
+        };
 
-                if ( valid_response ) {
-                    _this.clearMarkers();
-                    _this.putMarkers(response.response);
+        /**
+         * Process the AJAX responses for locations.
+         */
+        this.process_ajax_response = function ( response ) {
+            valid_response = (typeof response.response !== 'undefined');
+            if ( valid_response ) { valid_response = response.success; }
 
-                } else {
-                    if (window.console) {
-                        console.log('SLP server did not send back a valid JSONP response for ' + action.action + '.');
-                        if ( typeof response.response !== 'undefined' ) {
-                            console.log( 'Response: ' + response.response );
-                        }
-                        if ( typeof response.message !== 'undefined' ) {
-                            var sidebar = document.getElementById('map_sidebar');
-                            sidebar.innerHTML = response.message;
-                        }
+            if ( valid_response ) {
+                cslmap.latest_response = response;
+                cslmap.clearMarkers();
+                cslmap.putMarkers( response.response );
+
+            } else {
+                if (window.console) {
+                    console.log('SLP server did not send back a valid JSONP response.');
+                    if ( typeof response.response !== 'undefined' ) {
+                        console.log( 'Response: ' + response.response );
+                    }
+                    if ( typeof response.message !== 'undefined' ) {
+                        var sidebar = document.getElementById('map_sidebar');
+                        sidebar.innerHTML = response.message;
                     }
                 }
-            });
+            }
         };
 
         /***************************

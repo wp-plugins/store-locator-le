@@ -754,6 +754,7 @@ class SLPlus_AdminUI_UserExperience {
         if ($_POST) {
             add_action('slp_save_map_settings',array($this,'save_settings') ,10);
             do_action('slp_save_map_settings');
+            do_action('slp_save_ux_settings');
 			$update_msg = "<div class='highlight'>".__('Successful Update', 'csa-slplus');
 			foreach( $this->update_info as $info_msg)
 				$update_msg	.= '<br/>'.$info_msg;

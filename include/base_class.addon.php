@@ -137,7 +137,7 @@ if (! class_exists('SLP_BaseClass_Addon')) {
          *
          * Set this in init_options for any gettext elements.
          *
-         * $options_defaults['setting'] = __('string to translate', 'textdomain');
+         * $option_defaults['setting'] = __('string to translate', 'textdomain');
          *
          * @var array
          */
