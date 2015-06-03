@@ -773,6 +773,10 @@ class SLPlus_UI {
 
         // FILTER: slp_script_data
         //
+        // TODO: kill the slp_script_data filter as soon as EM is updated
+        // all elements are moving into the slplus.options variable in slp.js
+        // which is handled with the slp_js_options filter
+        //
         $scriptData = apply_filters('slp_script_data',$scriptData);        
         wp_localize_script('csl_script' ,'slplus'   , $scriptData);            
 

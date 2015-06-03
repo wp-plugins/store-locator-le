@@ -844,9 +844,6 @@ if (class_exists('wpCSL_settings_group') == false) {
          * Render a group.
          */
         function render_Group() {
-            $this->parent->debugMP('wpcsl.settings','msg','',
-                    "render_Group {$this->slug}",
-                    NULL,NULL,true);
             $this->render_Header();
             if (isset($this->items)) {
                 foreach ($this->items as $item) {
