@@ -1121,4 +1121,4 @@ class SLPlus_AdminUI_UserExperience {
      }
 }
 
-// Dad. Husband. Rum Lover. Code Geek. Not necessarily in that order.
+// Dad. Explorer. Rum Lover. Code Geek. Not necessarily in that order.

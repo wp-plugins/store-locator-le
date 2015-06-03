@@ -56,7 +56,7 @@ body.store-locator-plus_page_slp_map_settings .button-primary {
     margin-top: 0px; }
   #wpcsl_container .navsave {
     float: right;
-    margin-top: -2.25em;
+    margin-top: -2.6em;
     padding-left: 1em; }
   #wpcsl_container #wpcsl-nav ul {
     margin: 0; }
@@ -256,13 +256,11 @@ div.theme_details {
     -webkit-box-shadow: none; }
   .form_entry LABEL {
     display: inline-block;
-    margin: 0 3px 0 3px;
-    max-width: 192px;
     overflow: hidden;
     text-align: right;
     vertical-align: top;
     white-space: nowrap;
-    width: 192px; }
+    min-width: 15em; }
     .form_entry LABEL.disabled {
       color: #CCC; }
   .form_entry TEXTAREA {

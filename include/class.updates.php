@@ -142,7 +142,12 @@ class SLPlus_Updates {
      * @return string $remote_version
      */
     public function getRemote_version() {
-        $request = wp_remote_post($this->update_request_path . '&fetch=version' );
+        $request = wp_remote_post(
+            $this->update_request_path . '&fetch=version' ,
+            array (
+                'timeout'   => '60',
+            )
+        );
         if (!is_wp_error($request) || wp_remote_retrieve_response_code($request) === 200) {
             $this->remote_version = $request['body'];
         } else {
@@ -161,7 +166,12 @@ class SLPlus_Updates {
             error_log(get_class() . '::' . __FUNCTION__ . " slug = {$slug} ");
         }
         
-        $request = wp_remote_post($this->update_request_path . '&fetch=info' );
+        $request = wp_remote_post(
+            $this->update_request_path . '&fetch=info' ,
+            array (
+                'timeout'   => '60',
+            )
+        );
         if (!is_wp_error($request) || wp_remote_retrieve_response_code($request) === 200) {
             return unserialize($request['body']);
         }

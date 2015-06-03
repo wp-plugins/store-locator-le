@@ -362,9 +362,6 @@ var slp = {
                 this.mapScaleControl = !!slplus.map_scalectrl;
                 this.mapTypeControl = !!slplus.map_typectrl;
                 this.overviewControl = !!(parseInt(slplus.overview_ctrl));
-                if (!slplus.disable_dir) {
-                    this.loadedOnce = true;
-                }
 
                 // Setup address
                 // Use the entry form value if set, otherwise use the country
@@ -412,8 +409,7 @@ var slp = {
                     jQuery.extend( this.options , { styles: JSON.parse( slplus.options.google_map_style) } );
                 }
 
-                slpMapDiv = document.getElementById('map');
-                this.gmap = new google.maps.Map(slpMapDiv, this.options);
+                this.gmap = new google.maps.Map( document.getElementById('map') , this.options );
 
                 //this forces any bad css from themes to fix the "gray bar" issue by setting the css max-width to none
                 var _this = this;
