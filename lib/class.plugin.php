@@ -151,8 +151,6 @@ class wpCSL_plugin__slplus {
         $this->debugMP_is_active = $this->is_debugMP_active();
         $this->prefix = '';
         $this->shortcode_was_rendered = false;
-        $this->themes_enabled = false;
-        $this->use_obj_defaults = true;
 
         // Set current admin page
         //
@@ -192,24 +190,16 @@ class wpCSL_plugin__slplus {
             $this->css_prefix = $this->prefix;
         }
 
-        // Make sure we have WP_Http for http posts
-        // then instatiate it here in the http_handler property
-        // of this class.
-        //
-        if (!class_exists('WP_Http')) {
-            include_once( ABSPATH . WPINC . '/class-http.php' );
-        }
-        if (class_exists('WP_Http')) {
-            $this->http_handler = new WP_Http;
-        }
-
         // Plugin Author URL
         //
         $this->url = (isset($this->url) ? $this->url : 'http://www.charlestonsw.com/');
         $this->support_url = (isset($this->support_url) ? $this->support_url : $this->url );
 
         // Initialize
-        $this->create_objects();
+        $this->create_helper();
+        $this->create_notifications();
+        $this->create_settings();
+        $this->create_themes();
         $this->add_refs();
         $this->add_wp_actions();
     }
@@ -291,13 +281,8 @@ class wpCSL_plugin__slplus {
 
     /**
      * Create and attach helper object if needed.
-     *
-     * @param string $class
      */
-    function create_helper($class = 'none') {
-        if ($class === 'none') {
-            return;
-        }
+    function create_helper() {
         require_once('class.helper.php');
         $this->helper = new wpCSL_helper__slplus(
                 array(
@@ -308,13 +293,8 @@ class wpCSL_plugin__slplus {
 
     /**
      * Setup the WPCSL Notifications Object.
-     * 
-     * @param string $class - 'none' to disable notifications
      */
-    function create_notifications($class = 'none') {
-        if ($class === 'none') {
-            return;
-        }
+    function create_notifications() {
         require_once('class.notifications.php');
         $this->notifications = new wpCSL_notifications__slplus(
                 array(
@@ -327,18 +307,11 @@ class wpCSL_plugin__slplus {
 
     /**
      * Attach the settings object to this plugin.
-     * 
-     * @param string $class
      */
-    function create_settings($class = 'none') {
-        if ($class === 'none') {
-            return;
-        }
+    function create_settings() {
         require_once('class.settings.php');
         $this->settings = new wpCSL_settings__slplus(
                 array(
-            'http_handler' => $this->http_handler,
-            'broadcast_url' => $this->broadcast_url,
             'prefix' => $this->prefix,
             'css_prefix' => $this->css_prefix,
             'plugin_url' => $this->plugin_url,
@@ -351,14 +324,8 @@ class wpCSL_plugin__slplus {
 
     /**
      * Create the theme object and attach it.
-     *
-     * @param string $class 'none' to disable themes.
-     * @return null
      */
-    function create_themes($class = 'none') {
-        if ($class === 'none') {
-            return;
-        }
+    function create_themes() {
         require_once('class.themes.php');
         $this->themes = new PluginTheme(
                 array(
@@ -383,34 +350,6 @@ class wpCSL_plugin__slplus {
             'render_settings_page'
                 )
         );
-    }
-
-    /**
-     * Create some objects.
-     */
-    function create_objects() {
-
-        // use_obj_defaults is set, use the invoke the default 
-        // set of wpCSL objects
-        //
-        if (isset($this->use_obj_defaults) && $this->use_obj_defaults) {
-            $this->create_helper('default');
-            $this->create_notifications('default');
-            $this->create_settings('default');
-            $this->create_themes('default');
-
-            // Custom objects are in place
-        //
-        } else {
-            if (isset($this->helper_obj_name))
-                $this->create_helper($this->helper_obj_name);
-            if (isset($this->notifications_obj_name))
-                $this->create_notifications($this->notifications_obj_name);
-            if (isset($this->settings_obj_name))
-                $this->create_settings($this->settings_obj_name);
-            if (isset($this->themes_obj_name))
-                $this->create_themes($this->themes_obj_name);
-        }
     }
 
     /*     * *********************************************
@@ -482,12 +421,12 @@ class wpCSL_plugin__slplus {
 
         if ($file == $this->basefile) {
             if (isset($this->support_url)) {
-                $links[] = '<a href="' . $this->support_url . '" title="' . __('Support', 'csa-slplus') . '">' .
-                        __('Support', 'csa-slplus') . '</a>';
+                $links[] = '<a href="' . $this->support_url . '" title="' . __('Documentation', 'csa-slplus') . '">' .
+                        __('Documentation', 'csa-slplus') . '</a>';
             }
             if (isset($this->purchase_url)) {
-                $links[] = '<a href="' . $this->purchase_url . '" title="' . __('Purchase', 'csa-slplus') . '">' .
-                        __('Buy Now', 'csa-slplus') . '</a>';
+                $links[] = '<a href="' . $this->purchase_url . '" title="' . __('Buy Upgrades', 'csa-slplus') . '">' .
+                        __('Buy Upgrades', 'csa-slplus') . '</a>';
             }
             $links[] = '<a href="options-general.php?page=' . $this->prefix . '-options" title="' .
                     __('Settings', 'csa-slplus') . '">' . __('Settings', 'csa-slplus') . '</a>';
@@ -579,38 +518,6 @@ class wpCSL_plugin__slplus {
         endswitch;
     }
 
-    /*     * -------------------------------------
-     * * method: user_header_js
-     * */
-
-    function user_header_js() {
-        wp_enqueue_script('jquery');
-        wp_enqueue_script('thickbox');
-    }
-
-    /*     * -------------------------------------
-     * * method: user_header_css
-     * */
-
-    function user_header_css() {
-
-        $cssPath = '';
-        if (isset($this->css_url)) {
-            $cssPath = $this->css_url;
-        } else if (isset($this->plugin_url)) {
-            if (file_exists($this->plugin_path . '/css/' . $this->prefix . '.css')) {
-                $cssPath = $this->plugin_url . '/css/' . $this->prefix . '.css';
-            }
-        }
-
-        if ($cssPath != '') {
-            wp_enqueue_style(
-                    $this->prefix . 'css', $cssPath
-            );
-        }
-        wp_enqueue_style('thickbox');
-    }
-
     /**
      * Compare current plugin version with minimum required.
      *
@@ -620,6 +527,8 @@ class wpCSL_plugin__slplus {
      * $params['addon_name'] - the plain text name for the add-on pack.
      * $params['addon_slug'] - the slug for the add-on pack.
      * $params['min_required_version'] - the minimum required version of the base plugin.
+     *
+     * TODO: update the direct reference from slp-pages then this can go in base_class.addon.php directly.
      *
      * @param mixed[] $params
      */
@@ -666,7 +575,6 @@ class wpCSL_plugin__slplus {
      * @var string $hook
      */
     function enqueue_admin_stylesheet($hook) {
-        $this->debugMP('main', 'msg', 'wpCSL.enqueue_admin_stylesheet(' . $hook . ')', '', NULL, NULL, true);
         $this->check_IsOurAdminPage();
 
         // The CSS file must exists where we expect it and
@@ -694,32 +602,6 @@ class wpCSL_plugin__slplus {
         }
         
         wp_enqueue_script('jquery-ui-dialog');
-    }
-
-    /**
-     *  Determine if the http_request result that came back is valid.
-     *
-     * @param type $result (required, object) - the http result
-     * @return boolean true if we got a result, false if we got an error
-     */
-    function http_result_is_ok($result) {
-
-        // Yes - we can make a very long single logic check
-        // on the return, but it gets messy as we extend the
-        // test cases. This is marginally less efficient but
-        // easy to read and extend.
-        //
-        if (is_a($result, 'WP_Error')) {
-            return false;
-        }
-        if (!isset($result['body'])) {
-            return false;
-        }
-        if ($result['body'] == '') {
-            return false;
-        }
-
-        return true;
     }
 
     /**

@@ -286,22 +286,9 @@ class wpCSL_settings__slplus {
      * @return string the HTML for the news panel
      */
      function get_broadcast() {
-         $content = '';
-        if (isset($this->http_handler)) { 
-            $result = $this->http_handler->request(
-                            $this->broadcast_url,
-                            array('timeout' => 30)
-                            );
-            if ($this->parent->http_result_is_ok($result) ) {
-                return $result['body'];
-            }
-        }
-        
-        // Return default content
-        //
-        if ($content == '') {
-            return $this->default_broadcast();
-        }
+         $response = wp_remote_get( $this->parent->broadcast_url,  array( 'timeout' => 30 ) );
+         if ( is_array( $response ) ) { return $response[ 'body' ]; }
+         return $this->default_broadcast();
      }
      
    /**

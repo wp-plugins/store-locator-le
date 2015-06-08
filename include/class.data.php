@@ -26,7 +26,7 @@ class SLPlus_Data {
     /**
      * The extended data object.
      * 
-     * @var \SLPlus_Data_Extended $extension
+     * @var \SLPlus_Data_Extension $extension
      */
     public $extension;
 
@@ -302,7 +302,6 @@ class SLPlus_Data {
      * o selectall - select from store locator table with additional slp_extend_get_SQL_selectall filter.
      * o selectall_with_distance - select from store locator table with additional slp_extend_get_SQL_selectall filter and distance calculation math, requires extra parm passing on get record.
      * o selectslid - select only the store id from store locator table.
-     * o select_state_list - fetch a list of all states in the location table with a valid lat/long and state is not empty.
      *
      * WHERE
      * o where_default - the default where clause that is built up by the slp_ajaxsql_where filters.
@@ -356,18 +355,13 @@ class SLPlus_Data {
                     $sqlStatement .= 'SELECT sl_id FROM '   .$this->info['table'].' ';
                     break;
 
-                // select_country_list
-                // Fetch a list of all countries in the location table where state is not empty.
-                //
-                case 'select_country_list':
-                    $sqlStatement .=
-                        'SELECT trim(sl_country) as country ' .
-                        ' FROM ' . $this->info['table'] . ' ' .
-                        "WHERE sl_country<>'' " .
-                        'GROUP BY sl_country ' .
-                        'ORDER BY sl_country ASC '
-                        ;
-                    break;
+	            case 'select_country':
+		            $sqlStatement .=
+			            'SELECT trim(sl_country) as country ' .
+			            'FROM ' . $this->info['table'] . ' '
+		            ;
+		            break;
+
 
                 // select_states
                 //
@@ -375,22 +369,6 @@ class SLPlus_Data {
                     $sqlStatement .=
                         'SELECT trim(sl_state) as state ' .
                         'FROM ' . $this->info['table'] . ' '
-                    ;
-                    break;
-
-
-                // select_state_list
-                // Fetch a list of all states in the location table where state is not empty.
-                // DEPRECATED use array( 'select_states' , 'where_valid_state' , 'group_by_state' , 'order_by_state') instead.
-                //
-                // TODO: remove this when Pro Pack is updated.    use
-                //
-                case 'select_state_list':
-                    $sqlStatement .= 'SELECT trim(sl_state) as state ' .
-                    ' FROM ' . $this->info['table'] . ' ' .
-                    "WHERE (sl_state<>'') and (sl_state IS NOT NULL) " .
-                    'GROUP BY sl_state ' .
-                    'ORDER BY sl_state ASC '
                     ;
                     break;
 
@@ -415,6 +393,10 @@ class SLPlus_Data {
                 case 'where_not_private':
                     $sqlStatement .= $this->add_where_clause( "( NOT sl_private OR sl_private IS NULL)" );
                     break;
+
+	            case 'where_valid_country':
+		            $sqlStatement .= $this->add_where_clause( "(sl_country<>'') AND (sl_country IS NOT NULL)" );
+		            break;
 
                 case 'where_valid_state':
                     $sqlStatement .= $this->add_where_clause( "(sl_state<>'') AND (sl_state IS NOT NULL)" );
@@ -445,6 +427,12 @@ class SLPlus_Data {
                     }
                     break;
 
+	            case 'order_by_country':
+		            $this->extend_order_array( 'sl_country ASC' );
+		            $sqlStatement .=
+			            $this->add_order_by_clause();
+		            break;
+
                 case 'order_by_state':
                     $this->extend_order_array( 'sl_state ASC' );
                     $sqlStatement .=
@@ -453,7 +441,12 @@ class SLPlus_Data {
 
                 //------------------- GROUP
                 //
-                case 'group_by_state':
+	            case 'group_by_country':
+		            $sqlStatement .=
+			            $this->add_group_by_clause( 'sl_country' );
+		            break;
+
+	            case 'group_by_state':
                     $sqlStatement .=
                         $this->add_group_by_clause( 'sl_state' );
                     break;
@@ -555,6 +548,9 @@ class SLPlus_Data {
         return $this->is_extended;
     }
 
+	/**
+	 * Reset the SQL additive clauses.
+	 */
     private function reset_clauses() {
         $this->order_by_clause = '';
         $this->group_by_clause = '';
