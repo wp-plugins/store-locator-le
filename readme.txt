@@ -5,14 +5,14 @@ Donate link: http://www.storelocatorplus.com/product/store-locator-plus-4/
 Tags:address location map, address map, admin, ajax, best google maps,business locations, coordinates, custom google maps, dealer locater, dealer locator, directions, easy map, geo, geocoder, geocoding, gmaps, google, google map, google map plugin, google maps,google maps, google map widget, jquery, latitude, location, location finder, locator, locator maps, longitude, map, map creator, map directions, map maker, map markers, map multiple locations, map of addresses, mapper, mapping, mapping software, mapping tools, map plugin, maps, map tools, map widget, marker, page, places, plugin, polygons, polylines, post, posts, proximity, proximity search, routes, shop finder, shop locator, shops, shortcode, store finder, store locater, store locator, store locator map, stores, streetview, widget, wordpress locator, wp google map, wp google maps, wp maps, zipcode, zip code, zip code locator, zipcode locator, zip code search, zipcode search
 Requires at least: 3.8
 Tested up to: 4.2.2
-Stable tag: 4.2.57
+Stable tag: 4.2.58
 License: GLPv2 or later
 
-Add a location finder or directory to your site in minutes. A Google Business Maps API licensed product. Extensive premium add-on library available!
+Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
 
 == Description ==
 
-Store Locator Plus is a Google Business Maps API licensed location mapping and directory system with  over 10,000 active installations.
+Store Locator Plus is a location mapping and directory system with  over 10,000 active installations.
 Learn more at the [Store Locator Plus website](http://www.storelocatorplus.com/).
 The website offers more [screen shots](http://www.storelocatorplus.com/support/documentation/store-locator-plus/store-locator-plus-screen-shots/), [technical documentation](http://www.storelocatorplus.com/support/documentation/technical-documentation/), and [full release notes](http://www.charlestonsw.com/support/documentation/store-locator-plus/release-notes/release-notes-4-0/), and a very active [user forum](http://www.charlestonsw.com/forums/).
 
@@ -310,7 +310,15 @@ Store Locator Plus has built-in interfaces for WPML.
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
 
-= 4.2.57 (2015-May-23) =
+= 4.2.58 (2015-June) =
+
+* Enhancement: Remove custom WordPress Http API interfaces, use built-in helper functions.  Improves performance and stability.
+* Enhancement: Simplify settings class properties. Reduces memory footprint.
+* Enhancement: Remove defunct is_response_ok method. Reduces memory footprint.
+* Enhancement: Remove unused variables in manage locations admin interface.
+* Change: Remove unused slp_locations_subtabs filter.
+
+= 4.2.57 (2015-June-3) =
 
 * Enhancement: Increase time for response from update server for premium add-on packs, reduces errors on update pack download.
 * Enhancement: Minor admin CSS adjustments.
