@@ -104,7 +104,7 @@ class PluginTheme {
         // Load Up Admin Class As Needed
         //
         if ( $this->parent->check_IsOurAdminPage() ) {
-            require_once('class.themes.admin.php');
+            require_once( 'class.themes.admin.php' );
             $this->admin = 
                 new PluginThemeAdmin(
                     array_merge(

@@ -5,7 +5,7 @@ Donate link: http://www.storelocatorplus.com/product/store-locator-plus-4/
 Tags:address location map, address map, admin, ajax, best google maps,business locations, coordinates, custom google maps, dealer locater, dealer locator, directions, easy map, geo, geocoder, geocoding, gmaps, google, google map, google map plugin, google maps,google maps, google map widget, jquery, latitude, location, location finder, locator, locator maps, longitude, map, map creator, map directions, map maker, map markers, map multiple locations, map of addresses, mapper, mapping, mapping software, mapping tools, map plugin, maps, map tools, map widget, marker, page, places, plugin, polygons, polylines, post, posts, proximity, proximity search, routes, shop finder, shop locator, shops, shortcode, store finder, store locater, store locator, store locator map, stores, streetview, widget, wordpress locator, wp google map, wp google maps, wp maps, zipcode, zip code, zip code locator, zipcode locator, zip code search, zipcode search
 Requires at least: 3.8
 Tested up to: 4.2.2
-Stable tag: 4.2.58
+Stable tag: 4.2.60
 License: GLPv2 or later
 
 Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
@@ -193,12 +193,10 @@ Give me a chance to address your concerns if this plugin doesn't earn 5 stars by
 = Help Me "Speak" Your Language =
 
 Help me with translating the English words and phrases in the plugin and I will give you a premium add-on.
-The base plugin and the premium add-on packs have been updated to work with most language translation tools including the [Codestyling Localization](http://wordpress.org/plugins/codestyling-localization/) plugin.
+The base plugin and the premium add-on packs have been updated to work with most language translation tools.
 [Contact me](http://www.storelocatorplus.com/mindset/contact-us/) if you have a newly translated .po and .mo file to submit.
 If I do not have the language files already, or if they were notably out-of-date, I will add the premium add-on pack of your choice to your account.
 Upon request I will also put a link to your site in the "special thanks" section.
-
-Any EASIER way to perform translations?  Load the [Codestyling Localization plugin](http://wordpress.org/extend/plugins/codestyling-localization/) and then find it under "Tools/Localization" in your admin panel.
 
 == Installation ==
 
@@ -286,7 +284,7 @@ on the [License Terms page](http://www.storelocatorplus.com/products/general-eul
 
 = How can I translate the plugin into my language? =
 
-* The easiest way to start the process it by installing the [CodeStyling Localization](http://wordpress.org/extend/plugins/codestyling-localization/) plugin.
+* Create a .po and .mo file for Store Locator Plus.   There are multiple language translation plugins that will help such as [Loco Translate](https://wordpress.org/plugins/loco-translate/).
 * If everything is ok, email the files to info@charlestonsw.com and I will add them to the next release.
 * For more information on POT files, domains, gettext and i18n have a look at the I18n for WordPress developers Codex page and more specifically at the section about themes and plugins.
 
@@ -310,7 +308,14 @@ Store Locator Plus has built-in interfaces for WPML.
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
 
-= 4.2.58 (2015-June) =
+= 4.2.60 ( 2015-June) =
+
+* Fix: Address fatal error on activation when CSS save directory is not pre-existing or there are directory permission issues on /wp-content/uploads.
+* Enhancement: Fail gracefully if on WP < 3.8.
+* Enhancement: Remove excess plugin startup testing from legacy generic plugin drivers.
+* Enhancement: Improve file permission issue handling when reading plugin theme CSS files.
+
+= 4.2.58 (2015-June-8) =
 
 * Enhancement: Remove custom WordPress Http API interfaces, use built-in helper functions.  Improves performance and stability.
 * Enhancement: Simplify settings class properties. Reduces memory footprint.

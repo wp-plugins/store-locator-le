@@ -9,7 +9,7 @@
  * @author Lance Cleveland <lance@storelocatorplus.com>
  * @copyright 2012-2015 Charleston Software Associates, LLC
  */
-class SLPlus_Activate {
+class SLPlus_Activation {
 
     //----------------------------------
     // Properties
@@ -29,6 +29,11 @@ class SLPlus_Activate {
      */
     public $plugin_version_on_start;
 
+	/**
+	 * @var SLPlus
+	 */
+	private $slplus;
+
 
     //----------------------------------
     // Methods
@@ -36,17 +41,10 @@ class SLPlus_Activate {
 
     /**
      * Initialize the object.
-     *
-     * @param mixed[] $params
      */
-    function __construct($params = null) {
-        // Do the setting override or initial settings.
-        //
-        if ($params != null) {
-            foreach ($params as $name => $sl_value) {
-                $this->$name = $sl_value;
-            }
-        }
+    function __construct() {
+	    global $slplus_plugin;
+	    $this->slplus = $slplus_plugin;
     } 
 
     /**
@@ -238,110 +236,99 @@ class SLPlus_Activate {
     }
 
 
-    /************************************************************
-     * Copy a file, or recursively copy a folder and its contents
-     */
+	/**
+	 * Recursively copy source directory (or file) into destination directory.
+	 *
+	 * @param $source can be a file or a directory
+	 * @param $dest can be a file or a directory
+	 */
     function copyr($source, $dest) {
+	    if ( ! file_exists( $source ) ) { return; }
 
-        // Check for symlinks
-        if (is_link($source)) {
-            return symlink(readlink($source), $dest);
-        }
+	    // Make destination directory if necessary
+	    //
+	    if ( ! is_dir( $dest ) ) {
+		    wp_mkdir_p( $dest );
+	    }
 
-        // Simple copy for a file
-        if (is_file($source)) {
-            return copy($source, $dest);
-        }
+	    // Loop through the folder
+	    $dir = dir($source);
+	    if ( is_a( $dir , 'Directory' ) ) {
+		    while ( false !== $entry = $dir->read() ) {
 
-        if (!is_dir($dest)) {
-            mkdir($dest, 0755);
-        }
+			    // Skip pointers
+			    if ( $entry == '.' || $entry == '..' ) {
+				    continue;
+			    }
 
-        // Loop through the folder
-        $dir = dir($source);
-        while (false !== $entry = $dir->read()) {
-            // Skip pointers
-            if ($entry == '.' || $entry == '..') {
-                continue;
-            }
+			    $source_file = "{$source}/{$entry}";
+			    $dest_file = "{$dest}/{$entry}";
 
-            // Deep copy directories
-            $this->copyr("$source/$entry", "$dest/$entry");
-        }
+			    // Copy Files
+			    //
+			    if ( is_file( $source_file ) ) {
+				    $this->copy_newer_files( $source_file , $dest_file );
+			    }
 
-        // Clean up
-        $dir->close();
-        return true;
+			    // Copy Symlinks
+			    //
+			    if ( is_link( $source_file ) ) {
+				    symlink( readlink( $source_file ), $dest_file );
+			    }
+
+			    // Directories, go deeper
+			    //
+			    if ( is_dir( $source_file ) ) {
+				    $this->copyr( $source_file , $dest_file );
+			    }
+		    }
+
+		    // Clean up
+		    $dir->close();
+	    }
     }
 
-    /*************************************
-     * Copy language and image files to wp-content/uploads/sl-uploads for safekeeping.
-     */
-    function save_important_files() {
-        $allOK = true;
+	/**
+	 * Copy non-empty, readable files to destination if they are newer than the destination file.
+	 * OR if the destination file does not exist.
+	 *
+	 * @param $source_file
+	 * @param $destination_file
+	 */
+	public function copy_newer_files( $source_file , $destination_file ) {
+		if ( empty( $source_file) ) { return; }
+		if ( ! is_readable( $source_file ) ) { return; }
+		if (
+		    ! file_exists( $destination_file ) ||
+		    (
+			    file_exists( $destination_file ) &&
+			    ( filemtime( $source_file ) >  filemtime( $destination_file ) )
+		    )
+		) {
+			copy( $source_file, $destination_file );
+		}
+	}
 
-        // Make the upload director(ies)
-        //
-        if (!is_dir(ABSPATH . "wp-content/uploads")) {
-            mkdir(ABSPATH . "wp-content/uploads", 0755);
-        }
-        if (!is_dir(SLPLUS_UPLOADDIR)) {
-            mkdir(SLPLUS_UPLOADDIR, 0755);
-        }
-        if (!is_dir(SLPLUS_UPLOADDIR . "languages")) {
-            mkdir(SLPLUS_UPLOADDIR . "languages", 0755);
-        }
-        if (!is_dir(SLPLUS_UPLOADDIR . "saved-icons")) {
-            mkdir(SLPLUS_UPLOADDIR . "saved-icons", 0755);
-        }
-		if (!is_dir(SLPLUS_UPLOADDIR . "css")) {
-            mkdir(SLPLUS_UPLOADDIR . "css", 0755);
-        }
-
-        // Copy ./images/icons to custom-icons save location
-        //
-        if (is_dir(SLPLUS_PLUGINDIR . "/images/icons") && is_dir(SLPLUS_UPLOADDIR . "saved-icons")) {
-            $allOK = $allOK && $this->copyr(SLPLUS_PLUGINDIR . "/images/icons", SLPLUS_UPLOADDIR . "saved-icons");
-        }
-
-        return $allOK;
-    }
-
-    /*************************************
-     * Updates the plugin
-     */
-    static function update($slplus_plugin=null, $old_version=null) {
-
-        // Called As Namespace
-        //
-        if ($slplus_plugin!=null) {
-            $updater = new SLPlus_Activate(array(
-                'plugin' => $slplus_plugin,
-                'old_version' => $old_version,
-            ));
-
-        // Called as object method
-        } else {
-            $updater = $this;
-        }
+	/**
+	 * Update the plugin.
+	 */
+    public function update() {
 
         // New Installation
         //
-        $updater->db_version_on_start     = get_option( $updater->plugin->prefix."-db_version" );
-        if ($updater->db_version_on_start == '') {
-            add_option($updater->plugin->prefix."-db_version", $updater->plugin->version);
-            add_option($updater->plugin->prefix.'_disable_find_image','1');                // Disable the image find locations on new installs
+        $this->db_version_on_start     = get_option( SLPLUS_PREFIX."-db_version" , '' );
+        if ($this->db_version_on_start == '') {
+            add_option(SLPLUS_PREFIX."-db_version", $this->slplus->version);
+            add_option(SLPLUS_PREFIX.'_disable_find_image','1');                // Disable the image find locations on new installs
 
         // Updating previous install
         //
         } else {
             $options_changed = false;
-            $updater->plugin_version_on_start = ($old_version !== null )        ?
-                $old_version                                                    :
-                get_option($updater->plugin->prefix."-installed_base_version")  ;
+            $this->plugin_version_on_start = $this->slplus->installed_version;
 
-            // Save Image and Language Files
-            $filesSaved = $updater->save_important_files();
+	        // Restore Custom CSS Files
+	        $this->copyr( SLPLUS_UPLOADDIR . "css", SLPLUS_PLUGINDIR . "css" );
 
             // Core Icons Moved
             // 3.8.6
@@ -350,8 +337,8 @@ class SLPlus_Activate {
 
                 // Change home and end icon if it was in core/images/icons
                 //
-                update_option('sl_map_home_icon', $updater->iconMapper(get_option('sl_map_home_icon')));
-                update_option('sl_map_end_icon' , $updater->iconMapper(get_option('sl_map_end_icon') ));
+                update_option('sl_map_home_icon', $this->iconMapper(get_option('sl_map_home_icon')));
+                update_option('sl_map_end_icon' , $this->iconMapper(get_option('sl_map_end_icon') ));
             }
 
             // Admin Pages might be blank, set to 10
@@ -364,57 +351,57 @@ class SLPlus_Activate {
 
             // Upgrading to version 4.0.033
             //
-            if ( version_compare($updater->plugin_version_on_start,'4.0.033','<') ) {
+            if ( version_compare($this->plugin_version_on_start,'4.0.033','<') ) {
 
                 // Max Search Results Setting
                 //
                 $max_results = get_option(SLPLUS_PREFIX.'_maxreturned','25');
-                $updater->plugin->options_nojs['max_results_returned'] = empty( $max_results ) ? '25' : $max_results;
+                $this->slplus->options_nojs['max_results_returned'] = empty( $max_results ) ? '25' : $max_results;
                 delete_option(SLPLUS_PREFIX.'_maxreturned');
-                $options_changed = $options_changed || ($max_results !== $updater->plugin->options_nojs['max_results_returned']);
+                $options_changed = $options_changed || ($max_results !== $this->slplus->options_nojs['max_results_returned']);
 
                 // Number To Show Initially Setting
                 //
                 $initial_results = get_option('sl_num_initial_displayed','25');
-                $updater->plugin->options['initial_results_returned'] = empty( $initial_results ) ? '25' : $initial_results;
+                $this->slplus->options['initial_results_returned'] = empty( $initial_results ) ? '25' : $initial_results;
                 delete_option('sl_num_initial_displayed');
-                $options_changed = $options_changed || ($initial_results !== $updater->plugin->options['initial_results_returned']);
+                $options_changed = $options_changed || ($initial_results !== $this->slplus->options['initial_results_returned']);
 
             }
             
             // Upgrading to version 4.1.13
             //
-            if ( version_compare($updater->plugin_version_on_start,'4.1.13','<') ) {
+            if ( version_compare($this->plugin_version_on_start,'4.1.13','<') ) {
 
                 // Force Load JS serialization
                 //
                 $option_name  = SLPLUS_PREFIX.'-force_load_js';
                 $option_value = get_option( $option_name , false );
                 $serial_key   = 'force_load_js';
-                $updater->plugin->options_nojs[$serial_key] = $option_value;
+                $this->slplus->options_nojs[$serial_key] = $option_value;
                 delete_option( $option_name );
-                $options_changed = $options_changed || ( $option_value !== $updater->plugin->options_nojs[$serial_key] );
+                $options_changed = $options_changed || ( $option_value !== $this->slplus->options_nojs[$serial_key] );
                 
                 // Immediately Show Locations serialization
                 //
                 $option_name  = 'sl_load_locations_default';
                 $option_value = get_option( $option_name , true );
                 $serial_key   = 'immediately_show_locations';
-                $updater->plugin->options_nojs[$serial_key] = $option_value;
+                $this->slplus->options_nojs[$serial_key] = $option_value;
                 delete_option( $option_name );
-                $options_changed = $options_changed || ( $option_value !== $updater->plugin->options_nojs[$serial_key] );
+                $options_changed = $options_changed || ( $option_value !== $this->slplus->options_nojs[$serial_key] );
             }
 
             // Upgrading to version 4.2.04
             //
-            if ( version_compare($updater->plugin_version_on_start,'4.2.04','<') ) {
+            if ( version_compare($this->plugin_version_on_start,'4.2.04','<') ) {
 
                 // sl_distance_unit option => slplus->options['distance_unit']
                 //
                 $option_name  = 'sl_distance_unit';
                 $serial_key   = 'distance_unit';
                 $option_value = get_option( $option_name , false );
-                $updater->plugin->options[$serial_key] = $option_value;
+                $this->slplus->options[$serial_key] = $option_value;
                 delete_option( $option_name );
                 $options_changed = true; // new setting always write the options array to disk
 
@@ -424,14 +411,14 @@ class SLPlus_Activate {
                 $serial_key   = 'map_domain';
                 $option_value = get_option( $option_name , 'maps.google.com' );
                 if ($option_value === 'maps.googleapis.com') { $option_value = 'maps.google.com'; }
-                $updater->plugin->options[$serial_key] = $option_value;
+                $this->slplus->options[$serial_key] = $option_value;
                 delete_option( $option_name );
                 $options_changed = true; // new setting always write the options array to disk
             }
 
             // Upgrading to version 4.2.26
             //
-            if ( version_compare($updater->plugin_version_on_start,'4.2.26','<') ) {
+            if ( version_compare($this->plugin_version_on_start,'4.2.26','<') ) {
                 $option_name  = SLPLUS_PREFIX.'_use_email_form';
                 delete_option($option_name);
             }
@@ -439,7 +426,7 @@ class SLPlus_Activate {
             // Upgrading to version 4.1.XX+
             // Always re-load theme details data.
             //
-            if ( version_compare($updater->plugin_version_on_start,'4.99.99','<') ) {
+            if ( version_compare($this->plugin_version_on_start,'4.99.99','<') ) {
                 delete_option(SLPLUS_PREFIX.'-api_key');
                 delete_option(SLPLUS_PREFIX.'-theme_details');
                 delete_option(SLPLUS_PREFIX.'-theme_array');
@@ -457,24 +444,22 @@ class SLPlus_Activate {
             // Save Serialized Options
             //
             if ($options_changed) {
-                update_option(SLPLUS_PREFIX.'-options_nojs' , $updater->plugin->options_nojs);
-                update_option(SLPLUS_PREFIX.'-options'      , $updater->plugin->options     );
+                update_option(SLPLUS_PREFIX.'-options_nojs' , $this->slplus->options_nojs);
+                update_option(SLPLUS_PREFIX.'-options'      , $this->slplus->options     );
             }
 
             // Set DB Version
             //
-            update_option(SLPLUS_PREFIX."-db_version", $updater->plugin->version);
+            update_option(SLPLUS_PREFIX."-db_version", $this->slplus->version);
         }
+	    update_option(SLPLUS_PREFIX . '-installed_base_version', $this->slplus->version);
         update_option(SLPLUS_PREFIX.'-theme_lastupdated','2006-10-05');
 
         // Update Tables, Setup Roles
         //
-        $updater->install_main_table();
-        $updater->install_ExtendedDataTables();
-        $updater->add_splus_roles_and_caps();
-		
-		// Restore Custom CSS Files
-		$updater->restore_custom_css();
+        $this->install_main_table();
+        $this->install_ExtendedDataTables();
+        $this->add_splus_roles_and_caps();
     }
 
     /**
@@ -517,16 +502,6 @@ class SLPlus_Activate {
 
         return $newIcon;
     }
-	
-	/**
-     * Pulls out the backup copy of all custom css 
-     *
-     */
-	public function restore_custom_css() {
-		$file = new SLPlus_Activate;	
-		// Copy custom css files from upload dir back to plugin dir
-		$file->copyr( SLPLUS_UPLOADDIR . "css", SLPLUS_PLUGINDIR . "/css" );
-	}
 	
 }
 

@@ -100,13 +100,6 @@ class SLPlus_Actions {
         //
         require_once(SLPLUS_PLUGINDIR . '/include/class.updates.php');
 
-        // Activation Helpers
-        // Updates are handled via WPCSL via namespace style call
-        //
-        require_once(SLPLUS_PLUGINDIR . '/include/class.activation.php');
-        $this->slplus->Activate = new SLPlus_Activate();
-        register_activation_hook( __FILE__, array($this->slplus->Activate,'update')); // WP built-in activation call
-
         // If we are on an SLP controlled admin page
         //
         if ($this->slplus->check_isOurAdminPage()) {
@@ -307,7 +300,6 @@ class SLPlus_Actions {
      * Called when the WordPress init action is processed.
      */
     function init() {
-        add_filter('codestyling_localization_excludedirs',array($this,'filter_CodeStylingSkipTheseDirs'));
         load_plugin_textdomain('csa-slplus', false, plugin_basename(dirname(SLPLUS_PLUGINDIR.'store-locator-le.php')) . '/languages');
 
         // Fire the SLP init starting trigger
@@ -407,28 +399,6 @@ class SLPlus_Actions {
         // gets a copy of the slplus actions object as a parameter
         //
         do_action('slp_init_complete', $this);
-    }
-
-    /**
-     * Tell CodeStyling Localization to skip these directories...
-     *
-     * @param string[] $dirs
-     */
-    function filter_CodeStylingSkipTheseDirs($dirs) {
-        if ($_POST['textdomain'] !== 'csa-slplus') { return dirs; }
-        return array_merge(
-                $dirs,
-                array(
-                    SLPLUS_PLUGINDIR . '.git',
-                    SLPLUS_PLUGINDIR . 'css',
-                    SLPLUS_PLUGINDIR . 'languages',
-                    SLPLUS_PLUGINDIR . 'nbproject',
-                    SLPLUS_PLUGINDIR . 'images',
-                    SLPLUS_PLUGINDIR . 'WPCSL-generic/.git',
-                    SLPLUS_PLUGINDIR . 'WPCSL-generic/base',
-                    SLPLUS_PLUGINDIR . 'WPCSL-generic/build',
-                )
-            );
     }
 
     /**
