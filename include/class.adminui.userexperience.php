@@ -190,23 +190,11 @@ class SLPlus_AdminUI_UserExperience {
 	 * @param string $css_file
 	 */
 	function save_custom_css( $css_file ) {
-		
-		$file = new SLPlus_Activate;
-		$date_format = "F d Y H:i:s";
-		$plugindir_file = SLPLUS_PLUGINDIR . "/css/$css_file";
-		$uploaddir_file = SLPLUS_UPLOADDIR . "css/$css_file";
-		
-		if( ! empty( $css_file ) && file_exists( $plugindir_file ) ) {		
-			// Backup the new css file if not existing on the uploads\slp\css dir 
-			if( ! file_exists( $uploaddir_file ) ){	
-				$file->copyr( $plugindir_file, $uploaddir_file );
-			
-			// Backup the file to the uploads\slp\css dir only if it's the most recent file.
-			} else if ( file_exists( $uploaddir_file ) &&
-				date( $date_format, filemtime( $plugindir_file ) ) > date( $date_format, filemtime( $uploaddir_file ) ) ) {
-				$file->copyr( $plugindir_file, $uploaddir_file );
-			}
+		if ( ! is_dir( SLPLUS_UPLOADDIR . "css/" ) ) {
+			wp_mkdir_p( SLPLUS_UPLOADDIR . "css/" );
 		}
+		$this->slplus->createobject_Activation();
+		$this->slplus->Activation->copy_newer_files( SLPLUS_PLUGINDIR . "css/$css_file" , SLPLUS_UPLOADDIR . "css/$css_file" );
 	}
 
     /**

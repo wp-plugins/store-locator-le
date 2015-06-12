@@ -146,10 +146,8 @@ class wpCSL_plugin__slplus {
 
         // These settings can be overridden
         //
-        $this->css_prefix = '';
         $this->current_admin_page = '';
         $this->debugMP_is_active = $this->is_debugMP_active();
-        $this->prefix = '';
         $this->shortcode_was_rendered = false;
 
         // Set current admin page
@@ -166,30 +164,6 @@ class wpCSL_plugin__slplus {
             $this->$name = $value;
         }
 
-        // Check to see if we are doing an update
-        //
-        if (isset($this->version)) {
-            if ($this->version != get_option($this->prefix . "-installed_base_version" , '')) {
-                if (isset($this->on_update)) {
-                    call_user_func_array($this->on_update, array($this, get_option($this->prefix . "-installed_base_version")));
-                }
-                update_option($this->prefix . '-installed_base_version', $this->version);
-
-                $destruct_time = get_option($this->prefix . "-notice-countdown");
-
-                // We're doing an update, so check to see if they didn't check the check box,
-                // and if they didn't... well, show it to them again
-                if ($destruct_time) {
-                    delete_option($this->prefix . "-notice-countdown");
-                }
-            }
-        }
-
-        // What prefix do we add to the CSS elements?
-        if ($this->css_prefix == '') {
-            $this->css_prefix = $this->prefix;
-        }
-
         // Plugin Author URL
         //
         $this->url = (isset($this->url) ? $this->url : 'http://www.charlestonsw.com/');
@@ -199,7 +173,6 @@ class wpCSL_plugin__slplus {
         $this->create_helper();
         $this->create_notifications();
         $this->create_settings();
-        $this->create_themes();
         $this->add_refs();
         $this->add_wp_actions();
     }
@@ -318,24 +291,6 @@ class wpCSL_plugin__slplus {
             'name' => $this->name,
             'url' => (isset($this->url) ? $this->url : null),
             'parent' => $this
-                )
-        );
-    }
-
-    /**
-     * Create the theme object and attach it.
-     */
-    function create_themes() {
-        require_once('class.themes.php');
-        $this->themes = new PluginTheme(
-                array(
-                    'notifications' => $this->notifications,
-                    'parent'        => $this,
-                    'plugin_path'   => $this->plugin_path,
-                    'plugin_url'    => $this->plugin_url,
-                    'prefix'        => $this->prefix,
-                    'slplus'        => $this,
-                    'support_url'   => $this->support_url,
                 )
         );
     }

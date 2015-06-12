@@ -330,6 +330,7 @@ class PluginThemeAdmin {
         $newEntry = array();
         if ($dh = opendir($this->css_dir)) {
             while (($file = readdir($dh)) !== false) {
+	            if ( ! is_readable( $this->css_dir.$file ) ) { continue; }
 
                 // If not a hidden file
                 //
@@ -475,11 +476,13 @@ class PluginThemeAdmin {
                 !isset($this->themeDetails[$theme_slug]['label']) || empty($this->themeDetails[$theme_slug]['label'])
                 ) {
 
-                $themeData = $this->get_ThemeInfo($this->css_dir.$theme_slug.'.css');
-                $themeData['fqfname'] = $this->css_dir.$theme_slug.'.css';
+	            if ( is_readable( $this->css_dir . $theme_slug . '.css' ) ) {
+		            $themeData            = $this->get_ThemeInfo( $this->css_dir . $theme_slug . '.css' );
+		            $themeData['fqfname'] = $this->css_dir . $theme_slug . '.css';
 
-                $this->themeDetails[$theme_slug] = $themeData;
-                $newDetails = true;
+		            $this->themeDetails[ $theme_slug ] = $themeData;
+		            $newDetails                        = true;
+	            }
             }
 
             $this->current_slug = $theme_slug;

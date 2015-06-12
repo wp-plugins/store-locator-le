@@ -3,7 +3,7 @@
 Plugin Name: Store Locator Plus
 Plugin URI: http://www.storelocatorplus.com/
 Description: Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
-Version: 4.2.58
+Version: 4.2.60
 Tested up to: 4.2.2
 Author: Store Locator Plus
 Author URI: http://www.storelocatorplus.com
@@ -30,10 +30,27 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 */
 
-if (!defined( 'ABSPATH'     )) { exit;   } // Exit if accessed directly, dang hackers
+
+// No direct access, please.
+//
+if (!defined( 'ABSPATH'     )) { exit;   }
+
+// Check WP Version
+//
+global $wp_version;
+if ( version_compare( $wp_version, '3.8', '<' ) ) {
+	add_action(
+		'admin_notices',
+		create_function(
+			'',
+			"echo '<div class=\"error\"><p>".__('Store Locator Plus requires WordPress 3.8 to function properly. Please upgrade WordPress or deactivate Store Locator Plus.', 'csa-slplus') ."</p></div>';"
+		)
+	);
+	return;
+}
 
 if (defined('SLPLUS_VERSION') === false) {
-    define('SLPLUS_VERSION', '4.2.58');
+    define('SLPLUS_VERSION', '4.2.60');
 }
 
 // Drive Path Defines
@@ -121,7 +138,6 @@ if (defined('SLPLUS_PLUGINDIR')) {
     global $wpdb;
     $slplus_plugin = new SLPlus(
         array(
-            'on_update'             => array('SLPlus_Activate', 'update'),
             'version'               => SLPLUS_VERSION,
             'prefix'                => SLPLUS_PREFIX,
             'css_prefix'            => SLPLUS_PREFIX,
@@ -200,6 +216,8 @@ add_action('init'               ,array($slplus_plugin->Actions,'init')          
 add_action('wp_footer'          ,array($slplus_plugin->Actions,'wp_footer')            );
 add_action('wp_head'            ,array($slplus_plugin->Actions,'wp_head')              );
 add_action('shutdown'           ,array($slplus_plugin->Actions,'shutdown')             );
+register_activation_hook( __FILE__ , array( $slplus_plugin , 'activate_or_update_slplus' ) );
+
 
 // Admin Actions
 //

@@ -40,6 +40,11 @@ if (! class_exists('SLPlus')) {
         // Properties
         //-------------------------------------
 
+	    /**
+	     * @var SLPlus_Activation
+	     */
+	    public $Activation;
+
         /**
          * An array of the add-on or modules slugs that are active.
          *
@@ -455,6 +460,25 @@ if (! class_exists('SLPlus')) {
          */
         public $url;
 
+	    /**
+	     * The version that was installed at the start of the plugin (prior installed version).
+	     *
+	     * @var string
+	     */
+	    public $installed_version = null;
+
+	    /**
+	     * @var PluginTheme
+	     */
+	    public $themes;
+
+	    /**
+	     * The current plugin version intended to be run now.
+	     *
+	     * @var string
+	     */
+	    public $version;
+
         //-------------------------------------
         // Methods
         //-------------------------------------
@@ -464,19 +488,20 @@ if (! class_exists('SLPlus')) {
          *
          * @param mixed[] $params - a named array of the plugin options for wpCSL.
          */
-        public function __construct($params)
-        {
-            // Hook up the Activation class
-            //
-            if (class_exists('SLPlus_Activation') == false) {
-                require_once(SLPLUS_PLUGINDIR.'include/class.activation.php');
-            }
-
+        public function __construct( $params )  {
             $this->url = plugins_url('', __FILE__);
             $this->dir = plugin_dir_path(__FILE__);
             $this->slug = plugin_basename(__FILE__);
 
+	        foreach ( $params as $property => $value ) {
+		        if ( property_exists( $this , $property ) ) {
+			        $this->$property = $value;
+		        }
+	        }
+
             parent::__construct($params);
+
+	        $this->createobject_themes();
 
             $this->initDB();
 
@@ -495,16 +520,45 @@ if (! class_exists('SLPlus')) {
             do_action('slp_invocation_complete');
         }
 
+	    /**
+	     * Connect SLPlus_Activation object to Activation property.
+	     */
+	    public function createobject_Activation() {
+		    if ( ! isset( $this->Activation ) ) {
+			    require_once(SLPLUS_PLUGINDIR . '/include/class.activation.php');
+			    $this->Activation = new SLPlus_Activation();
+		    }
+	    }
+
         /**
          * Create and attach the add on manager object.
          */
-        public function createobject_AddOnManager()
-        {
+        public function createobject_AddOnManager()  {
             if (!isset($this->add_ons)) {
                 require_once(SLPLUS_PLUGINDIR . '/include/class.addon.manager.php');
                 $this->add_ons = new SLPlus_AddOn_Manager(array('slplus' => $this));
             }
         }
+
+	    /**
+	     * Create the theme object and attach it.
+	     */
+	    function createobject_themes() {
+		    if ( ! isset( $this->themes ) ) {
+			    require_once( 'class.themes.php' );
+			    $this->themes = new PluginTheme(
+				    array(
+					    'notifications' => $this->notifications,
+					    'parent'        => $this,
+					    'plugin_path'   => $this->plugin_path,
+					    'plugin_url'    => $this->plugin_url,
+					    'prefix'        => SLPLUS_PREFIX,
+					    'slplus'        => $this,
+					    'support_url'   => $this->support_url,
+				    )
+			    );
+		    }
+	    }
 
         /**
          * Setup the database properties.
@@ -815,6 +869,20 @@ if (! class_exists('SLPlus')) {
             }
             $this->register_addon($name, $object);
         }
+
+	    /**
+	     * Update the base plugin if necessary.
+	     */
+	    function activate_or_update_slplus() {
+		    if ( is_null( $this->installed_version ) ) {
+			    $this->installed_version = get_option( SLPLUS_PREFIX . "-installed_base_version", '' );
+		    }
+
+		    if ( version_compare( $this->installed_version, $this->version , '<' ) ) {
+			    $this->createobject_Activation();
+			    $this->Activation->update();
+		    }
+	    }
 
         //----------------------------------------------------
         // DEPRECATED
