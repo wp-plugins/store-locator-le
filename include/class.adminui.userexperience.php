@@ -60,7 +60,6 @@ class SLPlus_AdminUI_UserExperience {
             array(
                     'parent'            => $this->slplus,
                     'prefix'            => $this->slplus->prefix,
-                    'css_prefix'        => $this->slplus->prefix,
                     'url'               => $this->slplus->url,
                     'name'              => $this->slplus->name . __(' - User Experience','csa-slplus'),
                     'plugin_url'        => $this->slplus->plugin_url,

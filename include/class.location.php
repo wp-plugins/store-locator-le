@@ -246,7 +246,7 @@ class SLPlus_Location {
 
 
     //-------------------------------------------------
-    // Methods
+    // Magic Methods
     //-------------------------------------------------
 
     /**
@@ -266,7 +266,74 @@ class SLPlus_Location {
         $this->pageDefaultStatus = __('draft','csa-slplus');
     }
 
-    /**
+	/**
+	 * Fetch a location property from the valid object properties list.
+	 *
+	 * $currentLocation = new SLPlus_Location();
+	 * print $currentLocation->id;
+	 *
+	 * @param mixed $property - which property to set.
+	 * @return null
+	 */
+	public function __get($property) {
+		if (property_exists($this, $property)) {
+			return $this->$property;
+		}
+		if (
+			$this->slplus->database->is_Extended()                  &&
+			$this->slplus->database->extension->has_ExtendedData()  &&
+			isset($this->exdata[$property])
+		) {
+			return $this->exdata[$property];
+		}
+		return null;
+	}
+
+	/**
+	 * Allow isset to be called on private properties.
+	 *
+	 * @param $property
+	 *
+	 * @return bool
+	 */
+	public function __isset( $property ) {
+		return isset( $this->$property );
+	}
+
+	/**
+	 * Set a location property in the valid object properties list to the given value.
+	 *
+	 * $currentLocation = new SLPlus_Location();
+	 * $currentLocation->store = 'My Place';
+	 *
+	 * @param mixed $property
+	 * @param mixed $value
+	 * @return \SLPlus_Location
+	 */
+	public function __set($property,$value) {
+		if (property_exists($this, $property)) {
+			$this->$property = $value;
+		}
+
+		// Extended Data, allow property as long as it does not conflict
+		// with a built-in property.
+		//
+		if (
+			$this->slplus->database->is_Extended()                  &&
+			$this->slplus->database->extension->has_ExtendedData()  &&
+			! property_exists($this,$property)
+		) {
+			$this->exdata[$property] = $value;
+		}
+		return $this;
+	}
+
+	//-------------------------------------------------
+	// Methods
+	//-------------------------------------------------
+
+
+	/**
      * Add an address into the SLP locations database.
      *
      * duplicates_handling can be:
@@ -502,29 +569,6 @@ class SLPlus_Location {
 
 
         return $this->linked_postid;
-    }
-
-    /**
-     * Fetch a location property from the valid object properties list.
-     *
-     * $currentLocation = new SLPlus_Location();
-     * print $currentLocation->id;
-     * 
-     * @param mixed $property - which property to set.
-     * @return null
-     */
-    public function __get($property) {
-        if (property_exists($this, $property)) {
-            return $this->$property;
-        }
-        if (
-            $this->slplus->database->is_Extended()                  &&
-            $this->slplus->database->extension->has_ExtendedData()  &&
-            isset($this->exdata[$property])
-            ) {
-            return $this->exdata[$property];
-        }
-        return null;
     }
 
     /**
@@ -1078,33 +1122,6 @@ class SLPlus_Location {
         return $result;
     }
 
-    /**
-     * Set a location property in the valid object properties list to the given value.
-     *
-     * $currentLocation = new SLPlus_Location();
-     * $currentLocation->store = 'My Place';
-     *
-     * @param mixed $property
-     * @param mixed $value
-     * @return \SLPlus_Location
-     */
-    public function __set($property,$value) {
-        if (property_exists($this, $property)) {
-            $this->$property = $value;
-        }
-        
-        // Extended Data, allow property as long as it does not conflict
-        // with a built-in property.
-        //
-        if (
-            $this->slplus->database->is_Extended()                  &&
-            $this->slplus->database->extension->has_ExtendedData()  &&
-            ! property_exists($this,$property)
-            ) {
-            $this->exdata[$property] = $value;
-        }
-        return $this;
-    }
 
     /**
      * Set location properties via a named array containing the field data.

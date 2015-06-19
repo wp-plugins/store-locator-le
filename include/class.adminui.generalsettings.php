@@ -401,7 +401,6 @@ class SLPlus_AdminUI_GeneralSettings {
         $this->settings = new wpCSL_settings__slplus(
             array(
                     'prefix'            => $this->slplus->prefix,
-                    'css_prefix'        => $this->slplus->prefix,
                     'url'               => $this->slplus->url,
                     'name'              => $this->slplus->name . ' - ' . __('General Settings','csa-slplus'),
                     'plugin_url'        => $this->slplus->plugin_url,

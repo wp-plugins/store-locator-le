@@ -318,7 +318,7 @@ class SLPlus_Activation {
         //
         $this->db_version_on_start     = get_option( SLPLUS_PREFIX."-db_version" , '' );
         if ($this->db_version_on_start == '') {
-            add_option(SLPLUS_PREFIX."-db_version", $this->slplus->version);
+            add_option(SLPLUS_PREFIX."-db_version", SLPLUS_VERSION);
             add_option(SLPLUS_PREFIX.'_disable_find_image','1');                // Disable the image find locations on new installs
 
         // Updating previous install
@@ -450,9 +450,9 @@ class SLPlus_Activation {
 
             // Set DB Version
             //
-            update_option(SLPLUS_PREFIX."-db_version", $this->slplus->version);
+            update_option(SLPLUS_PREFIX."-db_version", SLPLUS_VERSION);
         }
-	    update_option(SLPLUS_PREFIX . '-installed_base_version', $this->slplus->version);
+	    update_option(SLPLUS_PREFIX . '-installed_base_version', SLPLUS_VERSION);
         update_option(SLPLUS_PREFIX.'-theme_lastupdated','2006-10-05');
 
         // Update Tables, Setup Roles
