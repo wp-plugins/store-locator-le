@@ -3,7 +3,7 @@
 Plugin Name: Store Locator Plus
 Plugin URI: http://www.storelocatorplus.com/
 Description: Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
-Version: 4.2.60
+Version: 4.2.62
 Tested up to: 4.2.2
 Author: Store Locator Plus
 Author URI: http://www.storelocatorplus.com
@@ -49,35 +49,17 @@ if ( version_compare( $wp_version, '3.8', '<' ) ) {
 	return;
 }
 
-if (defined('SLPLUS_VERSION') === false) {
-    define('SLPLUS_VERSION', '4.2.60');
-}
+if ( defined( 'SLPLUS_VERSION'   ) === false ) { define( 'SLPLUS_VERSION'    , '4.2.62'                             ); } // Current plugin version.
+if ( defined( 'SLPLUS_NAME'      ) === false ) { define( 'SLPLUS_NAME'       , __('Store Locator Plus','csa-slplus')); } // Plugin name via gettext.
+if ( defined( 'SLPLUS_PREFIX'    ) === false ) { define( 'SLPLUS_PREFIX'     , 'csl-slplus'                         ); } // The shorthand prefix to various option settings, etc.
+if ( defined( 'SLP_ADMIN_PAGEPRE') === false ) { define( 'SLP_ADMIN_PAGEPRE' , 'store-locator-plus_page_'           ); } // Admin Page Slug Prefix
 
-// Drive Path Defines
-//
-if (defined('SLPLUS_PLUGINDIR') === false) {
-    define('SLPLUS_PLUGINDIR', plugin_dir_path(__FILE__));
-}
-if (defined('SLPLUS_ICONDIR') === false) {
-    define('SLPLUS_ICONDIR', SLPLUS_PLUGINDIR . 'images/icons/');
-}
-
-
-// URL Defines
-//
-if (defined('SLPLUS_PLUGINURL') === false) {
-    define('SLPLUS_PLUGINURL', plugins_url('',__FILE__));
-}
-define('SLPLUS_COREURL',SLPLUS_PLUGINURL);
-if (defined('SLPLUS_ICONURL') === false) {
-    define('SLPLUS_ICONURL', SLPLUS_PLUGINURL . '/images/icons/');
-}
-
-// The relative path from the plugins directory
-//
-if (defined('SLPLUS_BASENAME') === false) {
-    define('SLPLUS_BASENAME', plugin_basename(__FILE__));
-}
+if ( defined( 'SLPLUS_FILE'      ) === false ) { define( 'SLPLUS_FILE'       , __FILE__                             ); } // Pointer to this file.
+if ( defined( 'SLPLUS_PLUGINDIR' ) === false ) { define( 'SLPLUS_PLUGINDIR'  , plugin_dir_path( __FILE__ )          ); } // Fully qualified path to this install directory.
+if ( defined( 'SLPLUS_ICONDIR'   ) === false ) { define( 'SLPLUS_ICONDIR'    , SLPLUS_PLUGINDIR . 'images/icons/'   ); } // Path to the icon images
+if ( defined( 'SLPLUS_PLUGINURL' ) === false ) { define( 'SLPLUS_PLUGINURL'  , plugins_url( '' , __FILE__ )         ); } // Fully qualified URL to this plugin directory.
+if ( defined( 'SLPLUS_ICONURL'   ) === false ) { define( 'SLPLUS_ICONURL'    , SLPLUS_PLUGINURL . '/images/icons/'  ); } // Fully qualified URL to the icon images.
+if ( defined( 'SLPLUS_BASENAME'  ) === false ) { define( 'SLPLUS_BASENAME'   , plugin_basename( __FILE__ )          ); } // The relative path from the plugins directory
 
 // SLP Uploads Dir
 //
@@ -98,77 +80,21 @@ if (defined('SLPLUS_UPLOADDIR') === false) {
     }
 }
 
-// Our product prefix
-//
-if (defined('SLPLUS_PREFIX') === false) {
-    define('SLPLUS_PREFIX', 'csl-slplus');
-}
-
-// Admin Page Slug Prefix
-if (defined('SLP_ADMIN_PAGEPRE') === false) {
-    define('SLP_ADMIN_PAGEPRE', 'store-locator-plus_page_');
-}
+define( 'SLPLUS_COREURL'    , SLPLUS_PLUGINURL );
 
 //====================================================================
 // Main Plugin Configuration
 //====================================================================
 
 /**
- * @var SLPlus $slplus_plugin an extended wpCSL object for this plugin.
+ * @var SLPlus $slplus_plugin
  */
 global $slplus_plugin;
-
-/**
- * We need the generic WPCSL plugin class, since that is thed
- * foundation of much of our plugin.  So here we make sure that it has
- * not already been loaded by another plugin that may also be
- * installed, and if not then we load it.
- */
-if (defined('SLPLUS_PLUGINDIR')) {
-
-    // SLPlus Base Class
-    //
-    if (class_exists('SLPlus') == false) {
+if ( defined('SLPLUS_PLUGINDIR') && ! is_a( $slplus_plugin , 'SLPlus' ) ) {
+    if ( class_exists( 'SLPlus' ) == false ) {
         require_once(SLPLUS_PLUGINDIR.'include/class.slplus.php');
     }
-
-    /**
-     * This section defines the settings for the admin menu.
-     */
-    global $wpdb;
-    $slplus_plugin = new SLPlus(
-        array(
-            'version'               => SLPLUS_VERSION,
-            'prefix'                => SLPLUS_PREFIX,
-            'css_prefix'            => SLPLUS_PREFIX,
-            'name'                  => __('Store Locator Plus','csa-slplus'),
-            'admin_slugs'           => array(
-                'slp_general_settings'                          ,
-                'settings_page_csl-slplus-options'              ,
-                'slp_general_settings'  ,
-                SLP_ADMIN_PAGEPRE . 'slp_general_settings'  ,
-                'slp_info'              ,
-                SLP_ADMIN_PAGEPRE . 'slp_info'              ,
-                'slp_manage_locations'  ,
-                SLP_ADMIN_PAGEPRE . 'slp_manage_locations'  ,
-                'slp_map_settings'      ,
-                SLP_ADMIN_PAGEPRE . 'slp_map_settings'      ,
-                ),
-            'admin_main_slug'       => 'slp_info'               ,
-
-            'url'                   => 'http://www.storelocatorplus.com/',
-            'wp_downloads_url'      => 'http://wordpress.org/plugins/store-locator-le/developers/',
-            'support_url'           => 'http://www.storelocatorplus.com/support/documentation/store-locator-plus/',
-            'purchase_url'          => 'http://www.storelocatorplus.com/product-category/slp4-products/',
-            'updater_url'           => 'http://www.storelocatorplus.com/wp-admin/admin-ajax.php',
-            'broadcast_url'         => 'http://www.storelocatorplus.com/signage/index.php?sku=SLP4',
-
-            'fqfile'                => __FILE__,
-            'basefile'              => SLPLUS_BASENAME,
-            'plugin_path'           => SLPLUS_PLUGINDIR,
-            'plugin_url'            => SLPLUS_PLUGINURL,
-        )
-    );
+    $slplus_plugin = new SLPlus();
 }
 
 //====================================================================
@@ -199,8 +125,6 @@ $slplus_plugin->UI = new SLPlus_UI(array('slplus'=>$slplus_plugin));
 require_once(SLPLUS_PLUGINDIR . 'include/class.wpml.php');
 $slplus_plugin->WPML = new SLPlus_WPML(array('parent'=>$slplus_plugin));
 
-require_once(SLPLUS_PLUGINDIR . 'include/class.ajax.mobilelistener.php');
-
 require_once(SLPLUS_PLUGINDIR . 'include/class.ajaxhandler.php');
 $slplus_plugin->AjaxHandler = new SLPlus_AjaxHandler(array('parent'=>$slplus_plugin));
 
@@ -230,17 +154,10 @@ add_action('dmp_addpanel'       ,array($slplus_plugin->Actions,'create_DMPPanels
 // AJAX Hooks
 //------------------------
 
-// Mobile Listener
-//
-add_action('wp_ajax_csl_get_locations'          , array('csl_mobile_listener', 'GetLocations'));
-add_action('wp_ajax_nopriv_csl_get_locations'   , array('csl_mobile_listener', 'GetLocations'));
-
 // Ajax search
 //
 add_action('wp_ajax_csl_ajax_search'            , array($slplus_plugin->AjaxHandler,'csl_ajax_search'));
 add_action('wp_ajax_nopriv_csl_ajax_search'     , array($slplus_plugin->AjaxHandler,'csl_ajax_search'));
-
-add_action('wp_ajax_nopriv_csl_get_closest_location', array('csl_mobile_listener', 'GetClosestLocation'));
 
 // Ajax Load
 //

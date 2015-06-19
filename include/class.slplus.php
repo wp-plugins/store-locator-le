@@ -1,20 +1,15 @@
 <?php
 if (! class_exists('SLPlus')) {
-    require_once(SLPLUS_PLUGINDIR . 'lib/class.plugin.php');
-
 
     /**
      * The base plugin class for Store Locator Plus.
-     *
-     * "gloms onto" the WPCSL base class, extending it for our needs.
      *
      * @package StoreLocatorPlus
      * @author Lance Cleveland <lance@charlestonsw.com>
      * @copyright 2012-2015 Charleston Software Associates, LLC
      *
      */
-    class SLPlus extends wpCSL_plugin__slplus
-    {
+    class SLPlus {
         //-------------------------------------
         // Constants
         //-------------------------------------
@@ -81,6 +76,13 @@ if (! class_exists('SLPlus')) {
          */
         public $add_ons;
 
+	    /**
+	     * The registered admin page hooks for the plugin.
+	     *
+	     * @var string[] $admin_slugs
+	     */
+	    public $admin_slugs = array();
+
         /**
          * The Admin UI object.
          *
@@ -102,19 +104,10 @@ if (! class_exists('SLPlus')) {
          */
         public $AjaxHandler;
 
-        /**
-         * The User Interface object.
-         *
-         * @var SLPlus_UI $UI
-         */
-        public $UI;
-
-        /**
-         * The WPML Interface object.
-         *
-         * @var SLPlus_WPML $WPML
-         */
-        public $WPML;
+	    /**
+	     * @var string
+	     */
+	    private $current_admin_page = '';
 
         /**
          * The current location.
@@ -283,9 +276,14 @@ if (! class_exists('SLPlus')) {
         /**
          * The extension object.
          *
-         * @var \SLP_Extension
+         * @var SLP_Extension
          */
         public $extension;
+
+	    /**
+	     * @var string
+	     */
+	    public $fqfile;
 
         /**
          * Array of slugs + booleans for plugins we've already fetched info for.
@@ -333,6 +331,7 @@ if (! class_exists('SLPlus')) {
             'label_website' => '',
             'map_center' => '',
             'map_domain' => 'maps.google.com',
+	        'no_homeicon_at_start' => '1',        // EM has admin UI for this setting.
             'slplus_version' => SLPLUS_VERSION,
             'zoom_level' => '12',
 
@@ -411,12 +410,30 @@ if (! class_exists('SLPlus')) {
          */
         public $database;
 
+	    /**
+	     * True if debug-my-plugin is installed and active.
+	     *
+	     * @var bool
+	     */
+	    private $debugMP_is_active = false;
+
         /**
          * Full path to this plugin directory.
          *
          * @var string $dir
          */
         private $dir;
+
+	    /**
+	     * Debug My Plugin stack
+	     *
+	     * named array, key is the panel ID
+	     *
+	     * key is an array that is the params for the DMP function calls.
+	     *
+	     * @var mixed[]
+	     */
+	    private $dmpStack = array('main' => array());
 
         /**
          * Sets the values of the $data array.
@@ -432,12 +449,26 @@ if (! class_exists('SLPlus')) {
          */
         public $dataElements;
 
+	    /**
+	     * True if we are on an admin page for the plugin.
+	     *
+	     * @var boolean $isOurAdminPage
+	     */
+	    public $isOurAdminPage = false;
+
         /**
          * Quick reference for the Force Load JavaScript setting.
          *
          * @var boolean
          */
         public $javascript_is_forced = true;
+
+	    /**
+	     * The plugin meta data.
+	     *
+	     * @var mixed[] $metadata
+	     */
+	    public $metadata;
 
         /**
          * Set to true if the plugin data was already loaded.
@@ -446,6 +477,32 @@ if (! class_exists('SLPlus')) {
          */
         public $pluginDataLoaded = false;
 
+	    /**
+	     * The fully qualified directory name where the plugin is installed.
+	     *
+	     * @var string $plugin_path
+	     */
+	    public $plugin_path;
+
+	    /**
+	     * The URL that reaches the home directory for the plugin.
+	     *
+	     * @var string $plugin_url
+	     */
+	    public $plugin_url;
+
+	    /**
+	     * The purchase URL for products.
+	     *
+	     * @var string
+	     */
+	    private $purchase_url = 'http://www.storelocatorplus.com/product-category/slp4-products/';
+
+	    /**
+	     * @var bool
+	     */
+	    public $shortcode_was_rendered = false;
+
         /**
          * What slug do we go by?
          *
@@ -453,12 +510,17 @@ if (! class_exists('SLPlus')) {
          */
         public $slug;
 
-        /**
-         * Full URL to this plugin directory.
-         *
-         * @var string $url
-         */
-        public $url;
+	    /**
+	     * The style handle for CSS invocation.
+	     *
+	     * @var string
+	     */
+	    public $styleHandle = 'wpcsl';
+
+	    /**
+	     * @var string
+	     */
+	    public $support_url = 'http://www.storelocatorplus.com/support/documentation/store-locator-plus/';
 
 	    /**
 	     * The version that was installed at the start of the plugin (prior installed version).
@@ -468,9 +530,52 @@ if (! class_exists('SLPlus')) {
 	    public $installed_version = null;
 
 	    /**
+	     * @var wpCSL_helper__slplus
+	     */
+	    public $helper;
+
+	    /**
+	     * @var string
+	     */
+	    public $name;
+
+	    /**
+	     * @var wpCSL_notifications__slplus
+	     */
+	    public $notifications;
+
+	    /**
+	     * @var string
+	     */
+	    public $prefix = '';
+
+	    /**
+	     * @var wpCSL_settings__slplus
+	     */
+	    public $settings;
+
+	    /**
 	     * @var PluginTheme
 	     */
 	    public $themes;
+
+	    /**
+	     * @var string
+	     */
+	    public $updater_url = 'http://www.storelocatorplus.com/wp-admin/admin-ajax.php';
+
+	    /**
+	     * Full URL to this plugin directory.
+	     *
+	     * @var string $url
+	     */
+	    public $url = 'http://www.storelocatorplus.com/';
+
+
+	    /**
+	     * @var SLPlus_UI
+	     */
+	    public $UI;
 
 	    /**
 	     * The current plugin version intended to be run now.
@@ -479,29 +584,48 @@ if (! class_exists('SLPlus')) {
 	     */
 	    public $version;
 
+	    /**
+	     * @var SLPlus_WPML $WPML
+	     */
+	    public $WPML;
+
         //-------------------------------------
         // Methods
         //-------------------------------------
 
         /**
          * Initialize a new SLPlus Object
-         *
-         * @param mixed[] $params - a named array of the plugin options for wpCSL.
          */
-        public function __construct( $params )  {
-            $this->url = plugins_url('', __FILE__);
-            $this->dir = plugin_dir_path(__FILE__);
-            $this->slug = plugin_basename(__FILE__);
+        public function __construct()  {
 
-	        foreach ( $params as $property => $value ) {
-		        if ( property_exists( $this , $property ) ) {
-			        $this->$property = $value;
-		        }
-	        }
+	        // Properties set via define or hard calculation.
+	        //
+	        $this->basefile             = SLPLUS_BASENAME;
+	        $this->fqfile               = SLPLUS_FILE;
+	        $this->dir                  = plugin_dir_path(SLPLUS_FILE);
+	        $this->name                 = SLPLUS_NAME;
+	        $this->plugin_path          = SLPLUS_PLUGINDIR;
+	        $this->plugin_url           = SLPLUS_PLUGINURL;
+	        $this->prefix               = SLPLUS_PREFIX;
+	        $this->slug                 = plugin_basename(SLPLUS_FILE);
+	        $this->url                  = plugins_url('', SLPLUS_FILE);
 
-            parent::__construct($params);
+	        // Properties Set By Methods
+	        //
+	        $this->current_admin_page   = $this->get_admin_page();
+	        $this->debugMP_is_active    = $this->is_debugMP_active();
 
-	        $this->createobject_themes();
+	        // Attach objects
+	        //
+	        $this->attach_notifications();
+	        $this->attach_helper();
+	        $this->attach_settings();
+	        $this->attach_themes();
+
+	        // Setup pointers and WordPress connections
+	        //
+	        $this->add_refs();
+	        $this->add_wp_actions();
 
             $this->initDB();
 
@@ -519,6 +643,158 @@ if (! class_exists('SLPlus')) {
             // HOOK: slp_invocation_complete
             do_action('slp_invocation_complete');
         }
+
+	    /**
+	     * Add meta links.
+	     *
+	     * TODO: ADMIN ONLY
+	     *
+	     * @param type $links
+	     * @param type $file
+	     * @return string
+	     */
+	    function add_meta_links($links, $file) {
+
+		    if ($file == $this->basefile) {
+			    if (isset($this->support_url)) {
+				    $links[] = '<a href="' . $this->support_url . '" title="' . __('Documentation', 'csa-slplus') . '">' .
+				               __('Documentation', 'csa-slplus') . '</a>';
+			    }
+			    if (isset($this->purchase_url)) {
+				    $links[] = '<a href="' . $this->purchase_url . '" title="' . __('Buy Upgrades', 'csa-slplus') . '">' .
+				               __('Buy Upgrades', 'csa-slplus') . '</a>';
+			    }
+			    $links[] = '<a href="options-general.php?page=' . $this->prefix . '-options" title="' .
+			               __('Settings', 'csa-slplus') . '">' . __('Settings', 'csa-slplus') . '</a>';
+		    }
+		    return $links;
+	    }
+
+	    /**
+	     * Add reflection references to settings.
+	     */
+	    function add_refs() {
+		    // Notifications
+		    if (isset($this->settings)) {
+			    if (isset($this->notifications) && !isset($this->settings->notifications))
+				    $this->settings->notifications = &$this->notifications;
+			    if (isset($this->themes) && !isset($this->settings->themes))
+				    $this->settings->themes = &$this->themes;
+		    }
+
+		    // Helper
+		    if (isset($this->helper)) {
+			    if (isset($this->helper) && !isset($this->helper->notifications))
+				    $this->helper->notifications = &$this->notifications;
+		    }
+
+		    // Themes
+		    if (isset($this->themes)) {
+			    if (isset($this->themes) && !isset($this->themes->notifications))
+				    $this->themes->notifications = &$this->notifications;
+			    if (isset($this->settings) && !isset($this->themes->settings))
+				    $this->themes->settings = &$this->settings;
+		    }
+	    }
+
+	    /**
+	     * Setup WordPress action scripts.
+	     *
+	     * Note: admin_menu is not called on every admin page load
+	     * Reference: http://codex.wordpress.org/Plugin_API/Action_Reference
+	     */
+	    function add_wp_actions() {
+
+		    // TODO: Admin Only
+		    //
+		    if (is_admin()) {
+			    add_action('admin_menu', array($this, 'create_options_page'));
+			    add_action('admin_init', array($this, 'admin_init'), 50);
+			    add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_stylesheet'));
+			    add_action('admin_notices', array($this->notifications, 'display'));
+		    }
+
+		    add_filter('plugin_row_meta', array($this, 'add_meta_links'), 10, 2);
+	    }
+
+	    /**
+	     * WordPress admin_init hook (runs after admin_menu has run)
+	     *
+	     * TODO: Admin Only
+	     */
+	    function admin_init() {
+		    $this->settings->register();
+	    }
+
+	    /**
+	     * Create the help object and attach it.
+	     */
+	    function attach_helper() {
+		    if ( ! isset( $this->helper ) ) {
+			    require_once( 'class.helper.php' );
+			    $this->helper = new wpCSL_helper__slplus(
+				    array(
+					    'slplus' => $this
+				    )
+			    );
+		    }
+	    }
+
+	    /**
+	     * Create the notifications object and attach it.
+	     *
+	     */
+	    function attach_notifications() {
+		    if ( ! isset( $this->notifications ) ) {
+			    require_once( 'class.notifications.php' );
+			    $this->notifications = new wpCSL_notifications__slplus(
+				    array(
+					    'prefix' => SLPLUS_PREFIX,
+					    'name'   => $this->name,
+					    'url'    => 'options-general.php?page=' . SLPLUS_PREFIX . '-options',
+				    )
+			    );
+		    }
+	    }
+
+	    /**
+	     * Create the settings object and attach it.
+	     */
+	    function attach_settings() {
+		    if ( ! isset( $this->settings ) ) {
+			    require_once( 'class.settings.php' );
+			    $this->settings = new wpCSL_settings__slplus(
+				    array(
+					    'prefix'     => SLPLUS_PREFIX,
+					    'css_prefix' => SLPLUS_PREFIX,
+					    'plugin_url' => $this->plugin_url,
+					    'name'       => $this->name,
+					    'url'        => ( isset( $this->url ) ? $this->url : null ),
+					    'parent'     => $this
+				    )
+			    );
+		    }
+	    }
+
+	    /**
+	     * Create the theme object and attach it.
+	     */
+	    function attach_themes() {
+		    if ( ! isset( $this->themes ) ) {
+			    require_once( 'class.themes.php' );
+			    $this->themes = new PluginTheme(
+				    array(
+					    'notifications' => $this->notifications,
+					    'plugin_path'   => $this->plugin_path,
+					    'plugin_url'    => $this->plugin_url,
+					    'prefix'        => SLPLUS_PREFIX,
+					    'slplus'        => $this,
+					    'support_url'   => $this->support_url,
+				    )
+			    );
+		    }
+	    }
+
 
 	    /**
 	     * Connect SLPlus_Activation object to Activation property.
@@ -541,24 +817,119 @@ if (! class_exists('SLPlus')) {
         }
 
 	    /**
-	     * Create the theme object and attach it.
+	     * Sets $this->isOurAdminPage true if we are on a SLP managed admin page.  Returns true/false accordingly.
+	     *
+	     * TODO: ADMIN ONLY
 	     */
-	    function createobject_themes() {
-		    if ( ! isset( $this->themes ) ) {
-			    require_once( 'class.themes.php' );
-			    $this->themes = new PluginTheme(
-				    array(
-					    'notifications' => $this->notifications,
-					    'parent'        => $this,
-					    'plugin_path'   => $this->plugin_path,
-					    'plugin_url'    => $this->plugin_url,
-					    'prefix'        => SLPLUS_PREFIX,
-					    'slplus'        => $this,
-					    'support_url'   => $this->support_url,
-				    )
+	    function check_IsOurAdminPage() {
+		    if ( empty( $this->admin_slugs ) ) {
+			    $this->admin_slugs = array(
+				    'slp_general_settings'                          ,
+				    'settings_page_csl-slplus-options'              ,
+				    'slp_general_settings'  ,
+				    SLP_ADMIN_PAGEPRE . 'slp_general_settings'  ,
+				    'slp_info'              ,
+				    SLP_ADMIN_PAGEPRE . 'slp_info'              ,
+				    'slp_manage_locations'  ,
+				    SLP_ADMIN_PAGEPRE . 'slp_manage_locations'  ,
+				    'slp_map_settings'      ,
+				    SLP_ADMIN_PAGEPRE . 'slp_map_settings'      ,
 			    );
 		    }
+
+		    $this->admin_slugs = apply_filters('wpcsl_admin_slugs', $this->admin_slugs);
+
+		    if (!is_admin()) {
+			    $this->isOurAdminPage = false;
+			    return false;
+		    }
+		    if ($this->isOurAdminPage) {
+			    return true;
+		    }
+
+		    // Our Admin Page : true if we are on the admin page for this plugin
+		    // or we are processing the update action sent from this page
+		    //
+		    $this->isOurAdminPage = (
+			    ($this->current_admin_page == $this->prefix . '-options') ||
+			    ($this->current_admin_page === 'slp_info' )
+		    );
+		    if ($this->isOurAdminPage) {
+			    return true;
+		    }
+
+
+		    // Request Action is "update" on option page
+		    //
+		    $this->isOurAdminPage = isset($_REQUEST['action']) &&
+		                            ($_REQUEST['action'] === 'update') &&
+		                            isset($_REQUEST['option_page']) &&
+		                            (substr($_REQUEST['option_page'], 0, strlen($this->prefix)) === $this->prefix)
+		    ;
+		    if ($this->isOurAdminPage) {
+			    return true;
+		    }
+
+		    // This test allows for direct calling of the options page from an
+		    // admin page call direct from the sidebar using a class/method
+		    // operation.
+		    //
+		    // To use: pass an array of strings that are valid admin page slugs for
+		    // this plugin.  You can also pass a single string, we catch that too.
+		    //
+
+		    if (isset($this->admin_slugs)) {
+			    if (!is_array($this->admin_slugs)) {
+				    $this->admin_slugs = array($this->admin_slugs);
+			    }
+			    foreach ($this->admin_slugs as $admin_slug) {
+				    $this->isOurAdminPage = ($this->current_admin_page === $admin_slug);
+				    if ($this->isOurAdminPage) {
+					    break;
+				    }
+			    }
+		    }
+		    return $this->isOurAdminPage;
 	    }
+
+
+	    /**
+	     * Create the options page.
+	     *
+	     * TODO: ADMIN ONLY
+	     */
+	    function create_options_page() {
+		    add_options_page(
+			    $this->name . ' Options', $this->name, 'administrator', $this->prefix . '-options', array(
+				    $this->settings,
+				    'render_settings_page'
+			    )
+		    );
+	    }
+
+	    /**
+	     * Return a deprecated notification.
+	     *
+	     * TODO : move to a deprecated class, invoke with attach_deprecated.
+	     *
+	     * @param string $function_name name of function that is deprecated.
+	     * @return string
+	     */
+	    public function createstring_Deprecated($function_name) {
+		    return
+			    sprintf(
+				    __('The %s method is no longer available. ', 'csa-slplus'), $function_name
+			    ) .
+			    '<br/>' .
+			    __('It is likely that one of your add-on pack is out of date. ', 'csa-slplus') .
+			    '<br/>' .
+			    sprintf(
+				    __('You need to <a href="%s" target="csa">upgrade</a> to the latest %s compatible version ' .
+				       'or <a href="%s" target="csa">downgrade</a> the %s plugin.', 'csa-slplus'), $this->purchase_url, $this->name, 'http://wordpress.org/plugins/store-locator-le/developers/', $this->name
+			    )
+			    ;
+	    }
+
 
         /**
          * Setup the database properties.
@@ -641,6 +1012,112 @@ if (! class_exists('SLPlus')) {
             $this->debugMP('slp.main', 'pr', '', $this->options_nojs);
         }
 
+	    /**
+	     * Add DebugMyPlugin messages.
+	     *
+	     * @param string $panel - panel name
+	     * @param string $type - what type of debugging (msg = simple string, pr = print_r of variable)
+	     * @param string $header - the header
+	     * @param string $message - what you want to say
+	     * @param string $file - file of the call (__FILE__)
+	     * @param int $line - line number of the call (__LINE__)
+	     * @param boolean $notime - skipping showing the time? default = true
+	     * @return null
+	     */
+	    function debugMP($panel = 'main', $type = 'msg', $header = 'wpCSL DMP', $message = '', $file = null, $line = null, $notime = true, $clearingStack = false) {
+		    if ( ! $this->debugMP_is_active ) { return; }
+
+		    // Escape HTML Messages
+		    //
+		    if (($type === 'msg') && ($message !== '')) {
+			    $message = esc_html($message);
+		    }
+
+		    // TODO : Only if DebugMyPlugin Is Active
+		    // otherwise we consume memory for no reason.
+		    //
+		    // Panel not setup yet?  Push onto stack.
+		    //
+		    if (
+			    !isset($GLOBALS['DebugMyPlugin']) ||
+			    !isset($GLOBALS['DebugMyPlugin']->panels[$panel])
+		    ) {
+			    if (!isset($this->dmpStack[$panel])) {
+				    $this->dmpStack[$panel] = array();
+			    }
+			    array_push($this->dmpStack[$panel], array($type, $header, $message, $file, $line, $notime));
+			    return;
+		    }
+
+		    // Have waiting messages?  Pop off stack.
+		    //
+		    if (!$clearingStack && isset($this->dmpStack[$panel]) && is_array($this->dmpStack[$panel])) {
+			    while ($dmpMessage = array_shift($this->dmpStack[$panel])) {
+				    $this->debugMP($panel, $dmpMessage[0], $dmpMessage[1], $dmpMessage[2], $dmpMessage[3], $dmpMessage[4], $dmpMessage[5], true);
+			    }
+		    }
+
+		    // Do normal real-time message output.
+		    //
+		    switch (strtolower($type)):
+			    case 'pr':
+				    $GLOBALS['DebugMyPlugin']->panels[$panel]->addPR($header, $message, $file, $line, $notime);
+				    break;
+			    default:
+				    $GLOBALS['DebugMyPlugin']->panels[$panel]->addMessage($header, $message, $file, $line, $notime);
+		    endswitch;
+	    }
+
+	    /**
+	     * Enqueue the admin stylesheet when needed.
+	     *
+	     * TODO: ADMIN ONLY
+	     *
+	     * @var string $hook
+	     */
+	    function enqueue_admin_stylesheet($hook) {
+		    $this->check_IsOurAdminPage();
+
+		    // The CSS file must exists where we expect it and
+		    // The admin page being rendered must be in "our family" of admin pages
+		    //
+		    if (file_exists($this->plugin_path . '/css/admin/admin.css') &&
+		        array_search($hook, $this->admin_slugs)
+		    ) {
+			    wp_register_style($this->styleHandle, $this->plugin_url . '/css/admin/admin.css');
+			    wp_enqueue_style($this->styleHandle);
+
+			    // jQuery Smoothness Theme
+			    //
+			    if (file_exists($this->plugin_path . '/css/admin/jquery-ui-smoothness.css')) {
+				    wp_enqueue_style(
+					    'jquery-ui-smoothness', $this->plugin_url . '/css/admin/jquery-ui-smoothness.css'
+				    );
+			    }
+
+			    if (file_exists($this->plugin_path . '/js/admin-interface.js')) {
+				    wp_enqueue_script(
+					    $this->styleHandle, $this->plugin_url . '/js/admin-interface.js', 'jquery', SLPLUS_VERSION, true
+				    );
+			    }
+		    }
+
+		    wp_enqueue_script('jquery-ui-dialog');
+	    }
+
+	    /**
+	     * Get the current admin page.
+	     *
+	     * @return string
+	     */
+	    private function get_admin_page() {
+	        if (isset($_GET['page'])) {
+		        $plugin_page = stripslashes($_GET['page']);
+		        return plugin_basename($plugin_page);
+	        }
+		    return '';
+	    }
+
         /**
          * Set the plugin data property.
          *
@@ -671,7 +1148,7 @@ if (! class_exists('SLPlus')) {
         function initData()
         {
             $this->data = array();
-            $this->dataElements = apply_filters('slp_attribute_values', array(
+            $this->dataElements = array(
                     array(
                         'sl_admin_locations_per_page',
                         'get_option',
@@ -705,8 +1182,7 @@ if (! class_exists('SLPlus')) {
                     array('theme',
                         'get_item',
                         array('theme', $this->defaults['theme'])
-                    ),
-                )
+                    )
             );
         }
 
@@ -715,26 +1191,26 @@ if (! class_exists('SLPlus')) {
          *
          * TODO: Legacy code, move to class.addon.manager when UML is updated.
          *
-         * @param string $addon_slug
+         * @param string $slug
          * @return boolean
          */
-        public function is_AddonActive($slug)
-        {
+        public function is_AddonActive($slug)  {
             $this->createobject_AddOnManager();
             return $this->add_ons->is_active($slug);
         }
 
-        /**
-         * Return '1' if the given value is set to 'true', 'on', or '1' (case insensitive).
-         * Return '0' otherwise.
-         *
-         * Useful for checkbox values that may be stored as 'on' or '1'.
-         *
-         * @param string $attValue
-         * @return boolean
-         */
-        public function is_CheckTrue($value, $return_type = 'boolean')
-        {
+	    /**
+	     * Return '1' if the given value is set to 'true', 'on', or '1' (case insensitive).
+	     * Return '0' otherwise.
+	     *
+	     * Useful for checkbox values that may be stored as 'on' or '1'.
+	     *
+	     * @param $value
+	     * @param string $return_type
+	     *
+	     * @return bool|string
+	     */
+        public function is_CheckTrue($value, $return_type = 'boolean')  {
             if ($return_type === 'string') {
                 $true_value = '1';
                 $false_value = '0';
@@ -760,6 +1236,19 @@ if (! class_exists('SLPlus')) {
             }
             return $false_value;
         }
+
+	    /**
+	     * Check if the debugMP plugin is active and installed.
+	     *
+	     * @return bool
+	     */
+	    public function is_debugMP_active() {
+		    include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+		    if (!function_exists('is_plugin_active') || !is_plugin_active('debug-my-plugin/debug-my-plugin.php')) {
+			    return false;
+		    }
+		    return true;
+	    }
 
         /**
          * Checks if a URL is valid.
@@ -821,6 +1310,57 @@ if (! class_exists('SLPlus')) {
             }
         }
 
+	    /**
+	     * Compare current plugin version with minimum required.
+	     *
+	     * Set a notification message.
+	     * Disable the requesting add-on pack if requirement is not met.
+	     *
+	     * $params['addon_name'] - the plain text name for the add-on pack.
+	     * $params['addon_slug'] - the slug for the add-on pack.
+	     * $params['min_required_version'] - the minimum required version of the base plugin.
+	     *
+	     * TODO: update the direct reference from slp-pages then this can go in base_class.addon.php directly.
+	     *
+	     * @param mixed[] $params
+	     */
+	    function VersionCheck($params) {
+
+		    // Minimum version requirement not met.
+		    //
+		    if (version_compare(SLPLUS_VERSION, $params['min_required_version'], '<')) {
+			    if (is_admin()) {
+				    if (isset($this->notifications)) {
+					    $this->notifications->add_notice(4, '<strong>' .
+					                                        sprintf(__('%s has been deactivated.', 'csa-slplus'
+					                                        ), $params['addon_name']
+					                                        ) . '<br/> ' .
+					                                        '</strong>' .
+					                                        sprintf(__('You have %s version %s.', 'csa-slplus'
+					                                        ), $this->name, SLPLUS_VERSION
+					                                        ) . '<br/> ' .
+					                                        sprintf(__('You need version %s or greater for this version of %s.', 'csa-slplus'
+					                                        ), $params['min_required_version'], $params['addon_name']
+					                                        ) . '<br/> ' .
+					                                        sprintf(__('Please install an older version of %s or upgrade.', 'csa-slplus'
+					                                        ), $this->name
+					                                        ) . '<br/> ' .
+					                                        sprintf(__('Upgrading major versions of %s requires paid upgrades to all related add-on packs.', 'csa-slplus'
+					                                        ), $this->name
+					                                        ) .
+					                                        '<br/><br/>'
+					    );
+				    }
+				    deactivate_plugins(array($params['addon_slug']));
+			    }
+			    return;
+		    }
+
+		    // Register add on if version is ok
+		    //
+		    $this->register_addon($params['addon_slug']);
+	    }
+
         /**
          * Load Plugin Data once.
          *
@@ -878,7 +1418,7 @@ if (! class_exists('SLPlus')) {
 			    $this->installed_version = get_option( SLPLUS_PREFIX . "-installed_base_version", '' );
 		    }
 
-		    if ( version_compare( $this->installed_version, $this->version , '<' ) ) {
+		    if ( version_compare( $this->installed_version, SLPLUS_VERSION , '<' ) ) {
 			    $this->createobject_Activation();
 			    $this->Activation->update();
 		    }

@@ -36,13 +36,6 @@ class PluginTheme {
     public $notifications;
 
     /**
-     * The plugin base object.
-     * 
-     * @var \wpCSL_plugin__slplus $parent
-     */
-    private $parent;
-
-    /**
      *
      * @var string $plugin_path
      */
@@ -103,7 +96,7 @@ class PluginTheme {
 
         // Load Up Admin Class As Needed
         //
-        if ( $this->parent->check_IsOurAdminPage() ) {
+        if ( $this->slplus->check_IsOurAdminPage() ) {
             require_once( 'class.themes.admin.php' );
             $this->admin = 
                 new PluginThemeAdmin(
@@ -151,7 +144,7 @@ class PluginTheme {
         if ( file_exists($this->css_dir.$themeFile)) {
             wp_deregister_style($this->prefix.'_user_header_css');
             wp_dequeue_style($this->prefix.'_user_header_css');
-            if ($this->parent->shortcode_was_rendered || $preRendering) {
+            if ($this->slplus->shortcode_was_rendered || $preRendering) {
                 wp_enqueue_style($this->prefix.'_user_header_css', $this->css_url .$themeFile);
             }
         }

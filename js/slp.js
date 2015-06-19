@@ -339,7 +339,6 @@ var slp = {
         this.homePoint = null;
         this.lastCenter = null;
         this.lastRadius = null;
-        this.loadedOnce = false;
 
         // AJAX communication
         //
@@ -554,9 +553,7 @@ var slp = {
             //
             this.markers = [];
             var sidebar = document.getElementById('map_sidebar');
-            if (this.loadedOnce) {
-                sidebar.innerHTML = '';
-            }
+            sidebar.innerHTML = '';
 
             // No Results
             //
@@ -619,31 +616,29 @@ var slp = {
                     }
                 }
 
-                // Set zoom
+                // Get AlL Markers
                 //
                 this.bounds = bounds;
-                this.gmap.fitBounds(this.bounds);
+                this.gmap.fitBounds( this.bounds );
 
-                // Searches, use Google Bounds - and adjust by the tweak.
-                // Initial Load Only - Use "Zoom Level"
+                // Do not auto-zoom, use the setting in WP Ux for EM
                 //
-                var newZoom =
-                        Math.max(Math.min(
-                            (
-                                (
-                                (slplus.options.no_autozoom !== "1") &&
-                                (this.loadedOnce || (markerList.length > 1))
-                                ) ?
-                                this.gmap.getZoom() - parseInt(slplus.zoom_tweak) :
-                                    parseInt(slplus.options.zoom_level)
-                            ), 20), 1)
-                    ;
-                this.gmap.setZoom(newZoom);
+                if ( slplus.options.no_autozoom === "1" ) {
+                    this.gmap.setZoom( parseInt(slplus.options.zoom_level) );
+
+                // Default : Zoom back 1 level, or if user has EM Zoom Tweak set do that.
+                } else {
+                    var current_zoom = this.gmap.getZoom();
+                    var zoom_tweak = parseInt(slplus.zoom_tweak > 0) ? slplus.zoom_tweak : (current_zoom < 3) ? 0 : 1;
+                    var new_zoom = current_zoom - zoom_tweak;
+                    if ( markerCount < 2 ) { new_zoom = Math.min( new_zoom , 15 ); }
+                    this.gmap.setZoom( new_zoom );
+                }
+
             }
 
             // Fire results output changed trigger
             //
-            this.loadedOnce = true;
             jQuery('#map_sidebar').trigger('contentchanged');
         };
 

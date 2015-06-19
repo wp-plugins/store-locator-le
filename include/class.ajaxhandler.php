@@ -227,29 +227,26 @@ class SLPlus_AjaxHandler {
 
     /**
      * Handle AJAX request for Search calls.
-     *
-     * @global type $wpdb
      */
     function csl_ajax_search() {
-        global $wpdb;
 
         // Get Locations
         //
 		$response = array();
-		$resultRowids = array();
+		$search_results_location_ids = array();
         $this->query_limit = $this->slplus->options_nojs['max_results_returned'];
         $locations = $this->execute_LocationQuery();
         foreach ($locations as $row){
             $thisLocation = $this->slp_add_marker($row);
             if (!empty($thisLocation)) {
 				$response[] = $thisLocation;
-				$resultRowids[] = $row['sl_id'];
+				$search_results_location_ids[] = $row['sl_id'];
             }
 		}
 
 		// Do report work
 		//
-		do_action('slp_report_query_result', $this->query_params, $resultRowids);
+		do_action('slp_report_query_result', $this->query_params, $search_results_location_ids);
 
         // Output the JSON and Exit
         //
@@ -440,7 +437,7 @@ class SLPlus_AjaxHandler {
         $data = array_merge(
                     array(
                         'success'       => true,
-                        'slp_version'   => $this->slplus->version,
+                        'slp_version'   => SLPLUS_VERSION,
                         'dbQuery'       => $this->dbQuery
                     ),
                     $data

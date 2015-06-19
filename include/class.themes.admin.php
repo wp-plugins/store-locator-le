@@ -43,26 +43,6 @@ class PluginThemeAdmin {
     public $notifications;
 
     /**
-     * The plugin base object.
-     *
-     * @var \wpCSL_plugin__slplus $parent
-     */
-    private $parent;
-
-    /**
-     *
-     * @var string $plugin_path
-     */
-    private $plugin_path;
-
-    /**
-     * Full web address to this plugin directory.
-     *
-     * @var string $plugin_url
-     */
-    private $plugin_url;
-
-    /**
      * The CSS and name space prefix for the plugin.
      *
      * @var string $prefix
@@ -122,7 +102,7 @@ class PluginThemeAdmin {
 
         // Description
         //
-        $HTML .= $this->parent->helper->create_SubheadingLabel(__('About This Theme','csa-slplus'));
+        $HTML .= $this->slplus->helper->create_SubheadingLabel(__('About This Theme','csa-slplus'));
         if ( empty ( $this->themeDetails[$this->current_slug]['description'] ) ) {
             $HTML .= __('No description has been set for this theme.','csa-slplus');
         } else {
@@ -145,23 +125,23 @@ class PluginThemeAdmin {
 
             // List The Add On Packs Wanted
             //
-            $HTML.= $this->parent->helper->create_SubheadingLabel(__('Add On Packs','csa-slplus'));
+            $HTML.= $this->slplus->helper->create_SubheadingLabel(__('Add On Packs','csa-slplus'));
             
             $active_HTML   = '';
             $inactive_HTML = '';
-            $this->parent->createobject_AddOnManager();
+            $this->slplus->createobject_AddOnManager();
             
             $addon_list = explode(',',$this->themeDetails[$this->current_slug]['add-ons']);
             foreach ($addon_list as $slug) {
                 $slug = trim(strtolower($slug));
-                if ( isset( $this->parent->add_ons->available[$slug] ) ) {
+                if ( isset( $this->slplus->add_ons->available[$slug] ) ) {
                     
                     // Show Active Add Ons
                     //
-                    if ( $this->parent->add_ons->available[$slug]['active'] ) {
+                    if ( $this->slplus->add_ons->available[$slug]['active'] ) {
                         $active_HTML.= 
                             "<li class='product active'>" . 
-                                $this->parent->add_ons->available[$slug]['link'] .
+                                $this->slplus->add_ons->available[$slug]['link'] .
                             '</li>'
                             ;                    
                         
@@ -170,7 +150,7 @@ class PluginThemeAdmin {
                     } else {
                         $inactive_HTML .= 
                             "<li class='product inactive'>" . 
-                                $this->parent->add_ons->available[$slug]['link'] .
+                                $this->slplus->add_ons->available[$slug]['link'] .
                             '</li>'
                             ;                                                    
                     }
@@ -221,7 +201,7 @@ class PluginThemeAdmin {
         $save_message = __('Settings have been made. Click Save Settings to activate or the User Exprience tab to cancel.','csa-slplus');
 
         $HTML =
-            $this->parent->helper->create_SubheadingLabel(__('Preferred Settings','csa-slplus')) .
+            $this->slplus->helper->create_SubheadingLabel(__('Preferred Settings','csa-slplus')) .
 
             '<a href="#" '.
             'class="like-a-button" ' .
@@ -239,8 +219,8 @@ class PluginThemeAdmin {
         foreach ( $this->theme_option_fields as $option_slug => $option_settings ) {
             if ( ! empty ( $this->themeDetails[$this->current_slug][$option_slug] ) ) {
                 $activity_class = 
-                    ( isset( $this->parent->add_ons->available[$option_settings['slug']] )   &&
-                      $this->parent->add_ons->available[$option_settings['slug']]['active']      ) ?
+                    ( isset( $this->slplus->add_ons->available[$option_settings['slug']] )   &&
+                      $this->slplus->add_ons->available[$option_settings['slug']]['active']      ) ?
                     'active'   :
                     'inactive' ;
                         
@@ -457,7 +437,6 @@ class PluginThemeAdmin {
      * @return string the div HTML
      */
     private function setup_ThemeDetails($themeArray) {
-        $this->parent->debugMP('wpcsl.main','msg','PluginTheme::'.__FUNCTION__);
         $HTML = '';
         $newDetails = false;
 

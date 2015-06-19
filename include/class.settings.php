@@ -78,8 +78,7 @@ class wpCSL_settings__slplus {
         $this->render_csl_blocks = true;        // Display the CSL info blocks
         $this->form_action = 'options.php';     // The form action for this page
         $this->save_text =__('Save Changes','csa-slplus');
-        $this->css_prefix = '';
-        
+
         // Passed Params
         //
         foreach ($params as $name => $value) {
@@ -286,7 +285,7 @@ class wpCSL_settings__slplus {
      * @return string the HTML for the news panel
      */
      function get_broadcast() {
-         $response = wp_remote_get( $this->parent->broadcast_url,  array( 'timeout' => 30 ) );
+         $response = wp_remote_get( 'http://www.storelocatorplus.com/signage/index.php?sku=SLP4',  array( 'timeout' => 30 ) );
          if ( is_array( $response ) ) { return $response[ 'body' ]; }
          return $this->default_broadcast();
      }
@@ -343,7 +342,7 @@ class wpCSL_settings__slplus {
                 array_merge(
                     $params,
                     array('plugin_url'  => $this->plugin_url,
-                          'css_prefix'  => $this->css_prefix,
+                          'css_prefix'  => SLPLUS_PREFIX,
                           'parent'      => $this            ,
                             )
                 )
@@ -444,7 +443,6 @@ class wpCSL_settings__slplus {
             array(
                 'parent'        => $this,
                 'prefix'        => $this->prefix,
-                'css_prefix'    => $this->css_prefix,
                 'display_name'  => $display_name,
                 'name'          => $name,
                 'type'          => $type,
@@ -611,10 +609,6 @@ class wpCSL_settings__slplus {
         // Render all top menus first.
         //
         foreach ($this->sections as $section) {
-            $this->debugMP('wpcsl.settings','msg',
-                    "{$section->name} first:{$section->first} is_topmenu:{$section->is_topmenu}",
-                    '',
-                    NULL,NULL,true);
             if (isset($section->is_topmenu) && ($section->is_topmenu)) {
                 $section->display();
             }
@@ -814,14 +808,12 @@ if (class_exists('wpCSL_settings_group') == false) {
          * @param mixed[] $params
          */
         function add_item($params) {
-            $this->parent->debugMP('wpcsl.settings','msg','',"settings group added {$params['name']} item",NULL,NULL,true);
             $this->items[] = new wpCSL_settings_item__slplus(
                 array_merge(
                     $params,
                     array(
                           'parent'     => $this->parent,
                           'plugin_url' => $this->plugin_url,
-                          'css_prefix' => $this->css_prefix,
                           )
                 )
             );
@@ -1349,8 +1341,8 @@ class wpCSL_settings_item__slplus {
         if ($this->required) {
             echo ((get_option($this->name) == '') ?
                 '<div class="'.$this->css_prefix.'-reqbox">'.
-                    '<div class="'.$this->css_prefix.'-reqicon"></div>'.
-                    '<div class="'.$this->css_prefix.'-reqtext">This field is required.</div>'.
+                    '<div class="'.SLPLUS_PREFIX.'-reqicon"></div>'.
+                    '<div class="'.SLPLUS_PREFIX.'-reqtext">This field is required.</div>'.
                 '</div>'
                 : ''
                 );

@@ -48,6 +48,25 @@ class wpCSL_helper__slplus {
 
     }
 
+	/**
+	 * Create a WordPress-like settings message error box.
+	 *
+	 * Uses same class as that for the built-in "settings saved" message.
+	 *
+	 * @param $message
+	 * @param string $message_detail
+	 *
+	 * @return string
+	 */
+	function create_string_wp_setting_error_box( $message , $message_detail = '' ) {
+		if ( ! empty( $message ) ) { $message .= '<br/>'; }
+		return
+			'<div id="setting-error-settings_updated" class="updated settings-error">' .
+				"<p><strong>{$message}</strong>${message_detail}</p>" .
+			'</div>'
+			;
+	}
+
     /**
      * Generate the HTML for a drop down settings interface element.
      *
@@ -57,7 +76,7 @@ class wpCSL_helper__slplus {
     function createstring_DropDownDiv($params) {
         return
             "<div class='form_entry'>".
-                "<div class='".$this->slplus->css_prefix."-input'>" .
+                "<div class='".SLPLUS_PREFIX."-input'>" .
                 "<label  for='{$params['name']}'>{$params['label']}:</label>".
                 $this->createstring_DropDownMenu($params) .
                 "</div>".
@@ -202,12 +221,12 @@ class wpCSL_helper__slplus {
             $moreInfoText = esc_html($msg);
             return
                 "<a class='dashicons dashicons-editor-help slp-no-box-shadow' ".
-                    "onclick=\"jQuery('div#{$this->slplus->css_prefix}-help{$jqDivName}').toggle('slow');\" ".
+                    "onclick=\"jQuery('div#".SLPLUS_PREFIX."-help{$jqDivName}').toggle('slow');\" ".
                     "href=\"javascript:;\" ".
                     "alt='{$moreInfoText}' title='{$moreInfoText}'" .
                     '>'.
                 "</a>".
-                "<div id='{$this->slplus->css_prefix}-help{$divname}' class='input_note wpcsl_helptext' style='display: none;'>".
+                "<div id='".SLPLUS_PREFIX."-help{$divname}' class='input_note wpcsl_helptext' style='display: none;'>".
                     $msg.
                 "</div>"
                 ;
@@ -242,7 +261,7 @@ class wpCSL_helper__slplus {
             if ($checkOption === null) { $checkOption = get_option($whichbox,$default); }
             return
                 "<div class='form_entry'>".
-                    "<div class='".$this->slplus->css_prefix."-input'>" .
+                    "<div class='".SLPLUS_PREFIX."-input'>" .
                     "<label  for='$whichbox' ".
                         ($disabled?"class='disabled '":' ').
                         ">$label:</label>".
@@ -311,7 +330,6 @@ class wpCSL_helper__slplus {
      * @param $checkbox_name
      */
     function create_checkbox_post( $checkbox_name ) {
-        $this->slplus->debugMP('msg', get_class() . '::' . __FUNCTION__ );
         $_POST[$checkbox_name] = ( isset( $_POST[$checkbox_name] ) && ! empty( $_POST[$checkbox_name] ) ) ? 1 : 0 ;
     }
 
@@ -396,11 +414,6 @@ class wpCSL_helper__slplus {
                     $this->slplus->data[$element] = $this->slplus->settings->get_item($params,$default,'-',$forceReload);
                 }
 
-
-           // If not using get_option, assume $function is an anon and run it
-           //
-           } else {
-                $this->slplus->data[$element] = $function($params);
            }
        }
 

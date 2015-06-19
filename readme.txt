@@ -5,7 +5,7 @@ Donate link: http://www.storelocatorplus.com/product/store-locator-plus-4/
 Tags:address location map, address map, admin, ajax, best google maps,business locations, coordinates, custom google maps, dealer locater, dealer locator, directions, easy map, geo, geocoder, geocoding, gmaps, google, google map, google map plugin, google maps,google maps, google map widget, jquery, latitude, location, location finder, locator, locator maps, longitude, map, map creator, map directions, map maker, map markers, map multiple locations, map of addresses, mapper, mapping, mapping software, mapping tools, map plugin, maps, map tools, map widget, marker, page, places, plugin, polygons, polylines, post, posts, proximity, proximity search, routes, shop finder, shop locator, shops, shortcode, store finder, store locater, store locator, store locator map, stores, streetview, widget, wordpress locator, wp google map, wp google maps, wp maps, zipcode, zip code, zip code locator, zipcode locator, zip code search, zipcode search
 Requires at least: 3.8
 Tested up to: 4.2.2
-Stable tag: 4.2.60
+Stable tag: 4.2.62
 License: GLPv2 or later
 
 Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
@@ -308,7 +308,20 @@ Store Locator Plus has built-in interfaces for WPML.
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
 
-= 4.2.60 ( 2015-June) =
+= 4.2.62 (2015-June) =
+
+* Fix: Manage locations search filter.
+* Fix: Manage locations sort order.
+* Enhancement: New installs with a single location will zoom out to show that location and the home marker at the center of the country.
+* Enhancement: First map load (without search) will not display the home marker.   Further control over this settings is provided by [Enhanced Map](http://www.storelocatorplus.com/product/slp4-enhanced-map/).
+* Enhancement: Manage locations admin interface has been simplified when where are not locations configured.
+* Enhancement: Manage locations admin interface returns a lot faster when no locations match a search query or filter.
+* Enhancement: Refactor the main legacy libraries from a cross-plugin platform to eliminate extra overhead.
+* Change: Mobile Listener class has been removed.   For security reasons, mobile app developers should be using the standard AJAX search and query methods in the AJAX class.
+* Note: The plugin is still mobile-friendly and incorporates responsive design elements.  Responsive design is heavily dependant on your WordPress theme.
+* 4.2.62: patch help icons on admin panel (introduced in 4.2.61 prerelease).
+
+= 4.2.60 ( 2015-June-12 ) =
 
 * Fix: Address fatal error on activation when CSS save directory is not pre-existing or there are directory permission issues on /wp-content/uploads.
 * Enhancement: Fail gracefully if on WP < 3.8.
@@ -484,117 +497,3 @@ Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.co
 * Enhancement: Added manage_slp_admin to the Store Locator Plus custom taxonomy (stores) allowing 3rd party add-ons to grant user permissions to manage/edit/delete/assign store categories.
 * Fix: Google OEM License fields can be deleted after they are set to a value.
 * Fix: Google OEM API queries are working again.
-
-= 4.2.23 (2014-Dec-28) =
-
-* Change: Remove Google API key support.  It is no longer used by Google Maps API V3.
-* Change: Tweak the before and after shortcode rendering hook to pass along attributes.
-* Fix: Fix the Add-on Framework update checker, all premium add-on packs should now receive proper update notifications.
-* Fix: [homeicon](http://www.charlestonsw.com/support/documentation/store-locator-plus/getting-started/shortcodes/#homeicon) and [endicon](http://www.charlestonsw.com/support/documentation/store-locator-plus/getting-started/shortcodes/#endicon) SLPLUS shortcode attributes have been fixed (requires Pro Pack).
-
-= 4.2.22 (2014-Dec-22) =
-
-* Change: Default SLP Theme has been modified to provide better design for the WP 4.1 2015 theme.
-* Enhancement: The Default 2014 theme has been added, it is the prior Default theme.  If your UI change switch your SLP Theme to Default 2014.
-* Enhancement: Add slp_before_render_shortcode action hook, called immediately before do_shortcode for SLPLUS.   Added for Multimap add-on support.
-* Enhancement: Add slp_after_render_shortcode action hook, called after do_shortcode for SLPLUS.   Added for Multimap add-on support.
-
-= 4.2.21 (2014-Dec-19) =
-
-* Enhancement: Locations admin page updated to auto-load WordPress WPListTable class for support of Gravity Forms integration plugin by DeBaat.
-* Enhancement: Add some new helper functions to simplify checkbox processing.
-* Enhancement: Add WordPress and PHP memory limit settings to plugin environment panel.
-* Enhancement: Add link to add-on product pages when update is available.
-* Fix: Allow for decimal point in the radius selector allowing a radius like 0.5 to work.
-* NOTE: Requires an update to Enhanced Search premium add-on to be updated to version 4.2.05.
-
-
-= 4.2.19 (2014-Dec-15) =
-
-* Tested with WP 4.1, updated compatibility reference.
-* Change: Tweak the results CSS for default SLP theme for nicer presentation under WP4.1 2015 theme.
-* Fix: Test server query string is set in AJAX Handler. Prevents error notices on some servers.
-* Fix: Drop down menu processor for admin panel bulk actions, Tagalong cascading menus, etc. Broke with WP 4.0.1 changes in content processing.
-
-= 4.2.17 (2014-Dec) =
-
-* Enhancement: update admin panel CSS rules
-* Enhancement: provide disabled dropdown mechanism on admin settings
-* Change: location addition, geocoding, and lat/long lookup refactored to move from Admin class to Locations class for cron support.
-
-= 4.2.16 (2014-Nov-21) =
-
-* Enhancement: Map markers now have the location name as a tool tip.
-* Enhancement: General performance improvements to the map search engine (slp.js).
-* Enhancement: Minimum map zoom is set to 1 by default to prevent "double world wrapping".
-* Enhancement: Remove legacy defunct code for locator search and initial load, reducing overhead.
-* Enhancement: Update the add-on pack list and links.
-* Enhancement (4.2.13): Add Swedish language translation.
-* Enhancement (4.2.15): Show image on manage locations table (taken from Enhanced Results).
-* Enhancement (4.2.15): Show image instead of a "view" link in the image column.
-* Fix: Resolved an issue where searches would not execute if ignore radius was turned on, the address field was hidden, and the radius selector was hidden.
-* Fix: Remove the phantom home marker when the address field is blank and a search is performed.  Helps with state/country based searches with no radius or address selectors.
-* Fix: Stop setting map center based on previous searched location if the address field is left blank.  Fixes issues with searching with country/state/city selectors and no address.
-* Fix(4.2.13): Remove metadata variable warning introduced in 4.2.12 prerelease.
-* Fix(4.2.13): this.centerMarker is null error in slp.js introduced in 4.2.12 prerelease.
-* Fix(4.2.14): Force Google geocoding communication to SSL (https) mode when the Google API key is entered.
-* Fix(4.2.15): Adjust the admin label size to not cut off some setting labels.
-* Fix(4.2.16): Extra comma after state output (bug introduced in prior 4.2.10 release).
-
-= 4.2.10 (2014-Nov) =
-
-* Enhancement: Added settings for Google Maps for Work client ID activation to pass requests through the Google Maps Enterprise server.
-* Enhancement: Google Maps for Work will load the main map rendering from the Google Enterprise server if you have purchased a Google Enterprise key.
-* Enhancement: Google Maps for Word geocoding while loading locations is now supported.  Requires your Google Enterprise Private/Crypto key.
-* Enhancement (4.2.10): Info Plugin Environment tab now reports available updates next to the installed version.
-* Fix: Location geocoding uses the Google Maps domain set in the User Experience tab to assist in non-USA based address encoding.
-* Fix: Clean up an add-on pack manager bug that consumes far more memory than necessary.
-
-= 4.2.08 (2014-Oct) =
-
-* Fix: Fix issue with subsequent searches not working when home marker is not set.
-* Fix: Help page text, link to proper shortcode URL on website.
-
-= 4.2.07 (2014-Sep-27) =
-
-* Enhancement: Manage locations shows text when a location is inactive due to missing lat/long.
-* Enhancement: Add a new filter 'slp_edit_location_change_extended_data_info' to allow add-on packs to change the extended data columns.
-* Enhancement: Add the UI base class to the addon-on framework for SLP 4.2.
-* Enhancement: Further refinements to the Results Layout processor.
-* Enhancement: Added Results string format="decimal2" attribute for results layout settings.
-* Enhancement: Check that google is defined in JavaScript before trying to talk to them about map stuff.  Warn user if it is off but needs to be on.
-* Enhancement: Extend the AJAX add-on framework.
-* Change: do not show home marker if user does not enter an address during a search
-* Fix: Fix the HTML output on location search results (Tagalong and SME icons among others).
-* Fix: Fix the HOURS output for Enhanced Results.
-* Fix: Make the extended data system smarter with a fallback to detect extended data fields when the data options array has been corrupted.
-* Fix: Extended data fields are initialized to '0' and '' for consistency with update location method.
-
-= 4.2.05 (2014-Aug-25) =
-
-* Enhancement: Add new server-to-server speed setting.  Adjusts time the server will wait to hear back from Google during geocoding.
-* Enhancement: Increase default wait time for geocoding responses to increase positive hits on locations on slower networks.
-* Enhancement: CSV action 'slp_csv_processing_complete' added to allow add-on packs to execute functions after CSV files are imported.
-* Enhancement: Update Dutch (nl_NL) translation by [Jan de Baat](http://www.de-baat.nl/).
-* Enhancement: [Results layout strings](http://www.charlestonsw.com/support/documentation/store-locator-plus/user-experience/results/results-layout/) can now use the same field modifiers allowed in the maps bubble layout.
-* Enhancement: Added a new action hook slp_ux_modify_adminpanel_results for augmenting the UX/Results layout from add-on packs.
-* Change: sl_distance_unit option updated to serialized data to match newer options system.
-* Fix: Update administrative and UI class invocations to fix an incorrect property issue that can impact add-on packs.
-* Fix: Error when processing immediate results mode with Directory Builder add-on pack activated.
-* Change: more admin css tweaks (4.2.05)
-* Change: Fix distance error in results layout string (4.2.05)
-
-= 4.2.03 (2014-Aug-05) =
-
-* Note: Delete Janitor and Pro Pack add-on packs before upgrading the base plugin.
-* Enhancement: Added Thailand to the list of supported Google Domain maps
-* Enhancement: Fix csl-slplus-nomap SLP Theme results to show under the search form.
-* Enhancement: Add New Improved "No Map Rev 02" theme.
-* Enhancement: A new base add-on class has been added to build a consistent base of functionality and user experience elements between SLP and the add-on packs.
-* Enhancement: Make the info bubble layout [slp_locaton latitude] and [slp_location longitude] work as aliases for [slp_location lat] and [slp_location lng].
-* Change: Hide address input feature was lost somewhere in the past, it has now been re-introduced in the Enhanced Search add-on.
-* Change: 4.2.02 - minor internal update for smarter settings forms.
-* Change: 4.2.03 - minor csv handler update to allow for new Pro Pack extensions.
-* Fix: Intermittent issue with extended field data that impacted Enhanced Results and Contact Extender extended data field.
-* Fix: Rendering of special characters in extended data field output.
-* Fix: Ensure extended data fields are loaded on all location record calls.  Fixes extended data inconsistencies in several add-on packs including Store Pages.

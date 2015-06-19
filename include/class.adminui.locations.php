@@ -42,6 +42,17 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
      */
     private $extended_data_info;
 
+	/**
+	 * Extra database where clause filters.
+	 *
+	 * This is leftover from legacy code where this admin ui locations class
+	 * had its own custom data handler for managing where clauses and order by
+	 * vs. the current data class standard sql methods.
+	 *
+	 * @var string
+	 */
+	private $extra_location_filters = '';
+
     /**
      * Array of our Manage Locations interface column names.
      *
@@ -106,13 +117,6 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
     private $db_orderbyfield = '';
 
     /**
-     * Where clause for the location selections.
-     * 
-     * @var string
-     */
-    private $db_where = '';
-
-    /**
      * The manage locations URL with params we like to keep such as page number and sort order.
      * 
      * @var string $hangoverURL
@@ -131,7 +135,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
      * 
      * @var int
      */
-    private $totalLocations = 0;
+    private $total_locations_shown = 0;
 
     //------------------------------------------------------
     // METHODS
@@ -140,7 +144,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
     /**
      * Called when this object is created.
      */
-    function SLPlus_AdminUI_Locations() {
+    function __construct() {
         global $slplus_plugin;
         $this->slplus = $slplus_plugin;
         $this->set_CurrentAction();
@@ -216,8 +220,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
             $this->settings = new wpCSL_settings__slplus(
                 array(
                         'parent'            => $this->slplus,
-                        'prefix'            => $this->slplus->prefix,
-                        'css_prefix'        => $this->slplus->prefix,
+                        'prefix'            => SLPLUS_PREFIX,
                         'url'               => $this->slplus->url,
                         'name'              => $this->slplus->name . __(' - Locations','csa-slplus'),
                         'plugin_url'        => $this->slplus->plugin_url,
@@ -343,50 +346,98 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         }
     }
 
-    /**
+
+	/**
+	 * Add the location filter.
+	 *
+	 * @param $where
+	 *
+	 * @return string
+	 */
+	function set_location_filter ( $where ) {
+
+		// Support the legacy where clause filters added by the
+		// slp_manage_location_where filter
+		//
+		if ( ! empty( $this->extra_location_filters ) ) {
+			$this->slplus->database->reset_clauses();
+			$where = $this->slplus->database->extend_Where('', $this->extra_location_filters );
+		}
+
+		// Add any filters from the search box.
+		//
+		$search_filter = $this->set_search_filter();
+		if ( ! empty( $search_filter ) ) {
+			$where = $this->slplus->database->extend_Where($where, $search_filter);
+		}
+
+		return $where;
+	}
+
+	/**
+	 * Set the search filter (where clause) if the searchfor field comes in via the form post.
+	 * @return string
+	 */
+	private function set_search_filter() {
+		if ( isset( $_POST['searchfor'] ) ) {
+			$clean_search_for = trim($_POST['searchfor']);
+			if ( ! empty ( $clean_search_for ) ) {
+			    $clean_search_for = '%%' . $this->slplus->db->esc_like( $clean_search_for ) . '%%';
+				return
+					sprintf(
+						" CONCAT_WS(';',sl_store,sl_address,sl_address2,sl_city,sl_state,sl_zip,sl_country,sl_tags) LIKE '%s'" ,
+						$clean_search_for
+					)
+			        ;
+			}
+		}
+
+		return '';
+	}
+
+	/**
+	 * Set the locations table order by SQL command.
+	 *
+	 * @param $current_order_array
+	 */
+	function set_location_order( $current_order_array ) {
+
+		// Sort Direction
+		//
+		$this->db_orderbyfield  =
+			(isset($_REQUEST['orderBy'   ]) && !empty($_REQUEST['orderBy'     ])) ?
+				$_REQUEST['orderBy'  ]                                                :
+				'sl_store'                                                            ;
+
+		$this->db_orderbydir    =
+			(isset($_REQUEST['sortorder' ]) && !empty($_REQUEST['sortorder'   ])) ?
+				$_REQUEST['sortorder']                                                :
+				'asc'                                                                 ;
+
+		$this->slplus->database->extend_order_array( "{$this->db_orderbyfield} {$this->db_orderbydir}" );
+	}
+
+	/**
      * Set all the properties that manage the location query.
-     * 
      */
-    function set_LocationQueryProperties() {
-        $this->slplus->debugMP('slp.managelocs','msg', get_class() . ':: ' . __FUNCTION__ );
+    function set_location_query() {
+	    $this->slplus->database->reset_clauses();
+	    $this->slplus->database->order_by_array = array();
 
-        // Where Clause
-        //
-        $this->db_where = '';
-         if ( isset( $_REQUEST['searchfor'] ) ) {
-            $clean_search_for = trim($_REQUEST['searchfor']);
-            if ( ! empty ( $clean_search_for ) ) {
-                $this->db_where = " CONCAT_WS(';',sl_store,sl_address,sl_address2,sl_city,sl_state,sl_zip,sl_country,sl_tags) LIKE '%{$clean_search_for}%'";
-            }
-        }
+	    // FILTER: slp_manage_location_where
+	    //
+	    $this->extra_location_filters = apply_filters('slp_manage_location_where', '');
 
-        // FILTER: slp_manage_location_where
-        //
-        $this->db_where = apply_filters('slp_manage_location_where',$this->db_where);
-
-        if (trim($this->db_where) != '') { $this->db_where = "WHERE {$this->db_where}"; }
-
-        // Sort Direction
-        //
-        $this->db_orderbyfield  =
-            (isset($_REQUEST['orderBy'   ]) && !empty($_REQUEST['orderBy'     ])) ?
-            $_REQUEST['orderBy'  ]                                                :
-            'sl_store'                                                            ;
-        $this->db_orderbydir    =
-            (isset($_REQUEST['sortorder' ]) && !empty($_REQUEST['sortorder'   ])) ?
-            $_REQUEST['sortorder']                                                :
-            'asc'                                                                 ;
+	    add_filter( 'slp_location_where'  , array( $this , 'set_location_filter') );
+	    add_action( 'slp_orderby_default' , array( $this , 'set_location_order' ) );
 
         // Get the sort order and direction out of our URL
         //
         $this->cleanURL = preg_replace('/&orderBy=\w*&sortorder=\w*/i','',$_SERVER['REQUEST_URI']);
 
-        $dataQuery =
-            $this->slplus->database->get_SQL('selectall') .
-            $this->db_where;
+        $dataQuery = $this->slplus->database->get_SQL( array('selectall' ,'where_default') );
         $dataQuery = str_replace('*','count(sl_id)',$dataQuery);
-        $this->totalLocations = $this->slplus->db->get_var($dataQuery);	
-
+        $this->total_locations_shown = $this->slplus->db->get_var($dataQuery);
 
         // Starting Location (Page)
         //
@@ -404,8 +455,8 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
                 (int)$_REQUEST['start']                                                                         :
                 0                                                                                               ;
 
-            if ($this->start > ($this->totalLocations-1)) {
-                $this->start = max($this->totalLocations - 1,0);
+            if ($this->start > ($this->total_locations_shown-1)) {
+                $this->start = max($this->total_locations_shown - 1,0);
                 $this->hangoverURL = str_replace('&start=','&prevstart=',$this->hangoverURL);
             }
         }
@@ -1698,7 +1749,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
             array(
                     'name'          => __('Manage','csa-slplus'),
                     'div_id'        => 'current_locations',
-                    'description'   => $this->createstring_PanelManageTable(),
+                    'description'   => $this->create_string_manage_locations_table_and_header(),
                     'auto'          => true,
                     'innerdiv'      => true
                 )
@@ -1708,32 +1759,30 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
     /**
      * Build the HTML string for the locations table.
      */
-    private function createstring_PanelManageTable() {
-        $this->set_LocationQueryProperties();
+    private function create_string_manage_locations_table_and_header() {
+        $this->set_location_query();
 
+	    // No locations exist.
+	    //
+	    if ( ( $this->total_locations_shown < 1 ) && ! $this->slplus->database->had_where_clause ) {
+			return  $this->slplus->helper->create_string_wp_setting_error_box( __("No locations have been created yet.", 'csa-slplus') );
+	    }
+
+	    // We have locations, show them.
+	    //
         return
-                '<input id="displaylimit" '         .
-                    'name="displaylimit" '          .
-                    'type="hidden" '                .
-                    'value="'.get_option('sl_admin_locations_per_page','10').'" ' .
-                    '/>' .
-                $this->createstring_HiddenInputs()              .
-                $this->createstring_PanelManageTableTopActions().
-                $this->createstring_PanelManageTableLocations() .
+            '<input id="displaylimit" '         .
+                'name="displaylimit" '          .
+                'type="hidden" '                .
+                'value="'.get_option('sl_admin_locations_per_page','10').'" ' .
+                '/>' .
+            $this->createstring_HiddenInputs()              .
+            $this->createstring_PanelManageTableTopActions().
+            $this->create_string_manage_locations_table() .
             '<div class="tablenav bottom">'                 .
                 $this->createstring_PanelManageTablePagination().
             '</div>'
             ;
-    }
-
-
-    /**
-     * Set the locations table order by SQL command.
-     *
-     * @param $current_order_array
-     */
-    function set_location_order ( $current_order_array ) {
-         $this->slplus->database->extend_order_array( "{$this->db_orderbyfield} {$this->db_orderbydir}" );
     }
 
     /**
@@ -1743,8 +1792,10 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
      *
      * @return string
      */
-    private function createstring_PanelManageTableLocations() {
-        $this->debugMP('msg',__FUNCTION__);
+    private function create_string_manage_locations_table() {
+	    if ( $this->total_locations_shown < 1 ) {
+		    return $this->slplus->helper->create_string_wp_setting_error_box( __("Location search or filter returned no matches.", 'csa-slplus')  );
+	    }
 
         // Formatting
         //
@@ -1755,15 +1806,16 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
 
         // Setup Data Query
         //
-        add_action( 'slp_orderby_default' , array( $this , 'set_location_order' ) );
-        $sqlCommand = array( 'selectall' , 'orderby_default' , 'limit_one' , 'manual_offset' );
+	    $this->slplus->database->reset_clauses();
+	    $this->slplus->database->order_by_array = array();
+        $sqlCommand = array( 'selectall' , 'where_default' , 'orderby_default' , 'limit_one' , 'manual_offset' );
 
         // Start at the desired starting position in the list (for secondary pages)
         //
         $offset = $this->start;
         $sqlParams = array( $offset );
 
-        // Tell the WP Engine to get one record at a time
+	    // Tell the WP Engine to get one record at a time
         // Until we reached how many we want per page.
         //
         while (
@@ -1904,45 +1956,16 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
             $sqlParams = array( ++$offset );
         }
 
+        $tableHeaderString = $this->createstring_TableHeader($this->columns,$this->db_orderbyfield,$this->db_orderbydir) ;
 
+        $html =
+            "<table id='manage_locations_table' class='slplus wp-list-table widefat posts' cellspacing=0>" .
+            $tableHeaderString  .
+            $html               .
+            $tableHeaderString  .
+            '</table>'
+            ;
 
-        // No Locations Found
-        //
-        if ( $offset === $this->start ) {
-
-            $html =
-                "<div class='csa_info_msg' id='manage_locations_msg'>" .
-
-                    (
-                     ( empty($_REQUEST['searchfor']) )                                ?
-                            __("No locations have been created yet.", 'csa-slplus')   :
-                            __("Search Locations returned no matches.", 'csa-slplus')
-                    ) .
-
-                (
-                    ! empty( $this->db_where ) ?
-                    '<br/><br/>' . __('Where: ', 'csa-slplus') . $this->db_where :
-                    ''
-                ) .
-
-                "</div>"
-                ;
-
-        // Locations Found
-        //
-        } else {
-
-            $tableHeaderString = $this->createstring_TableHeader($this->columns,$this->db_orderbyfield,$this->db_orderbydir) ;
-
-            $html =
-                "<table id='manage_locations_table' class='slplus wp-list-table widefat posts' cellspacing=0>" .
-                $tableHeaderString  .
-                $html               .
-                $tableHeaderString  .
-                '</table>'
-                ;
-        }
-        
         return $html;
     }
     
@@ -1952,9 +1975,9 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
      * @return string
      */
     private function createstring_PanelManageTablePagination() {
-        if ($this->totalLocations >0) {
+        if ($this->total_locations_shown >0) {
             return $this->createstring_PaginationBlock(
-                $this->totalLocations,
+                $this->total_locations_shown,
                 $this->slplus->data['sl_admin_locations_per_page'],
                 $this->start
                 );

@@ -16,6 +16,11 @@ class SLPlus_Data {
      */
     public $collate;
 
+	/**
+	 * @var bool
+	 */
+	public $had_where_clause = false;
+
     /**
      * The global WordPress DB
      *
@@ -63,6 +68,13 @@ class SLPlus_Data {
      * @var string the SQL order by clause
      */
     public $order_by_clause = '';
+
+	/**
+	 * The current SQL statement.
+	 *
+	 * @var string
+	 */
+	public $sql_statement = '';
 
     /**
      * @var string the SQL where clause
@@ -475,9 +487,12 @@ class SLPlus_Data {
             }
         }
 
-        $this->reset_clauses();
+	    $this->had_where_clause = ! empty( $this->where_clause );
+	    $this->sql_statement = $sqlStatement;
 
-        return $sqlStatement;
+	    $this->reset_clauses();
+
+	    return $this->sql_statement;
     }
 
 
@@ -505,6 +520,7 @@ class SLPlus_Data {
         //
         if ( strpos( $query, '%' ) !== false ) {
             $query = $this->db->prepare( $query , $params );
+	        $this->sql_statement = $query;
         }
 
         // get_row (default) or get_col based on the mode
@@ -551,7 +567,7 @@ class SLPlus_Data {
 	/**
 	 * Reset the SQL additive clauses.
 	 */
-    private function reset_clauses() {
+    public function reset_clauses() {
         $this->order_by_clause = '';
         $this->group_by_clause = '';
         $this->where_clause = '';
