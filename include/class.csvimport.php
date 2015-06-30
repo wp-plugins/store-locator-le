@@ -310,17 +310,19 @@ if (!class_exists('CSVImport')) {
                 ( $file_meta['csvfile']['source'] === 'direct_url' )
             )  {
                 if ( ! rename( $file_meta['csvfile']['tmp_name'] , $new_file ) ) {
-                    print "<div class='updated fade'>"                                  .
+	                echo $this->slplus->helper->create_string_wp_setting_error_box(
                         __('Imported CSV file could not be renamed.','csa-slplus')      .
-                        '</div>';
-                    return '';
+                        sprintf( __('Possibly out of disk space while trying to rename to %s' , 'csa-slplus') , $new_file )
+	                );
+	                return '';
                 }
 
             } else {
                 if ( ! move_uploaded_file( $file_meta['csvfile']['tmp_name'] , $new_file ) ) {
-                    print "<div class='updated fade'>"                                  .
-                        __('Uploaded CSV file could not be moved.','csa-slplus')        .
-                        '</div>';
+	                echo $this->slplus->helper->create_string_wp_setting_error_box(
+		                __('Uploaded CSV file could not be moved.','csa-slplus'),
+		                sprintf( __('Check folder permissions for %s' , 'csa-slplus') , $new_file )
+	                );
                     return '';
                 }
             }
@@ -422,6 +424,7 @@ if (!class_exists('CSVImport')) {
             //
             if ( $this->ok_to_process_file() ) {
                 while (($this->data = fgetcsv($this->filehandle)) !== FALSE) {
+					$this->data = array_map( array( $this , 'strip_utf8_control_chars' ) , $this->data );
 
                     // Skip First Line
                     //
@@ -463,6 +466,16 @@ if (!class_exists('CSVImport')) {
                 }
             }
         }
+
+	    /**
+	     * Strip UTF-8 control characters
+	     * @param string $string
+	     *
+	     * @return string
+	     */
+	    private function strip_utf8_control_chars( $string ) {
+		    return preg_replace('/\p{Cc}/u', '', $string);
+	    }
 
         /**
          * Set the field names array for the fields being processed.

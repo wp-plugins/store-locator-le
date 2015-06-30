@@ -135,13 +135,13 @@ class PluginThemeAdmin {
             foreach ($addon_list as $slug) {
                 $slug = trim(strtolower($slug));
                 if ( isset( $this->slplus->add_ons->available[$slug] ) ) {
-                    
+
                     // Show Active Add Ons
                     //
-                    if ( $this->slplus->add_ons->available[$slug]['active'] ) {
+                    if ( $this->slplus->add_ons->is_active( $slug ) ) {
                         $active_HTML.= 
                             "<li class='product active'>" . 
-                                $this->slplus->add_ons->available[$slug]['link'] .
+                                $this->slplus->add_ons->get_product_url($slug) .
                             '</li>'
                             ;                    
                         
@@ -149,8 +149,8 @@ class PluginThemeAdmin {
                     //
                     } else {
                         $inactive_HTML .= 
-                            "<li class='product inactive'>" . 
-                                $this->slplus->add_ons->available[$slug]['link'] .
+                            "<li class='product inactive'>" .
+	                            $this->slplus->add_ons->get_product_url($slug) .
                             '</li>'
                             ;                                                    
                     }
@@ -219,8 +219,7 @@ class PluginThemeAdmin {
         foreach ( $this->theme_option_fields as $option_slug => $option_settings ) {
             if ( ! empty ( $this->themeDetails[$this->current_slug][$option_slug] ) ) {
                 $activity_class = 
-                    ( isset( $this->slplus->add_ons->available[$option_settings['slug']] )   &&
-                      $this->slplus->add_ons->available[$option_settings['slug']]['active']      ) ?
+	                 $this->slplus->add_ons->is_active($option_settings['slug'])  ?
                     'active'   :
                     'inactive' ;
                         
@@ -360,7 +359,7 @@ class PluginThemeAdmin {
                     'setting'       => 'theme'                                      ,
                     'type'          => 'list'                                       ,
                     'custom'        => $themeArray                                  ,
-                    'value'         => $this->slplus->defaults['theme']        ,
+                    'value'         => $this->slplus->options_nojs['theme']         ,
                     'description'   =>
                         __('How should the plugin UI elements look?  ','csa-slplus') .
                         sprintf(

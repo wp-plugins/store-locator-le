@@ -19,6 +19,7 @@ class SLPlus_AdminUI_UserExperience {
      */
     private  $depnotice_createSettingsGroup = false;
 
+	private $map_domains = array();
 
     /**
      * The SLPlus object.
@@ -56,6 +57,107 @@ class SLPlus_AdminUI_UserExperience {
             }
         }
 
+	    // Map Domains
+		$this->map_domains = array(
+			__('United States'                  ,'csa-slplus')=>'maps.google.com',
+			__('Algeria'                        ,'csa-slplus')=>'maps.google.dz',
+			__('American Samoa'                 ,'csa-slplus')=>'maps.google.as',
+			__('Andorra'                        ,'csa-slplus')=>'maps.google.ad',
+			__('Angola'                         ,'csa-slplus')=>'maps.google.co.ao',
+			__('Antigua and Barbuda'            ,'csa-slplus')=>'maps.google.com.ag',
+			__('Argentina'                      ,'csa-slplus')=>'maps.google.com.ar',
+			__('Australia'                      ,'csa-slplus')=>'maps.google.com.au',
+			__('Austria'                        ,'csa-slplus')=>'maps.google.at',
+			__('Bahamas'                        ,'csa-slplus')=>'maps.google.bs',
+			__('Bahrain'                        ,'csa-slplus')=>'maps.google.com.bh',
+			__('Bandladesh'                     ,'csa-slplus')=>'maps.google.com.bd',
+			__('Belgium'                        ,'csa-slplus')=>'maps.google.be',
+			__('Belize'                         ,'csa-slplus')=>'maps.google.com.bz',
+			__('Benin'                          ,'csa-slplus')=>'maps.google.bj',
+			__('Bolivia'                        ,'csa-slplus')=>'maps.google.com.bo',
+			__('Botswana'                       ,'csa-slplus')=>'maps.google.co.bw',
+			__('Brazil'                         ,'csa-slplus')=>'maps.google.com.br',
+			__('Bulgaria'                       ,'csa-slplus')=>'maps.google.bg',
+			__('Burundi'                        ,'csa-slplus')=>'maps.google.bi',
+			__('Cameroon'                       ,'csa-slplus')=>'maps.google.cm',
+			__('Canada'                         ,'csa-slplus')=>'maps.google.ca',
+			__('Central African Republic'       ,'csa-slplus')=>'maps.google.cf',
+			__('Chile'                          ,'csa-slplus')=>'maps.google.cl',
+			__('China'                          ,'csa-slplus')=>'ditu.google.com',
+			__('Congo'                          ,'csa-slplus')=>'maps.google.cg',
+			__('Czech Republic'                 ,'csa-slplus')=>'maps.google.cz',
+			__('Democratic Republic of Congo'   ,'csa-slplus')=>'maps.google.cd',
+			__('Denmark'                        ,'csa-slplus')=>'maps.google.dk',
+			__('Djibouti'                       ,'csa-slplus')=>'maps.google.dj',
+			__('Ecuador'                        ,'csa-slplus')=> 'maps.google.com.ec',
+			__('Estonia'                        ,'csa-slplus')=> 'maps.google.ee',
+			__('Ethiopia'                       ,'csa-slplus')=> 'maps.google.com.et',
+			__('Finland'                        ,'csa-slplus')=>'maps.google.fi',
+			__('France'                         ,'csa-slplus')=>'maps.google.fr',
+			__('Gabon'                          ,'csa-slplus')=>'maps.google.ga',
+			__('Gambia'                         ,'csa-slplus')=>'maps.google.gm',
+			__('Germany'                        ,'csa-slplus')=>'maps.google.de',
+			__('Ghana'                          ,'csa-slplus')=>'maps.google.com.gh',
+			__('Greece'                         ,'csa-slplus')=>'maps.google.gr',
+			__('Guatemala'                      ,'csa-slplus')=>'maps.google.com.gt',
+			__('Guyana'                         ,'csa-slplus')=>'maps.google.gy',
+			__('Hong Kong'                      ,'csa-slplus')=>'maps.google.com.hk',
+			__('Hungary'                        ,'csa-slplus')=>'maps.google.hu',
+			__('India'                          ,'csa-slplus')=>'maps.google.co.in',
+			__('Indonesia'                      ,'csa-slplus')=>'maps.google.co.id',
+			__('Israel'                         ,'csa-slplus')=>'maps.google.co.il',
+			__('Italy'                          ,'csa-slplus')=>'maps.google.it',
+			__('Japan'                          ,'csa-slplus')=>'maps.google.co.jp',
+			__('Kenya'                          ,'csa-slplus')=>'maps.google.co.ke',
+			__('Lesotho'                        ,'csa-slplus')=>'maps.google.co.ls',
+			__('Liechtenstein'                  ,'csa-slplus')=>'maps.google.li',
+			__('Lithuania'                      ,'csa-slplus')=>'maps.google.lt',
+			__('Macedonia'                      ,'csa-slplus')=>'maps.google.mk',
+			__('Madagascar'                     ,'csa-slplus')=>'maps.google.mg',
+			__('Malawi'                         ,'csa-slplus')=>'maps.google.mw',
+			__('Malaysia'                       ,'csa-slplus')=>'maps.google.my',
+			__('Mauritius'                      ,'csa-slplus')=>'maps.google.mu',
+			__('Mexico'                         ,'csa-slplus')=>'maps.google.mx',
+			__('Mozambique'                     ,'csa-slplus')=>'maps.google.co.mz',
+			__('Namibia'                        ,'csa-slplus')=>'maps.google.co.na',
+			__('Netherlands'                    ,'csa-slplus')=>'maps.google.nl',
+			__('New Zealand'                    ,'csa-slplus')=>'maps.google.co.nz',
+			__('Nigeria'                        ,'csa-slplus')=>'maps.google.com.ng',
+			__('Norway'                         ,'csa-slplus')=>'maps.google.no',
+			__('Paraguay'                       ,'csa-slplus')=>'maps.google.com.py',
+			__('Peru'                           ,'csa-slplus')=>'maps.google.com.pe',
+			__('Philippines'                    ,'csa-slplus')=>'maps.google.com.ph',
+			__('Poland'                         ,'csa-slplus')=>'maps.google.pl',
+			__('Portugal'                       ,'csa-slplus')=>'maps.google.pt',
+			__('Republic of Ireland'            ,'csa-slplus')=>'maps.google.ie',
+			__('Romania'                        ,'csa-slplus')=>'maps.google.ro',
+			__('Russia'                         ,'csa-slplus')=>'maps.google.ru',
+			__('Rwanda'                         ,'csa-slplus')=>'maps.google.rw',
+			__('Sao Tome and Principe'          ,'csa-slplus')=>'maps.google.st',
+			__('Senegal'                        ,'csa-slplus')=>'maps.google.sn',
+			__('Seychelles'                     ,'csa-slplus')=>'maps.google.sc',
+			__('Sierra Leone'                   ,'csa-slplus')=>'maps.google.sl',
+			__('Singapore'                      ,'csa-slplus')=>'maps.google.com.sg',
+			__('South Africa'                   ,'csa-slplus')=>'maps.google.co.za',
+			__('South Korea'                    ,'csa-slplus')=>'maps.google.co.kr',
+			__('Spain'                          ,'csa-slplus')=>'maps.google.es',
+			__('Sri Lanka'                      ,'csa-slplus')=>'maps.google.lk',
+			__('Sweden'                         ,'csa-slplus')=>'maps.google.se',
+			__('Switzerland'                    ,'csa-slplus')=>'maps.google.ch',
+			__('Taiwan'                         ,'csa-slplus')=>'maps.google.com.tw',
+			__('Tanzania'                       ,'csa-slplus')=>'maps.google.co.tz',
+			__('Thailand'                       ,'csa-slplus')=>'maps.google.co.th',
+			__('Togo'                           ,'csa-slplus')=>'maps.google.tg',
+			__('Uganda'                         ,'csa-slplus')=>'maps.google.co.ug',
+			__('United Arab Emirates'           ,'csa-slplus')=>'maps.google.ae',
+			__('United Kingdom'                 ,'csa-slplus')=>'maps.google.co.uk',
+			__('Uruguay'                        ,'csa-slplus')=>'maps.google.com.uy',
+			__('Venezuela'                      ,'csa-slplus')=>'maps.google.co.ve',
+			__('Zambia'                         ,'csa-slplus')=>'maps.google.co.zm',
+			__('Zimbabwe'                       ,'csa-slplus')=>'maps.google.co.zw',
+		);
+
+		// Settings
         $this->settings = new wpCSL_settings__slplus(
             array(
                     'parent'            => $this->slplus,
@@ -74,7 +176,6 @@ class SLPlus_AdminUI_UserExperience {
      * Add the UX View Section on the User Experience Tab
      */
     function action_AddUXViewSection() {
-        $this->slplus->helper->loadPluginData();
         $sectName = __('View','csa-slplus');
         $this->settings->add_section(array('name' => $sectName));
 
@@ -206,30 +307,30 @@ class SLPlus_AdminUI_UserExperience {
         update_option('sl_google_map_country', $sl_google_map_arr[0]);
         $this->slplus->options['map_domain'] = $sl_google_map_arr[1];
 
-		// Set height uint to blank, if height is "auto !important"
-		if ($_POST['sl_map_height'] === "auto !important" && $_POST['sl_map_height_units'] != "") {
-			$_POST['sl_map_height_units'] = "";
+		// Set height unit to blank, if height is "auto !important"
+		if ($_POST['map_height'] === "auto !important" && $_POST['map_height_units'] != "") {
+			$_POST['map_height_units'] = "";
 			array_push($this->update_info, __("Auto set height unit to blank when height is 'auto !important'", 'csa-slplus'));
 		}
-		// Set weight uint to blank, if height is "auto !important"
-		if ($_POST['sl_map_width'] === "auto !important" && $_POST['sl_map_width_units'] != "") {
-			$_POST['sl_map_width_units'] = "";
+		// Set weight unit to blank, if height is "auto !important"
+		if ($_POST['map_width'] === "auto !important" && $_POST['map_width_units'] != "") {
+			$_POST['map_width_units'] = "";
 			array_push($this->update_info, __("Auto set width unit to blank when width is 'auto !important'", 'csa-slplus'));
 		}
 		
 		// Height, strip non-digits, if % set range 0..100
-        if (in_array($_POST['sl_map_height_units'],array('%','px','pt','em'))) {
-            $_POST['sl_map_height']=preg_replace('/[^0-9]/', '', $_POST['sl_map_height']);
-            if ($_POST['sl_map_height_units'] == '%') {
-                $_POST['sl_map_height'] = max(0,min($_POST['sl_map_height'],100));
+        if (in_array($_POST['map_height_units'],array('%','px','pt','em'))) {
+            $_POST['map_height']=preg_replace('/[^0-9]/', '', $_POST['map_height']);
+            if ($_POST['map_height_units'] == '%') {
+                $_POST['map_height'] = max(0,min($_POST['map_height'],100));
             }
         }
 
         // Width, strip non-digtis, if % set range 0..100
-        if (in_array($_POST['sl_map_width_units'],array('%','px','pt','em'))) {
-            $_POST['sl_map_width'] =preg_replace('/[^0-9]/', '', $_POST['sl_map_width']);
-            if ($_POST['sl_map_width_units'] == '%') {
-                $_POST['sl_map_width'] = max(0,min($_POST['sl_map_width'],100));
+        if (in_array($_POST['map_width_units'],array('%','px','pt','em'))) {
+            $_POST['map_width'] =preg_replace('/[^0-9]/', '', $_POST['map_width']);
+            if ($_POST['map_width_units'] == '%') {
+                $_POST['map_width'] = max(0,min($_POST['map_width'],100));
             }
         }
 
@@ -244,13 +345,6 @@ class SLPlus_AdminUI_UserExperience {
                     'sl_instruction_message'                ,
                     'sl_zoom_level'                         ,
                     'sl_zoom_tweak'                         ,
-                    'sl_map_height_units'                   ,
-                    'sl_map_height'                         ,
-                    'sl_map_width_units'                    ,
-                    'sl_map_width'                          ,
-                    'sl_map_home_icon'                      ,
-                    'sl_map_end_icon'                       ,
-                    'sl_map_type'                           ,
                     'sl_radius_label'                       ,
                     'sl_search_label'                       ,
                     'sl_website_label'                      ,
@@ -258,7 +352,6 @@ class SLPlus_AdminUI_UserExperience {
                     SLPLUS_PREFIX.'_label_fax'              ,
                     SLPLUS_PREFIX.'_label_hours'            ,
                     SLPLUS_PREFIX.'_label_phone'            ,
-                    SLPLUS_PREFIX.'_map_center'             ,
                     SLPLUS_PREFIX.'-map_language'           ,
                     SLPLUS_PREFIX.'-theme'                  ,
                 )
@@ -284,10 +377,8 @@ class SLPlus_AdminUI_UserExperience {
             apply_filters('slp_save_map_settings_checkboxes',
                 array(
                     SLPLUS_PREFIX.'_disable_find_image'         ,
-                    'sl_remove_credits'                         ,
                     )
                 );
-        $this->slplus->debugMP('slp.mapsettings','pr','save_settings() Checkboxes',$BoxesToHit,NULL,NULL,true);
         foreach ($BoxesToHit as $JustAnotherBox) {
             $this->slplus->helper->SaveCheckBoxToDB($JustAnotherBox, '','');
         }
@@ -296,6 +387,7 @@ class SLPlus_AdminUI_UserExperience {
         //
         $BoxesToHit = array(
             'immediately_show_locations' ,
+	        'remove_credits'
             );
         foreach ($BoxesToHit as $BoxName) {
             if (!isset($_REQUEST[$BoxName])) {
@@ -310,9 +402,10 @@ class SLPlus_AdminUI_UserExperience {
         array_walk($_REQUEST,array($this->slplus,'set_ValidOptions'));
         update_option(SLPLUS_PREFIX.'-options', $this->slplus->options);
 
+	    $_REQUEST['theme'] = $_POST['csl-slplus-theme'];
         array_walk($_REQUEST,array($this->slplus,'set_ValidOptionsNoJS'));
         update_option(SLPLUS_PREFIX.'-options_nojs', $this->slplus->options_nojs);
-		
+
 		// Save or Update a copy of the css file to the uploads\slp\css dir
 		$this->save_custom_css($_POST['csl-slplus-theme'] . ".css");
 		
@@ -326,116 +419,202 @@ class SLPlus_AdminUI_UserExperience {
       * Add the map panel to the map settings page on the admin UI.
       *
       */
-     function map_settings() {
-        $this->slplus->helper->loadPluginData();
+	function map_settings() {
 
-        // Features
-        //
-        $slpDescription =
-            $this->slplus->helper->create_SubheadingLabel(__('Look and Feel','csa-slplus')) .
-                
-                $this->CreateInputDiv(
-                    'sl_map_height',
-                    __('Map Height','csa-slplus'),
-                    __('The initial map height in pixels or percent of initial page height. ','csa-slplus') .
-                    __('Can also use rules like auto and inherit if Height Units is set to blank ','csa-slplus')
-                        ,
-                    '',
-                    '480'
-                    ) .
+		// User Experience / Map
+		//
+		$section_name = __('Map','csa-slplus');
+		$this->settings->add_section(
+			array(
+				'name'          => $section_name,
+				'div_id'        => 'map',
+			)
+		);
 
-                $this->CreatePulldownDiv(
-                    'sl_map_height_units',
-                    array('%','px','em','pt',''),
-                    __('Height Units','csa-slplus'),
-                    __('Is the width a percentage of page width or absolute pixel size? ','csa-slplus') .
-                    __('Select blank to use CSS rules like auto or inherit in the Map Height setting.','csa-slplus')
-                        ,
-                    '',
-                    'px'
-                    ) .
+		// User Experience / Map / Map Features
+		//
+		$group_name = __('Map Features' , 'csa-slplus' );
 
-                $this->CreateInputDiv(
-                    'sl_map_width',
-                    __('Map Width','csa-slplus'),
-                    __('The initial map width in pixels or percent of page width. Also sets results width.','csa-slplus') .
-                    __('Can also use rules like auto and inherit if Width Units is set to blank ','csa-slplus')
-                        ,
-                    '',
-                    '640'
-                    ) .
-                $this->CreatePulldownDiv(
-                    'sl_map_width_units',
-                    array('%','px','em','pt',''),
-                    __('Width Units','csa-slplus'),
-                    __('Is the width a percentage of page width or absolute pixel size?','csa-slplus') .
-                    __('Select blank to use CSS rules like auto or inherit in the Map Width setting.','csa-slplus')
-                        ,
-                    '',
-                    '%'
-                    ) .
-            $this->CreatePulldownDiv(
-                    'sl_map_type',
-                    array('roadmap','hybrid','satellite','terrain'),
-                    __('Default Map Type', 'csa-slplus'),
-                    __('What style Google Map should we use?', 'csa-slplus'),
-                    '',
-                    'roadmap'
-                    ) .
-            $this->slplus->helper->CreateCheckboxDiv(
-                    'sl_remove_credits',
-                    __('Remove Credits','csa-slplus'),
-                    __('Remove the search provided by tagline under the map.','csa-slplus'),
-                    '',
-                    false,
-                    0
-                    ) .
-            $this->CreateTextAreaDiv(
-                    SLPLUS_PREFIX.'_map_center',
-                    __('Center Map At','csa-slplus'),
-                    __('Enter an address to serve as the initial focus for the map. '                                   ,'csa-slplus') .
-                    __('Default is the center of the country.'                                                          ,'csa-slplus') .
-                    __('Enhanced Map add-on must be installed to set per-page with center_map_at="address" shortcode. ' ,'csa-slplus') .
-                    __('Force JavaScript setting must be off when using the shortcode attribute. '                      ,'csa-slplus') ,
-                    ''
-                    )
-                ;
+		$this->settings->add_ItemToGroup(
+			array(
+				'section'       => $section_name        ,
+				'group'         => $group_name          ,
+				'label'         => __(' Look and Feel' , 'csa-slplus' )   ,
+				'type'          => 'subheader'          ,
+				'show_label'    => false
+			)
+		);
 
-            $mapSettings['features'] = apply_filters('slp_map_features_settings',$slpDescription);
+		$this->settings->add_ItemToGroup(array(
+			'section'       => $section_name                                ,
+			'group'         => $group_name                                  ,
+			'type'          => 'text'                                       ,
+			'setting'       => 'map_height'                                 ,
+			'use_prefix'    => false                                        ,
+			'value'         => $this->slplus->options_nojs['map_height']    ,
+			'label'         =>  __('Map Height','csa-slplus')               ,
+			'description'   =>
+                    __('The initial map height in pixels or percent of initial page height. '       ,'csa-slplus') .
+                    __('Can also use rules like auto and inherit if Height Units is set to blank '  ,'csa-slplus')
+		));
+
+		$this->settings->add_ItemToGroup(array(
+			'section'       => $section_name                                ,
+			'group'         => $group_name                                  ,
+			'type'          => 'dropdown'                                   ,
+			'setting'       => 'map_height_units'                           ,
+			'use_prefix'    => false                                        ,
+			'value'         => $this->slplus->options_nojs['map_height_units'],
+			'label'         =>  __('Height Units','csa-slplus')               ,
+			'selectedVal'   =>  $this->slplus->options_nojs['map_height_units'] ,
+			'empty_ok'      => true,
+			'custom'        =>
+				array(
+					array( 'label' => '%'  ),
+					array( 'label' => 'px' ),
+					array( 'label' => 'em' ),
+					array( 'label' => 'pt' ),
+					array( 'label' => ''   ),
+
+				),
+			'description'   =>
+				__('Is the width a percentage of page width or absolute pixel size? ','csa-slplus') .
+				__('Select blank to use CSS rules like auto or inherit in the Map Height setting.','csa-slplus')
+		));
+
+		$this->settings->add_ItemToGroup(array(
+			'section'       => $section_name                                ,
+			'group'         => $group_name                                  ,
+			'type'          => 'text'                                       ,
+			'setting'       => 'map_width'                                  ,
+			'use_prefix'    => false                                        ,
+			'value'         => $this->slplus->options_nojs['map_width']     ,
+			'label'         =>  __('Map Width','csa-slplus')                ,
+			'description'   =>
+				__('The initial map width in pixels or percent of initial page width. '       ,'csa-slplus') .
+				__('Can also use rules like auto and inherit if Width Units is set to blank '  ,'csa-slplus')
+		));
+
+		$this->settings->add_ItemToGroup(array(
+			'section'       => $section_name                                ,
+			'group'         => $group_name                                  ,
+			'type'          => 'dropdown'                                   ,
+			'setting'       => 'map_width_units'                            ,
+			'use_prefix'    => false                                        ,
+			'value'         => $this->slplus->options_nojs['map_width_units'],
+			'label'         =>  __('Width Units','csa-slplus')               ,
+			'selectedVal'   =>  $this->slplus->options_nojs['map_width_units'] ,
+			'empty_ok'      => true,
+			'custom'        =>
+				array(
+					array( 'label' => '%'  ),
+					array( 'label' => 'px' ),
+					array( 'label' => 'em' ),
+					array( 'label' => 'pt' ),
+					array( 'label' => ''   ),
+
+				),
+			'description'   =>
+				__('Is the width a percentage of page width or absolute pixel size? ','csa-slplus') .
+				__('Select blank to use CSS rules like auto or inherit in the Map Width setting.','csa-slplus')
+		));
+
+		$this->settings->add_ItemToGroup(array(
+			'section'       => $section_name                                ,
+			'group'         => $group_name                                  ,
+			'type'          => 'dropdown'                                   ,
+			'setting'       => 'map_type'                                   ,
+			'use_prefix'    => false                                        ,
+			'value'         => $this->slplus->options['map_type']      ,
+			'label'         =>  __('Map Type','csa-slplus')                 ,
+			'selectedVal'   =>  $this->slplus->options['map_type']     ,
+			'custom'        =>
+				array(
+					array( 'label' => 'roadmap'  ),
+					array( 'label' => 'hybrid' ),
+					array( 'label' => 'satellite' ),
+					array( 'label' => 'terrain' ),
+				),
+			'description'   =>
+				__('What style map do you want to use? ','csa-slplus')
+		));
+
+
+		$this->settings->add_ItemToGroup(
+			array(
+				'section'       => $section_name                                        ,
+				'group'         => $group_name                                          ,
+				'label'         => __('Remove Credits','csa-slplus')                    ,
+				'type'          => 'checkbox'                                           ,
+				'setting'       => 'remove_credits'                                     ,
+				'value'         => $this->slplus->options_nojs['remove_credits']        ,
+				'use_prefix'    => false                                                ,
+				'description'   =>
+					__('Remove the search provided by tagline under the map.','csa-slplus')
+			)
+		);
+
+		$this->settings->add_ItemToGroup(array(
+			'section'       => $section_name                                ,
+			'group'         => $group_name                                  ,
+			'type'          => 'textarea'                                   ,
+			'setting'       => 'map_center'                                 ,
+			'use_prefix'    => false                                        ,
+			'value'         => $this->slplus->options['map_center']         ,
+			'label'         =>  __('Center Map At','csa-slplus')            ,
+			'description'   =>
+				__('Enter an address to serve as the initial focus for the map. '                                   ,'csa-slplus') .
+				__('Default is the center of the country.'                                                          ,'csa-slplus') .
+				__('Enhanced Map add-on must be installed to set per-page with center_map_at="address" shortcode. ' ,'csa-slplus') .
+				__('Force JavaScript setting must be off when using the shortcode attribute. '                      ,'csa-slplus')
+		));
+
+		$this->settings->add_ItemToGroup(
+			array(
+				'section'       => $section_name ,
+				'group'         => __('Map Features' , 'csa-slplus' ),
+				'label'         => '' ,
+				'type'          => 'custom' ,
+				'show_label'    => false ,
+				'custom'        => ''
+			)
+		);
+
+
 
             // Settings
             //
-            $slpDescription =
+		$html =
                 $this->slplus->helper->create_SubheadingLabel(__('Behavior','csa-slplus'))
                 ;
-            
-            $slpDescription .=
+
+		$html .=
                 "<div class='form_entry'>" .
                 "<label for='google_map_domain'>". __("Map Domain", 'csa-slplus') . "</label>" .
                 "<select name='google_map_domain'>"
                 ;
-                foreach ($this->get_map_domains() as $key=>$sl_value) {
+                foreach ($this->map_domains as $key=>$sl_value) {
                     $selected = ( $this->slplus->options['map_domain'] == $sl_value ) ? ' selected ' : '';
-                    $slpDescription .= "<option value='$key:$sl_value' $selected>$key ($sl_value)</option>\n";
+	                $html .= "<option value='$key:$sl_value' $selected>$key ($sl_value)</option>\n";
                 }
-            $slpDescription .=
+		$html .=
                     "</select></div>";
 
                 // Language Selection
                 //
-            $slpDescription .=
+		$html .=
                     "<div class='form_entry'>" .
                     "<label for='".SLPLUS_PREFIX."-map_language'>".__('Map Language', 'csa-slplus')."</label>" .
                     "<select name='".SLPLUS_PREFIX."-map_language'>"
                     ;
                 foreach ($this->get_map_languages() as $key=>$sl_value) {
                     $selected=($this->slplus->helper->getData('map_language','get_item',null,'en')==$sl_value)?" selected " : "";
-                    $slpDescription .= "<option value='$sl_value' $selected>$key</option>\n";
+	                $html .= "<option value='$sl_value' $selected>$key</option>\n";
                 }
-            $slpDescription .=
+		$html .=
                     "</select></div>";
 
-            $slpDescription .=
+		$html .=
                 $this->CreatePulldownDiv(
                     'sl_zoom_level',
                     array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19),
@@ -455,179 +634,59 @@ class SLPlus_AdminUI_UserExperience {
                     )
                     ;
 
-
-            $mapSettings['settings'] = 
-                "<div class='section_column_content'>".
-                apply_filters('slp_map_settings_settings',$slpDescription) .
-                '</div>'
-                ;
-
+		$this->settings->add_ItemToGroup(
+			array(
+				'section'       => $section_name ,
+				'group'         => __('Map Settings' , 'csa-slplus' ),
+				'label'         => '' ,
+				'type'          => 'custom' ,
+				'show_label'    => false ,
+				'custom'        => $html
+			)
+		);
 
         // ===== Icons
         //
-        $slpDescription =
+        $html =
                     $this->slplus->data['iconNotice'] .
+
                     "<div class='form_entry'>".
-                        "<label for='sl_map_home_icon'>".__('Home Marker', 'csa-slplus')."</label>".
-                        "<input id='sl_map_home_icon' name='sl_map_home_icon' dir='rtl' size='45' ".
-                                "value='".$this->slplus->data['sl_map_home_icon']."' ".
+                        "<label for='map_home_icon'>".__('Home Marker', 'csa-slplus')."</label>".
+                        "<input id='map_home_icon' name='map_home_icon' dir='rtl' size='45' ".
+                                "value='".$this->slplus->options['map_home_icon']."' ".
                                 'onchange="document.getElementById(\'prev\').src=this.value">'.
-                        "<img id='home_icon_preview' src='".$this->slplus->data['sl_map_home_icon']."' align='top'><br/>".
+                        "<img id='home_icon_preview' src='".$this->slplus->options['map_home_icon']."' align='top'><br/>".
                         $this->slplus->data['homeIconPicker'].
                     "</div>".
+
                     "<div class='form_entry'>".
-                        "<label for='sl_map_end_icon'>".__('Destination Marker', 'csa-slplus')."</label>".
-                        "<input id='sl_map_end_icon' name='sl_map_end_icon' dir='rtl' size='45' ".
-                            "value='".$this->slplus->data['sl_map_end_icon']."' ".
+                        "<label for='map_end_icon'>".__('Destination Marker', 'csa-slplus')."</label>".
+                        "<input id='map_end_icon' name='map_end_icon' dir='rtl' size='45' ".
+                            "value='".$this->slplus->options['map_end_icon']."' ".
                             'onchange="document.getElementById(\'prev2\').src=this.value">'.
-                        "<img id='end_icon_preview' src='".$this->slplus->data['sl_map_end_icon']."'align='top'><br/>".
+                        "<img id='end_icon_preview' src='".$this->slplus->options['map_end_icon']."'align='top'><br/>".
                         $this->slplus->data['endIconPicker'] .
                     "</div>".
+
                     '<br/><p>'.
                     __('Saved markers live here: ','csa-slplus') . SLPLUS_UPLOADDIR . "saved-icons/</p>"
             ;
-        $mapSettings['icons'] = apply_filters('slp_map_icons_settings',$slpDescription);
 
-        // TODO: Convert to new panel builder with add_ItemToGroup() in wpCSL (see Tagalong admin panel)
-        $mapSections =
-                $this->slplus->settings->create_SettingsGroup(
-                                    'map_features',
-                                    __('Map Features','csa-slplus'),
-                                    '',
-                                    $mapSettings['features']
-                                    ) .
-                $this->slplus->settings->create_SettingsGroup(
-                                    'map_settings',
-                                    __('Map Settings','csa-slplus'),
-                                    '',
-                                    $mapSettings['settings']
-                                    ) .
-                $this->slplus->settings->create_SettingsGroup(
-                                    'map_icons',
-                                    __('Map Markers','csa-slplus'),
-                                    '',
-                                    $mapSettings['icons']
-                                    )
-            ;
+		$this->settings->add_ItemToGroup(
+			array(
+				'section'       => $section_name ,
+				'group'         => __('Map Markers' , 'csa-slplus' ),
+				'label'         => '' ,
+				'type'          => 'custom' ,
+				'show_label'    => false ,
+				'custom'        => $html
+			)
+		);
 
-        $this->settings->add_section(
-            array(
-                    'name'          => __('Map','csa-slplus'),
-                    'div_id'        => 'map',
-                    'description'   => $mapSections,
-                    'auto'          => true,
-                    'innerdiv'      => true
-                )
-         );
-     }
-
-     /**
-      * Return the list of Google map domains.
-      * 
-      * @return string[] list of domains, key is the name, value is the Google URL
-      */
-     function get_map_domains() {
-         return apply_filters(
-                 'slp_map_domains',
-                array(
-                    __('United States'                  ,'csa-slplus')=>'maps.google.com',
-                    __('Algeria'                        ,'csa-slplus')=>'maps.google.dz',
-                    __('American Samoa'                 ,'csa-slplus')=>'maps.google.as',
-                    __('Andorra'                        ,'csa-slplus')=>'maps.google.ad',
-                    __('Angola'                         ,'csa-slplus')=>'maps.google.co.ao',
-                    __('Antigua and Barbuda'            ,'csa-slplus')=>'maps.google.com.ag',
-                    __('Argentina'                      ,'csa-slplus')=>'maps.google.com.ar',
-                    __('Australia'                      ,'csa-slplus')=>'maps.google.com.au',
-                    __('Austria'                        ,'csa-slplus')=>'maps.google.at',
-                    __('Bahamas'                        ,'csa-slplus')=>'maps.google.bs',
-                    __('Bahrain'                        ,'csa-slplus')=>'maps.google.com.bh',
-                    __('Bandladesh'                     ,'csa-slplus')=>'maps.google.com.bd',
-                    __('Belgium'                        ,'csa-slplus')=>'maps.google.be',
-                    __('Belize'                         ,'csa-slplus')=>'maps.google.com.bz',
-                    __('Benin'                          ,'csa-slplus')=>'maps.google.bj',
-                    __('Bolivia'                        ,'csa-slplus')=>'maps.google.com.bo',
-                    __('Botswana'                       ,'csa-slplus')=>'maps.google.co.bw',
-                    __('Brazil'                         ,'csa-slplus')=>'maps.google.com.br',
-                    __('Bulgaria'                       ,'csa-slplus')=>'maps.google.bg',
-                    __('Burundi'                        ,'csa-slplus')=>'maps.google.bi',
-                    __('Cameroon'                       ,'csa-slplus')=>'maps.google.cm',
-                    __('Canada'                         ,'csa-slplus')=>'maps.google.ca',
-                    __('Central African Republic'       ,'csa-slplus')=>'maps.google.cf',
-                    __('Chile'                          ,'csa-slplus')=>'maps.google.cl',
-                    __('China'                          ,'csa-slplus')=>'ditu.google.com',
-                    __('Congo'                          ,'csa-slplus')=>'maps.google.cg',
-                    __('Czech Republic'                 ,'csa-slplus')=>'maps.google.cz',
-                    __('Democratic Republic of Congo'   ,'csa-slplus')=>'maps.google.cd',
-                    __('Denmark'                        ,'csa-slplus')=>'maps.google.dk',
-                    __('Djibouti'                       ,'csa-slplus')=>'maps.google.dj',
-                    __('Ecuador'                        ,'csa-slplus')=> 'maps.google.com.ec',
-                    __('Estonia'                        ,'csa-slplus')=> 'maps.google.ee',
-                    __('Ethiopia'                       ,'csa-slplus')=> 'maps.google.com.et',
-                    __('Finland'                        ,'csa-slplus')=>'maps.google.fi',
-                    __('France'                         ,'csa-slplus')=>'maps.google.fr',
-                    __('Gabon'                          ,'csa-slplus')=>'maps.google.ga',
-                    __('Gambia'                         ,'csa-slplus')=>'maps.google.gm',
-                    __('Germany'                        ,'csa-slplus')=>'maps.google.de',
-                    __('Ghana'                          ,'csa-slplus')=>'maps.google.com.gh',
-                    __('Greece'                         ,'csa-slplus')=>'maps.google.gr',
-                    __('Guatemala'                      ,'csa-slplus')=>'maps.google.com.gt',
-                    __('Guyana'                         ,'csa-slplus')=>'maps.google.gy',
-                    __('Hong Kong'                      ,'csa-slplus')=>'maps.google.com.hk',
-                    __('Hungary'                        ,'csa-slplus')=>'maps.google.hu',
-                    __('India'                          ,'csa-slplus')=>'maps.google.co.in',
-                    __('Indonesia'                      ,'csa-slplus')=>'maps.google.co.id',
-                    __('Israel'                         ,'csa-slplus')=>'maps.google.co.il',
-                    __('Italy'                          ,'csa-slplus')=>'maps.google.it',
-                    __('Japan'                          ,'csa-slplus')=>'maps.google.co.jp',
-                    __('Kenya'                          ,'csa-slplus')=>'maps.google.co.ke',
-                    __('Lesotho'                        ,'csa-slplus')=>'maps.google.co.ls',
-                    __('Liechtenstein'                  ,'csa-slplus')=>'maps.google.li',
-                    __('Lithuania'                      ,'csa-slplus')=>'maps.google.lt',
-                    __('Macedonia'                      ,'csa-slplus')=>'maps.google.mk',
-                    __('Madagascar'                     ,'csa-slplus')=>'maps.google.mg',
-                    __('Malawi'                         ,'csa-slplus')=>'maps.google.mw',
-                    __('Malaysia'                       ,'csa-slplus')=>'maps.google.my',
-                    __('Mauritius'                      ,'csa-slplus')=>'maps.google.mu',
-                    __('Mexico'                         ,'csa-slplus')=>'maps.google.mx',
-                    __('Mozambique'                     ,'csa-slplus')=>'maps.google.co.mz',
-                    __('Namibia'                        ,'csa-slplus')=>'maps.google.co.na',
-                    __('Netherlands'                    ,'csa-slplus')=>'maps.google.nl',
-                    __('New Zealand'                    ,'csa-slplus')=>'maps.google.co.nz',
-                    __('Nigeria'                        ,'csa-slplus')=>'maps.google.com.ng',
-                    __('Norway'                         ,'csa-slplus')=>'maps.google.no',
-                    __('Paraguay'                       ,'csa-slplus')=>'maps.google.com.py',
-                    __('Peru'                           ,'csa-slplus')=>'maps.google.com.pe',
-                    __('Philippines'                    ,'csa-slplus')=>'maps.google.com.ph',
-                    __('Poland'                         ,'csa-slplus')=>'maps.google.pl',
-                    __('Portugal'                       ,'csa-slplus')=>'maps.google.pt',
-                    __('Republic of Ireland'            ,'csa-slplus')=>'maps.google.ie',
-                    __('Romania'                        ,'csa-slplus')=>'maps.google.ro',
-                    __('Russia'                         ,'csa-slplus')=>'maps.google.ru',
-                    __('Rwanda'                         ,'csa-slplus')=>'maps.google.rw',
-                    __('Sao Tome and Principe'          ,'csa-slplus')=>'maps.google.st',
-                    __('Senegal'                        ,'csa-slplus')=>'maps.google.sn',
-                    __('Seychelles'                     ,'csa-slplus')=>'maps.google.sc',
-                    __('Sierra Leone'                   ,'csa-slplus')=>'maps.google.sl',
-                    __('Singapore'                      ,'csa-slplus')=>'maps.google.com.sg',
-                    __('South Africa'                   ,'csa-slplus')=>'maps.google.co.za',
-                    __('South Korea'                    ,'csa-slplus')=>'maps.google.co.kr',
-                    __('Spain'                          ,'csa-slplus')=>'maps.google.es',
-                    __('Sri Lanka'                      ,'csa-slplus')=>'maps.google.lk',
-                    __('Sweden'                         ,'csa-slplus')=>'maps.google.se',
-                    __('Switzerland'                    ,'csa-slplus')=>'maps.google.ch',
-                    __('Taiwan'                         ,'csa-slplus')=>'maps.google.com.tw',
-                    __('Tanzania'                       ,'csa-slplus')=>'maps.google.co.tz',
-                    __('Thailand'                       ,'csa-slplus')=>'maps.google.co.th',
-                    __('Togo'                           ,'csa-slplus')=>'maps.google.tg',
-                    __('Uganda'                         ,'csa-slplus')=>'maps.google.co.ug',
-                    __('United Arab Emirates'           ,'csa-slplus')=>'maps.google.ae',
-                    __('United Kingdom'                 ,'csa-slplus')=>'maps.google.co.uk',
-                    __('Uruguay'                        ,'csa-slplus')=>'maps.google.com.uy',
-                    __('Venezuela'                      ,'csa-slplus')=>'maps.google.co.ve',
-                    __('Zambia'                         ,'csa-slplus')=>'maps.google.co.zm',
-                    __('Zimbabwe'                       ,'csa-slplus')=>'maps.google.co.zw',
-                    )
-                 );
+	     // ACTION: slp_ux_modify_adminpanel_map
+	     //    params: settings object, section name
+	     //
+	     do_action( 'slp_ux_modify_adminpanel_map' , $this->settings , $section_name );
      }
 
      /**
@@ -751,7 +810,6 @@ class SLPlus_AdminUI_UserExperience {
         // Initialize Plugin Settings Data
         //
         $this->slplus->AdminUI->initialize_variables();
-        $this->slplus->helper->loadPluginData();
 
         /**
          * @see http://goo.gl/UAXly - endIcon - the default map marker to be used for locations shown on the map
@@ -762,37 +820,37 @@ class SLPlus_AdminUI_UserExperience {
          * @see http://goo.gl/UAXly - siteURL - get_site_url() WordPress call
          */
         if (!isset($this->slplus->data['homeIconPicker'] )) {
-            $this->slplus->data['homeIconPicker'] = $this->slplus->AdminUI->CreateIconSelector('sl_map_home_icon','home_icon_preview');
+            $this->slplus->data['homeIconPicker'] = $this->slplus->AdminUI->CreateIconSelector('map_home_icon','home_icon_preview');
         }
         if (!isset($this->slplus->data['endIconPicker'] )) {
-            $this->slplus->data['endIconPicker'] = $this->slplus->AdminUI->CreateIconSelector('sl_map_end_icon','end_icon_preview');
+            $this->slplus->data['endIconPicker'] = $this->slplus->AdminUI->CreateIconSelector('map_end_icon','end_icon_preview');
         }
 
         // Icon is the old path, notify them to re-select
         //
         $this->slplus->data['iconNotice'] = '';
         if (!isset($this->slplus->data['siteURL'] )) { $this->slplus->data['siteURL']  = get_site_url();                  }
-        if (!(strpos($this->slplus->data['sl_map_home_icon'],'http')===0)) {
-            $this->slplus->data['sl_map_home_icon'] = $this->slplus->data['siteURL']. $this->slplus->data['sl_map_home_icon'];
+        if (!(strpos($this->slplus->options['map_home_icon'],'http')===0)) {
+            $this->slplus->options['map_home_icon'] = $this->slplus->data['siteURL']. $this->slplus->options['map_home_icon'];
         }
-        if (!(strpos($this->slplus->data['sl_map_end_icon'],'http')===0)) {
-            $this->slplus->data['sl_map_end_icon'] = $this->slplus->data['siteURL']. $this->slplus->data['sl_map_end_icon'];
+        if (!(strpos($this->slplus->options['map_end_icon'],'http')===0)) {
+            $this->slplus->options['map_end_icon'] = $this->slplus->data['siteURL']. $this->slplus->options['map_end_icon'];
         }
-        if (!$this->slplus->helper->webItemExists($this->slplus->data['sl_map_home_icon'])) {
+        if (!$this->slplus->helper->webItemExists($this->slplus->options['map_home_icon'])) {
             $this->slplus->data['iconNotice'] .=
                 sprintf(
                         __('Your home marker %s cannot be located, please select a new one.', 'csa-slplus'),
-                        $this->slplus->data['sl_map_home_icon']
+                        $this->slplus->options['map_home_icon']
                         )
                         .
                 '<br/>'
                 ;
         }
-        if (!$this->slplus->helper->webItemExists($this->slplus->data['sl_map_end_icon'])) {
+        if (!$this->slplus->helper->webItemExists($this->slplus->options['map_end_icon'])) {
             $this->slplus->data['iconNotice'] .=
                 sprintf(
                         __('Your destination marker %s cannot be located, please select a new one.', 'csa-slplus'),
-                        $this->slplus->data['sl_map_end_icon']
+                        $this->slplus->options['map_end_icon']
                         )
                         .
                 '<br/>'

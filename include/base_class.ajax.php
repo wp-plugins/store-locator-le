@@ -75,9 +75,6 @@ if (! class_exists('SLP_BaseClass_AJAX')) {
          * @param mixed[] $params
          */
         function __construct($params) {
-            // Set properties based on constructor params,
-            // if the property named in the params array is well defined.
-            //
             if ($params !== null) {
                 foreach ($params as $property=>$value) {
                     if (property_exists($this,$property)) { $this->$property = $value; }

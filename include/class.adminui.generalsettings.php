@@ -233,7 +233,7 @@ class SLPlus_AdminUI_GeneralSettings {
                             __('How many times should we try to set the latitude/longitude for a new address? '         ,'csa-slplus').
                             __('Higher numbers mean slower bulk uploads. '                                              ,'csa-slplus').
                             __('Lower numbers make it more likely the location will not be set during bulk uploads. '   ,'csa-slplus').
-                            sprintf(__('Bulk import or re-geocoding is a %s feature.','csa-slplus'),$this->slplus->add_ons->available['slp-pro']['link'])
+                            sprintf(__('Bulk import or re-geocoding is a %s feature.','csa-slplus'),$this->slplus->add_ons->get_product_url('slp-pro'))
                 )
             );
 
@@ -249,7 +249,7 @@ class SLPlus_AdminUI_GeneralSettings {
                     __('Maximum time to wait between retries, in seconds. ','csa-slplus')   .
                     __('Use multiples of 1. ','csa-slplus')                                .
                     __('Recommended value is 5. ','csa-slplus')                            .
-                    sprintf(__('Bulk import or re-geocoding is a %s feature.','csa-slplus'),$this->slplus->add_ons->available['slp-pro']['link'])
+                    sprintf(__('Bulk import or re-geocoding is a %s feature.','csa-slplus'),$this->slplus->add_ons->get_product_url('slp-pro'))
             )
         );
 

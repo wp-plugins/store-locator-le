@@ -122,7 +122,7 @@ class SLPlus_Updates {
         // No slug? Not plugin update.
         //
         if (empty($arg->slug)) { return $orig; }
-        if (!array_key_exists($arg->slug,$this->plugin->addons)) { return $orig; }
+        if (!array_key_exists($arg->slug,$this->plugin->add_ons->instances)) { return $orig; }
         if (isset($GLOBALS['DebugMyPlugin'])) {
             error_log('check info for action ' . $action . ' arg slug ' . $arg->slug);
         }
@@ -192,7 +192,7 @@ class SLPlus_Updates {
         // Explicit slug, go look up the info.
         //
         } else {
-            $version = $this->plugin->addons[$slug]->options['installed_version'];
+            $version = $this->plugin->add_ons->instances[$slug]->options['installed_version'];
             if ( empty( $version ) ) {
                 $version = $this->set_plugin_version( $slug );;
             }
