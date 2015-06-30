@@ -242,7 +242,7 @@ class SLPlus_Activation {
 	 * @param $source can be a file or a directory
 	 * @param $dest can be a file or a directory
 	 */
-    function copyr($source, $dest) {
+    private function copyr($source, $dest) {
 	    if ( ! file_exists( $source ) ) { return; }
 
 	    // Make destination directory if necessary
@@ -341,14 +341,6 @@ class SLPlus_Activation {
                 update_option('sl_map_end_icon' , $this->iconMapper(get_option('sl_map_end_icon') ));
             }
 
-            // Admin Pages might be blank, set to 10
-            // 3.8.18
-            //
-            $tmpVar = get_option('sl_admin_locations_per_page');
-            if (empty($tmpVar)) {
-                update_option('sl_admin_locations_per_page','10');
-            }
-
             // Upgrading to version 4.0.033
             //
             if ( version_compare($this->plugin_version_on_start,'4.0.033','<') ) {
@@ -422,6 +414,84 @@ class SLPlus_Activation {
                 $option_name  = SLPLUS_PREFIX.'_use_email_form';
                 delete_option($option_name);
             }
+
+	        // Upgrading to version 4.2.63
+	        //
+	        if ( version_compare($this->plugin_version_on_start,'4.2.63','<') ) {
+
+		        // Force Load JS serialization
+		        //
+		        $option_name                               = 'sl_map_height';
+		        $option_value                              = get_option( $option_name, '480' );
+		        $serial_key                                = 'map_height';
+		        $this->slplus->options_nojs[ $serial_key ] = $option_value;
+		        delete_option( $option_name );
+		        $options_changed = $options_changed || ( $option_value !== $this->slplus->options_nojs[ $serial_key ] );
+
+		        $option_name                               = 'sl_map_height_units';
+		        $option_value                              = get_option( $option_name, 'px' );
+		        $serial_key                                = 'map_height_units';
+		        $this->slplus->options_nojs[ $serial_key ] = $option_value;
+		        delete_option( $option_name );
+		        $options_changed = $options_changed || ( $option_value !== $this->slplus->options_nojs[ $serial_key ] );
+
+		        $option_name                               = 'sl_map_width';
+		        $option_value                              = get_option( $option_name, '640' );
+		        $serial_key                                = 'map_width';
+		        $this->slplus->options_nojs[ $serial_key ] = $option_value;
+		        delete_option( $option_name );
+		        $options_changed = $options_changed || ( $option_value !== $this->slplus->options_nojs[ $serial_key ] );
+
+		        $option_name                               = 'sl_map_width_units';
+		        $option_value                              = get_option( $option_name, 'px' );
+		        $serial_key                                = 'map_width_units';
+		        $this->slplus->options_nojs[ $serial_key ] = $option_value;
+		        delete_option( $option_name );
+		        $options_changed = $options_changed || ( $option_value !== $this->slplus->options_nojs[ $serial_key ] );
+
+		        $option_name                               = 'sl_map_type';
+		        $option_value                              = get_option( $option_name, 'roadmap' );
+		        $serial_key                                = 'map_type';
+		        $this->slplus->options[ $serial_key ] = $option_value;
+		        delete_option( $option_name );
+		        $options_changed = $options_changed || ( $option_value !== $this->slplus->options[ $serial_key ] );
+
+		        $option_name                               = 'sl_map_end_icon';
+		        $option_value                              = get_option( $option_name, SLPLUS_ICONURL . 'box_yellow_home.png' );
+		        $serial_key                                = 'map_end_icon';
+		        $this->slplus->options[ $serial_key ] = $option_value;
+		        delete_option( $option_name );
+		        $options_changed = $options_changed || ( $option_value !== $this->slplus->options[ $serial_key ] );
+
+		        $option_name                               = 'sl_map_home_icon';
+		        $option_value                              = get_option( $option_name, SLPLUS_ICONURL . 'bulb_azure.png' );
+		        $serial_key                                = 'map_home_icon';
+		        $this->slplus->options[ $serial_key ] = $option_value;
+		        delete_option( $option_name );
+		        $options_changed = $options_changed || ( $option_value !== $this->slplus->options[ $serial_key ] );
+
+		        $option_name                               = 'sl_remove_credits';
+		        $option_value                              = get_option( $option_name, '0' );
+		        $serial_key                                = 'remove_credits';
+		        $this->slplus->options_nojs[ $serial_key ] = $option_value;
+		        delete_option( $option_name );
+		        $options_changed = $options_changed || ( $option_value !== $this->slplus->options_nojs[ $serial_key ] );
+
+		        $option_name                               = 'sl_admin_locations_per_page';
+		        $option_value                              = get_option( $option_name, '10' );
+		        $serial_key                                = 'admin_locations_per_page';
+		        $this->slplus->options_nojs[ $serial_key ] = $option_value;
+		        delete_option( $option_name );
+		        $options_changed = $options_changed || ( $option_value !== $this->slplus->options_nojs[ $serial_key ] );
+
+		        $option_name                               = 'csl-slplus_map_center';
+		        $option_value                              = get_option( $option_name, '' );
+		        $serial_key                                = 'map_center';
+		        $this->slplus->options[ $serial_key ] = $option_value;
+		        delete_option( $option_name );
+		        $options_changed = $options_changed || ( $option_value !== $this->slplus->options[ $serial_key ] );
+
+	        }
 
             // Upgrading to version 4.1.XX+
             // Always re-load theme details data.

@@ -1480,7 +1480,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
      */
     function createstring_DisplayBlock() {
          $currentDisplayMode    = get_option('sl_location_table_view'       , 'Normal'  );
-         $current_page_size     = get_option('sl_admin_locations_per_page'  , '10'      );
+         $current_page_size     = $this->slplus->options_nojs['admin_locations_per_page'];
 
         // Setup the properties array for our drop down.
         //
@@ -1774,7 +1774,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
             '<input id="displaylimit" '         .
                 'name="displaylimit" '          .
                 'type="hidden" '                .
-                'value="'.get_option('sl_admin_locations_per_page','10').'" ' .
+                'value="'.$this->options_nojs['admin_locations_per_page'].'" ' .
                 '/>' .
             $this->createstring_HiddenInputs()              .
             $this->createstring_PanelManageTableTopActions().
@@ -1819,7 +1819,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         // Until we reached how many we want per page.
         //
         while (
-            ( ($offset - $this->start) < $this->slplus->data['sl_admin_locations_per_page'] )   &&
+            ( ($offset - $this->start) < $this->slplus->options_nojs['admin_locations_per_page'] )   &&
             ( $location = $this->slplus->database->get_Record( $sqlCommand , $sqlParams , 0 ) )
         ) {
 
@@ -1978,7 +1978,7 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
         if ($this->total_locations_shown >0) {
             return $this->createstring_PaginationBlock(
                 $this->total_locations_shown,
-                $this->slplus->data['sl_admin_locations_per_page'],
+	            $this->slplus->options_nojs['admin_locations_per_page'],
                 $this->start
                 );
         } else {
@@ -2146,8 +2146,9 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
             case 'locationsperpage':
                 $newLimit = preg_replace('/\D/','',$_REQUEST['displaylimit']);
                 if (ctype_digit($newLimit) && (int)$newLimit > 9) {
-                    update_option('sl_admin_locations_per_page', $newLimit);
-                    $this->slplus->settings->get_item('sl_admin_locations_per_page','get_option',null,'10',true);
+	                $this->slplus->options_nojs['admin_locations_per_page'] = $newLimit;
+	                array_walk($_REQUEST,array($this->slplus,'set_ValidOptionsNoJS'));
+	                update_option(SLPLUS_PREFIX.'-options_nojs', $this->slplus->options_nojs);
                 }
                 break;
 
@@ -2185,7 +2186,6 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
      */
     function render_adminpage() {
         $this->slplus->debugMP('slp.managelocs','msg',__FUNCTION__);
-        $this->slplus->helper->loadPluginData();
         $this->slplus->AdminUI->initialize_variables();
         $this->process_Actions();
 
@@ -2204,11 +2204,6 @@ class SLPlus_AdminUI_Locations extends WP_List_Table {
             $_SERVER['REQUEST_URI']=preg_replace('/&changeUpdater=1/', '', $_SERVER['REQUEST_URI']);
             print "<script>location.replace('".$_SERVER['REQUEST_URI']."');</script>";
         }
-
-        //------------------------------------------------------------------------
-        // Reload Variables - anything that my have changed
-        //------------------------------------------------------------------------
-        $this->slplus->helper->getData('sl_admin_locations_per_page','get_option',null,'10',true,true);
 
         //------------------------------------
         // Create Location Panels

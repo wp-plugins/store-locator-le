@@ -1142,7 +1142,6 @@ class SLPlus_Location {
      * @return boolean
      */
     public function set_PropertiesViaArray($locationData,$mode='reset') {
-        $this->debugMP('msg', get_class() . '::' . __FUNCTION__, "Mode: {$mode}");
 
         // If we have an array, assume we are on the right track...
         if ( is_array( $locationData ) ) {

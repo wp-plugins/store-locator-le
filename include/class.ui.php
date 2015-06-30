@@ -21,18 +21,11 @@ class SLPlus_UI {
     private  $depnotice_setResultsString = false;
 
     /**
-     * Metadata for this class.  Not used.  Place holder for register module.
-     *
-     * @var mixed[]
-     */
-    public $metadata;
-
-    /**
      * Name of this module.
      *
      * @var string $name
      */
-    private $name;
+    public $name;
 
     /**
      * Options for the UI class.  Needed for any registered module.
@@ -40,12 +33,10 @@ class SLPlus_UI {
      * @var string[]
      */
     public $options = array(
-        'installed_version' => ''
+        'installed_version' => SLPLUS_VERSION
     );
     
     /**
-     * The base object for the SLP plugin.
-     * 
      * @var \SLPlus
      */
     private $slplus;
@@ -69,8 +60,6 @@ class SLPlus_UI {
                 $this->$name = $sl_value;
             }
         }
-
-        $this->slplus->register_module( $this->name , $this);
     }
 
     /**
@@ -256,7 +245,6 @@ class SLPlus_UI {
      *
      */
     function create_DefaultMap() {
-        $this->slplus->loadPluginData();
 
         // Add our default map generator, priority 10
         // FILTER: slp_map_html
@@ -266,12 +254,8 @@ class SLPlus_UI {
 
         // Remove the credits
         //
-        if ((get_option('sl_remove_credits',0)==1)) {
-            $mapContent = preg_replace(
-                    '/<div id="slp_tagline"(.*?)<\/div>/',
-                    ''  ,
-                    $mapContent
-                    );
+        if ( $this->slplus->is_CheckTrue( $this->slplus->options_nojs['remove_credits'] ) ) {
+            $mapContent = preg_replace( '/<div id="slp_tagline"(.*?)<\/div>/',  ''  ,  $mapContent  );
         }
 
         echo $mapContent;
@@ -581,11 +565,6 @@ class SLPlus_UI {
                 ''
             );
 
-        // Load from plugin object data table first,
-        // attributes trump options
-        //
-        $this->slplus->loadPluginData();
-
         // Setup the base plugin allowed attributes
         //
         add_filter('slp_shortcode_atts',array($this,'filter_SetAllowedShortcodes'), 80, 3);
@@ -620,7 +599,7 @@ class SLPlus_UI {
         // Setup the style sheets
         //
         if ( ! $this->slplus->javascript_is_forced ) {
-            $this->localizeSLPScript( );
+            $this->localize_script( );
             wp_enqueue_script( 'csl_script' );
             $this->setup_stylesheet_for_slplus();
         }
@@ -707,17 +686,15 @@ class SLPlus_UI {
     /**
      * Localize the CSL Script
      */
-    public function localizeSLPScript( ) {
+    public function localize_script( ) {
         $this->slplus->debugMP('slp.main','msg','SLPlus_UI:'.__FUNCTION__);
 
-        $this->slplus->loadPluginData();
-
 		// Handle any IconAttributes optionally set using the shortcode in combination with the Pro Pack
-		$this->handleIconAttributes('sl_map_home_icon', 'homeicon');
-		$this->handleIconAttributes('sl_map_end_icon',  'endicon' );
+		$this->handleIconAttributes('map_home_icon', 'homeicon');
+		$this->handleIconAttributes('map_end_icon',  'endicon' );
 
-        $slplus_home_icon_file = str_replace(SLPLUS_ICONURL,SLPLUS_ICONDIR,$this->slplus->data['sl_map_home_icon']);
-        $slplus_end_icon_file  = str_replace(SLPLUS_ICONURL,SLPLUS_ICONDIR,$this->slplus->data['sl_map_end_icon']);
+        $slplus_home_icon_file = str_replace(SLPLUS_ICONURL,SLPLUS_ICONDIR,$this->slplus->options['map_home_icon']);
+        $slplus_end_icon_file  = str_replace(SLPLUS_ICONURL,SLPLUS_ICONDIR,$this->slplus->options['map_end_icon']);
         $this->slplus->data['home_size'] =(function_exists('getimagesize') && file_exists($slplus_home_icon_file))?
             getimagesize($slplus_home_icon_file) :
             array(0 => 20, 1 => 34);
@@ -736,6 +713,11 @@ class SLPlus_UI {
         //
         $this->slplus->options['map_center'] = $this->set_MapCenter();
 
+	    // Environment
+	    //
+	    $this->slplus->createobject_AddOnManager();
+	    $environment['addons'] = $this->slplus->add_ons->get_versions();
+
         // Lets get some variables into our script.
         // "Higher Level" JS Options are those noted below.
         //
@@ -745,19 +727,18 @@ class SLPlus_UI {
             'plugin_url'        => SLPLUS_PLUGINURL,
             'disable_scroll'    => (get_option(SLPLUS_PREFIX.'_disable_scrollwheel')==1),
             'map_3dcontrol'     => (get_option(SLPLUS_PREFIX.'_disable_largemapcontrol3d')==0),
-            'map_home_icon'     => $this->slplus->data['sl_map_home_icon'],
             'map_home_sizew'    => $this->slplus->data['home_size'][0],
             'map_home_sizeh'    => $this->slplus->data['home_size'][1],
-            'map_end_icon'      => $this->slplus->data['sl_map_end_icon'],
             'map_end_sizew'     => $this->slplus->data['end_size'][0],
             'map_end_sizeh'     => $this->slplus->data['end_size'][1],
             'map_scalectrl'     => (get_option(SLPLUS_PREFIX.'_disable_scalecontrol'  )==0),
-            'map_type'          => get_option('sl_map_type','roadmap'),
             'map_typectrl'      => (get_option(SLPLUS_PREFIX.'_disable_maptypecontrol')==0),
             'msg_noresults'     => $this->slplus->settings->get_item('message_noresultsfound','No results found.','_'),
             'results_string'    => $this->set_ResultsLayout( false ),
             'overview_ctrl'     => get_option('sl_map_overview_control',0),
             'zoom_tweak'        => get_option('sl_zoom_tweak',1),
+
+	        'environment'       => apply_filters( 'slp_js_environment' , $environment ) ,
 
             // FILTER: slp_js_options
             'options'           => apply_filters('slp_js_options',$this->slplus->options)
@@ -771,14 +752,7 @@ class SLPlus_UI {
         $scriptData['ajaxurl']  = admin_url('admin-ajax.php');
         $scriptData['nonce']    = wp_create_nonce('em');
 
-        // FILTER: slp_script_data
-        //
-        // TODO: kill the slp_script_data filter as soon as EM is updated
-        // all elements are moving into the slplus.options variable in slp.js
-        // which is handled with the slp_js_options filter
-        //
-        $scriptData = apply_filters('slp_script_data',$scriptData);        
-        wp_localize_script('csl_script' ,'slplus'   , $scriptData);            
+        wp_localize_script('csl_script' ,'slplus'   , $scriptData);
 
     }
 
@@ -825,7 +799,7 @@ class SLPlus_UI {
 
         // Map Settings "Center Map At"
         //
-        $customAddress = get_option(SLPLUS_PREFIX.'_map_center','');
+        $customAddress = $this->slplus->options['map_center'];
         if ((preg_replace('/\W/','',$customAddress) != '')) {
             $customAddress = str_replace(array("\r\n","\n","\r"),', ',esc_attr($customAddress));
         } else {
@@ -898,11 +872,7 @@ class SLPlus_UI {
      * Setup the CSS for the product pages.
      */
     function setup_stylesheet_for_slplus() {
-        $this->slplus->helper->loadPluginData();
-        if (!isset($this->slplus->data['theme']) || empty($this->slplus->data['theme'])) {
-            $this->slplus->data['theme'] = $this->slplus->defaults['theme'];
-        }
-        $this->slplus->themes->assign_user_stylesheet($this->slplus->data['theme'],true);
+        $this->slplus->themes->assign_user_stylesheet($this->slplus->options_nojs['theme'],true);
     }
 
     /**

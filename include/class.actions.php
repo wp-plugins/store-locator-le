@@ -265,38 +265,6 @@ class SLPlus_Actions {
     }
 
     /**
-     * Create the SLPlus Extensions Object based on the 4.2 Add On Framework
-     *
-     * This is a variation of "eat our own cooking", using the add-on framework to augment basic
-     * SLP functionality within the base plugin itself.
-     *
-     */
-    function create_object_extensions() {
-        if ( !isset( $this->slplus->extension ) ) {
-            if( !function_exists( 'get_plugin_data' ) )
-                include_once( ABSPATH.'wp-admin/includes/plugin.php');
-
-            require_once( SLPLUS_PLUGINDIR . 'include/class.slplus.extension.php');
-            $this->slplus->extension = new SLP_Extension(
-                array(
-                    'version'               => SLPLUS_VERSION                               ,
-                    'min_slp_version'       => SLPLUS_VERSION                               ,
-
-                    'name'                  => __('SLP Base Extensions', 'csa-slplus')      ,
-                    'option_name'           => SLPLUS_PREFIX . '-options'                   ,
-                    'slug'                  => SLPLUS_BASENAME                              ,
-                    'metadata'              => get_plugin_data( $this->slplus->fqfile , false, false)      ,
-
-                    'url'                   => SLPLUS_PLUGINURL                             ,
-                    'dir'                   => SLPLUS_PLUGINDIR                             ,
-
-                    'ajax_class_name'        => 'SLP_AJAX'                                  ,
-                )
-            );
-        }
-    }
-
-    /**
      * Called when the WordPress init action is processed.
      */
     function init() {
@@ -391,14 +359,13 @@ class SLPlus_Actions {
         //
         add_action( 'wp_enqueue_scripts' , array( $this , 'wp_enqueue_scripts'      ) );
 
-        // Attach SLP Extensions via the SLP 4.2 Add On Framework
-        //
-        $this->create_object_extensions();
-
         // HOOK: slp_init_complete
         // gets a copy of the slplus actions object as a parameter
         //
         do_action('slp_init_complete', $this);
+
+		// TODO: remove when references to addons['slp.AjaxHandler']->plugin are replaced with slplus->AjaxHandler (DIR,ES, GFI, REX, W)
+	    $this->slplus->addons['slp.AjaxHandler'] = $this->slplus->AjaxHandler;
     }
 
     /**
@@ -462,7 +429,7 @@ class SLPlus_Actions {
                     SLPLUS_VERSION,
                     ! $this->slplus->javascript_is_forced
             );
-            $this->slplus->UI->localizeSLPScript();        
+            $this->slplus->UI->localize_script();
             $this->slplus->UI->setup_stylesheet_for_slplus();
             
         // No force load?  Register only.
@@ -495,19 +462,18 @@ class SLPlus_Actions {
         if (!isset($this->slplus)               ) { return; }
         if (!isset($this->slplus->settings)     ) { return; }
         if (!is_object($this->slplus->settings) ) { return; }
-        $this->slplus->loadPluginData();
 
         echo '<!-- SLP Custom CSS -->'."\n".'<style type="text/css">'."\n" .
 
                     // Map
                     "div#sl_div div#map {\n".
-                        "width:{$this->slplus->data['sl_map_width']}{$this->slplus->data['sl_map_width_units']};\n" .
-                        "height:{$this->slplus->data['sl_map_height']}{$this->slplus->data['sl_map_height_units']};\n" .
+                        "width:{$this->slplus->options_nojs['map_width']}{$this->slplus->options_nojs['map_width_units']};\n" .
+                        "height:{$this->slplus->options_nojs['map_height']}{$this->slplus->options_nojs['map_height_units']};\n" .
                     "}\n" .
 
                     // Tagline
                     "div#sl_div div#slp_tagline {\n".
-                        "width:{$this->slplus->data['sl_map_width']}{$this->slplus->data['sl_map_width_units']};\n" .
+                        "width:{$this->slplus->options_nojs['map_width']}{$this->slplus->options_nojs['map_width_units']};\n" .
                     "}\n" .
 
                     // FILTER: slp_ui_headers

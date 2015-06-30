@@ -111,16 +111,6 @@ class SLPlus_AdminUI {
     function initialize_variables() {
         global $sl_google_map_country, $sl_location_table_view, $sl_zoom_tweak, $sl_use_name_search;
 
-        $sl_map_type=get_option('sl_map_type');
-        if (isset($sl_map_type)) {
-            $sl_map_type='roadmap';
-            add_option('sl_map_type', $sl_map_type);
-            }
-        $sl_remove_credits=get_option('sl_remove_credits');
-        if (empty($sl_remove_credits)) {
-            $sl_remove_credits="0";
-            add_option('sl_remove_credits', $sl_remove_credits);
-            }
         $sl_use_name_search=get_option('sl_use_name_search');
         if (empty($sl_use_name_search)) {
             $sl_use_name_search="0";
@@ -165,6 +155,7 @@ class SLPlus_AdminUI {
                 __('on <a target="_blank" href="%s" title="Rate Store Locator Plus on WordPress">WordPress.org</a>. ' , 'csa-slplus'),
                 $rating_url
                 ).
+            '<br/>' .
         __('A huge thank you from Lance and his fellow code geeks!','csa-slplus') .
         '</div>'
         ;
@@ -223,11 +214,11 @@ class SLPlus_AdminUI {
      * @return string
      */
     public function create_addon_query() {
-        $addon_slugs = array_keys($this->slplus->addons);
+        $addon_slugs = array_keys( $this->slplus->add_ons->instances );
         $addon_versions = array();
         foreach ($addon_slugs as $addon_slug) {
-            if (is_object($this->slplus->addons[$addon_slug])) {
-                $addon_versions[$addon_slug.'_version'] = $this->slplus->addons[$addon_slug]->options['installed_version'];
+            if (is_object($this->slplus->add_ons->instances[$addon_slug])) {
+                $addon_versions[$addon_slug.'_version'] = $this->slplus->add_ons->instances[$addon_slug]->options['installed_version'];
             }
         }
         return

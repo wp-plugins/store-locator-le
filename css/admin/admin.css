@@ -156,10 +156,11 @@ div.section_column {
     width: 270px; }
   .wpcsl-input.disabled {
     color: #ABABAB; }
-  .wpcsl-input .wpcsl-subheader {
+  .wpcsl-input.wpcsl-subheader {
     padding: 0px 6px; }
-    .wpcsl-input .wpcsl-subheader > h3 {
-      font-size: 1.07em; }
+    .wpcsl-input.wpcsl-subheader > h3 {
+      font-size: 1.07em;
+      margin: 0; }
 
 #wpcsl_settings_group-inspect .wpcsl-input.disabled {
   color: #ABABAB; }

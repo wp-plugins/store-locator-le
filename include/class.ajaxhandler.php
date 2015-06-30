@@ -35,28 +35,22 @@ class SLPlus_AjaxHandler {
     );
 
     /**
-     * Metadata placeholder for register_addon, never used.
-     *
-     * @var mixed $metadata
-     */
-    public $metadata;
-
-    /**
      * Name of this module.
      *
      * @var string $name
      */
-    private $name;
+    public $name;
 
     /**
-     * Options needed for register_addon, never used.
-     *
-     * @var
+     * @var string[]
      */
-    public $options;
+    public $options = array( 'installed_version' => SLPLUS_VERSION );
 
     /**
      * Needed for backwards compatibility with add-on packs. :/
+     *
+     * TODO: remove when add on packs are updated to remove the slplus->addons['slp.AjaxHandler'] reference (DIR,ES,GFI,REX)
+     *
      * @var
      */
     public $plugin;
@@ -69,9 +63,7 @@ class SLPlus_AjaxHandler {
     private $query_params = array();
     
     /**
-     * The plugin object.
-     * 
-     * @var \SLPlus $slplus
+     * @var SLPlus
      */
     public $slplus;
 
@@ -104,17 +96,16 @@ class SLPlus_AjaxHandler {
      */
     function __construct($params=null) {
 
-        $this->name = 'AjaxHandler';
+	    if ($params !== null) {
+		    foreach ($params as $property=>$value) {
+			    if (property_exists($this,$property)) { $this->$property = $value; }
+		    }
+	    }
 
-        // Set slplus property
-        //
-        if (!isset($this->slplus) || ($this->slplus == null)) {
-            global $slplus_plugin;
-            $this->slplus = $slplus_plugin;
-            $this->slplus->register_module($this->name,$this);
-            $this->plugin = $this->slplus;
-        }
-        $this->slplus->notifications->enabled = false;
+	    $this->name = 'AjaxHandler';
+
+	    // TODO: remove when references to addons['slp.AjaxHandler']->plugin are removed. (DIR, ES, GFI, REX, W)
+	    $this->plugin = $this->slplus;
 
         // Set incoming params
         //
@@ -158,9 +149,10 @@ class SLPlus_AjaxHandler {
      * @return mixed[]
      */
     function slp_add_marker($row = null) {
-        if ($row == null) {
-            return '';
-        }
+        if ($row == null) { return ''; }
+
+	    $this->slplus->currentLocation->set_PropertiesViaArray($row);
+
         $marker = array(
               'name'            => esc_attr($row['sl_store']),
               'address'         => esc_attr($row['sl_address']),
@@ -172,8 +164,8 @@ class SLPlus_AjaxHandler {
               'lat'             => $row['sl_latitude'],
               'lng'             => $row['sl_longitude'],
               'description'     => html_entity_decode($row['sl_description']),
-              'url'             => esc_attr($row['sl_url']),
-              'sl_pages_url'    => esc_attr($row['sl_pages_url']),
+              'url'             => esc_url( $row['sl_url']       ),
+              'sl_pages_url'    => esc_url( $row['sl_pages_url'] ),
               'email'           => esc_attr($row['sl_email']),
               'email_link'      => esc_attr($row['sl_email']),
               'hours'           => esc_attr($row['sl_hours']),
@@ -189,7 +181,22 @@ class SLPlus_AjaxHandler {
               'neat_title'      => esc_attr( $row['sl_neat_title'] ),
           );
 
-        $this->slplus->currentLocation->set_PropertiesViaArray($row);
+	    $web_link =
+		    ( isset( $this->slplus->options['use_pages_links'] ) && $this->slplus->is_CheckTrue( $this->slplus->options['use_pages_links'] ) ) ?
+				$marker['sl_pages_url'] :
+			    $marker['url']          ;
+
+	    if ( ! empty( $web_link ) ) {
+		    $marker['web_link'] =
+			    sprintf(
+				    "<a href='%s' target='%s' class='storelocatorlink'><nobr>%s</nobr></a><br/>",
+				    $web_link,
+				    ( isset( $this->slplus->options['use_same_window'] ) && $this->slplus->is_CheckTrue( $this->slplus->options['use_same_window'] ) ) ? '_self' : '_blank',
+				    $this->slplus->options['label_website']
+			    );
+	    } else {
+		    $marker['web_link'] = '';
+	    }
 
         // FILTER: slp_results_marker_data
         // Modify the map marker object that is sent back to the UI in the JSONP response.
@@ -204,6 +211,7 @@ class SLPlus_AjaxHandler {
      *
      */
     function csl_ajax_onload() {
+	    $this->slplus->notifications->enabled = false;
 
         // Return How Many?
         //
@@ -220,6 +228,7 @@ class SLPlus_AjaxHandler {
                 array(
                         'count'         => count($response) ,
                         'type'          => 'load',
+	                    'query_params'  => $this->query_params,
                         'response'      => $response
                     )
                 );
@@ -229,6 +238,7 @@ class SLPlus_AjaxHandler {
      * Handle AJAX request for Search calls.
      */
     function csl_ajax_search() {
+	    $this->slplus->notifications->enabled = false;
 
         // Get Locations
         //
@@ -255,6 +265,7 @@ class SLPlus_AjaxHandler {
                         'count'         => count($response),
                         'option'        => $this->query_params['address'],
                         'type'          => 'search',
+                        'query_params'  => $this->query_params,
                         'response'      => $response
                     )
                 );

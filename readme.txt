@@ -5,7 +5,7 @@ Donate link: http://www.storelocatorplus.com/product/store-locator-plus-4/
 Tags:address location map, address map, admin, ajax, best google maps,business locations, coordinates, custom google maps, dealer locater, dealer locator, directions, easy map, geo, geocoder, geocoding, gmaps, google, google map, google map plugin, google maps,google maps, google map widget, jquery, latitude, location, location finder, locator, locator maps, longitude, map, map creator, map directions, map maker, map markers, map multiple locations, map of addresses, mapper, mapping, mapping software, mapping tools, map plugin, maps, map tools, map widget, marker, page, places, plugin, polygons, polylines, post, posts, proximity, proximity search, routes, shop finder, shop locator, shops, shortcode, store finder, store locater, store locator, store locator map, stores, streetview, widget, wordpress locator, wp google map, wp google maps, wp maps, zipcode, zip code, zip code locator, zipcode locator, zip code search, zipcode search
 Requires at least: 3.8
 Tested up to: 4.2.2
-Stable tag: 4.2.62
+Stable tag: 4.2.66
 License: GLPv2 or later
 
 Add a location finder or directory to your site in minutes. Extensive premium add-on library available!
@@ -308,7 +308,17 @@ Store Locator Plus has built-in interfaces for WPML.
 
 Visit the [Store Locator Plus Release Notes page](http://www.storelocatorplus.com/support/documentation/store-locator-plus/release-notes/) for the full change log.
 
-= 4.2.62 (2015-June) =
+= 4.2.66 (2015-June-30) =
+
+* Enhancement: Further internal code simplification including removal of unused filters.
+* Enhancement: Add on packs auto-register themselves with the add on manager when active.
+* Enhancement: Revise the add on pack metadata processor, reducing file I/O during WordPress UI loading when add-on packs are active.
+* Enhancement: UTF-8 Control characters are removed during CSV input processing.
+* Fix: Return to using email as label for email address vs. actual email address.
+* Prerelease Fix: Retain center map at during 4.2.64 upgrade.
+* Change: [Enhanced Map](http://www.storelocatorplus.com/product/slp4-enhanced-map/) will need to be upgraded to version 4.2.09 with this release due to consolidation of User Experience / Map admin filters.
+
+= 4.2.62 (2015-June-18) =
 
 * Fix: Manage locations search filter.
 * Fix: Manage locations sort order.

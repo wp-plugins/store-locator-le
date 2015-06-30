@@ -354,10 +354,10 @@ var slp = {
         this.__init = function () {
 
             if (typeof slplus !== 'undefined') {
-                this.mapType = slplus.map_type;
+                this.mapType = slplus.options.map_type;
                 this.disableScroll = !!slplus.disable_scroll;
-                this.mapHomeIconUrl = slplus.map_home_icon;
-                this.mapEndIconUrl = slplus.map_end_icon;
+                this.mapHomeIconUrl = slplus.options.map_home_icon;
+                this.mapEndIconUrl = slplus.options.map_end_icon;
                 this.mapScaleControl = !!slplus.map_scalectrl;
                 this.mapTypeControl = !!slplus.map_typectrl;
                 this.overviewControl = !!(parseInt(slplus.overview_ctrl));
@@ -724,39 +724,6 @@ var slp = {
         };
 
         /***************************
-         * function: __getMarkerUrl
-         * usage:
-         *        Builds the url for store pages
-         * parameters:
-         *        aMarker:
-         *            the ajax result to build the information from
-         * returns: an url
-         */
-        this.__getMarkerUrl = function (aMarker) {
-            var url = '';
-
-            if (typeof aMarker === "object") {
-                //add an http to the url
-                if ((slplus.options.use_pages_links === "on") && (aMarker.sl_pages_url !== '')) {
-                    url = aMarker.sl_pages_url;
-                } else if (aMarker.url !== '') {
-                    if ((aMarker.url.indexOf("http://") === -1) &&
-                        (aMarker.url.indexOf("https://") === -1)
-                    ) {
-                        aMarker.url = "http://" + aMarker.url;
-                    }
-                    if (aMarker.url.indexOf(".") !== -1) {
-                        url = aMarker.url;
-                    }
-                }
-            }
-
-            aMarker.web_link = url;
-
-            return url;
-        };
-
-        /***************************
          * function: __createAddress
          * usage:
          *        Build a formatted address string
@@ -801,7 +768,6 @@ var slp = {
          * @param {object} aMarker a map marker object.
          */
         this.createMarkerContent = function (thisMarker) {
-            thisMarker['url'] = this.__getMarkerUrl(thisMarker);
             thisMarker['fullAddress'] = this.__createAddress(thisMarker);
             return slplus.options.bubblelayout.replace_shortcodes(thisMarker);
         };
@@ -910,6 +876,11 @@ var slp = {
                 cslmap.clearMarkers();
                 cslmap.putMarkers( response.response );
 
+                /**
+                 * Fire JavaScript action 'markers_dropped' after markers are dropped.
+                 */
+                jQuery('#map').trigger('markers_dropped');
+
             } else {
                 if (window.console) {
                     console.log('SLP server did not send back a valid JSONP response.');
@@ -983,15 +954,6 @@ var slp = {
          * @returns {string} a html div with the data properly displayed
          */
         this.createSidebar = function (aMarker) {
-
-            // Web Link
-            // the anchor link to the website or store pages page if pages replaces websites is on
-            //
-            aMarker.web_link = '';
-            var url = this.__getMarkerUrl(aMarker);
-            if (url !== '') {
-                aMarker.web_link = "<a href='" + url + "' target='" + ((slplus.options.use_same_window === "on") ? '_self' : '_blank') + "' class='storelocatorlink'><nobr>" + slplus.options['label_website'] + "</nobr></a><br/>";
-            }
 
             //if we are showing tags in the table
             //

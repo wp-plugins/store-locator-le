@@ -19,16 +19,19 @@
 class wpCSL_helper__slplus {
 
     /**
-     * Has the create_SimpleMessage deprecation notice been shown already?
-     * 
-     * @var boolean $depnotice_create_SimpleMessage
+     * @var boolean
      */
     private  $depnotice_create_SimpleMessage = false;
+
+	/**
+	 * @var bool
+	 */
+	private $depnotice_loadPluginData = false;
 
     /**
      * The parent wpCSL object.
      * 
-     * @var \wpCSL_plugin__slplus $slplus
+     * @var SLPlus
      */
     private $slplus;
 
@@ -120,8 +123,9 @@ class wpCSL_helper__slplus {
         if (!isset($params['id'         ])) { $params['id'          ] = 'actionType'                ; }
         if (!isset($params['name'       ])) { $params['name'        ] = 'action'                    ; }
         if (!isset($params['selectedVal'])) { $params['selectedVal' ] = ''                          ; }
+	    if (!isset($params['empty_ok'   ])) { $params['empty_ok'    ] = false                       ; }
 
-        $params['disabled'    ] =
+	    $params['disabled'    ] =
             ( isset( $params['disabled' ] ) && $params['disabled' ] ) ?
                 ' disabled ' :
                 ''           ;
@@ -136,7 +140,9 @@ class wpCSL_helper__slplus {
         //
         $dropdownHTML = '';
         foreach ($params['items'] as $item) {
-            if (!isset($item['label'])|| empty($item['label'])) { continue; }
+            if ( ! isset( $item['label'] ) )                        { continue; }
+	        if ( ! $params['empty_ok'] && empty( $item['label'] ) ) { continue; }
+
             if (!isset($item['value'])) { $item['value'] = $item['label']; }
             if ($item['value'] === $params['selectedVal']) { $item['selected'] = true; }
             $selected = (isset($item['selected']) && $item['selected']) ? 'selected="selected" ' : '';
@@ -426,29 +432,6 @@ class wpCSL_helper__slplus {
        return esc_html($this->slplus->data[$element]);
     }
 
-    /**
-     * Initialize the plugin data.
-     *
-     * Loop through the getData() method passing in each element of the plugin dataElements array.
-     * Each entry of dataElements() must contain 3 parts:
-     *    [0] = key name for the plugin data element
-     *    [1] = function type 'get_option' or 'get_item'
-     *    [2] = the name of the option/item as a single string
-     *            OR
-     *          an array with the name of the option/item first, the default value second
-     *
-     */
-    function loadPluginData() {
-        if (!isset($this->slplus->dataElements)) {
-            $this->slplus->dataElements = array();
-        }
-        if (count($this->slplus->dataElements) > 0) {
-            foreach ($this->slplus->dataElements as $element) {
-                $this->getData($element[0],$element[1],$element[2]);
-            }
-        }
-    }
-
      //------------------------------------------------------------------------
      // DEPRECATED
      //------------------------------------------------------------------------
@@ -465,5 +448,18 @@ class wpCSL_helper__slplus {
             $this->depnotice_create_SimpleMessage = true;
         }
      }
+
+	/**
+	 * Do not use, deprecated.
+	 *
+	 * @deprecated 4.2.63
+	 */
+	function loadPluginData() {
+		if (!$this->depnotice_loadPluginData) {
+			$this->slplus->notifications->add_notice(9,$this->slplus->createstring_Deprecated(__FUNCTION__));
+			$this->slplus->notifications->display();
+			$this->depnotice_loadPluginData = true;
+		}
+	}
 
 }

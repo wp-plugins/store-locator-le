@@ -106,7 +106,7 @@ if (! class_exists('SLP_BaseClass_UI')) {
             if ( file_exists( $this->addon->dir . 'include/userinterface.js' ) ) {
                 wp_enqueue_script( $this->addon->slug . '_userinterface' , $this->addon->url . '/include/userinterface.js' , $this->js_requirements );
                 wp_localize_script( $this->addon->slug . '_userinterface' ,
-                    preg_replace('/\W/' , '' , $this->addon->metadata['TextDomain'] ) . '_settings' ,
+                    preg_replace('/\W/' , '' , $this->addon->get_meta('TextDomain') ) . '_settings' ,
                     $this->js_settings
                     );
             }

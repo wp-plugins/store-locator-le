@@ -27,7 +27,7 @@ if (! class_exists('SLPlus')) {
         /**
          * PRO: Pro Pack web link.
          *
-         * Remove this when UML removes constant reference.
+         * TODO: Remove this when UML removes constant reference.
          */
         const linkToPRO = '<a href="http://www.storelocatorplus.com/product/slp4-pro/" target="csa">Pro Pack</a>';
 
@@ -50,29 +50,19 @@ if (! class_exists('SLPlus')) {
          * o 'slp.AjaxHandler' AjaxHandler
          * o 'slp.UI' User Interface
          *
-         * Add Ons:
-         * o 'slp-enhanced-map' Enhanced Map
-         * o 'slp-enhanced-results' Enhanced Results
-         * o 'slp-enhanced-search' Enhanced Search
-         * o 'slp-extendo' Super Extendo
-         * o 'slp-janitor' Janitor
-         * o 'slp-pages' Store Pages
-         * o 'slp-pro' Pro Pack
-         * o 'slp-tagalong' Tagalong
-         * o 'slp-user-managed-locations' User Managed Locations
-         * o 'slp-widget' Widget
-         *
          * The values will be null if there is no pointer to the object,
          * or the object pointer to an instantiated version of the add-on.
          *
-         * @var objects[] $addons active add-ons
+         * TODO: Remove when all references are moved to $this->add_ons->instances (DIR,ES,GFI,REX,W)
+         *
+         * @var SLP_BaseClass_Addon[] $addons active add-ons
          */
         public $addons = array();
 
         /**
          * The add on manager handles add on connections and data.
          *
-         * @var \SLPlus_AddOn_Manager
+         * @var SLPlus_AddOn_Manager
          */
         public $add_ons;
 
@@ -138,10 +128,6 @@ if (! class_exists('SLPlus')) {
          * @var mixed[] $defaults
          */
         public $defaults = array(
-
-            // Theme
-            //
-            'theme' => 'twentyfifteen_rev02',
 
             // Overall Layout
             //
@@ -273,13 +259,6 @@ if (! class_exists('SLPlus')) {
         ,
         );
 
-        /**
-         * The extension object.
-         *
-         * @var SLP_Extension
-         */
-        public $extension;
-
 	    /**
 	     * @var string
 	     */
@@ -318,26 +297,26 @@ if (! class_exists('SLPlus')) {
          * @var mixed[] $options
          */
         public $options = array(
-            'bubblelayout' => '',
-            'distance_unit' => 'miles',
-            'immediately_show_locations' => '1',
-            'initial_radius' => '10000',
-            'initial_results_returned' => '25',
-            'label_directions' => '',
-            'label_email' => 'Email',
-            'label_fax' => '',
-            'label_hours' => '',
-            'label_phone' => '',
-            'label_website' => '',
-            'map_center' => '',
-            'map_domain' => 'maps.google.com',
-	        'no_homeicon_at_start' => '1',        // EM has admin UI for this setting.
-            'slplus_version' => SLPLUS_VERSION,
-            'zoom_level' => '12',
-
-            // AJAX Incoming Variables
-            //
-            'ignore_radius' => '0',  // Passed in as form var from Enhanced Search
+            'bubblelayout'                  => '',
+            'distance_unit'                 => 'miles',
+            'immediately_show_locations'    => '1',
+            'initial_radius'                => '10000',
+            'initial_results_returned'      => '25',
+            'label_directions'              => '',
+            'label_email'                   => 'Email',
+            'label_fax'                     => '',
+            'label_hours'                   => '',
+            'label_phone'                   => '',
+            'label_website'                 => '',
+            'map_center'                    => '',
+            'map_domain'                    => 'maps.google.com',
+	        'map_end_icon'                  => '',
+	        'map_home_icon'                 => '',
+	        'map_type'                      => 'roadmap',
+	        'no_homeicon_at_start'          => '1',                 // EM has admin UI for this setting.
+            'slplus_version'                => SLPLUS_VERSION,
+            'zoom_level'                    => '12',
+            'ignore_radius'                 => '0',                 // Passed in as form var from Enhanced Search
         );
 
         /**
@@ -368,20 +347,27 @@ if (! class_exists('SLPlus')) {
          * @var mixed[]
          */
         public $options_nojs = array(
-            'extended_data_tested' => '0',
-            'force_load_js' => '0',
-            'google_client_id' => '',
-            'google_private_key' => '',
-            'has_extended_data' => '',
-            'http_timeout' => '10', // HTTP timeout for GeoCode Requests (s)
-            'invalid_query_message' => '',
-            'max_results_returned' => '25',
-            'next_field_id' => 1,
-            'next_field_ported' => '',
-            'php_max_execution_time' => '600',
-            'premium_user_id' => '',
-            'premium_subscription_id' => '',
-            'retry_maximum_delay' => '5.0',
+	        'admin_locations_per_page'  => '10',
+            'extended_data_tested'      => '0',
+            'force_load_js'             => '0',
+            'google_client_id'          => '',
+            'google_private_key'        => '',
+            'has_extended_data'         => '',
+            'http_timeout'              => '10', // HTTP timeout for GeoCode Requests (seconds)
+            'invalid_query_message'     => '',
+            'map_height'                => '480',
+            'map_height_units'          => 'px',
+            'map_width'                 => '640',
+            'map_width_units'           => 'px',
+            'max_results_returned'      => '25',
+            'next_field_id'             => 1,
+            'next_field_ported'         => '',
+            'php_max_execution_time'    => '600',
+            'premium_user_id'           => '',
+            'premium_subscription_id'   => '',
+	        'remove_credits'            => '0',
+            'retry_maximum_delay'       => '5.0',
+	        'theme'                     => 'twentyfifteen_rev02',
         );
 
         /**
@@ -401,7 +387,7 @@ if (! class_exists('SLPlus')) {
          *
          * @var mixed $data
          */
-        public $data;
+        public $data = array();
 
         /**
          * The data interface helper.
@@ -435,20 +421,6 @@ if (! class_exists('SLPlus')) {
 	     */
 	    private $dmpStack = array('main' => array());
 
-        /**
-         * Sets the values of the $data array.
-         *
-         * Drives the wpCSL loadPluginData method.
-         *
-         * This has a method to tell it HOW to load the data.
-         *   via a simple get_option() call or via the wpCSL.settings.getitem() call.
-         *
-         * wpCSL getitem() looks for variations in the option names based on an option "root" name.
-         *
-         * @var mixed $dataElements
-         */
-        public $dataElements;
-
 	    /**
 	     * True if we are on an admin page for the plugin.
 	     *
@@ -462,20 +434,6 @@ if (! class_exists('SLPlus')) {
          * @var boolean
          */
         public $javascript_is_forced = true;
-
-	    /**
-	     * The plugin meta data.
-	     *
-	     * @var mixed[] $metadata
-	     */
-	    public $metadata;
-
-        /**
-         * Set to true if the plugin data was already loaded.
-         *
-         * @var boolean $pluginDataLoaded
-         */
-        public $pluginDataLoaded = false;
 
 	    /**
 	     * The fully qualified directory name where the plugin is installed.
@@ -638,10 +596,12 @@ if (! class_exists('SLPlus')) {
 
             $this->themes->css_dir = SLPLUS_PLUGINDIR . 'css/';
             $this->initOptions();
-            $this->initData();
 
-            // HOOK: slp_invocation_complete
-            do_action('slp_invocation_complete');
+	        // AJAX Processing
+	        //
+	        if ( defined('DOING_AJAX') && DOING_AJAX ) {
+		        $this->createobject_AJAX();
+	        }
         }
 
 	    /**
@@ -817,6 +777,20 @@ if (! class_exists('SLPlus')) {
         }
 
 	    /**
+	     * Create the AJAX procssing object and attach to this->ajax
+	     */
+	    function createobject_AJAX() {
+		    if ( ! isset( $this->ajax ) ) {
+			    require_once('class.ajax.php');
+			    $this->ajax = new SLP_AJAX(
+				    array(
+					    'slplus'    => $this,
+				    )
+			    );
+		    }
+	    }
+
+	    /**
 	     * Sets $this->isOurAdminPage true if we are on a SLP managed admin page.  Returns true/false accordingly.
 	     *
 	     * TODO: ADMIN ONLY
@@ -958,6 +932,8 @@ if (! class_exists('SLPlus')) {
 
             // Set options defaults to values set in property definition above.
             //
+	        $this->options['map_home_icon'] = SLPLUS_ICONURL . 'box_yellow_home.png';
+	        $this->options['map_end_icon']  = SLPLUS_ICONURL . 'bulb_azure.png';
             $this->options_default = $this->options;
 
             // Serialized Options from DB for JS parameters
@@ -993,7 +969,7 @@ if (! class_exists('SLPlus')) {
             // loaded from properties
             //
             foreach ($this->options as $name => $value) {
-                if (!empty($this->defaults[$name])) {
+                if ( empty( $this->options[$name] ) && ( ! empty($this->defaults[$name] ) ) ) {
                     $this->options[$name] = $this->defaults[$name];
                 }
             }
@@ -1117,74 +1093,6 @@ if (! class_exists('SLPlus')) {
 	        }
 		    return '';
 	    }
-
-        /**
-         * Set the plugin data property.
-         *
-         * Plugin data elements, helps make data lookups more efficient
-         *
-         * 'data' is where actual values are stored
-         * 'dataElements' is used to fetch/initialize values whenever helper->loadPluginData() is called
-         *
-         * FILTER: slp_attribute_values
-         * This filter only fires at the very start of SLP, it may not run add-on pack stuff.
-         *
-         * The slp_attribute_values fitler takes an array of arrays.
-         *
-         * The outter array is a list of instructions for setting the data property of this class.
-         *
-         * The inner array has 3 elements:
-         *     first element is the name of the data property, the 'blah' in $this->data['blah'].
-         *     second element is the method to employ to set the element, 'get_option' or 'get_item'.
-         *     third element is the parameters to send along to the get_option or get_item method.
-         *
-         * If the second element is 'get_option' the third element can be:
-         *     null - in this case $this->data['blah'] is set to get_option('blah')
-         *     array('moreblah') - in this case $this->data['blah'] = get_option('moreblah')
-         *     array('moreblah','default') - $this->data['blah'] = get_option('moreblah','default')
-         *
-         * get_option('moreblah','default') returns the value 'default' if the option 'moreblah' does not exist in the WP options table.
-         */
-        function initData()
-        {
-            $this->data = array();
-            $this->dataElements = array(
-                    array(
-                        'sl_admin_locations_per_page',
-                        'get_option',
-                        array('sl_admin_locations_per_page', '25')
-                    ),
-                    array(
-                        'sl_map_end_icon',
-                        'get_option',
-                        array('sl_map_end_icon', SLPLUS_ICONURL . 'bulb_azure.png')
-                    ),
-                    array('sl_map_home_icon',
-                        'get_option',
-                        array('sl_map_home_icon', SLPLUS_ICONURL . 'box_yellow_home.png')
-                    ),
-                    array('sl_map_height',
-                        'get_option',
-                        array('sl_map_height', '480')
-                    ),
-                    array('sl_map_height_units',
-                        'get_option',
-                        array('sl_map_height_units', 'px')
-                    ),
-                    array('sl_map_width',
-                        'get_option',
-                        array('sl_map_width', '100')
-                    ),
-                    array('sl_map_width_units',
-                        'get_option',
-                        array('sl_map_width_units', '%')
-                    ),
-                    array('theme',
-                        'get_item',
-                        array('theme', $this->defaults['theme'])
-                    )
-            );
-        }
 
         /**
          * Return true if the named add-on pack is active.
@@ -1311,106 +1219,6 @@ if (! class_exists('SLPlus')) {
         }
 
 	    /**
-	     * Compare current plugin version with minimum required.
-	     *
-	     * Set a notification message.
-	     * Disable the requesting add-on pack if requirement is not met.
-	     *
-	     * $params['addon_name'] - the plain text name for the add-on pack.
-	     * $params['addon_slug'] - the slug for the add-on pack.
-	     * $params['min_required_version'] - the minimum required version of the base plugin.
-	     *
-	     * TODO: update the direct reference from slp-pages then this can go in base_class.addon.php directly.
-	     *
-	     * @param mixed[] $params
-	     */
-	    function VersionCheck($params) {
-
-		    // Minimum version requirement not met.
-		    //
-		    if (version_compare(SLPLUS_VERSION, $params['min_required_version'], '<')) {
-			    if (is_admin()) {
-				    if (isset($this->notifications)) {
-					    $this->notifications->add_notice(4, '<strong>' .
-					                                        sprintf(__('%s has been deactivated.', 'csa-slplus'
-					                                        ), $params['addon_name']
-					                                        ) . '<br/> ' .
-					                                        '</strong>' .
-					                                        sprintf(__('You have %s version %s.', 'csa-slplus'
-					                                        ), $this->name, SLPLUS_VERSION
-					                                        ) . '<br/> ' .
-					                                        sprintf(__('You need version %s or greater for this version of %s.', 'csa-slplus'
-					                                        ), $params['min_required_version'], $params['addon_name']
-					                                        ) . '<br/> ' .
-					                                        sprintf(__('Please install an older version of %s or upgrade.', 'csa-slplus'
-					                                        ), $this->name
-					                                        ) . '<br/> ' .
-					                                        sprintf(__('Upgrading major versions of %s requires paid upgrades to all related add-on packs.', 'csa-slplus'
-					                                        ), $this->name
-					                                        ) .
-					                                        '<br/><br/>'
-					    );
-				    }
-				    deactivate_plugins(array($params['addon_slug']));
-			    }
-			    return;
-		    }
-
-		    // Register add on if version is ok
-		    //
-		    $this->register_addon($params['addon_slug']);
-	    }
-
-        /**
-         * Load Plugin Data once.
-         *
-         * Call $this->helper->loadPluginData(); to force a reload.
-         */
-        function loadPluginData()
-        {
-            if (!$this->pluginDataLoaded) {
-                $this->helper->loadPluginData();
-                $this->pluginDataLoaded = true;
-            }
-        }
-
-        /**
-         * Register an add-on pack.
-         *
-         * Keys always contain registered add-ons.
-         * Values may contain a pointer to an instantiation of an add-on if it exists.
-         *
-         * @param string $slug
-         * @param object $object
-         */
-        public function register_addon($slug, $object = null)
-        {
-            $slugparts = explode('/', $slug);
-            $cleanslug = str_replace('.php', '', $slugparts[count($slugparts) - 1]);
-            if (
-                !isset($this->addons[$cleanslug]) ||
-                (($this->addons[$cleanslug] == null) && ($object != null))
-            ) {
-                $this->addons[$cleanslug] = $object;
-            }
-        }
-
-        /**
-         * Register a base plugin module.
-         *
-         * @param string $name name of the module.
-         * @param object $object pointer to the module.
-         */
-        public function register_module($name, $object = null)
-        {
-            $name = 'slp.' . $name;
-            if (!isset($this->$name)) {
-                $this->$name = $object;
-            }
-            $this->register_addon($name, $object);
-        }
-
-	    /**
 	     * Update the base plugin if necessary.
 	     */
 	    function activate_or_update_slplus() {
@@ -1437,5 +1245,20 @@ if (! class_exists('SLPlus')) {
          * @return boolean
          */
         public function is_Extended() { return false; }
+
+
+	    /**
+	     * Load Plugin Data once.
+	     *
+	     * @deprecated since version 4.2.63
+	     */
+	    function loadPluginData()  { return false; }
+
+	    /**
+	     * Check base plugin version is OK.
+	     *
+	     * @deprecated since version 4.2.63
+	     */
+	    function VersionCheck( $parameter_array = array() ) { return; }
     }
 }

@@ -31,7 +31,7 @@ if (! class_exists('SLP_BaseClass_Addon')) {
      *
      * @package StoreLocatorPlus\BaseClass\Addon
      * @author Lance Cleveland <lance@charlestonsw.com>
-     * @copyright 2014 Charleston Software Associates, LLC
+     * @copyright 2014-2015 Charleston Software Associates, LLC
      */
     class SLP_BaseClass_Addon {
 
@@ -78,6 +78,15 @@ if (! class_exists('SLP_BaseClass_Addon')) {
          */
         protected $admin_class_name;
 
+	    /**
+	     * SLP Menu Entries
+	     *
+	     * Should be in a key=>value array where key = the menu text and value = the function or PHP file to execute.
+	     *
+	     * @var mixed[] array of menu entries.
+	     */
+	    public $admin_menu_entries;
+
         /**
          * The name of the AJAX class for this add on.
          *
@@ -94,18 +103,23 @@ if (! class_exists('SLP_BaseClass_Addon')) {
          */
         public $dir;
 
-        /**
-         * SLP Menu Entries
-         *
-         * Should be in a key=>value array where key = the menu text and value = the function or PHP file to execute.
-         *
-         * @var mixed[] array of menu entries.
-         */
-        public $admin_menu_entries;
+	    /**
+	     * The add on loader file.
+	     *
+	     * @var string
+	     */
+	    public $file;
+
+	    /**
+	     * @var SLP_Addon_MetaData
+	     */
+	    public $meta;
         
         /**
          * WordPress data about this plugin read from the php headstone.
-         * 
+         *
+         * TODO: remove this when all references to the metadata have been removed (CO,CEX,DIR,ER,ES,ELM,GFI,GFL,LEX,PRO,REX,SME,TAG,UML,WIDG)
+         *
          * @var mixed[]
          */
         public $metadata;
@@ -130,7 +144,6 @@ if (! class_exists('SLP_BaseClass_Addon')) {
          * @var string
          */
         public $option_name;
-
 
         /**
          * The default values for options.
@@ -174,7 +187,7 @@ if (! class_exists('SLP_BaseClass_Addon')) {
          * @var string
          */
         public $slug;
-        
+
         /**
          * The url for this plugin admin features.
          * 
@@ -223,6 +236,22 @@ if (! class_exists('SLP_BaseClass_Addon')) {
                     if (property_exists($this,$property)) { $this->$property = $value; }
                 }
             }
+
+	        // Calculate file if not specified
+	        //
+	        if ( is_null( $this->file ) ) {
+		        $matches = array();
+		        preg_match( '/^.*?\/(.*?)\.php/', $this->slug , $matches );
+		        $slug_base = ! empty($matches) ? $matches[1] : $this->slug;
+		        $this->file = str_replace( $slug_base .'/' , '' , $this->dir) . $this->slug;
+
+		    // If file was specified, check to set slug, url, dir if necessary
+		    //
+	        } else {
+		        if ( ! isset( $this->dir  ) ) { $this->dir  = plugin_dir_path( $this->file ); }
+		        if ( ! isset( $this->slug ) ) { $this->slug = plugin_basename( $this->file ); }
+		        if ( ! isset( $this->url  ) ) { $this->url  = plugins_url( '', $this->file ); }
+	        }
                 
             // When SLP finished initializing do this
             //
@@ -239,15 +268,11 @@ if (! class_exists('SLP_BaseClass_Addon')) {
             
             // Check the base plugin minimum version requirement.
             //
-            $this->slplus->VersionCheck(array(
+            $this->VersionCheck(array(
                 'addon_name' => $this->name,
                 'addon_slug' => $this->slug,
                 'min_required_version' => $this->min_slp_version
             ));
-
-            // Tell SLP we are here
-            //
-            $this->slplus->register_addon($this->slug, $this);
 
             // Initialize The Options
             //
@@ -285,7 +310,7 @@ if (! class_exists('SLP_BaseClass_Addon')) {
          */
         function filter_AddMenuItems( $menuItems ) {
             if ( ! isset( $this->admin_menu_entries) ) { return $menuItems; }
-            return array_merge( $menuItems, $this->admin_menu_entries );
+            return array_merge( (array) $menuItems, $this->admin_menu_entries );
         }
 
 	    /**
@@ -342,6 +367,55 @@ if (! class_exists('SLP_BaseClass_Addon')) {
             }
         }
 
+	    /**
+	     * Compare current plugin version with minimum required.
+	     *
+	     * Set a notification message.
+	     * Disable the requesting add-on pack if requirement is not met.
+	     *
+	     * $params['addon_name'] - the plain text name for the add-on pack.
+	     * $params['addon_slug'] - the slug for the add-on pack.
+	     * $params['min_required_version'] - the minimum required version of the base plugin.
+	     *
+	     * @param mixed[] $params
+	     */
+	    private function VersionCheck($params) {
+
+		    // Minimum version requirement not met.
+		    //
+		    if (version_compare(SLPLUS_VERSION, $params['min_required_version'], '<')) {
+			    if (is_admin()) {
+				    if (isset($this->notifications)) {
+					    $this->notifications->add_notice(4, '<strong>' .
+					                                        sprintf(__('%s has been deactivated.', 'csa-slplus'
+					                                        ), $params['addon_name']
+					                                        ) . '<br/> ' .
+					                                        '</strong>' .
+					                                        sprintf(__('You have %s version %s.', 'csa-slplus'
+					                                        ), $this->name, SLPLUS_VERSION
+					                                        ) . '<br/> ' .
+					                                        sprintf(__('You need version %s or greater for this version of %s.', 'csa-slplus'
+					                                        ), $params['min_required_version'], $params['addon_name']
+					                                        ) . '<br/> ' .
+					                                        sprintf(__('Please install an older version of %s or upgrade.', 'csa-slplus'
+					                                        ), $this->name
+					                                        ) . '<br/> ' .
+					                                        sprintf(__('Upgrading major versions of %s requires paid upgrades to all related add-on packs.', 'csa-slplus'
+					                                        ), $this->name
+					                                        ) .
+					                                        '<br/><br/>'
+					    );
+				    }
+				    deactivate_plugins(array($params['addon_slug']));
+			    }
+			    return;
+		    }
+
+		    // Register add on if version is ok
+		    //
+		    $this->register_addon( $this->slug , $this );
+	    }
+
         /**
          * Create the AJAX procssing object and attach to this->ajax
          */
@@ -357,7 +431,22 @@ if (! class_exists('SLP_BaseClass_Addon')) {
             }
         }
 
-        /**
+	    /**
+	     * Create the metadata object and store in $this->metadata.
+	     */
+	    private function createobject_MetaData() {
+		    if ( !isset( $this->meta ) ) {
+			    require_once( SLPLUS_PLUGINDIR . 'include/class.addon.metadata.php');
+			    $this->meta = new SLP_Addon_MetaData(
+				    array(
+					    'addon'     => $this,
+					    'slplus'    => $this->slplus,
+				    )
+			    );
+		    }
+	    }
+
+	    /**
          * Create the user interface object and attach to this->UserInterface
          */
         function createobject_UserInterface() {
@@ -371,6 +460,18 @@ if (! class_exists('SLP_BaseClass_Addon')) {
                 );
             }
         }
+
+	    /**
+	     * Get the add on metadata property as specified.
+	     *
+	     * @param string $property
+	     *
+	     * @return string
+	     */
+	    public function get_meta( $property ) {
+		    $this->createobject_MetaData();
+		    return $this->meta->get_meta( $property );
+	    }
 
         /**
          * Initialize the options properties from the WordPress database.
@@ -387,6 +488,20 @@ if (! class_exists('SLP_BaseClass_Addon')) {
             }
         }
 
+	    /**
+	     * Register an add-on pack.
+	     *
+	     * @param string $slug
+	     * @param object $object
+	     */
+	    private function register_addon( $slug, $object )  {
+		    $this->slplus->createobject_AddOnManager();
+		    $this->slplus->add_ons->register( $slug , $object );
+
+		    // TODO: remove this when all add-on packs reference $this->slplus->add_ons->instances vs. $this->slplus->addons (GFI, MMap)
+		    //
+		    $this->slplus->addons[$slug] = $object;
+	    }
 
         /**
          * Set option defaults outside of hard-coded property values via an array.

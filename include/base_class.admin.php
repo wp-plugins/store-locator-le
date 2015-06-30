@@ -74,13 +74,14 @@ if (! class_exists('SLP_BaseClass_Admin')) {
         /**
          * Add the plugin specific hooks and filter configurations here.
          *
+         * Add your hooks and filters in the class that extends this base class.
+         * Then call parent::add_hooks_and_filters();
+         *
          * Should include WordPress and SLP specific hooks and filters.
          */
         function add_hooks_and_filters() {
+	        add_action( 'admin_enqueue_scripts' , array( $this , 'enqueue_admin_css' ) );
 
-            // Add your hooks and filters in the class that extends this base class.
-            // Then call parent::add_hooks_and_filters();
-            //
             add_action('slp_save_ux_settings' ,array( $this ,'save_ux_settings' ) );
         }
         
@@ -94,8 +95,8 @@ if (! class_exists('SLP_BaseClass_Admin')) {
                 }
                 if ( class_exists('SLPlus_Updates') ) {
                     $this->Updates = new SLPlus_Updates(
-                            $this->addon->metadata['Version'], 
-                            $this->slplus->updater_url, 
+	                        $this->addon->get_meta('Version'),
+                            $this->slplus->updater_url,
                             $this->addon->slug
                     );
                 }
@@ -112,6 +113,18 @@ if (! class_exists('SLP_BaseClass_Admin')) {
             // $this->check_for_updates();
             // $this->update_install_info();
         }
+
+	    /**
+	     * If the file admin.css exists and the page prefix starts with slp_ , enqueue the admin style.
+	     */
+	    function enqueue_admin_css( $hook ) {
+		    if (
+		        file_exists( $this->addon->dir . 'css/admin.css' ) &&
+		        ( strpos( $hook , SLP_ADMIN_PAGEPRE ) !== false )
+		    ) {
+			    wp_enqueue_style( $this->addon->slug . '_admin_css' , $this->addon->url . '/css/admin.css' );
+		    }
+	    }
 
         /**
          * Save settings from the UX tab.

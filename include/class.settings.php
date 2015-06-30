@@ -49,7 +49,7 @@ class wpCSL_settings__slplus {
     /**
      * The main WPCSL object.
      * 
-     * @var wpCSL_plugin__slplus
+     * @var SLPlus
      */
     public $parent;
 
@@ -157,14 +157,13 @@ class wpCSL_settings__slplus {
         global $wpdb;
         $this->csl_php_modules = get_loaded_extensions();
         natcasesort($this->csl_php_modules);
-        $this->parent->metadata = get_plugin_data($this->parent->fqfile, false, false);
 
         // Add ON Packs
         //
         $addonStr = '';
-        if (isset($this->parent->addons)) {
-            foreach ($this->parent->addons as $addon => $instantiated_addon) {
-
+        if (isset($this->parent->add_ons)) {
+            foreach ($this->parent->add_ons->instances as $addon => $instantiated_addon) {
+	            if ( strpos( $addon , 'slp.' ) === 0 ) { continue; }
 
                 if ( isset( $instantiated_addon ) ) {
 
@@ -195,8 +194,8 @@ class wpCSL_settings__slplus {
                 }
 
                 $version  =
-                    ( $instantiated_addon != null )                ?
-                        $instantiated_addon->metadata['Version']   :
+                    ! is_null( $instantiated_addon ) &&  method_exists( $instantiated_addon , 'get_meta' )                  ?
+	                    $instantiated_addon->get_meta('Version')   :
                         'active'                                   ;
 
                 // If update is available, report it.
@@ -204,7 +203,7 @@ class wpCSL_settings__slplus {
                 if  ( $instantiated_addon != null ) {
                     if (!empty($newest_version) && version_compare($version, $newest_version, '<')) {
                         $version .= ' , ' . $newest_version;
-                        $url = $instantiated_addon->metadata['PluginURI'];
+                        $url = $instantiated_addon->get_meta('PluginURI');
                         $version .= sprintf('<a href="%s">%s</a>', $url, __('UPDATE HERE', 'csa-slplus'));
 
                     }
@@ -219,11 +218,12 @@ class wpCSL_settings__slplus {
             }
         }
 
+	    $my_metadata = get_plugin_data($this->parent->fqfile);
         $this->add_section(
             array(
                 'name' => 'Plugin Environment',
                 'description' =>
-                    $this->create_EnvDiv($this->parent->metadata['Name'] . ' Version' ,$this->parent->metadata['Version'] ).
+                    $this->create_EnvDiv($my_metadata['Name'] . ' Version' ,$my_metadata['Version'] ).
                     $addonStr .
                     '<br/>' .
                     $this->create_EnvDiv('WordPress Version'                        ,$GLOBALS['wp_version']             ).
@@ -417,7 +417,7 @@ class wpCSL_settings__slplus {
             $required = false, $description = null, $custom = null,
             $value = null, $disabled = false, $onChange = '', $group = null,
             $separator = '-',$show_label=true,$use_prefix = true,$selectedVal='',
-            $onClick = ''
+            $onClick = '', $empty_ok = false
             ) {
 
         // Prefix not provided, prepend name with this->prefix and separator
@@ -455,7 +455,8 @@ class wpCSL_settings__slplus {
                 'onClick'       => $onClick,
                 'group'         => $group,
                 'show_label'    => $show_label,
-                'selectedVal'   => $selectedVal
+                'selectedVal'   => $selectedVal,
+	            'empty_ok'      => $empty_ok
             )
         );
 
@@ -503,7 +504,8 @@ class wpCSL_settings__slplus {
                 isset($params['show_label'] )?$params['show_label']         : true,
                 isset($params['use_prefix'] )?$params['use_prefix']         : true,
                 isset($params['selectedVal'])?$params['selectedVal']        : '',
-                isset($params['onClick']    )?$params['onClick']            : ''                               // item->onClick
+                isset($params['onClick']    )?$params['onClick']            : '',                              // item->onClick
+	            isset($params['empty_ok']   )?$params['empty_ok']           : false
                 );
     }
 
@@ -913,7 +915,7 @@ class wpCSL_settings_section__slplus {
     private $headerbar = true;
 
     /**
-     * @var \wpCSL_helper__slplus
+     * @var wpCSL_helper__slplus
      */
     public $helper;
 
@@ -1112,7 +1114,7 @@ class wpCSL_settings_item__slplus {
 
     /**
      *
-     * @var \wpCSL_settings_section_slplus
+     * @var wpCSL_settings_section_slplus
      */
     private $parent;
 
@@ -1129,6 +1131,13 @@ class wpCSL_settings_item__slplus {
      * @var string $onClick
      */
     private $onClick;
+
+	/**
+	 * Empty drop down menu items OK?
+	 *
+	 * @var bool
+	 */
+	private $empty_ok = false;
 
     /**
      * What comes after the label during rendering.
@@ -1285,8 +1294,8 @@ class wpCSL_settings_item__slplus {
             // Displays  the label (display_name) in a H3 tag with the description in a paragraph below.
             //
             case 'subheader':
-                if (!empty($this->display_name)) { echo "<h3>{$this->display_name}</h3>"; }
-                echo "<p class='wpcsl_subheader_description' id='{$this->name}_p'>{$this->description}</p>";
+                if ( ! empty( $this->display_name ) ) { echo "<h3>{$this->display_name}</h3>"; }
+                if ( ! empty( $this->description  ) ) { echo "<p class='slp_subheader_description' id='{$this->name}_p'>{$this->description}</p>"; }
                 $this->description = null;
                 break;
 
@@ -1302,6 +1311,7 @@ class wpCSL_settings_item__slplus {
                             'onchange'      => $this->onChange,
                             'disabled'      => $this->disabled,
                             'selectedVal'   => $this->selectedVal,
+	                        'empty_ok'      => $this->empty_ok,
                         )
                      );
                 break;
