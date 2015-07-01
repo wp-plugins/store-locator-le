@@ -1255,6 +1255,13 @@ if (! class_exists('SLPlus')) {
 	    function loadPluginData()  { return false; }
 
 	    /**
+	     * Register Add On
+	     *
+	     * @deprecated since version 4.2.63
+	     */
+	    function register_addon()  { return false; }
+
+	    /**
 	     * Check base plugin version is OK.
 	     *
 	     * @deprecated since version 4.2.63
